@@ -1,0 +1,58 @@
+{% extends "admin/base_site.html" %}
+{% load staticfiles %}
+
+{% load l10n %}
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Meldungen eintragen</title>
+</head>
+
+<body>
+{% block branding %}
+<h1>Meldungen eintragen oder ändern</h1>
+{% endblock %}
+
+{% block content %}
+<p> 
+<a href="/home"> Home </a> - 
+<a href="/admin"> Admin </a>
+<p> 
+
+
+{% localize on %} 
+
+<form method="POST" action=".">
+{% csrf_token %}
+ <ul>
+ {% for g in groups %}
+   <li> {{ g.1 }}
+     <ul>
+       {% for a in g.2 %}
+          <li>
+          {{ a.1 }}
+          {% if a.2 %}
+          , {{ a.2 }}
+          {% endif %}
+          <input id="id_g{{g.0}}_a{{a.0}}" name="g{{g.0}}_a{{a.0}}" type="checkbox"
+             {% if a.3 %}
+               checked
+             {% endif %}
+          />
+          </li>
+       {% endfor %}
+     </ul>
+   </li>
+ {% endfor %}
+  </ul>
+<input type=submit>
+</form>
+
+{% endlocalize %}
+  
+{% endblock %}
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Sat Mar 29 20:44:20 CET 2014 <!-- hhmts end -->
+</body> </html>

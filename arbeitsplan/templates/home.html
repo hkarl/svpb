@@ -1,0 +1,26 @@
+{% extends "admin/base_site.html" %}
+{% load staticfiles %}
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Arbeitsmeldungsverwaltung</title>
+</head>
+
+<body>
+{% block branding %}
+<h1>Arbeitspläne selbst verwalten leicht gemacht!</h1>
+{% endblock %}
+
+{% block content %}
+<ul>
+  <li> <a href="/arbeitsplan/meldung/"> Meldung eingeben  </a> </li>
+  <li> <a href="/arbeitsplan/aufgaben/"> Existierende Aufgaben anzeigen </li> 
+  <li> <a href="/admin/">Rohdaten verwalten </a> </li>
+</ul>
+
+{% endblock %}
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Sat Mar 29 20:42:15 CET 2014 <!-- hhmts end -->
+</body> </html>

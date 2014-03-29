@@ -1,0 +1,35 @@
+{% extends "admin/base_site.html" %}
+{% load staticfiles %}
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Alle Aufgaben</title>
+</head>
+
+<body>
+{% block branding %}
+<h1>Alle vorhandenen Aufgaben anzeigen</h1>
+{% endblock %}
+
+{% block content %}
+
+
+<p> 
+<a href="/home"> Home </a> - 
+<a href="/admin"> Admin </a>
+<p> 
+
+
+<ul>
+{% for a in object_list %}
+  <li> {{ a.aufgabe }}, {{ a.datum}},
+  {{a.verantwortlich.first_name}}  {{a.verantwortlich.last_name}} ,
+  {{ a.bemerkung}} </li>
+{% endfor %} 
+</ul>
+{% endblock %}
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Sat Mar 29 20:43:30 CET 2014 <!-- hhmts end -->
+</body> </html>

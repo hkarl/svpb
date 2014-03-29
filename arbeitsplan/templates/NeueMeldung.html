@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Mögliche Arbeitsbeiträge neu eintragen </title>
+</head>
+
+<body>
+<h1>Mögliche Arbeitsbeiträge neu eintragen</h1>
+
+Sie sind angemeldet als Nutzer:
+
+Bitte tragen Sie sich für die folgenden Gebiete ein:
+
+<form action="{% url 'arbeitsplan:neueMeldung' %}" method="post">
+{% csrf_token %}
+<input type="submit" value="neueMeldung">
+</form>
+
+
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Sun Mar 23 19:22:48 CET 2014 <!-- hhmts end -->
+</body> </html>

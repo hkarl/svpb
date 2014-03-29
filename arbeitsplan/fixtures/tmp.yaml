@@ -1,0 +1,21 @@
+- fields: {bemerkung: '', gruppe: Bewirtung, verantwortlich: 3}
+  model: arbeitsplan.aufgabengruppe
+  pk: 1
+- fields: {bemerkung: '', gruppe: Hafen, verantwortlich: 3}
+  model: arbeitsplan.aufgabengruppe
+  pk: 2
+- fields: {bemerkung: '', gruppe: Boote, verantwortlich: 2}
+  model: arbeitsplan.aufgabengruppe
+  pk: 3
+- fields: {anzahl: 1, aufgabe: Boot Winterlager, bemerkung: '', datum: 2014-03-29,
+    gruppe: 3, verantwortlich: 2}
+  model: arbeitsplan.aufgabe
+  pk: 1
+- fields: {anzahl: 5, aufgabe: Ansegeln, bemerkung: '', datum: 2014-05-01, gruppe: 1,
+    verantwortlich: 3}
+  model: arbeitsplan.aufgabe
+  pk: 2
+- fields: {anzahl: 5, aufgabe: 'Boote einlagern ', bemerkung: '', datum: 2014-10-03,
+    gruppe: 3, verantwortlich: 3}
+  model: arbeitsplan.aufgabe
+  pk: 3
