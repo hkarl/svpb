@@ -27,4 +27,3 @@ admin.site.register(Meldung)
 admin.site.register(Zuteilung)
 
 
-print "this was admin" 

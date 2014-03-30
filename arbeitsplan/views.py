@@ -11,13 +11,12 @@ import models, forms
 class UpdateMeldungView (View):
 
     def get(self,request, *args, **kwargs):
-        print "meldung get"
         myForm = forms.MeldungForm()
 
         # which questions should get an initial check?
         aufgabenMitMeldung = [m.aufgabe.id for m in 
                                 models.Meldung.objects.filter(melder_id=request.user.id)]
-        print aufgabenMitMeldung
+        # print aufgabenMitMeldung
         
         return render (request,
                        "arbeitsplan_meldung.html",
@@ -35,25 +34,25 @@ class UpdateMeldungView (View):
                        )
 
     def post (self,request, *args, **kwargs):
-        print "meldung post"
+
         myForm = forms.MeldungForm (request.POST)
         if myForm.is_valid():
-            print "processing valid form"
-            print myForm.cleaned_data
+            # print "processing valid form"
+            # print myForm.cleaned_data
 
             for k, userInput in myForm.cleaned_data.iteritems():
                 aid = int(k.split('a')[1])
-                print aid, userInput
+                # print aid, userInput
 
                 # try to find a meldung with that aid and for this user
                 try: 
                     meldungStatus = models.Meldung.objects.get (aufgabe_id=aid,
                                                                 melder_id=request.user.id)
                 except:
-                    print "get failed"
+                    # print "get failed"
                     meldungStatus = False
 
-                print "mledung status",  meldungStatus
+                # print "mledung status",  meldungStatus
                     
                 if userInput:
                     # we have to add or update the corresponding meldung
@@ -69,7 +68,7 @@ class UpdateMeldungView (View):
                                                   melder = request.user, 
                                                   )
                         
-                    print newMeld
+                    # print newMeld
                     newMeld.save()
                 else:
                     # user does not work on a particular job;
@@ -82,7 +81,7 @@ class UpdateMeldungView (View):
             
             return redirect ('arbeitsplan-meldung')
 
-        print "processing INvalid form"
+        # print "processing INvalid form"
         return HttpResponse ("Form was invalid - what to do?")
 
 class ListAufgabenView (ListView):

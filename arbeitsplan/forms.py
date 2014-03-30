@@ -15,9 +15,9 @@ class MeldungForm (forms.Form):
             
 
         for g in models.Aufgabengruppe.objects.all():
-            print "Gruppe",  g.gruppe
+            # print "Gruppe",  g.gruppe
             for a in models.Aufgabe.objects.filter(gruppe__exact=g):
-                print "Aufgabe", a.aufgabe
+                # print "Aufgabe", a.aufgabe
                 self.fields["g"+ str(g.id) + "_a" + str(a.id)] = forms.BooleanField (label=a.aufgabe,
                                                                                      required=False,
                                                                                      )
