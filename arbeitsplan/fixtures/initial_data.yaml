@@ -118,14 +118,14 @@
   model: auth.permission
   pk: 39
 - fields:
-    date_joined: 2014-03-29 21:24:03+00:00
+    date_joined: 2014-03-30 02:24:03+00:00
     email: hkarl@ieee.org
     first_name: Holger
     groups: []
     is_active: true
     is_staff: true
     is_superuser: true
-    last_login: 2014-03-29 17:13:28+00:00
+    last_login: 2014-03-29 19:48:15.742942+00:00
     last_name: KArl
     password: pbkdf2_sha256$10000$BKtbuYL5kM7v$uOT2hfRCwi/CjYxWURp/iYJr9ck1ii86YAiwFFdEhJI=
     user_permissions: []
@@ -133,14 +133,14 @@
   model: auth.user
   pk: 1
 - fields:
-    date_joined: 2014-03-29 17:25:53+00:00
+    date_joined: 2014-03-29 22:25:53+00:00
     email: ''
     first_name: 'Dirk '
     groups: []
     is_active: true
     is_staff: false
     is_superuser: false
-    last_login: 2014-03-29 17:25:53+00:00
+    last_login: 2014-03-29 19:47:58.958583+00:00
     last_name: Haensgen
     password: pbkdf2_sha256$10000$rpkPtmEAQhN1$9it0E07CnN+o72b9ju0RczkmSSGeYqpOIBr1FauLNBs=
     user_permissions: []
@@ -148,17 +148,18 @@
   model: auth.user
   pk: 2
 - fields:
-    date_joined: 2014-03-29 17:26:27+00:00
+    date_joined: 2014-03-29 22:26:27+00:00
     email: ''
     first_name: Peter
     groups: []
     is_active: true
     is_staff: true
     is_superuser: false
-    last_login: 2014-03-29 17:26:27+00:00
+    last_login: 2014-03-29 19:46:04+00:00
     last_name: Pan
     password: pbkdf2_sha256$10000$HryaYCa7hD35$ASdscSjY18wBZbK27MAxTxRsPj6yGChuhFmBjDghI+Y=
-    user_permissions: []
+    user_permissions: [31, 32, 33, 28, 29, 30, 34, 35, 36, 25, 26, 27, 22, 23, 24,
+      37, 38, 39, 7, 8, 9]
     username: PeterPan
   model: auth.user
   pk: 3
@@ -208,3 +209,18 @@
     gruppe: 1, verantwortlich: 2}
   model: arbeitsplan.aufgabe
   pk: 4
+- fields: {aufgabe: 4, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 3
+- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 3, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 5
+- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 2, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 6
+- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 7
+- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 8
