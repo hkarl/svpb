@@ -4,22 +4,22 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class Mitgliedsstatus (models.Model):
-    status = models.CharField (max_length=30)
-    bemerkung = models.TextField(blank=True)
+## class Mitgliedsstatus (models.Model):
+##     status = models.CharField (max_length=30)
+##     bemerkung = models.TextField(blank=True)
 
-    def __unicode__ (self):
-        return self.status 
+##     def __unicode__ (self):
+##         return self.status 
 
-    class Meta:
-        verbose_name_plural ="Mitgliedsstatus"
+##     class Meta:
+##         verbose_name_plural ="Mitgliedsstatus"
     
-class Mitglied (models.Model):
-    user = models.OneToOneField (User)
-    status = models.ForeignKey (Mitgliedsstatus)
+## class Mitglied (models.Model):
+##     user = models.OneToOneField (User)
+##     status = models.ForeignKey (Mitgliedsstatus)
 
-    def __unicode__ (self):
-        return self.user.__unicode__()
+##     def __unicode__ (self):
+##         return self.user.__unicode__()
 
 class Aufgabengruppe (models.Model):
     gruppe = models.CharField (max_length=30)
@@ -66,9 +66,14 @@ class Meldung (models.Model):
 class Zuteilung (models.Model):
     aufgabe = models.ForeignKey (Aufgabe)
     ausfuehrer = models.ForeignKey (User)
-
+    automatisch = models.BooleanField (default=False)
+    
     class Meta:
         verbose_name_plural = "Zuteilungen"
+
+    def __unicode__ (self):
+        return self.aufgabe.__unicode__() + ": " + self.ausfuehrer.__unicode__()
+    
     
 
     
