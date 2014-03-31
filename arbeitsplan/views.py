@@ -4,9 +4,24 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View, ListView
 from django.contrib.auth.models import User 
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import user_passes_test
 
 import models, forms
+# import networkx as nx 
 
+
+#################
+
+def isVorstand (user):
+    return user.groups.filter(name='Vorstand')
+
+class isVorstandMixin (object):
+    @method_decorator(user_passes_test(isVorstand, login_url="/keinVorstand/"))
+    def dispatch(self, *args, **kwargs):
+        return super(isVorstandMixin, self).dispatch(*args, **kwargs)
+    
+###############
 
 class UpdateMeldungView (View):
 
@@ -88,4 +103,46 @@ class ListAufgabenView (ListView):
 
     model = models.Aufgabe
     template_name = "arbeitsplan_aufgabenlist.html"
-    
+
+class ListZuteilungenView (ListView):
+
+    model = models.Zuteilung
+    template_name = "arbeitsplan_zuteilunglist.html" 
+
+class ListMeldungenView (isVorstandMixin, ListView):
+
+    model = models.Meldung
+    template_name = "arbeitsplan_meldunglist.html" 
+
+        
+class ErstelleZuteilungView (View):
+
+    def get (self,request, *args, **kwargs):
+        # Vorgehen:
+        # - alle automatisch erstellten Zuordnungen loecshen
+        # - aus den Meldungen einen bipartiten Graph erstellen (networkx nutzen)
+        # - aus dem Graphen die manuell erstellten Zuordnungen entfernen
+        # - maximales Matching ausrechnen
+        # - als Zuordnungen in Tabelle eintragen
+        # - redirect zur Zuordnungsanzeigen machen
+
+        ## qs = models.Zuteilung.objects.filter (automatisch__exact=True)
+        ## for o in qs:
+        ##     o.delete()
+
+        ## #######
+        ## # den Graph bauen
+        ## G = nx.Graph()
+        ## # alle Mitglieder einfuegen
+        ## for m in models.User.objects.all():
+        ##     G.add_node ('P' + str(m.id))
+
+        ## for a in models.Aufgabe.objects.all():
+        ##     for i in range(a.anzahl):
+        ##         G.add_node ('A' + str(a.id) + ':' + str(i))
+
+        ## for m in models.Meldung.objects.all():
+        ##     G.add_edge ('')
+        
+            
+        return redirect ('arbeitsplan-zuteilunglist')

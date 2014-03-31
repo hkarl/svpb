@@ -28,9 +28,29 @@ urlpatterns = patterns('',
          name="home", 
          ), 
          
+    url (r'^keinVorstand/$',
+         TemplateView.as_view (template_name='keinVorstand.html'),
+         name="home", 
+         ), 
+         
     url (r'^arbeitsplan/aufgaben/$',
          arbeitsplan.views.ListAufgabenView.as_view(),
          name="arbeitsplan-aufgaben",
+         ),
+
+    url (r'^arbeitsplan/zuteilungAnzeige/$',
+         login_required(arbeitsplan.views.ListZuteilungenView.as_view()),
+         name="arbeitsplan-zuteilunglist",
+         ),
+
+    url (r'^arbeitsplan/meldungAnzeige/$',
+         login_required(arbeitsplan.views.ListMeldungenView.as_view()),
+         name="arbeitsplan-meldunglist",
+         ),
+
+    url (r'^arbeitsplan/erstelleZuteilung/$',
+         login_required(arbeitsplan.views.ErstelleZuteilungView.as_view()),
+         name="arbeitsplan-erstellezuteilung",
          ),
 
     url (r'^arbeitsplan/meldung/$',

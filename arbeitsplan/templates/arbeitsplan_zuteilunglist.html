@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>{% extends "admin/base_site.html" %}
+{% load staticfiles %}
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Alle Zuteilungen</title>
+</head>
+
+<body>
+{% block branding %}
+<h1>Alle Zuteilungen anzeigen</h1>
+{% endblock %}
+
+{% block content %}
+
+
+<p> 
+<a href="/home"> Home </a> - 
+<a href="/admin"> Admin </a>
+<p> 
+
+
+<ul>
+{% for z in object_list %}
+  <li>  {{ z }} </li>
+{% endfor %} 
+</ul>
+{% endblock %}
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Sat Mar 29 20:43:30 CET 2014 <!-- hhmts end -->
+</body> </html>
+</title>
+</head>
+
+<body>
+<h1></h1>
+
+
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Sun Mar 30 16:02:27 CEST 2014 <!-- hhmts end -->
+</body> </html>
