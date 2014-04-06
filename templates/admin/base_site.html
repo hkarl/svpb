@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% load staticfiles %}
+
+{% block extrahead %}
+
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+      <a href = "/"> Home </a> - 
+    <a href="{% url 'admin:index' %}"> Rohdaten verwalten </a>
+    {% if title %} &rsaquo; {{ title }}{% endif %}
+    </div>
+{% endblock %} 
+
+{% block title %}{{ title }} | {% trans 'Arbeitsmeldungen' %}{% endblock %}
+
+{% block branding %}
+<a href = "/">
+<h1 id="site-name">{% trans 'Arbeitspläne selbst verwalten leicht gemacht' %}</h1>
+</a>
+{% endblock %}
+
+
+
+
+{% block nav-global %}{% endblock %}

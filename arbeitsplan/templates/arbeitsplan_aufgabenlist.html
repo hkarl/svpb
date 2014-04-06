@@ -14,22 +14,22 @@
 {% block content %}
 
 
-<p> 
-<a href="/home"> Home </a> - 
-<a href="/admin"> Admin </a>
-<p> 
-
+Es gibt die folgenden Aufgaben: 
+<p>
 
 <ul>
 {% for a in object_list %}
   <li> {{ a.aufgabe }}, {{ a.datum}},
-  {{a.verantwortlich.first_name}}  {{a.verantwortlich.last_name}} ,
-  {{ a.bemerkung}} </li>
+  {{a.verantwortlich.first_name}}  {{a.verantwortlich.last_name}}
+  {% if a.bemerkung%}
+  , {{ a.bemerkung}}
+  {% endif %}
+  </li>
 {% endfor %} 
 </ul>
 {% endblock %}
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Sat Mar 29 20:43:30 CET 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sun Apr  6 09:06:47 CEST 2014 <!-- hhmts end -->
 </body> </html>

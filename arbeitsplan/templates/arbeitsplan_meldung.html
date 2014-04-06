@@ -14,13 +14,12 @@
 {% endblock %}
 
 {% block content %}
-<p> 
-<a href="/home"> Home </a> - 
-<a href="/admin"> Admin </a>
-<p> 
 
 
 {% localize on %} 
+
+Bitte setzen Sie einen Haken bei den Aufgaben, an denen Sie sich beteiligen möchten:
+<p> 
 
 <form method="POST" action=".">
 {% csrf_token %}
@@ -54,5 +53,5 @@
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Sat Mar 29 20:44:20 CET 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sun Apr  6 09:11:42 CEST 2014 <!-- hhmts end -->
 </body> </html>
