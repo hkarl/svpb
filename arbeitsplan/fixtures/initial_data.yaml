@@ -126,7 +126,7 @@
     last_name: Haensgen
     password: pbkdf2_sha256$10000$rpkPtmEAQhN1$9it0E07CnN+o72b9ju0RczkmSSGeYqpOIBr1FauLNBs=
     user_permissions: []
-    username: DirkHaengsen
+    username: DirkHaensgen
   model: auth.user
   pk: 2
 - fields:

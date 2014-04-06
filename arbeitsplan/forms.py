@@ -22,3 +22,13 @@ class MeldungForm (forms.Form):
                                                                                      required=False,
                                                                                      )
                 
+
+class CreateLeistungForm (forms.ModelForm):
+    class Meta:
+        model = models.Leistung
+        exclude = ('melder',
+                   'erstellt',
+                   'veraendert',
+                   'status',
+                   'bemerkungVorstand',
+                   )

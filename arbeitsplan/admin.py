@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from arbeitsplan.models import Aufgabengruppe, Aufgabe, Meldung, Zuteilung
+from arbeitsplan.models import Aufgabengruppe, Aufgabe, Meldung, Zuteilung, Leistung
 
 
 ## class MitgliedInline (admin.StackedInline):
@@ -23,5 +23,5 @@ admin.site.register (Zuteilung, ZuteilungAdmin)
 admin.site.register(Aufgabengruppe)
 admin.site.register(Aufgabe)
 admin.site.register(Meldung)
-
+admin.site.register(Leistung) 
 

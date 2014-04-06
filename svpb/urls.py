@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
 from django.contrib.auth.views import login
+from django.core.urlresolvers import reverse
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -56,6 +57,15 @@ urlpatterns = patterns('',
     url (r'^arbeitsplan/meldung/$',
          login_required(arbeitsplan.views.UpdateMeldungView.as_view()),
          name="arbeitsplan-meldung",),
+         
+    url (r'^arbeitsplan/leistung/$',
+         login_required(arbeitsplan.views.CreateLeistungView.as_view(
+             success_url="/home/")),
+         name="arbeitsplan-leistung",),
+
+    url (r'^arbeitsplan/leistungListe/$',
+         login_required(arbeitsplan.views.ListLeistungView.as_view()),
+         name="arbeitsplan-leistungListe",),
          
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

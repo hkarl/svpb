@@ -17,7 +17,12 @@ Ihnen stehen folgende Funktionen zur Verfügung:
   <li> <a href="/arbeitsplan/aufgaben/"> Aufgaben</a>: Alle existierende Aufgaben anzeigen </li> 
   <li> <a href="/arbeitsplan/meldung/"> Meldung</a>: Meine Meldung für Arbeitsdienst eingeben oder verändern </li>
   <li> <a href="/arbeitsplan/zuteilungAnzeige/">Zuteilung</a>:  Existierende Zuteilungen für meine Meldungen  anzeigen</li> 
-  <li> <a href="/arbeitsplan/leistung/">Leistung</a>:  Eine geleistete Arbeit eingeben oder eine vorhandene Leistung verändern </li> 
+  <li> Arbeitsleistungen
+  <ul>
+    <li> <a href="/arbeitsplan/leistung/">Leistung eintragen</a>:  Eine geleistete Arbeit eingeben </li>
+    <li> <a href="/arbeitsplan/leistungListe/"> Leistungen anzeigen</a>: Alle meine geleistenen Arbeiten anzeigen 
+    </ul>
+  </li> 
 </ul>
 
 {% for g in  user.groups.all %}
@@ -51,5 +56,5 @@ Bist Du ein Mitglied, so <a href="/accounts/login/?next=/home/"> melde Dich bitt
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Sat Apr  5 18:57:59 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sun Apr  6 10:46:31 CEST 2014 <!-- hhmts end -->
 </body> </html>

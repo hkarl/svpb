@@ -1,11 +1,12 @@
 # Create your views here.
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.views.generic import View, ListView
+from django.views.generic import View, ListView, CreateView
 from django.contrib.auth.models import User 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
+from django.db.models import Sum
 
 import models, forms
 # import networkx as nx 
@@ -114,7 +115,37 @@ class ListMeldungenView (isVorstandMixin, ListView):
     model = models.Meldung
     template_name = "arbeitsplan_meldunglist.html" 
 
-        
+
+class CreateLeistungView (CreateView):
+    model = models.Leistung
+    form_class = forms.CreateLeistungForm 
+    template_name = "arbeitsplan_createLeistung.html"
+
+    def form_valid (self, form):
+        leistung = form.save (commit=False)
+        leistung.melder = self.request.user
+        leistung.save()
+        return HttpResponseRedirect(self.success_url)
+
+
+class ListLeistungView (ListView):
+    template_name = "arbeitsplan_listLeistung.html"
+    def get_queryset(self):
+        res = []
+        for s in models.Leistung.STATUS:
+            qs = models.Leistung.objects.filter(status=s[0],
+                                                melder=self.request.user,
+                                                )
+            sum = qs.aggregate(Sum('zeit'))
+            res.append((s[0], s[1], qs, sum['zeit__sum']))
+            
+        return res
+    
+        # return models.Leistung.objects.filter(melder=self.request.user)
+    
+
+    
+    
 class ErstelleZuteilungView (View):
 
     def get (self,request, *args, **kwargs):
