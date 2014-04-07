@@ -99,15 +99,30 @@
 - fields: {codename: delete_zuteilung, content_type: 11, name: Can delete zuteilung}
   model: auth.permission
   pk: 33
+- fields: {codename: add_leistung, content_type: 12, name: Can add leistung}
+  model: auth.permission
+  pk: 34
+- fields: {codename: change_leistung, content_type: 12, name: Can change leistung}
+  model: auth.permission
+  pk: 35
+- fields: {codename: delete_leistung, content_type: 12, name: Can delete leistung}
+  model: auth.permission
+  pk: 36
 - fields:
-    date_joined: 2014-03-30 02:24:03+00:00
+    name: Vorstand
+    permissions: [25, 26, 27, 22, 23, 24, 34, 35, 36, 28, 29, 30, 31, 32, 33, 7, 8,
+      9]
+  model: auth.group
+  pk: 1
+- fields:
+    date_joined: 2014-03-30 12:24:03+00:00
     email: hkarl@ieee.org
     first_name: Holger
     groups: []
     is_active: true
     is_staff: true
     is_superuser: true
-    last_login: 2014-03-29 19:48:15.742942+00:00
+    last_login: 2014-04-07 17:42:47.741701+00:00
     last_name: Karl
     password: pbkdf2_sha256$10000$BKtbuYL5kM7v$uOT2hfRCwi/CjYxWURp/iYJr9ck1ii86YAiwFFdEhJI=
     user_permissions: []
@@ -115,14 +130,14 @@
   model: auth.user
   pk: 1
 - fields:
-    date_joined: 2014-03-29 22:25:53+00:00
+    date_joined: 2014-03-30 08:25:53+00:00
     email: ''
     first_name: 'Dirk '
-    groups: []
+    groups: [1]
     is_active: true
     is_staff: false
     is_superuser: false
-    last_login: 2014-03-29 19:47:58.958583+00:00
+    last_login: 2014-04-07 17:41:24+00:00
     last_name: Haensgen
     password: pbkdf2_sha256$10000$rpkPtmEAQhN1$9it0E07CnN+o72b9ju0RczkmSSGeYqpOIBr1FauLNBs=
     user_permissions: []
@@ -130,30 +145,46 @@
   model: auth.user
   pk: 2
 - fields:
-    date_joined: 2014-03-29 22:26:27+00:00
+    date_joined: 2014-03-30 08:26:27+00:00
     email: ''
     first_name: Peter
     groups: []
     is_active: true
     is_staff: true
     is_superuser: false
-    last_login: 2014-03-29 19:46:04+00:00
+    last_login: 2014-04-07 17:41:55.597026+00:00
     last_name: Pan
     password: pbkdf2_sha256$10000$HryaYCa7hD35$ASdscSjY18wBZbK27MAxTxRsPj6yGChuhFmBjDghI+Y=
-    user_permissions: [31, 32, 33, 28, 29, 30, 34, 35, 36, 25, 26, 27, 22, 23, 24,
-      37, 38, 39, 7, 8, 9]
+    user_permissions: [25, 26, 27, 22, 23, 24, 34, 35, 36, 28, 29, 30, 31, 32, 33,
+      7, 8, 9]
     username: PeterPan
   model: auth.user
   pk: 3
-- fields: {bemerkung: '', gruppe: Revier, verantwortlich: 1}
-  model: arbeitsplan.aufgabengruppe
+- fields: {aufgabe: 1, auslagen: '0', bemerkung: kjsdfhjdsk, bemerkungVorstand: '',
+    erstellt: 2014-04-06, km: '0', melder: 3, status: OF, veraendert: 2014-04-06,
+    wann: 2014-02-01, zeit: '1'}
+  model: arbeitsplan.leistung
   pk: 1
-- fields: {bemerkung: '', gruppe: Boote, verantwortlich: 2}
-  model: arbeitsplan.aufgabengruppe
+- fields: {aufgabe: 4, auslagen: '50', bemerkung: ksdfjlskdjf, bemerkungVorstand: '',
+    erstellt: 2014-04-06, km: '0', melder: 3, status: RU, veraendert: 2014-04-06,
+    wann: 2014-06-01, zeit: '5'}
+  model: arbeitsplan.leistung
   pk: 2
-- fields: {bemerkung: '', gruppe: Bewirtung, verantwortlich: 3}
-  model: arbeitsplan.aufgabengruppe
+- fields: {aufgabe: 4, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
   pk: 3
+- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 3, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 5
+- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 2, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 6
+- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 7
+- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 8
 - fields: {anzahl: 5, aufgabe: Boote aus Winterlager, bemerkung: '', datum: 2014-03-29,
     gruppe: 2, verantwortlich: 1}
   model: arbeitsplan.aufgabe
@@ -170,33 +201,12 @@
     gruppe: 1, verantwortlich: 2}
   model: arbeitsplan.aufgabe
   pk: 4
-- fields: {aufgabe: 4, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29}
-  model: arbeitsplan.meldung
-  pk: 3
-- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 3, veraendert: 2014-03-29}
-  model: arbeitsplan.meldung
-  pk: 5
-- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 2, veraendert: 2014-03-29}
-  model: arbeitsplan.meldung
-  pk: 6
-- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29}
-  model: arbeitsplan.meldung
-  pk: 7
-- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29}
-  model: arbeitsplan.meldung
-  pk: 8
-- fields:
-    name: Vorstand
-    permissions: [25, 26, 27, 22, 23, 24, 28, 29, 30, 31, 32, 33]
-  model: auth.group
+- fields: {bemerkung: '', gruppe: Revier, verantwortlich: 1}
+  model: arbeitsplan.aufgabengruppe
   pk: 1
-- fields:
-    name: Passiv
-    permissions: []
-  model: auth.group
+- fields: {bemerkung: '', gruppe: Boote, verantwortlich: 2}
+  model: arbeitsplan.aufgabengruppe
   pk: 2
-- fields:
-    name: "Sch\xFCler"
-    permissions: []
-  model: auth.group
+- fields: {bemerkung: '', gruppe: Bewirtung, verantwortlich: 3}
+  model: arbeitsplan.aufgabengruppe
   pk: 3
