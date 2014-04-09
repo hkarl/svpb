@@ -23,7 +23,10 @@
         <div id="branding">
         {% block branding %}{% endblock %}
         </div>
+        {% comment %}
         {% if user.is_active and user.is_staff %}
+        {% endcomment %}
+        {% if user.is_active %}
         <div id="user-tools">
             {% trans 'Welcome,' %}
             <strong>{% filter force_escape %}{% firstof user.get_short_name user.get_username %}{% endfilter %}</strong>.
@@ -35,7 +38,10 @@
                 {% if user.has_usable_password %}
                 <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
                 {% endif %}
+          {% comment %}
                 <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
+          {% endcomment %}
+                <a href="/logout/">{% trans 'Log out' %}</a>
             {% endblock %}
         </div>
         {% endif %}

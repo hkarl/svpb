@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Sum
+from django.contrib.auth import logout
 
 import models, forms
 # import networkx as nx 
@@ -22,6 +23,12 @@ class isVorstandMixin (object):
     def dispatch(self, *args, **kwargs):
         return super(isVorstandMixin, self).dispatch(*args, **kwargs)
     
+###############
+
+def logout_view (request):
+    # print "logout view" 
+    logout(request)
+    return  render (request, "home.html", {})
 ###############
 
 class UpdateMeldungView (View):

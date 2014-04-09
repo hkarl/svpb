@@ -9,8 +9,11 @@
 
 {% block breadcrumbs %}
     <div class="breadcrumbs">
-      <a href = "/"> Home </a> - 
-    <a href="{% url 'admin:index' %}"> Rohdaten verwalten </a>
+      <a href = "/"> Home </a>
+      {% if user.is_staff %}
+      - 
+      <a href="{% url 'admin:index' %}"> Rohdaten verwalten </a>
+      {% endif %}
     {% if title %} &rsaquo; {{ title }}{% endif %}
     </div>
 {% endblock %} 
