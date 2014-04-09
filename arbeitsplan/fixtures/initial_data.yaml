@@ -115,14 +115,14 @@
   model: auth.group
   pk: 1
 - fields:
-    date_joined: 2014-03-30 12:24:03+00:00
+    date_joined: 2014-03-30 17:24:03+00:00
     email: hkarl@ieee.org
     first_name: Holger
     groups: []
     is_active: true
     is_staff: true
     is_superuser: true
-    last_login: 2014-04-07 17:42:47.741701+00:00
+    last_login: 2014-04-09 21:02:27.318410+00:00
     last_name: Karl
     password: pbkdf2_sha256$10000$BKtbuYL5kM7v$uOT2hfRCwi/CjYxWURp/iYJr9ck1ii86YAiwFFdEhJI=
     user_permissions: []
@@ -130,14 +130,14 @@
   model: auth.user
   pk: 1
 - fields:
-    date_joined: 2014-03-30 08:25:53+00:00
+    date_joined: 2014-03-30 13:25:53+00:00
     email: ''
     first_name: 'Dirk '
     groups: [1]
     is_active: true
     is_staff: false
     is_superuser: false
-    last_login: 2014-04-07 17:41:24+00:00
+    last_login: 2014-04-09 20:51:19.833437+00:00
     last_name: Haensgen
     password: pbkdf2_sha256$10000$rpkPtmEAQhN1$9it0E07CnN+o72b9ju0RczkmSSGeYqpOIBr1FauLNBs=
     user_permissions: []
@@ -145,14 +145,14 @@
   model: auth.user
   pk: 2
 - fields:
-    date_joined: 2014-03-30 08:26:27+00:00
+    date_joined: 2014-03-30 13:26:27+00:00
     email: ''
     first_name: Peter
     groups: []
     is_active: true
-    is_staff: true
+    is_staff: false
     is_superuser: false
-    last_login: 2014-04-07 17:41:55.597026+00:00
+    last_login: 2014-04-09 21:00:38+00:00
     last_name: Pan
     password: pbkdf2_sha256$10000$HryaYCa7hD35$ASdscSjY18wBZbK27MAxTxRsPj6yGChuhFmBjDghI+Y=
     user_permissions: [25, 26, 27, 22, 23, 24, 34, 35, 36, 28, 29, 30, 31, 32, 33,
@@ -160,6 +160,21 @@
     username: PeterPan
   model: auth.user
   pk: 3
+- fields:
+    date_joined: 2014-04-09 21:01:36+00:00
+    email: ''
+    first_name: Captain
+    groups: [1]
+    is_active: true
+    is_staff: true
+    is_superuser: false
+    last_login: 2014-04-09 21:02:43.535935+00:00
+    last_name: Hook
+    password: pbkdf2_sha256$10000$hBg9MWSBXxAb$Yvke8kw7jJD6Ilh9z13guWyRbDe5qXH9ZPGjO53iCeE=
+    user_permissions: []
+    username: CaptainHook
+  model: auth.user
+  pk: 4
 - fields: {aufgabe: 1, auslagen: '0', bemerkung: kjsdfhjdsk, bemerkungVorstand: '',
     erstellt: 2014-04-06, km: '0', melder: 3, status: OF, veraendert: 2014-04-06,
     wann: 2014-02-01, zeit: '1'}
