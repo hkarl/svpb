@@ -216,6 +216,24 @@ class LeistungBearbeitenView (isVorstandMixin, View):
         
         return redirect ('/arbeitsplan/leistungenBearbeiten/z=all')    
 ##########################    
+
+
+class Salden(isVorstandMixin, ListView):
+    template_name = "arbeitsplan_salden.html"
+    def get_queryset (self):
+        res = [ {'user': u,
+                 'leistungen': [models.Leistung.objects.filter(melder=u
+                                                ).filter(status=s[0]
+                                                ).aggregate(Sum('zeit'))['zeit__sum']
+                                for s in models.Leistung.STATUS]
+                 } 
+            for u in models.User.objects.all()]
+        # print (res, models.Leistung.STATUS)
+        return {'salden': res,
+                'status': models.Leistung.STATUS, 
+                }
+    
+##########################    
     
 class ErstelleZuteilungView (View):
 

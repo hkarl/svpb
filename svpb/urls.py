@@ -71,6 +71,10 @@ urlpatterns = patterns('',
          login_required(arbeitsplan.views.ListLeistungView.as_view()),
          name="arbeitsplan-leistungListe",),
          
+    url (r'^arbeitsplan/salden/$',
+         login_required(arbeitsplan.views.Salden.as_view()),
+         name="arbeitsplan-salden",),
+         
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

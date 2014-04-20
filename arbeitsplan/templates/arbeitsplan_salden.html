@@ -1,0 +1,36 @@
+{% extends "admin/base_site.html" %}
+{% load staticfiles %}
+
+
+{% block branding %}
+<h1> Saldenübersicht der geleistenten Arbeitsstunden  </h1>
+{% endblock %}
+
+
+{% block content %}
+<table>
+  <th>
+    {% for s in object_list.status %}
+    <td>
+    {{s.1}}
+    </td>
+    {% endfor %}
+  </th>
+  {% for s in object_list.salden %}
+    <tr>
+      {{ s.user.last_name  }}, {{s.user.first_name}} &
+      {% for v in s.leistungen%}
+      {% if v %}
+      {{v}}
+      {% else %}
+      0,0
+      {% endif %}
+    </tr>
+  {% endfor %}
+<br>
+{% endfor %}
+</table>
+{% endblock %} 
+
+<!-- hhmts start -->Last modified: Sun Apr 20 11:57:26 CEST 2014 <!-- hhmts end -->
+
