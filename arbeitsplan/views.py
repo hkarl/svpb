@@ -2,12 +2,13 @@
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.views.generic import View, ListView, CreateView
+from django.views.generic import View, ListView, CreateView, FormView
 from django.contrib.auth.models import User 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Sum
 from django.contrib.auth import logout
+from django.forms.models import modelformset_factory
 
 import models, forms
 # import networkx as nx 
@@ -134,6 +135,8 @@ class CreateLeistungView (CreateView):
         leistung.save()
         return HttpResponseRedirect(self.success_url)
 
+####################################
+
 
 class ListLeistungView (ListView):
     template_name = "arbeitsplan_listLeistung.html"
@@ -151,7 +154,68 @@ class ListLeistungView (ListView):
         # return models.Leistung.objects.filter(melder=self.request.user)
     
 
-    
+
+class LeistungBearbeitenView (isVorstandMixin, View):
+    def get(self, request, zustaendig, *args, **kwargs):
+        # print zustaendig
+        if zustaendig=="me": 
+            mainqs = models.Leistung.objects.filter(aufgabe__verantwortlich=request.user)
+        else:
+            mainqs = models.Leistung.objects.all()
+
+        # and filter further only the open or rueckfragen;
+        # for simplicity, we exlude the other ones:
+        
+        mainqs = mainqs.exclude(status=models.Leistung.ACK
+                                ).exclude(status=models.Leistung.NEG)
+        print "view qs: "
+        print [l.id for l in mainqs]
+        return render (request,
+                       "arbeitsplan_leistungbearbeiten.html",
+                       dictionary = {
+                           # 'formset': formset,
+                           'qs': mainqs,
+                           'statusvalues': models.Leistung.STATUS, 
+                           },
+                       )
+            
+    def post (self, request, zustaendig, *args, **kwargs):
+        # clean up data by hand here
+        print request.POST 
+        data = {}
+        for k, v in request.POST.iteritems():
+            try: 
+                tag, num = k.split('-')
+                if (tag == 'id_status' or tag=='id_bemerkungVorstand'):
+                    if not num in data.keys():
+                        data[num] = {'id_status': "",
+                                     'id_bemerkungVorstand': "",
+                        }
+                    data[num][tag] = v
+            except:
+                pass 
+
+        print data
+
+        # and now save the updated values in the data
+        for k,v in data.iteritems():
+            # they should all exist!
+            ## print "----------"
+            ## print k, v
+            ## print type(v['id_bemerkungVorstand'])
+            l = models.Leistung.objects.get (id = int(k))
+            l.bemerkungVorstand = v['id_bemerkungVorstand']
+            l.status = v['id_status']
+                                 ## status = v['id_status'],
+                                 ## 
+                                 
+            l.save()
+            print l
+
+        # TODO: bei Rueckfrage koennte man eine email senden? oder immer?
+        
+        return redirect ('/arbeitsplan/leistungenBearbeiten/z=all')    
+##########################    
     
 class ErstelleZuteilungView (View):
 
@@ -184,3 +248,4 @@ class ErstelleZuteilungView (View):
         
             
         return redirect ('arbeitsplan-zuteilunglist')
+

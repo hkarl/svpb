@@ -32,3 +32,27 @@ class CreateLeistungForm (forms.ModelForm):
                    'status',
                    'bemerkungVorstand',
                    )
+
+## class LeistungBearbeitenForm (forms.ModelForm):
+##     ## def __init__ (self, qs, *args, **kwargs):
+##     ##     print "form init: ", qs, args, kwargs
+##     ##     super (LeistungBearbeitenForm, self).__init__ (*args, **kwargs)
+
+##     ##     for l in qs:
+##     ##         self.fields[str(l.id)] = forms.ChoiceField (label=l.__unicode__(),
+##     ##                                                     choices = models.Leistung.STATUS,
+##     ##                                                     widget=forms.RadioSelect,         
+##     ##                                                     required=False)
+
+##     class Meta:
+##         model = models.Leistung
+##         fields = (
+##             ## 'melder',
+##             ##       'aufgabe',
+##             ##       'wann',
+##             ##       'zeit',
+##             ##       'auslagen', 
+##                    'bemerkungVorstand',
+##                    'status',
+##                    )
+        

@@ -63,6 +63,10 @@ urlpatterns = patterns('',
              success_url="/home/")),
          name="arbeitsplan-leistung",),
 
+    url (r'^arbeitsplan/leistungenBearbeiten/z=(?P<zustaendig>[a-zA-Z]+)/$',
+         login_required(arbeitsplan.views.LeistungBearbeitenView.as_view()),
+         name="arbeitsplan-leistungBearbeiten",),
+         
     url (r'^arbeitsplan/leistungListe/$',
          login_required(arbeitsplan.views.ListLeistungView.as_view()),
          name="arbeitsplan-leistungListe",),

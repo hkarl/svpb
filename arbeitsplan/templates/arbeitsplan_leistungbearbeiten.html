@@ -1,0 +1,90 @@
+{% extends "admin/base_site.html" %}
+{% load staticfiles %}
+
+{% load l10n %}
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Meldungen eintragen</title>
+</head>
+
+<body>
+{% block branding %}
+<h1>Gemeldete Leistungen bearbeiten</h1>
+{% endblock %}
+
+{% block content %}
+
+
+Bitte akzeptieren, lehnen ab, oder rückfragen Sie die folgenden gemeldeten Leistungen.  Wählen Sie einen neuen Status und tragen ggf. eine Bemerkung ein. 
+<br>(Es werden hier nur offen Leistungsmeldungen oder solche mit Rückfragen angezeigt.)
+
+<p> 
+
+<form method="POST" action=".">
+{% csrf_token %}
+<ul>
+{% for f in qs %}
+  <li> Leistungsmeldung von {{ f.melder }} 
+  <ul>
+    <li> Zur Aufgabe {{f.aufgabe}} wurden am {{f.wann}} {{f.zeit}} Stunden Arbeit geleistet.
+    </li>
+    {% if f.auslagen %}
+    <li>
+    Dabei enstanden Auslagen in Höhe von {{f.auslagen}} Euro. 
+    </li>
+    {% endif %}
+
+    {% if f.km %}
+    <li>
+    Dabei wurden {{f.km}} km Fahrstrecke zurückgelegt. 
+    </li>
+    {% endif %}
+
+    <li> Bemerkung des Vorstands:
+    <textarea cols="20" id="id_bemerkungVorstand-{{f.id}}" name="id_bemerkungVorstand-{{f.id}}" rows="5">{{f.bemerkungVorstand}}</textarea>
+    </li>
+    <li>
+    Status:
+    <select id="id_status-{{f.id}}" name="id_status-{{f.id}}">
+      {% for s in statusvalues %}
+      <option value="{{s.0}}"
+        {% if s.0 == f.status %}
+        selected="selected"
+        {% endif %}        
+        > {{s.1}} </option> 
+      {% endfor %} 
+      </select>
+      {% comment %}
+      <br>
+      Status: {{f.status}}
+      <ul class="radiolist inline">
+      {% for s in statusvalues %}
+        <li>
+        <label id="id_status-{{f.id}}_{{s.0}}">
+        <input 
+        {% if s.0 == f.status %}
+        checked="checked"
+        {% endif %}        
+        class="radiolist inline" id=id="id_status-{{f.id}}_{{s.0}}" name="status" type="radio" value={{s.0}}/>
+        {{s.1}}
+        </label>
+        </li>
+      {% endfor %} 
+      </ul>
+      {% endcomment %}
+    </li>
+    </ul>
+  </li>
+{% endfor %}
+</ul>
+<input type=submit>
+</form>
+
+  
+{% endblock %}
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Sun Apr 20 11:19:14 CEST 2014 <!-- hhmts end -->
+</body> </html>
