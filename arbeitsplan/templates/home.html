@@ -1,6 +1,10 @@
 {% extends "admin/base_site.html" %}
 {% load staticfiles %}
 
+{% block extrastyle %}
+{# <link rel="STYLESHEET" href="{% static "styles.css"%}" media="screen" /> #}
+{% endblock %}
+
 {% block branding %}
 <h1>Arbeitspläne selbst verwalten leicht gemacht!</h1>
 {% endblock %}
@@ -64,5 +68,5 @@ Bist Du ein Mitglied, so <a href="/accounts/login/?next=/home/"> melde Dich bitt
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Sun Apr 20 11:32:55 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sun Apr 20 15:17:21 CEST 2014 <!-- hhmts end -->
 </body> </html>
