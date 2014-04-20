@@ -9,28 +9,34 @@
 
 {% block content %}
 <table>
-  <th>
+  <tr>
+    <td> </td>
     {% for s in object_list.status %}
-    <td>
+    <th>
     {{s.1}}
-    </td>
+    </th>
     {% endfor %}
-  </th>
+  </tr>
   {% for s in object_list.salden %}
-    <tr>
-      {{ s.user.last_name  }}, {{s.user.first_name}} &
+    <tr {% if s.leistungen.1 > 2 %}  {# TODO: auf 10 aendern! #}
+      bgcolor='#00FF00'
+      {% endif %}
+      >
+      <td> {{ s.user.last_name  }}, {{s.user.first_name}} </td> 
       {% for v in s.leistungen%}
+      <td> 
       {% if v %}
       {{v}}
       {% else %}
       0,0
       {% endif %}
+      </td>
+      {% endfor %}
     </tr>
-  {% endfor %}
 <br>
 {% endfor %}
 </table>
 {% endblock %} 
 
-<!-- hhmts start -->Last modified: Sun Apr 20 12:05:26 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sun Apr 20 14:13:47 CEST 2014 <!-- hhmts end -->
 

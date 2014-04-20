@@ -227,7 +227,7 @@ class Salden(isVorstandMixin, ListView):
                                                 ).aggregate(Sum('zeit'))['zeit__sum']
                                 for s in models.Leistung.STATUS]
                  } 
-            for u in models.User.objects.all()]
+            for u in models.User.objects.all().order_by('last_name', 'first_name')]
         # print (res, models.Leistung.STATUS)
         return {'salden': res,
                 'status': models.Leistung.STATUS, 
