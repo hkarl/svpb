@@ -9,7 +9,15 @@
 
 {% block content %}
 
-Folgende Arbeistleistungen liegen für Sie vor.
+<h2> Überblick </h2>
+
+<ul>
+{% for i in object_list %}
+  <li>  {{i.1}}:  {{i.3}}  </li>
+{% endfor %}
+</ul>
+
+Im einzelnen liegen folgende Arbeistleistungen liegen für Sie vor.
 
 <h2> Offen </h2>
 
@@ -62,5 +70,5 @@ Die Gesamtstunden sind: {{ object_list.3.3 }}.
 
 {% endblock %} 
 
-<!-- hhmts start -->Last modified: Sun Apr  6 11:26:21 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sun Apr 20 08:34:08 CEST 2014 <!-- hhmts end -->
 
