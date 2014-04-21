@@ -1,42 +1,24 @@
 {% extends "admin/base_site.html" %}
 {% load staticfiles %}
 
+{% load render_table from django_tables2 %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static "admin/css/screen.css" %}" />
+{% endblock %}
+   
 
 {% block branding %}
 <h1> Saldenübersicht der geleisteten Arbeitsstunden  </h1>
 {% endblock %}
 
 
+
 {% block content %}
-<table>
-  <tr>
-    <td> </td>
-    {% for s in object_list.status %}
-    <th>
-    {{s.1}}
-    </th>
-    {% endfor %}
-  </tr>
-  {% for s in object_list.salden %}
-    <tr {% if s.leistungen.1 > 2 %}  {# TODO: auf 10 aendern! #}
-      bgcolor='#00FF00'
-      {% endif %}
-      >
-      <td> {{ s.user.last_name  }}, {{s.user.first_name}} </td> 
-      {% for v in s.leistungen%}
-      <td> 
-      {% if v %}
-      {{v}}
-      {% else %}
-      0,0
-      {% endif %}
-      </td>
-      {% endfor %}
-    </tr>
-<br>
-{% endfor %}
-</table>
+
+{% render_table salden %}
+
 {% endblock %} 
 
-<!-- hhmts start -->Last modified: Sun Apr 20 14:13:47 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Apr 21 15:11:46 CEST 2014 <!-- hhmts end -->
 

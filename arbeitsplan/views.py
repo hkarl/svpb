@@ -10,6 +10,8 @@ from django.db.models import Sum
 from django.contrib.auth import logout
 from django.forms.models import modelformset_factory
 
+import django_tables2
+
 import models, forms
 # import networkx as nx 
 
@@ -217,21 +219,56 @@ class LeistungBearbeitenView (isVorstandMixin, View):
         return redirect ('/arbeitsplan/leistungenBearbeiten/z=all')    
 ##########################    
 
+class SaldenTable (django_tables2.Table):
+    # fixed columns for a column table
+    last_name = django_tables2.Column(verbose_name="Nachname")
+    first_name = django_tables2.Column(verbose_name="Vorname")
+    OF = django_tables2.Column(verbose_name=models.Leistung.STATUS[0][1])
+    RU = django_tables2.Column(verbose_name=models.Leistung.STATUS[2][1])
+    AK = django_tables2.Column(verbose_name=models.Leistung.STATUS[1][1])
+    NE = django_tables2.Column(verbose_name=models.Leistung.STATUS[3][1])
 
-class Salden(isVorstandMixin, ListView):
-    template_name = "arbeitsplan_salden.html"
-    def get_queryset (self):
-        res = [ {'user': u,
-                 'leistungen': [models.Leistung.objects.filter(melder=u
-                                                ).filter(status=s[0]
-                                                ).aggregate(Sum('zeit'))['zeit__sum']
-                                for s in models.Leistung.STATUS]
-                 } 
-            for u in models.User.objects.all().order_by('last_name', 'first_name')]
+    ## def __init__(self, l):
+    ##     # add the status columns dynamically
+    ##     for s in models.Leistung.STATUS:
+    ##         # print s 
+    ##         self.__setattr__ (s[0], django_tables2.Column())
+    ##     return super (SaldenTable, self).__init__(l)
+
+
+    class Meta:
+        attrs = {'class': 'paleblue'}    
+    
+class Salden(isVorstandMixin, View):
+
+    def get (self, request, *args, **kwargs):
+        res = []
+        for u in models.User.objects.all().order_by('last_name', 'first_name'):
+            tmp = {}
+            tmp['last_name'] = u.last_name
+            tmp['first_name'] = u.first_name
+
+            qs = models.Leistung.objects.filter(melder=u)
+            for s in  models.Leistung.STATUS:
+                zeit = qs.filter(status=s[0]
+                                ).aggregate(Sum('zeit'))['zeit__sum']
+                tmp[s[0]] = zeit
+
+            res.append(tmp)
+            
+        # print res 
+
+        table = SaldenTable(res)
+        # print table.columns
+
+        django_tables2.RequestConfig (request, paginate={"per_page": 2}).configure(table)
+
         # print (res, models.Leistung.STATUS)
-        return {'salden': res,
-                'status': models.Leistung.STATUS, 
-                }
+        return render (request,
+                       "arbeitsplan_salden.html",
+                        {'salden': table,
+                            'status': models.Leistung.STATUS, 
+                        })
     
 ##########################    
     
