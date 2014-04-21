@@ -38,15 +38,20 @@ Es ist uns eine besondere Ehre, unseren Vorstandsmitgliedern erweiterte Funktion
   {% if user.is_staff %}
   <li> <a href="/admin/">Rohdaten verwalten </a> </li>
   {% endif %}
-  <li> <a href="/arbeitsplan/meldungAnzeige/"> Existierende Meldungen anzeigen </a> </li> 
+  <li> <a href="/arbeitsplan/meldungAnzeige/"> Existierende Meldungen anzeigen </a> </li>
+  <li> Zuteilungen   </li>
+  <ul>
+    <li> Zuteilungen manuell vornehmen (noch nicht implementiert!) 
+    </li>
+    <li> <a href="/arbeitsplan/zuteilungAnzeige/"> Existierende Zuteilungen anzeigen </a> </li>
+    <li> <a href="/arbeitsplan/erstelleZuteilung/"> Zuteilungen automatisch erstellen </a>  (noch nicht fertig implementiert!) </li> 
+  </ul>
   <li> Vorliegende Leistungsmeldungen bearbeiten </li>
   <ul>
-      <li> <a href="/arbeitsplan/leistungenBearbeiten/z=all/"> Vorliegende Leistungsmeldungen für alle  Zuständige bearbeiten </a> </li>
-      <li> <a href="/arbeitsplan/leistungenBearbeiten/z=me/"> Vorliegende Leistungsmeldungen für mich als Zuständigen bearbeiten </a> </li>
+      <li> <a href="/arbeitsplan/leistungenBearbeiten/z=all/"> Vorliegende Leistungsmeldungen für <b> alle </b>  Zuständige bearbeiten </a> </li>
+      <li> <a href="/arbeitsplan/leistungenBearbeiten/z=me/"> Vorliegende Leistungsmeldungen für <b> mich  </b> als Zuständigen bearbeiten </a> </li>
+      <li> <a href="/arbeitsplan/salden/"> Saldenübersicht der geleisteten Arbeitsstunden anzeigen </a> 
   </ul>
-  <li> <a href="/arbeitsplan/salden/"> Saldenübersicht der geleisteten Arbeitsstunden anzeigen </a> 
-  <li> <a href="/arbeitsplan/zuteilungAnzeige/"> Existierende Zuteilungen anzeigen </a> </li>
-  <li> <a href="/arbeitsplan/erstelleZuteilung/"> Zuteilungen automatisch erstellen </a>  (noch nicht fertig implementiert!) </li> 
 </ul>
   {% endif %} 
 {% endfor %} 
@@ -68,5 +73,5 @@ Bist Du ein Mitglied, so <a href="/accounts/login/?next=/home/"> melde Dich bitt
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Sun Apr 20 15:17:21 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Apr 21 09:32:01 CEST 2014 <!-- hhmts end -->
 </body> </html>
