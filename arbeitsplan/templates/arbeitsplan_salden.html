@@ -16,9 +16,18 @@
 
 {% block content %}
 
+<form method="POST" action=".">
+{% csrf_token %}
+
 {% render_table salden %}
+{% comment %}
+<br>
+<input type=submit name="apply" value="Checkboxen anwenden">
+<input type=submit name="filter" value="Filter anwenden">
+{% endcomment %}
+</form> 
 
 {% endblock %} 
 
-<!-- hhmts start -->Last modified: Mon Apr 21 15:11:46 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Apr 21 17:50:23 CEST 2014 <!-- hhmts end -->
 

@@ -228,6 +228,8 @@ class SaldenTable (django_tables2.Table):
     AK = django_tables2.Column(verbose_name=models.Leistung.STATUS[1][1])
     NE = django_tables2.Column(verbose_name=models.Leistung.STATUS[3][1])
 
+    ## box = django_tables2.columns.CheckBoxColumn (orderable=False)
+    
     ## def __init__(self, l):
     ##     # add the status columns dynamically
     ##     for s in models.Leistung.STATUS:
@@ -247,7 +249,7 @@ class Salden(isVorstandMixin, View):
             tmp = {}
             tmp['last_name'] = u.last_name
             tmp['first_name'] = u.first_name
-
+            tmp['box'] = ("box-" + str(u.id), True) 
             qs = models.Leistung.objects.filter(melder=u)
             for s in  models.Leistung.STATUS:
                 zeit = qs.filter(status=s[0]
@@ -261,7 +263,7 @@ class Salden(isVorstandMixin, View):
         table = SaldenTable(res)
         # print table.columns
 
-        django_tables2.RequestConfig (request, paginate={"per_page": 2}).configure(table)
+        django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(table)
 
         # print (res, models.Leistung.STATUS)
         return render (request,
@@ -270,7 +272,34 @@ class Salden(isVorstandMixin, View):
                             'status': models.Leistung.STATUS, 
                         })
     
+    def post (self, request, *args, **kwargs):
+        print request
+        return redirect ("arbeitsplan-salden")
+    
+    
 ##########################    
+
+class ValuedCheckBoxColumn (django_tables2.columns.CheckBoxColumn):
+    """A checkbox column where a pair of values is expected:
+    name and whether the box is checked or not.
+    Control tags:
+    -1: show no field
+    0: unchecked checkbox
+    1: checked checkbox 
+    """
+    
+    def render (self, value):
+        if value[0] == -1:
+            return ""
+        
+        return mark_safe ('<input type="checkbox" name="box" value="' +
+                          escape(value[0]) +
+                          '" ' +
+                          ("checked" if value[1]==1 else "") +
+                          '/>'
+                          )
+    
+    
     
 class ErstelleZuteilungView (View):
 
