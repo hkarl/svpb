@@ -9,12 +9,15 @@ from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Sum
 from django.contrib.auth import logout
 from django.forms.models import modelformset_factory
+from django.utils.safestring import mark_safe
+from django.utils.html import escape
 
 import django_tables2
 
 import models, forms
 # import networkx as nx 
 
+import unicodedata
 
 #################
 
@@ -33,6 +36,29 @@ def logout_view (request):
     logout(request)
     return  render (request, "home.html", {})
 ###############
+
+def TableFactory (name, attrs, l):
+    """takes
+    - a name for the new django_tables2 class
+    - a dictoranry with column_name: column_types
+    - a list of data to be used for the table 
+
+    return klass 
+    """
+    attrs['Meta'] = type('Meta',
+                         (),
+                         dict(attrs={"class":"paleblue",
+                                     "orderable":"True",
+                                      # "width":"90%"
+                                      }) )
+    
+    klass = type (name, (django_tables2.Table,), attrs)
+
+    t = klass(l)
+    return t 
+
+###############
+
 
 class UpdateMeldungView (View):
 
@@ -219,6 +245,12 @@ class LeistungBearbeitenView (isVorstandMixin, View):
         return redirect ('/arbeitsplan/leistungenBearbeiten/z=all')    
 ##########################    
 
+## def SaldenTableFactory (): 
+##     attrs = {'last_name': django_tables2.Column(verbose_name="Nachname"),
+##              'first_name': django_tables2.Column(verbose_name="Vorname"),
+##              }
+
+
 class SaldenTable (django_tables2.Table):
     # fixed columns for a column table
     last_name = django_tables2.Column(verbose_name="Nachname")
@@ -301,8 +333,46 @@ class ValuedCheckBoxColumn (django_tables2.columns.CheckBoxColumn):
     
     
     
-class ErstelleZuteilungView (View):
 
+def ZuteilungsTableFactory (l):
+    attrs = {'last_name': django_tables2.Column(verbose_name="Nachname"),
+             'first_name': django_tables2.Column(verbose_name="Vorname"),
+             }
+    for a in models.Aufgabe.objects.all():
+        tag = unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore')
+        attrs.update({tag: django_tables2.Column(verbose_name=a.aufgabe,
+                                                 orderable=False)})
+
+    t = TableFactory ('ZuteilungsTable', attrs, l)
+
+    return t 
+        
+class ManuelleZuteilungView (View):
+    """Manuelles Eintragen von Zuteilungen
+    """
+
+    def get (self,request, *args, **kwargs):
+        """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank
+        entspricht."""
+
+        zt = ZuteilungsTableFactory([{'last_name': u.last_name,
+                       'first_name': u.first_name,
+                       }
+                      for u in models.User.objects.all()])
+
+        django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(zt)
+
+        return render (request,
+                       'arbeitsplan_salden.html',
+                       {'salden': zt,
+                        })
+    
+
+##########################    
+    
+class ErstelleZuteilungView (View):
+    """Automatisches Berechnen von Zuteilungen"""
+    
     def get (self,request, *args, **kwargs):
         # Vorgehen:
         # - alle automatisch erstellten Zuordnungen loecshen
