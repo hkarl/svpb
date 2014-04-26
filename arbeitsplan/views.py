@@ -277,9 +277,33 @@ def SaldenTableFactory (l):
             
 class Salden(isVorstandMixin, View):
 
+    def applyFilter (self, request):
+
+        qs = models.User.objects.all()
+
+        form = forms.NameFilterForm(request.GET)
+        if form.is_valid():
+            if 'filter' in request.GET:
+                last_name = request.GET['last_name']
+
+                if last_name <> "":
+                    qs= qs.filter (last_name__icontains=last_name)
+                
+                first_name = request.GET['first_name']
+                if first_name <> "":
+                    qs= qs.filter (first_name__icontains=first_name)
+                
+        else:
+            print "filter not valid"
+            
+        return (qs, form)
+    
     def get (self, request, *args, **kwargs):
+
+        userQs, filterForm = self.applyFilter(request)
+        
         res = []
-        for u in models.User.objects.all().order_by('last_name', 'first_name'):
+        for u in userQs.order_by('last_name', 'first_name'):
             tmp = {}
             tmp['last_name'] = u.last_name
             tmp['first_name'] = u.first_name
@@ -296,9 +320,12 @@ class Salden(isVorstandMixin, View):
 
         django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(table)
 
+        # for filtering:
+
         return render (request,
                        "arbeitsplan_salden.html",
                         {'salden': table,
+                         'filter': filterForm, 
                         })
     
     def post (self, request, *args, **kwargs):

@@ -16,18 +16,25 @@
 
 {% block content %}
 
-<form method="POST" action=".">
-{% csrf_token %}
 
+
+<h3> Tabelle filtern </h3>
+<form method="GET" action=".">
+{% csrf_token %}
+{{ filter }}
+<input type=submit name="filter" value="Filter anwenden">
+</form> 
+<p>
+
+<h3> Saldentabelle </h3>
 {% render_table salden %}
 {% comment %}
 <br>
 <input type=submit name="apply" value="Checkboxen anwenden">
 <input type=submit name="filter" value="Filter anwenden">
 {% endcomment %}
-</form> 
 
 {% endblock %} 
 
-<!-- hhmts start -->Last modified: Mon Apr 21 17:50:23 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sat Apr 26 18:17:57 CEST 2014 <!-- hhmts end -->
 
