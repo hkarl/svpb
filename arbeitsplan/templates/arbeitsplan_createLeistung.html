@@ -1,5 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load staticfiles %}
+{% load crispy_forms_tags %}
 
 
 {% block branding %}
@@ -10,9 +11,8 @@
 {% block content %}
 
 Wir freuen uns, dass Sie durch eine Arbeitsleistung zum Vereinsleben beigetragen haben. Bitte geben Sie hier eine Beschreibung ein, damit Ihnen die Stunden gutgeschrieben werden können.
-
 <p>
-<form action="{% url 'arbeitsplan-leistung' %}" method="post">
+<form action="{% url 'arbeitsplan-leistung' %}" method="post" >
 {% csrf_token %}
 {{ form.as_p }}
 <input type="submit" value="Eintragen" />
@@ -20,5 +20,5 @@ Wir freuen uns, dass Sie durch eine Arbeitsleistung zum Vereinsleben beigetragen
 
 {% endblock %} 
 
-<!-- hhmts start -->Last modified: Sun Apr  6 10:04:36 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sat Apr 26 10:20:23 CEST 2014 <!-- hhmts end -->
 

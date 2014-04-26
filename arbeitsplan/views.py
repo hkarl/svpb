@@ -296,9 +296,12 @@ class Salden(isVorstandMixin, View):
 
         django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(table)
 
+        # name filter form
+        
         return render (request,
                        "arbeitsplan_salden.html",
                         {'salden': table,
+                         'filterform': forms.NameFilterForm(), 
                         })
     
     def post (self, request, *args, **kwargs):
