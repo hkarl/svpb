@@ -37,7 +37,7 @@ def logout_view (request):
     return  render (request, "home.html", {})
 ###############
 
-def TableFactory (name, attrs, l):
+def TableFactory (name, attrs, l, meta={}):
     """takes
     - a name for the new django_tables2 class
     - a dictoranry with column_name: column_types
@@ -45,17 +45,37 @@ def TableFactory (name, attrs, l):
 
     return klass 
     """
+
+    metadict = dict(attrs={"class":"paleblue",
+                            "orderable":"True",
+                           # "width":"90%"
+                    })
+
+
+    metadict.update(meta)
     attrs['Meta'] = type('Meta',
                          (),
-                         dict(attrs={"class":"paleblue",
-                                     "orderable":"True",
-                                      # "width":"90%"
-                                      }) )
+                         metadict,
+                        )
     
     klass = type (name, (django_tables2.Table,), attrs)
 
     t = klass(l)
     return t 
+
+def NameTableFactory (name, attrs, l):
+    """
+    A Factory for django_tables2 with dynamic colums.
+    Always adds a Nachame, Vorname column to the given attributes 
+    """
+
+    nameattrs = {'last_name': django_tables2.Column(verbose_name="Nachname"),
+                'first_name': django_tables2.Column(verbose_name="Vorname"),
+                }
+    nameattrs.update(attrs)
+
+    return TableFactory (name, nameattrs, l,
+                         meta={'sequence': ('last_name', 'first_name', '...')})
 
 ###############
 
@@ -245,34 +265,16 @@ class LeistungBearbeitenView (isVorstandMixin, View):
         return redirect ('/arbeitsplan/leistungenBearbeiten/z=all')    
 ##########################    
 
-## def SaldenTableFactory (): 
-##     attrs = {'last_name': django_tables2.Column(verbose_name="Nachname"),
-##              'first_name': django_tables2.Column(verbose_name="Vorname"),
-##              }
 
+def SaldenTableFactory (l):
 
-class SaldenTable (django_tables2.Table):
-    # fixed columns for a column table
-    last_name = django_tables2.Column(verbose_name="Nachname")
-    first_name = django_tables2.Column(verbose_name="Vorname")
-    OF = django_tables2.Column(verbose_name=models.Leistung.STATUS[0][1])
-    RU = django_tables2.Column(verbose_name=models.Leistung.STATUS[2][1])
-    AK = django_tables2.Column(verbose_name=models.Leistung.STATUS[1][1])
-    NE = django_tables2.Column(verbose_name=models.Leistung.STATUS[3][1])
+    attrs = {}
+    for s in models.Leistung.STATUS:
+        attrs[s[0]] = django_tables2.Column(verbose_name=s[1])
 
-    ## box = django_tables2.columns.CheckBoxColumn (orderable=False)
-    
-    ## def __init__(self, l):
-    ##     # add the status columns dynamically
-    ##     for s in models.Leistung.STATUS:
-    ##         # print s 
-    ##         self.__setattr__ (s[0], django_tables2.Column())
-    ##     return super (SaldenTable, self).__init__(l)
-
-
-    class Meta:
-        attrs = {'class': 'paleblue'}    
-    
+    t = NameTableFactory ("salden", attrs, l)
+    return t 
+            
 class Salden(isVorstandMixin, View):
 
     def get (self, request, *args, **kwargs):
@@ -290,18 +292,13 @@ class Salden(isVorstandMixin, View):
 
             res.append(tmp)
             
-        # print res 
-
-        table = SaldenTable(res)
-        # print table.columns
+        table = SaldenTableFactory(res)
 
         django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(table)
 
-        # print (res, models.Leistung.STATUS)
         return render (request,
                        "arbeitsplan_salden.html",
                         {'salden': table,
-                            'status': models.Leistung.STATUS, 
                         })
     
     def post (self, request, *args, **kwargs):
@@ -335,15 +332,13 @@ class ValuedCheckBoxColumn (django_tables2.columns.Column):
     
 
 def ZuteilungsTableFactory (l):
-    attrs = {'last_name': django_tables2.Column(verbose_name="Nachname"),
-             'first_name': django_tables2.Column(verbose_name="Vorname"),
-             }
+    attrs={}
     for a in models.Aufgabe.objects.all():
         tag = unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore')
-        attrs.update({tag: ValuedCheckBoxColumn(verbose_name=a.aufgabe,
-                                                 orderable=False)})
+        attrs[tag] = ValuedCheckBoxColumn(verbose_name=a.aufgabe,
+                                          orderable=False)
 
-    t = TableFactory ('ZuteilungsTable', attrs, l)
+    t = NameTableFactory ('ZuteilungsTable', attrs, l)
  
     return t 
         
