@@ -1,0 +1,36 @@
+{% extends "admin/base_site.html" %}
+{% load staticfiles %}
+
+{% load render_table from django_tables2 %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static "admin/css/screen.css" %}" />
+{% endblock %}
+   
+
+{% block branding %}
+<h1> Zuteilung von Aufgaben an Mitglieder  </h1>
+{% endblock %}
+
+
+
+{% block content %}
+
+<form method="POST" action=".">
+{% csrf_token %}
+
+{% render_table table %}
+<br>
+<input type=submit name="zuteilen" value="Zuteilungen eintragen">
+<input type="hidden" name="status" value="{{status}}">
+
+{% comment %}
+<br>
+<input type=submit name="apply" value="Checkboxen anwenden">
+{% endcomment %}
+</form> 
+
+{% endblock %} 
+
+<!-- hhmts start -->Last modified: Fri Apr 25 08:32:53 CEST 2014 <!-- hhmts end -->
+

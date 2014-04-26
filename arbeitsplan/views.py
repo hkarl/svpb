@@ -311,7 +311,7 @@ class Salden(isVorstandMixin, View):
     
 ##########################    
 
-class ValuedCheckBoxColumn (django_tables2.columns.CheckBoxColumn):
+class ValuedCheckBoxColumn (django_tables2.columns.Column):
     """A checkbox column where a pair of values is expected:
     name and whether the box is checked or not.
     Control tags:
@@ -324,10 +324,10 @@ class ValuedCheckBoxColumn (django_tables2.columns.CheckBoxColumn):
         if value[0] == -1:
             return ""
         
-        return mark_safe ('<input type="checkbox" name="box" value="' +
-                          escape(value[0]) +
+        return mark_safe ('<input type="checkbox" value="1" name="' +
+                          escape(value[1]) +
                           '" ' +
-                          ("checked" if value[1]==1 else "") +
+                          ("checked" if value[0]==1 else "") +
                           '/>'
                           )
     
@@ -340,11 +340,11 @@ def ZuteilungsTableFactory (l):
              }
     for a in models.Aufgabe.objects.all():
         tag = unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore')
-        attrs.update({tag: django_tables2.Column(verbose_name=a.aufgabe,
+        attrs.update({tag: ValuedCheckBoxColumn(verbose_name=a.aufgabe,
                                                  orderable=False)})
 
     t = TableFactory ('ZuteilungsTable', attrs, l)
-
+ 
     return t 
         
 class ManuelleZuteilungView (View):
@@ -355,19 +355,98 @@ class ManuelleZuteilungView (View):
         """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank
         entspricht."""
 
-        zt = ZuteilungsTableFactory([{'last_name': u.last_name,
-                       'first_name': u.first_name,
-                       }
-                      for u in models.User.objects.all()])
+        ztlist = []
+        statuslist = {}
+        aufgaben = dict([(unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore'),
+                          (-1, 'x'))
+                          for a in models.Aufgabe.objects.all()])
 
+        for u in models.User.objects.all(): 
+            tmp = {'last_name': u.last_name,
+                    'first_name': u.first_name,
+                    }
+            # print 'user:', u.id 
+            tmp.update(aufgaben)
+            for m in models.Meldung.objects.filter(melder=u):
+                tag = unicodedata.normalize('NFKD', m.aufgabe.aufgabe).encode('ASCII', 'ignore')
+                tmp[tag] = (0, 'box_'+  str(u.id)+"_"+str(m.aufgabe.id))
+                statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
+
+            for z in models.Zuteilung.objects.filter(ausfuehrer=u):
+                tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore')
+                tmp[tag] = (1, 'box_'+ str(u.id)+"_"+str(z.aufgabe.id))
+                statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
+
+
+                
+            ztlist.append(tmp)
+
+        ## print ztlist
+        ## print statuslist
+        zt = ZuteilungsTableFactory(ztlist)
         django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(zt)
 
         return render (request,
-                       'arbeitsplan_salden.html',
-                       {'salden': zt,
+                       'arbeitsplan_manuelleZuteilung.html',
+                       {'table': zt,
+                        'status': ';'.join([k+'='+v for k, v in statuslist.iteritems()]),
                         })
     
+    def post (self,request, *args, **kwargs):
+        # print request.body 
+        print (request.POST )
+        print (request.POST.get('status') )
+        print (request.POST.getlist('box') )
 
+        previousStatus = dict([ tuple(s.split('=') )
+                   for s in 
+                    request.POST.get('status').split(';')
+                  ])
+
+        print "prevState:"
+        print previousStatus
+
+        ## for item in request.POST.iteritems():
+        ##     # containts tuple: name, value
+        ##     # print item
+        ##     if item[0][:4] == "box_":
+        ##         print "item: ", item
+
+        newState = dict([ (item[0][4:], item[1])
+                     for item in request.POST.iteritems()
+                     if item[0][:4] == "box_"
+                    ])
+
+        print "newState"
+        print newState
+
+        # find all items in  newState  that have a zero in prevState
+        # add that zuteilung
+        for k,v in newState.iteritems():
+            if previousStatus[k] == '0':
+                print "add ", k
+                user, aufgabe = k.split('_')
+                z = models.Zuteilung(aufgabe = models.Aufgabe.objects.get(id=int(aufgabe)),
+                                     ausfuehrer = models.User.objects.get(id=int(user)),
+                                     )
+                z.save()
+
+
+        # find all items in prevState with a 1 there that do no appear in newState
+        # remove that zuteilung
+        for k,v in previousStatus.iteritems():
+            if v=='1' and k not in newState:
+                print "delete ", k
+                user, aufgabe = k.split('_')
+                z = models.Zuteilung.objects.get (aufgabe = models.Aufgabe.objects.get(id=int(aufgabe)),
+                                                  ausfuehrer = models.User.objects.get(id=int(user)),
+                                                 )
+                z.delete()
+
+        # TODO: emails senden? 
+        return redirect ("arbeitsplan-manuellezuteilung")
+
+    
 ##########################    
     
 class ErstelleZuteilungView (View):
