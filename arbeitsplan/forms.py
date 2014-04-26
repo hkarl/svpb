@@ -21,6 +21,7 @@ class MeldungForm (forms.Form):
                 self.fields["g"+ str(g.id) + "_a" + str(a.id)] = forms.BooleanField (label=a.aufgabe,
                                                                                      required=False,
                                                                                      )
+
                 
 
 class CreateLeistungForm (forms.ModelForm):
@@ -32,7 +33,42 @@ class CreateLeistungForm (forms.ModelForm):
                    'status',
                    'bemerkungVorstand',
                    )
+            
+##################################
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Layout
+
+class NameFilterForm (forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(NameFilterForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = "namefilterForm"
+        self.helper.form_method = "get"
+        self.helper.form_action = "filter_name"
+
+        self.helper.add_input (Submit('filter', 'Filter anwenden'))
+        
+        self.helper.form_class = "form-horizontal"
+        self.helper.label_class = "col-lg-2"
+        self.helper.field_class = "col-lg-8"
+        self.helper.layout = Layout(
+            'last_name',
+            'first_name',
+            )
+        
+    last_name = forms.CharField (
+        label="Nachname",
+        max_length=20,
+        required =False,
+        )
+    
+    first_name = forms.CharField (
+        label="Vorname",
+        max_length=20,
+        required =False,
+        )
+    
 ## class LeistungBearbeitenForm (forms.ModelForm):
 ##     ## def __init__ (self, qs, *args, **kwargs):
 ##     ##     print "form init: ", qs, args, kwargs
