@@ -53,8 +53,6 @@ class NameFilterForm (forms.Form):
         required =False,
         )
 
-    # das ist test fuer Leistungen eintragen: 
-    # arbeitsgruppe = forms.ModelChoiceField (queryset = models.Aufgabengruppe.objects.all(), required=False) 
     ## failed attempts to use crispy-forms: 
     ## def __init__(self, *args, **kwargs):
     ##     super(NameFilterForm, self).__init__(*args, **kwargs)
@@ -73,6 +71,13 @@ class NameFilterForm (forms.Form):
     ##         'first_name',
     ##         )
         
+
+class ArbeitsgruppenFilterForm (NameFilterForm):
+
+    aufgabengruppe = forms.ModelChoiceField (queryset = models.Aufgabengruppe.objects.all(),
+                                            label="Aufgabengruppe", 
+                                            required=False) 
+
     
 ## class LeistungBearbeitenForm (forms.ModelForm):
 ##     ## def __init__ (self, qs, *args, **kwargs):

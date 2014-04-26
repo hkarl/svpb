@@ -16,6 +16,16 @@
 
 {% block content %}
 
+<h3> Tabelle filtern </h3>
+<form method="GET" action=".">
+{% csrf_token %}
+{{ filter }}
+<input type=submit name="filter" value="Filter anwenden">
+</form> 
+<p>
+
+<h3> Zuteilungen eintragen </h3>
+
 <form method="POST" action=".">
 {% csrf_token %}
 
@@ -32,5 +42,5 @@
 
 {% endblock %} 
 
-<!-- hhmts start -->Last modified: Fri Apr 25 08:32:53 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sat Apr 26 19:04:22 CEST 2014 <!-- hhmts end -->
 

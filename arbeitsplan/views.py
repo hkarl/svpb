@@ -274,22 +274,23 @@ def SaldenTableFactory (l):
 
     t = NameTableFactory ("salden", attrs, l)
     return t 
-            
-class Salden(isVorstandMixin, View):
 
+
+class NameFilterView (View):
+    
     def applyFilter (self, request):
 
         qs = models.User.objects.all()
 
-        form = forms.NameFilterForm(request.GET)
+        form = self.filterFormClass(request.GET)
         if form.is_valid():
             if 'filter' in request.GET:
-                last_name = request.GET['last_name']
+                last_name = form.cleaned_data['last_name']
 
                 if last_name <> "":
                     qs= qs.filter (last_name__icontains=last_name)
                 
-                first_name = request.GET['first_name']
+                first_name = form.cleaned_data['first_name']
                 if first_name <> "":
                     qs= qs.filter (first_name__icontains=first_name)
                 
@@ -297,6 +298,10 @@ class Salden(isVorstandMixin, View):
             print "filter not valid"
             
         return (qs, form)
+        
+class Salden(isVorstandMixin, NameFilterView):
+
+    filterFormClass = forms.NameFilterForm
     
     def get (self, request, *args, **kwargs):
 
@@ -358,9 +363,9 @@ class ValuedCheckBoxColumn (django_tables2.columns.Column):
     
     
 
-def ZuteilungsTableFactory (l):
+def ZuteilungsTableFactory (l, aufgabenQs):
     attrs={}
-    for a in models.Aufgabe.objects.all():
+    for a in aufgabenQs:
         tag = unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore')
         attrs[tag] = ValuedCheckBoxColumn(verbose_name=a.aufgabe,
                                           orderable=False)
@@ -369,32 +374,49 @@ def ZuteilungsTableFactory (l):
  
     return t 
         
-class ManuelleZuteilungView (View):
+class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
     """Manuelles Eintragen von Zuteilungen
     """
 
+    filterFormClass = forms.ArbeitsgruppenFilterForm
+    
     def get (self,request, *args, **kwargs):
         """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank
         entspricht."""
 
+        userQs, filterForm = self.applyFilter (request)
+
+        if filterForm.cleaned_data['aufgabengruppe'] <> None:
+            print filterForm.cleaned_data['aufgabengruppe']
+            aufgabenQs = models.Aufgabe.objects.filter (gruppe__gruppe = filterForm.cleaned_data['aufgabengruppe'])
+        else:
+            aufgabenQs = models.Aufgabe.objects.all()
+            
         ztlist = []
         statuslist = {}
         aufgaben = dict([(unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore'),
                           (-1, 'x'))
-                          for a in models.Aufgabe.objects.all()])
+                          for a in aufgabenQs])
 
-        for u in models.User.objects.all(): 
+        for u in userQs: 
             tmp = {'last_name': u.last_name,
                     'first_name': u.first_name,
                     }
             # print 'user:', u.id 
             tmp.update(aufgaben)
-            for m in models.Meldung.objects.filter(melder=u):
+            mQs =  models.Meldung.objects.filter(melder=u)
+            if filterForm.cleaned_data['aufgabengruppe'] <> None:
+                mQs = mQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
+            for m in mQs: 
                 tag = unicodedata.normalize('NFKD', m.aufgabe.aufgabe).encode('ASCII', 'ignore')
                 tmp[tag] = (0, 'box_'+  str(u.id)+"_"+str(m.aufgabe.id))
                 statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
 
-            for z in models.Zuteilung.objects.filter(ausfuehrer=u):
+            zQs =  models.Zuteilung.objects.filter(ausfuehrer=u)
+            if filterForm.cleaned_data['aufgabengruppe'] <> None:
+                zQs = zQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
+            
+            for z in zQs: 
                 tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore')
                 tmp[tag] = (1, 'box_'+ str(u.id)+"_"+str(z.aufgabe.id))
                 statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
@@ -405,21 +427,24 @@ class ManuelleZuteilungView (View):
 
         ## print ztlist
         ## print statuslist
-        zt = ZuteilungsTableFactory(ztlist)
+        zt = ZuteilungsTableFactory(ztlist, aufgabenQs)
         django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(zt)
 
         return render (request,
                        'arbeitsplan_manuelleZuteilung.html',
                        {'table': zt,
                         'status': ';'.join([k+'='+v for k, v in statuslist.iteritems()]),
+                        'filter': filterForm, 
                         })
     
     def post (self,request, *args, **kwargs):
         # print request.body 
-        print (request.POST )
-        print (request.POST.get('status') )
-        print (request.POST.getlist('box') )
+        ## print (request.POST )
+        ## print (request.POST.get('status') )
+        ## print (request.POST.getlist('box') )
 
+        ## filterForm = self.filterFormClass (request.POST)
+        
         previousStatus = dict([ tuple(s.split('=') )
                    for s in 
                     request.POST.get('status').split(';')
