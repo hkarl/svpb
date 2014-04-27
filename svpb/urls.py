@@ -79,7 +79,11 @@ urlpatterns = patterns('',
     url (r'^arbeitsplan/salden/$',
          login_required(arbeitsplan.views.Salden.as_view()),
          name="arbeitsplan-salden",),
-         
+
+    url (r'^bootstrap$',
+         TemplateView.as_view (template_name="bootstrap.html"),
+         name="bootstrap", 
+         ),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

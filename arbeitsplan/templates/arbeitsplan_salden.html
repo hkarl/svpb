@@ -1,86 +1,17 @@
-{% load staticfiles %}
-
+{% extends "bootstrap/bootstrap_base.html" %}
 {% load render_table from django_tables2 %}
 {% load crispy_forms_tags %}
 
 
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
-<html> <head>
-<title>Bootstrap test</title>
-</head>
-<link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.min.css"%}" type="text/css" />
-<link href="{% static "bootstrap/css/starter-template.css"%}" rel="stylesheet">
-<link href="{% static "admin/css/screen.css"%}" rel="stylesheet">
-
-<body role="document">
-
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Bootstrap theme</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
-
-    <div  class="container theme-showcase" role="main">
-
+{% block content %}
       <div class="page-header">
         <h1> Saldenübersicht der geleisteten Arbeitsstunden  </h1>
       </div>
 
       <h2> Tabelle filtern </h2>
-      {% crispy filterform %}
+       {% crispy filterform %}
       <div class="table">
       <h2> Saldentabelle </h2>
       {% render_table salden %}
       </div> 
-    </div><!-- /.container -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="{% static "bootstrap/js/bootstrap.min.js"%}"></script>
-<script src="{% static "bootstrap/js/docs.min.js"%}"></script>
-
-</body> </html>
-
-
-
-
-
-
-{% comment %}
-<form method="POST" action=".">
-{% csrf_token %}
-<br>
-<input type=submit name="apply" value="Checkboxen anwenden">
-<input type=submit name="filter" value="Filter anwenden">
-</form> 
-{% endcomment %}
-
-
-<!-- hhmts start -->Last modified: Sun Apr 27 14:04:08 CEST 2014 <!-- hhmts end -->
-
+{% endblock %}

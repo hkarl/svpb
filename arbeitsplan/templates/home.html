@@ -1,79 +1,190 @@
-{% extends "admin/base_site.html" %}
+{% extends "bootstrap/bootstrap_base.html" %}
 {% load staticfiles %}
 
-{% block extrastyle %}
-{# <link rel="STYLESHEET" href="{% static "styles.css"%}" media="screen" /> #}
-{% endblock %}
-
-{% block branding %}
-<h1>Arbeitspläne selbst verwalten leicht gemacht!</h1>
-{% endblock %}
 
 {% block content %}
 
-
 {% if user.is_authenticated %}
-<h2> Willkommen, {{user.first_name}}  {{user.last_name}}! </h2> 
+<div class="page-header">
+<h1> Willkommen, {{user.first_name}}  {{user.last_name}}! </h1> 
+</div>
 
 Ihnen stehen folgende Funktionen zur Verfügung: 
+<p>
 
-<ul>
-  <li> <a href="/arbeitsplan/aufgaben/"> Aufgaben</a>: Alle existierende Aufgaben anzeigen </li> 
-  <li> <a href="/arbeitsplan/meldung/"> Meldung</a>: Meine Meldung für Arbeitsdienst eingeben oder verändern </li>
-  <li> <a href="/arbeitsplan/zuteilungAnzeige/">Zuteilung</a>:  Existierende Zuteilungen für meine Meldungen  anzeigen</li> 
-  <li> Arbeitsleistungen
-  <ul>
-    <li> <a href="/arbeitsplan/leistung/">Leistung eintragen</a>:  Eine geleistete Arbeit eingeben </li>
-    <li> <a href="/arbeitsplan/leistungListe/"> Leistungen anzeigen</a>: Alle meine geleistenen Arbeiten anzeigen 
-    </ul>
-  </li> 
-</ul>
+<div class="row">
+  <div class="col-md-6">
+    <a href="/arbeitsplan/aufgaben/"> 
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Aufgaben
+        </div>
+      </div>
+      <div class="panel-body">
+        Welche Aufgaben gibt es ? 
+      </div>
+    </div>
+    </a>
+  </div>
+  <div class="col-md-6">
+    <a href="/arbeitsplan/meldung/"> 
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Meldung
+        </div>
+      </div>
+      <div class="panel-body">
+        Ich möchte mich für Aufgaben melden. 
+      </div>
+    </div>
+    </a>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <a href="/arbeitsplan/zuteilungAnzeige/">
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Zuteilung
+        </div>
+      </div>
+      <div class="panel-body">
+        Für welche Aufgaben wurde ich eingeteilt? 
+      </div>
+    </div>
+    </a> 
+  </div>
+  <div class="col-md-6">
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Leistung
+        </div>
+      </div>
+      <div class="panel-body">
+        <ul class="list-group">
+          <li class="list-group-item"> <a href="/arbeitsplan/leistung/">Eintragen</a> Ich möchte einen geleisteten Arbeitsdienst eintragen </li>
+          <li class="list-group-item"> <a href="/arbeitsplan/leistungListe/">Anzeigen</a> Ich möchte eine Übersicht meiner geleistenen Arbeiten sehen  
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--- ########################################### ---!>
 
 {% for g in  user.groups.all %}
   {% if g.name == "Vorstand" %}
 <h2> Vorstandsfunktionen </h2>
 Es ist uns eine besondere Ehre, unseren Vorstandsmitgliedern erweiterte Funktionen anbieten zu dürfen:
+<p>
 
-<ul>
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Aufgaben
+        </div>
+      </div>
+      <div class="panel-body">
+        Aufgaben und Aufgabengruppen einfach verwalten (TODO) 
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <a href="/arbeitsplan/meldungAnzeige/"> 
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Meldung
+        </div>
+      </div>
+      <div class="panel-body">
+        Existierende Meldungen anzeigen 
+      </div>
+    </div>
+    </a>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Zuteilung
+        </div>
+      </div>
+      <div class="panel-body">
+        <ul class="list-group">
+          <li class="list-group-item"> <a href="/arbeitsplan/manuelleZuteilung/"> Zuteilungen manuell vornehmen </a> 
+          </li>
+          <li class="list-group-item"> <a href="/arbeitsplan/zuteilungAnzeige/"> Existierende Zuteilungen anzeigen </a> </li>
+          <li class="list-group-item"> <a href="/arbeitsplan/erstelleZuteilung/"> Zuteilungen automatisch erstellen </a>  (noch nicht implementiert!) </li> 
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Leistung
+        </div>
+      </div>
+      <div class="panel-body">
+        <ul class="list-group">
+          <li class="list-group-item"> <a href="/arbeitsplan/leistungenBearbeiten/z=all/"> Vorliegende Leistungsmeldungen für <b> alle </b>  Zuständige bearbeiten </a> </li>
+          <li class="list-group-item"> <a href="/arbeitsplan/leistungenBearbeiten/z=me/"> Vorliegende Leistungsmeldungen für <b> mich  </b> als Zuständigen bearbeiten </a> </li>
+          <li class="list-group-item"> <a href="/arbeitsplan/salden/"> Saldenübersicht der geleisteten Arbeitsstunden anzeigen </a> 
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
   {% if user.is_staff %}
-  <li> <a href="/admin/">Rohdaten verwalten </a> </li>
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      <div class="panel-title">
+        <a href="/admin/">Rohdaten verwalten </a>
+      </div>
+    </div>
+    <div class="panel-body">
+      Verwalten Sie alle Daten durch direkten Zugriff auf die Datenbank. 
+    </div>
+  </div>
   {% endif %}
-  <li> <a href="/arbeitsplan/meldungAnzeige/"> Existierende Meldungen anzeigen </a> </li>
-  <li> Zuteilungen   </li>
-  <ul>
-    <li> <a href="/arbeitsplan/manuelleZuteilung/"> Zuteilungen manuell vornehmen </a> 
-    </li>
-    <li> <a href="/arbeitsplan/zuteilungAnzeige/"> Existierende Zuteilungen anzeigen </a> </li>
-    <li> <a href="/arbeitsplan/erstelleZuteilung/"> Zuteilungen automatisch erstellen </a>  (noch nicht fertig implementiert!) </li> 
-  </ul>
-  <li> Vorliegende Leistungsmeldungen bearbeiten </li>
-  <ul>
-      <li> <a href="/arbeitsplan/leistungenBearbeiten/z=all/"> Vorliegende Leistungsmeldungen für <b> alle </b>  Zuständige bearbeiten </a> </li>
-      <li> <a href="/arbeitsplan/leistungenBearbeiten/z=me/"> Vorliegende Leistungsmeldungen für <b> mich  </b> als Zuständigen bearbeiten </a> </li>
-      <li> <a href="/arbeitsplan/salden/"> Saldenübersicht der geleisteten Arbeitsstunden anzeigen </a> 
-  </ul>
-</ul>
+
   {% endif %} 
 {% endfor %} 
 
 {% else %}
-<h2> Willkommen! </h2> 
- In einem Segelverein fällt viel Arbeit an, die auf die Mitglieder verteilt werden muss. Diese Seite dient der Organisation dieser Arbeit.
+
+      <div class="jumbotron">
+        <h1>Willkommen!</h1>
+        <p> In einem Segelverein fällt viel Arbeit an, die auf die Mitglieder verteilt werden muss. Diese Seite dient der Organisation dieser Arbeit.
 <p>
 Bist Du ein Mitglied, so <a href="/accounts/login/?next=/home/"> melde Dich bitte an</a>. Für Nichtmitglieder geben wir hier einen kleinen Einblick in die zu erledigenden Aufgaben.
 
 <ul>
   <li> <a href="/arbeitsplan/aufgaben/"> Existierende Aufgaben anzeigen </a> </li> 
 </ul>
+        <p><a href="/accounts/login/?next=/home/" class="btn btn-primary btn-lg" role="button">Anmelden</a></p>
+      </div>
+
 
 {% endif %}
 
-<a href="/bootstrap"> Bootstrap test </a>
 
 
 {% endblock %}
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Sun Apr 27 12:20:51 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sun Apr 27 16:42:55 CEST 2014 <!-- hhmts end -->
 </body> </html>
