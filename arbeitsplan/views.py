@@ -278,6 +278,7 @@ def SaldenTableFactory (l):
 class Salden(isVorstandMixin, View):
 
     def get (self, request, *args, **kwargs):
+
         res = []
         for u in models.User.objects.all().order_by('last_name', 'first_name'):
             tmp = {}
@@ -480,3 +481,9 @@ class ErstelleZuteilungView (View):
             
         return redirect ('arbeitsplan-zuteilunglist')
 
+#####################
+
+
+    
+        
+                          

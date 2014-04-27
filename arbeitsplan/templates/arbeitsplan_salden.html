@@ -1,54 +1,86 @@
-{% extends "admin/base_site.html" %} 
 {% load staticfiles %}
 
 {% load render_table from django_tables2 %}
 {% load crispy_forms_tags %}
 
-{% block extrahead %}
-<link rel="stylesheet" href="{% static "admin/css/screen.css" %}" />
 
-{% comment %}
-<link rel="stylesheet" href="{% static "uni_form/uni-form.css"%}" type="text/css" />
-<link rel="stylesheet" href="{% static "uni_form/default.uni-form.css"%}" type="text/css" />
-{% endcomment %}
-
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Bootstrap test</title>
+</head>
 <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.min.css"%}" type="text/css" />
+<link href="{% static "bootstrap/css/starter-template.css"%}" rel="stylesheet">
+<link href="{% static "admin/css/screen.css"%}" rel="stylesheet">
 
+<body role="document">
 
-{% endblock %}
-   
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Bootstrap theme</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
 
-{% block branding %}
-<h1> Saldenübersicht der geleisteten Arbeitsstunden  </h1>
-{% endblock %}
+    <div  class="container theme-showcase" role="main">
 
+      <div class="page-header">
+        <h1> Saldenübersicht der geleisteten Arbeitsstunden  </h1>
+      </div>
 
-
-{% block content %}
-
-
-<script src="{% static "jquery/jquery.js"%}" type="text/javascript"></script>
-
-
-{% comment %}
-<script src="{% static "uni_form/uni-form.jquery.js"%}" type="text/javascript"></script>
-{% endcomment %}
+      <h2> Tabelle filtern </h2>
+      {% crispy filterform %}
+      <div class="table">
+      <h2> Saldentabelle </h2>
+      {% render_table salden %}
+      </div> 
+    </div><!-- /.container -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="{% static "bootstrap/js/bootstrap.min.js"%}"></script>
+<script src="{% static "bootstrap/js/docs.min.js"%}"></script>
 
-{% crispy filterform %}
-<p>
+</body> </html>
 
-{% render_table salden %}
+
+
+
+
+
 {% comment %}
 <form method="POST" action=".">
 {% csrf_token %}
 <br>
 <input type=submit name="apply" value="Checkboxen anwenden">
 <input type=submit name="filter" value="Filter anwenden">
-{% endcomment %}
 </form> 
+{% endcomment %}
 
-{% endblock %} 
 
-<!-- hhmts start -->Last modified: Sat Apr 26 12:52:44 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sun Apr 27 14:04:08 CEST 2014 <!-- hhmts end -->
 
