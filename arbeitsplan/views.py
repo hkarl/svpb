@@ -34,7 +34,7 @@ class isVorstandMixin (object):
 def logout_view (request):
     # print "logout view" 
     logout(request)
-    return  render (request, "home.html", {})
+    return  render (request, "registration/logged_out.html", {})
 ###############
 
 def TableFactory (name, attrs, l, meta={}):
@@ -306,7 +306,7 @@ class Salden(isVorstandMixin, NameFilterView):
     def get (self, request, *args, **kwargs):
 
         userQs, filterForm = self.applyFilter(request)
-        
+
         res = []
         for u in userQs.order_by('last_name', 'first_name'):
             tmp = {}
@@ -529,3 +529,9 @@ class ErstelleZuteilungView (View):
             
         return redirect ('arbeitsplan-zuteilunglist')
 
+#####################
+
+
+    
+        
+                          

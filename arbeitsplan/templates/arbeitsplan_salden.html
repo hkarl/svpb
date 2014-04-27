@@ -1,40 +1,18 @@
-{% extends "admin/base_site.html" %}
-{% load staticfiles %}
-
+{% extends "bootstrap/bootstrap_base.html" %}
 {% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
 
-{% block extrahead %}
-<link rel="stylesheet" href="{% static "admin/css/screen.css" %}" />
-{% endblock %}
-   
 
 {% block branding %}
-<h1> Saldenübersicht der geleisteten Arbeitsstunden  </h1>
+Saldenübersicht der geleisteten Arbeitsstunden  
 {% endblock %}
-
-
 
 {% block content %}
 
-
-
-<h3> Tabelle filtern </h3>
-<form method="GET" action=".">
-{% csrf_token %}
-{{ filter }}
-<input type=submit name="filter" value="Filter anwenden">
-</form> 
-<p>
-
-<h3> Saldentabelle </h3>
-{% render_table salden %}
-{% comment %}
-<br>
-<input type=submit name="apply" value="Checkboxen anwenden">
-<input type=submit name="filter" value="Filter anwenden">
-{% endcomment %}
-
-{% endblock %} 
-
-<!-- hhmts start -->Last modified: Sat Apr 26 18:17:57 CEST 2014 <!-- hhmts end -->
-
+      <h2> Tabelle filtern </h2>
+       {% crispy filterform %}
+      <div class="table">
+      <h2> Saldentabelle </h2>
+      {% render_table salden %}
+      </div> 
+{% endblock %}

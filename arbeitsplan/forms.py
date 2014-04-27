@@ -37,10 +37,29 @@ class CreateLeistungForm (forms.ModelForm):
 ##################################
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout
+from crispy_forms.layout import Submit, Layout, Button
+from crispy_forms.bootstrap import StrictButton, FormActions
 
 class NameFilterForm (forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(NameFilterForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = "namefilterForm"
+        self.helper.form_method = "get"
+        self.helper.form_action = ""
 
+        # self.helper.add_input (Submit('filter', 'Filter anwenden'))
+        
+        self.helper.form_class = "form-inline"
+        ## self.helper.label_class = "col-lg-2"
+        ## self.helper.field_class = "col-lg-8"
+        self.helper.field_template = "bootstrap3/layout/inline_field.html"
+        self.helper.layout = Layout(
+            'last_name',
+            'first_name',
+            Submit ('filter', 'Filter anwenden'),
+            )
+        
     last_name = forms.CharField (
         label="Nachname",
         max_length=20,
@@ -53,24 +72,6 @@ class NameFilterForm (forms.Form):
         required =False,
         )
 
-    ## failed attempts to use crispy-forms: 
-    ## def __init__(self, *args, **kwargs):
-    ##     super(NameFilterForm, self).__init__(*args, **kwargs)
-    ##     self.helper = FormHelper()
-    ##     self.helper.form_id = "namefilterForm"
-    ##     self.helper.form_method = "get"
-    ##     self.helper.form_action = "filter_name"
-
-    ##     self.helper.add_input (Submit('filter', 'Filter anwenden'))
-        
-    ##     self.helper.form_class = "form-horizontal"
-    ##     self.helper.label_class = "col-lg-2"
-    ##     self.helper.field_class = "col-lg-8"
-    ##     self.helper.layout = Layout(
-    ##         'last_name',
-    ##         'first_name',
-    ##         )
-        
 
 class ArbeitsgruppenFilterForm (NameFilterForm):
 

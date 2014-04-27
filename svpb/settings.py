@@ -135,13 +135,19 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
+    ## 'django_admin_bootstrapped.bootstrap3',
+    ## 'django_admin_bootstrapped',
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'django_tables2', 
+    'django_tables2',
+    'crispy_forms',
     'arbeitsplan',
 )
 
+CRISPY_TEMPLATE_PACK = "bootstrap"
+
+    
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
