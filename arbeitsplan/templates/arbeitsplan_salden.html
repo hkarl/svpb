@@ -3,10 +3,11 @@
 {% load crispy_forms_tags %}
 
 
+{% block branding %}
+Saldenübersicht der geleisteten Arbeitsstunden  
+{% endblock %}
+
 {% block content %}
-      <div class="page-header">
-        <h1> Saldenübersicht der geleisteten Arbeitsstunden  </h1>
-      </div>
 
       <h2> Tabelle filtern </h2>
        {% crispy filterform %}

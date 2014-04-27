@@ -34,7 +34,7 @@ class isVorstandMixin (object):
 def logout_view (request):
     # print "logout view" 
     logout(request)
-    return  render (request, "home.html", {})
+    return  render (request, "registration/logged_out.html", {})
 ###############
 
 def TableFactory (name, attrs, l, meta={}):
