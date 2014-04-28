@@ -156,11 +156,28 @@ class UpdateMeldungView (View):
         # print "processing INvalid form"
         return HttpResponse ("Form was invalid - what to do?")
 
+
+class AufgabenTable (django_tables2.Table):
+    verantwortlicher = django_tables2.Column (accessor="verantwortlich.last_name",
+                                              verbose_name="Verantwortlicher")
+    class Meta:
+        model = models.Aufgabe
+        attrs = {"class": "paleblue"}
+        # fields=("aufgabe", "datum", django_tables2.A("verantwortlich.last_name"), "gruppe", "anzahl", "bemerkung")
+        fields=("aufgabe", "datum", "gruppe", "anzahl", "bemerkung")
+
+        # TODO: anzahl muss man wahrscheinlich auf die ANzahl FREIE Plaetze umrechnen!?!?
+        
 class ListAufgabenView (ListView):
 
-    model = models.Aufgabe
+    # model = models.Aufgabe
     template_name = "arbeitsplan_aufgabenlist.html"
 
+    def get_queryset (self):
+        table = AufgabenTable(models.Aufgabe.objects.all())
+        django_tables2.RequestConfig(self.request).configure(table)
+        return table
+    
 class ListZuteilungenView (ListView):
 
     # model = models.Zuteilung
@@ -173,7 +190,6 @@ class ListMeldungenView (isVorstandMixin, ListView):
 
     model = models.Meldung
     template_name = "arbeitsplan_meldunglist.html" 
-
 
 class CreateLeistungView (CreateView):
     model = models.Leistung
@@ -381,7 +397,7 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
     """Manuelles Eintragen von Zuteilungen
     """
 
-    filterFormClass = forms.ArbeitsgruppenFilterForm
+    filterFormClass = forms.PersonAufgabengruppeFilterForm
     
     def get (self,request, *args, **kwargs):
         """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank
