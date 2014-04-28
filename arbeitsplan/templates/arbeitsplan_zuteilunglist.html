@@ -1,6 +1,7 @@
 {% extends "bootstrap/bootstrap_base.html" %}
 
 {% load staticfiles %}
+{% load render_table from django_tables2 %}
 
 
 {% block branding %}
@@ -11,11 +12,16 @@
 
 
 Die folgenden Zuteilungen sind eingetragen: 
+<p>
+{% render_table object_list %}
 
+{% comment %}
 <ul>
 {% for z in object_list %}
   <li>  {{ z }} </li>
 {% endfor %} 
 </ul>
-{% endblock %}
+{% endcomment %}
 
+
+{% endblock %}

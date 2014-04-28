@@ -1,5 +1,6 @@
 {% extends "bootstrap/bootstrap_base.html" %}
 {% load staticfiles %}
+{% load render_table from django_tables2 %}
 
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html> <head>
@@ -17,6 +18,9 @@ Alle vorhandenen Aufgaben anzeigen
 Es gibt die folgenden Aufgaben: 
 <p>
 
+{% render_table object_list  %}
+
+{% comment %}
 <ul>
 {% for a in object_list %}
   <li> {{ a.aufgabe }}, {{ a.datum}},
@@ -27,9 +31,11 @@ Es gibt die folgenden Aufgaben:
   </li>
 {% endfor %} 
 </ul>
+{% endcomment %}
+
 {% endblock %}
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Sun Apr 27 18:25:56 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Apr 28 16:54:05 CEST 2014 <!-- hhmts end -->
 </body> </html>

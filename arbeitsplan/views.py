@@ -163,7 +163,10 @@ class ListAufgabenView (ListView):
 
 class ListZuteilungenView (ListView):
 
-    model = models.Zuteilung
+    # model = models.Zuteilung
+    def get_queryset (self):
+        return models.Zuteilung.objects.filter (ausfuehrer =self.request.user)
+        
     template_name = "arbeitsplan_zuteilunglist.html" 
 
 class ListMeldungenView (isVorstandMixin, ListView):
