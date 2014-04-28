@@ -33,6 +33,7 @@ class Aufgabengruppe (models.Model):
 
     class Meta:
         verbose_name_plural = "Aufgabengruppen"
+        verbose_name = "Aufgabengruppe"
     
 class Aufgabe (models.Model):
     aufgabe = models.CharField (max_length=30)
@@ -47,6 +48,7 @@ class Aufgabe (models.Model):
 
     class Meta:
         verbose_name_plural = "Aufgaben"
+        verbose_name = "Aufgabe"
 
 class Meldung (models.Model):
     erstellt = models.DateField (auto_now_add=True)
@@ -63,6 +65,7 @@ class Meldung (models.Model):
 
     class Meta:
         verbose_name_plural = "Meldungen"
+        verbose_name = "Meldung"
 
 
 class Zuteilung (models.Model):
@@ -75,7 +78,9 @@ class Zuteilung (models.Model):
     def __unicode__ (self):
         return self.aufgabe.__unicode__() + ": " + self.ausfuehrer.__unicode__()
     
-    
+    class Meta:
+        verbose_name_plural = "Zuteilungen"
+        verbose_name = "Zuteilung"
 
     
 class Leistung (models.Model):
@@ -121,6 +126,7 @@ class Leistung (models.Model):
             
     class Meta:
         verbose_name_plural = "Leistungen"
+        verbose_name = "Leistung"
 
     def __unicode__ (self):
         return (self.melder.__unicode__() + " ; " +
