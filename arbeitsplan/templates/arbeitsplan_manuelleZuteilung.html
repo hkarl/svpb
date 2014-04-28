@@ -1,5 +1,6 @@
 {% extends "bootstrap/bootstrap_base.html" %}
 {% load staticfiles %}
+{% load crispy_forms_tags %}
 
 {% load render_table from django_tables2 %}
 
@@ -17,12 +18,17 @@ Zuteilung von Aufgaben an Mitglieder
 {% block content %}
 
 <h3> Tabelle filtern </h3>
+
+{% crispy filter %} 
+
+{% comment %}
 <form method="GET" action=".">
 {% csrf_token %}
 {{ filter }}
 <input type=submit name="filter" value="Filter anwenden">
 </form> 
 <p>
+{% endcomment %}
 
 <h3> Zuteilungen eintragen </h3>
 

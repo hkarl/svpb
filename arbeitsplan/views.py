@@ -438,7 +438,7 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
     """Manuelles Eintragen von Zuteilungen
     """
 
-    filterFormClass = forms.PersonAufgabengruppeFilterForm
+    filterFormClass = forms.AufgabengruppeFilterForm
     
     def get (self,request, *args, **kwargs):
         """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank

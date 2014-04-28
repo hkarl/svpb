@@ -72,8 +72,34 @@ class NameFilterForm (forms.Form):
         required =False,
         )
 
+class AufgabengruppeFilterForm (NameFilterForm):
 
-class ArbeitsgruppenFilterForm (NameFilterForm):
+    def __init__(self, *args, **kwargs):
+        super(AufgabengruppeFilterForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = "aufgabengruppefilterForm"
+        self.helper.form_method = "get"
+        self.helper.form_action = ""
+
+        # self.helper.add_input (Submit('filter', 'Filter anwenden'))
+        
+        self.helper.form_class = "form-inline"
+        ## self.helper.label_class = "col-lg-2"
+        ## self.helper.field_class = "col-lg-8"
+        self.helper.field_template = "bootstrap3/layout/inline_field.html"
+
+        self.helper.layout = Layout(
+            'last_name',
+            'first_name',
+            'aufgabengruppe',
+            Submit ('filter', 'Filter anwenden'),
+            )
+        
+    aufgabengruppe = forms.ModelChoiceField (queryset = models.Aufgabengruppe.objects.all(),
+                                            label="Aufgabengruppe", 
+                                            required=False) 
+
+class PersonAufgabengruppeFilterForm (NameFilterForm):
 
     aufgabengruppe = forms.ModelChoiceField (queryset = models.Aufgabengruppe.objects.all(),
                                             label="Aufgabengruppe", 
