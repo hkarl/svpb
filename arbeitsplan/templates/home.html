@@ -10,6 +10,7 @@
 {% block content %}
 
 
+
 {% if user.is_authenticated %}
 
 
@@ -48,7 +49,7 @@ Ihnen stehen folgende Funktionen zur Verfügung:
 </div>
 <div class="row">
   <div class="col-md-6">
-    <a href="/arbeitsplan/zuteilungAnzeige/">
+    <a href="/arbeitsplan/zuteilungAnzeige/me/">
     <div class="panel panel-warning">
       <div class="panel-heading">
         <div class="panel-title">
@@ -126,7 +127,7 @@ Es ist uns eine besondere Ehre, unseren Vorstandsmitgliedern erweiterte Funktion
         <ul class="list-group">
           <li class="list-group-item"> <a href="/arbeitsplan/manuelleZuteilung/"> Zuteilungen manuell vornehmen </a> 
           </li>
-          <li class="list-group-item"> <a href="/arbeitsplan/zuteilungAnzeige/"> Existierende Zuteilungen anzeigen </a> </li>
+          <li class="list-group-item"> <a href="/arbeitsplan/zuteilungAnzeige/all/"> Existierende Zuteilungen anzeigen </a> </li>
           <li class="list-group-item"> <a href="/arbeitsplan/erstelleZuteilung/"> Zuteilungen automatisch erstellen </a>  (noch nicht implementiert!) </li> 
         </ul>
       </div>
@@ -169,6 +170,13 @@ Es ist uns eine besondere Ehre, unseren Vorstandsmitgliedern erweiterte Funktion
 
 {% else %}
 
+  <div class="container">
+  <div class="row">
+  <div class ="col-md-12"> 
+    <img class="img-responsive" src="{% static "media/head_startseite_01.jpg"%}">
+  </div>
+  </div>
+  </div>
       <div class="jumbotron">
         <p> In einem Segelverein fällt viel Arbeit an, die auf die Mitglieder verteilt werden muss. Diese Seite dient der Organisation dieser Arbeit.
 <p>
@@ -189,5 +197,5 @@ Bist Du ein Mitglied, so <a href="/accounts/login/?next=/home/"> melde Dich bitt
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Sun Apr 27 17:43:17 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Apr 28 19:29:27 CEST 2014 <!-- hhmts end -->
 </body> </html>

@@ -39,7 +39,7 @@ urlpatterns = patterns('',
          name="arbeitsplan-aufgaben",
          ),
 
-    url (r'^arbeitsplan/zuteilungAnzeige/$',
+    url (r'^arbeitsplan/zuteilungAnzeige/(?P<wer>[a-zA-Z]+)/$',
          login_required(arbeitsplan.views.ListZuteilungenView.as_view()),
          name="arbeitsplan-zuteilunglist",
          ),

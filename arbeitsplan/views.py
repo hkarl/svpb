@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Create your views here.
 
 from django.http import HttpResponse, HttpResponseRedirect
@@ -177,19 +179,58 @@ class ListAufgabenView (ListView):
         table = AufgabenTable(models.Aufgabe.objects.all())
         django_tables2.RequestConfig(self.request).configure(table)
         return table
-    
+
+class ZuteilungTable (django_tables2.Table):
+    ausfuehrer_last = django_tables2.Column (accessor="ausfuehrer.last_name",
+                                              verbose_name="Ausführer")
+    class Meta:
+        model = models.Zuteilung
+        attrs = {"class": "paleblue"}
+
+        fields = ("aufgabe", )
+        
 class ListZuteilungenView (ListView):
 
-    # model = models.Zuteilung
+    ## def get_context_data (self, object_list):
+    ##     print object_list
+    ##     return object_list 
+        
     def get_queryset (self):
-        return models.Zuteilung.objects.filter (ausfuehrer =self.request.user)
+        if "all" in  self.request.path: 
+            table = ZuteilungTable(models.Zuteilung.objects.all())
+        else:
+            table = ZuteilungTable(models.Zuteilung.objects.filter (ausfuehrer =self.request.user))
+        # 
+        django_tables2.RequestConfig(self.request).configure(table)
+        return table 
         
     template_name = "arbeitsplan_zuteilunglist.html" 
 
-class ListMeldungenView (isVorstandMixin, ListView):
 
-    model = models.Meldung
-    template_name = "arbeitsplan_meldunglist.html" 
+class MeldungTable (django_tables2.Table):
+    melder_last = django_tables2.Column (accessor="melder.last_name",
+                                         verbose_name="Nachname")
+    melder_first = django_tables2.Column (accessor="melder.first_name",
+                                         verbose_name="Vorname")
+    aufgabe =  django_tables2.Column (accessor="aufgabe",
+                                         verbose_name="Aufgabe")
+    class Meta:
+        model = models.Meldung
+        attrs = {"class": "paleblue"}
+
+        exclude = ("erstellt","veraendert", 'melder')
+        
+        
+class ListMeldungenView (isVorstandMixin, ListView):
+    # model = models.Meldung
+    template_name = "arbeitsplan_meldunglist.html"
+    
+    def get_queryset (self):
+        table = MeldungTable(models.Meldung.objects.all())
+        django_tables2.RequestConfig(self.request).configure(table)
+        return table
+
+
 
 class CreateLeistungView (CreateView):
     model = models.Leistung

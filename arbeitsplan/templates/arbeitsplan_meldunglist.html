@@ -1,45 +1,14 @@
 {% extends "bootstrap/bootstrap_base.html" %}
 
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
-<html> <head>
-<title>
 {% load staticfiles %}
+{% load render_table from django_tables2 %}
 
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
-<html> <head>
-<title>Alle Meldungen</title>
-</head>
-
-<body>
 {% block branding %}
 <h1>Alle Meldungen anzeigen</h1>
 {% endblock %}
 
 {% block content %}
+{% render_table object_list %}
 
-
-
-
-<ul>
-{% for z in object_list %}
-  <li>  {{ z }} </li>
-{% endfor %} 
-</ul>
 {% endblock %}
 
-<hr>
-<address></address>
-<!-- hhmts start -->Last modified: Sat Mar 29 20:43:30 CET 2014 <!-- hhmts end -->
-</body> </html>
-</title>
-</head>
-
-<body>
-<h1></h1>
-
-
-
-<hr>
-<address></address>
-<!-- hhmts start -->Last modified: Sun Apr 27 18:31:38 CEST 2014 <!-- hhmts end -->
-</body> </html>
