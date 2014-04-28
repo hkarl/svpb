@@ -12,13 +12,19 @@ Arbeitsleistung eingeben
 
 Wir freuen uns, dass Sie durch eine Arbeitsleistung zum Vereinsleben beigetragen haben. Bitte geben Sie hier eine Beschreibung ein, damit Ihnen die Stunden gutgeschrieben werden können.
 <p>
+
+
+{% crispy form %}
+
+{% comment %}
 <form action="{% url 'arbeitsplan-leistung' %}" method="post" >
 {% csrf_token %}
 {{ form.as_p }}
 <input type="submit" value="Eintragen" />
 </form>
+{% endcomment %}
 
 {% endblock %} 
 
-<!-- hhmts start -->Last modified: Sun Apr 27 17:29:00 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Apr 28 20:08:19 CEST 2014 <!-- hhmts end -->
 
