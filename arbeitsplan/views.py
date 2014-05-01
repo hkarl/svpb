@@ -119,45 +119,88 @@ class UpdateMeldungView (View):
         # print "processing INvalid form"
         return HttpResponse ("Form was invalid - what to do?")
 
+###############################
 
+class FilteredListView (ListView):
+    title = ""
+    filterform = None 
+    template_name = "arbeitsplan_tff.html"
+
+    def get_context_data (self, **kwargs):
+        context= super (FilteredListView, self).get_context_data()
+        context['title'] = self.title 
+        context['filterform'] = self.filterform
+
+        return context
+    
+    
         
-class ListAufgabenView (ListView):
+class ListAufgabenView (FilteredListView):
 
-    # model = models.Aufgabe
-    template_name = "arbeitsplan_aufgabenlist.html"
-
+    filterform_class = forms.AufgabengruppeFilterForm
+    title = "Alle Aufgaben anzeigen"
+    
     def get_queryset (self):
-        table = AufgabenTable(models.Aufgabe.objects.all())
+
+        # evaluate the form:
+        self.filterform = self.filterform_class(self.request.GET)
+        if self.filterform.is_valid() and self.filterform.cleaned_data['aufgabengruppe'] <> None:
+            table = AufgabenTable(models.Aufgabe.objects.filter(gruppe__gruppe=
+                                                                self.filterform.cleaned_data['aufgabengruppe']))
+        else:
+            table = AufgabenTable(models.Aufgabe.objects.all())
         django_tables2.RequestConfig(self.request).configure(table)
         return table
 
         
-class ListZuteilungenView (ListView):
-
-    ## def get_context_data (self, object_list):
-    ##     print object_list
-    ##     return object_list 
+    
         
+class ListZuteilungenView (FilteredListView):
+    title = "Alle Zuteilungen anzeigen"
+    filterform_class = forms.PersonAufgabengruppeFilterForm
+    
     def get_queryset (self):
         if "all" in  self.request.path: 
-            table = ZuteilungTable(models.Zuteilung.objects.all())
+            qs = models.Zuteilung.objects.all()
         else:
-            table = ZuteilungTable(models.Zuteilung.objects.filter (ausfuehrer =self.request.user))
-        # 
+            qs = models.Zuteilung.objects.filter (ausfuehrer =self.request.user)
+
+        self.filterform = self.filterform_class(self.request.GET)
+        if self.filterform.is_valid():
+            print self.filterform.cleaned_data
+            if self.filterform.cleaned_data['aufgabengruppe'] <> None:
+                qs = qs.filter (aufgabe__gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
+            if self.filterform.cleaned_data['first_name'] <> "":
+                qs = qs.filter (ausfuehrer__first_name__icontains = self.filterform.cleaned_data['first_name'])
+            if self.filterform.cleaned_data['last_name'] <> "":
+                qs = qs.filter (ausfuehrer__last_name__icontains = self.filterform.cleaned_data['last_name'])
+        
+
+        table = ZuteilungTable(qs)
+        # TODO: actually, "me" should be enforced when the user is not a Vorstand!
+        
         django_tables2.RequestConfig(self.request).configure(table)
         return table 
         
-    template_name = "arbeitsplan_zuteilunglist.html" 
-
-
         
-        
-class ListMeldungenView (isVorstandMixin, ListView):
-    # model = models.Meldung
-    template_name = "arbeitsplan_meldunglist.html"
+class ListMeldungenView (isVorstandMixin, FilteredListView):
+
+    title = "Alle Meldungen anzeigen"
+    filterform_class = forms.PersonAufgabengruppeFilterForm
     
     def get_queryset (self):
-        table = MeldungTable(models.Meldung.objects.all())
+        qs = models.Meldung.objects.all()
+        self.filterform = self.filterform_class(self.request.GET)
+        if self.filterform.is_valid():
+            print self.filterform.cleaned_data
+            if self.filterform.cleaned_data['aufgabengruppe'] <> None:
+                qs = qs.filter (aufgabe__gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
+            if self.filterform.cleaned_data['first_name'] <> "":
+                qs = qs.filter (melder__first_name__icontains = self.filterform.cleaned_data['first_name'])
+            if self.filterform.cleaned_data['last_name'] <> "":
+                qs = qs.filter (melder__last_name__icontains = self.filterform.cleaned_data['last_name'])
+            
+        table = MeldungTable(qs)
         django_tables2.RequestConfig(self.request).configure(table)
         return table
 
@@ -366,7 +409,7 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
     """Manuelles Eintragen von Zuteilungen
     """
 
-    filterFormClass = forms.AufgabengruppeFilterForm
+    filterFormClass = forms.PersonAufgabengruppeFilterForm
     
     def get (self,request, *args, **kwargs):
         """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank
