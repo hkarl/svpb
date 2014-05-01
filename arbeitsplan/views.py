@@ -11,8 +11,6 @@ from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Sum
 from django.contrib.auth import logout
 from django.forms.models import modelformset_factory
-from django.utils.safestring import mark_safe
-from django.utils.html import escape
 from django.forms.formsets import formset_factory
  
 import django_tables2
@@ -207,10 +205,10 @@ class LeistungBearbeitenView (isVorstandMixin, View):
         # and filter further only the open or rueckfragen;
         # for simplicity, we exlude the other ones:
         
-        mainqs = mainqs.exclude(status=models.Leistung.ACK
-                                ).exclude(status=models.Leistung.NEG)
-        print "view qs: "
-        print [type(l) for l in mainqs]
+        ## mainqs = mainqs.exclude(status=models.Leistung.ACK
+        ##                         ).exclude(status=models.Leistung.NEG)
+        ## print "view qs: "
+        ## print [type(l) for l in mainqs]
 
         # formLA = forms.LeistungAkzeptierenForm (initial=mainqs[0])
         ## ff = formset_factory (forms.LeistungAkzeptierenForm, extra =0)
@@ -220,13 +218,17 @@ class LeistungBearbeitenView (isVorstandMixin, View):
         ##                          'aufgabe': l.aufgabe,
         ##                          }
         ##                         for l in mainqs])
-        
+
+        table = LeistungBearbeitenTable (mainqs)
+        django_tables2.RequestConfig(self.request).configure(table)
+
         return render (request,
                        "arbeitsplan_leistungbearbeiten.html",
                        dictionary = {
                            # 'formset': formset,
                            'qs': mainqs,
                            'statusvalues': models.Leistung.STATUS,
+                           'table': table, 
                            # 'form': formset, 
                            },
                        )
@@ -236,14 +238,28 @@ class LeistungBearbeitenView (isVorstandMixin, View):
         print request.POST 
         data = {}
         for k, v in request.POST.iteritems():
-            try: 
-                tag, num = k.split('-')
-                if (tag == 'id_status' or tag=='id_bemerkungVorstand'):
+            try:
+                print k, v 
+                if "status" == k[:6]:
+                    print "status detected"
+                    opt, num, status = k.split('_')
+                    print opt, num, status 
                     if not num in data.keys():
-                        data[num] = {'id_status': "",
-                                     'id_bemerkungVorstand': "",
+                        data[num] = {'status': "",
+                                     'bemerkungVorstand': "",
                         }
+                    if v=='on':
+                        data[num]['status'] = status
+
+                if 'bemerkungVorstand' == k[:17]:
+                    tag, num = k.split('_')
+                    if not num in data.keys():
+                        data[num] = {'status': "",
+                                     'bemerkungVorstand': "",
+                        }
+                    
                     data[num][tag] = v
+                    
             except:
                 pass 
 
@@ -256,13 +272,20 @@ class LeistungBearbeitenView (isVorstandMixin, View):
             ## print k, v
             ## print type(v['id_bemerkungVorstand'])
             l = models.Leistung.objects.get (id = int(k))
-            l.bemerkungVorstand = v['id_bemerkungVorstand']
-            l.status = v['id_status']
+            safeit = False
+            if l.bemerkungVorstand <> v['bemerkungVorstand']:
+                l.bemerkungVorstand = v['bemerkungVorstand']
+                safeit = True
+                
+            if l.status <> v['status'] and v['status'] <> '':
+                l.status = v['status']
+                safeit = True
+                
                                  ## status = v['id_status'],
                                  ## 
-                                 
-            l.save()
-            print l
+            if safeit:
+                l.save()
+            # print l
 
         # TODO: bei Rueckfrage koennte man eine email senden? oder immer?
         

@@ -37,7 +37,7 @@ class CreateLeistungForm (forms.ModelForm):
         self.helper.form_id = ""
         self.helper.form_method = "post"
         self.helper.add_input (Submit ('apply', 'Eintragen'))
-        
+
     class Meta:
         model = models.Leistung
         exclude = ('melder',
@@ -52,6 +52,20 @@ class CreateLeistungForm (forms.ModelForm):
 
 
 class NameFilterForm (forms.Form):
+    last_name = forms.CharField (
+        label="Nachname",
+        max_length=20,
+        required =False,
+        )
+
+    # disabledWidget = forms.TextInput(attrs={'readonly': True})    
+    first_name = forms.CharField (
+        label="Vorname",
+        max_length=20,
+        required =False,
+        # widget=disabledWidget,
+        )
+    
     def __init__(self, *args, **kwargs):
         super(NameFilterForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -71,18 +85,9 @@ class NameFilterForm (forms.Form):
             'first_name',
             Submit ('filter', 'Filter anwenden'),
             )
-        
-    last_name = forms.CharField (
-        label="Nachname",
-        max_length=20,
-        required =False,
-        )
-    
-    first_name = forms.CharField (
-        label="Vorname",
-        max_length=20,
-        required =False,
-        )
+
+        # disabluing test, this seems to work 
+        # self.fields['first_name'].widget.attrs['disabled'] = True
 
 class AufgabengruppeFilterForm (NameFilterForm):
 
@@ -141,3 +146,43 @@ class PersonAufgabengruppeFilterForm (NameFilterForm):
 ##                    'status',
 ##                    )
         
+###################
+
+## class LeistungAkzeptierenForm (forms.ModelForm):
+    
+##     def __init__ (self, *args, **kwargs):
+##         super(LeistungAkzeptierenForm, self).__init__(*args, **kwargs)
+##         self.helper = FormHelper()
+##         self.helper.form_id = ""
+##         self.helper.form_method = "post"
+##         self.helper.add_input (Submit ('apply', 'Eintragen'))
+##         self.helper.form_class = "form-inline"
+##         self.helper.field_template = "bootstrap3/layout/inline_field.html"
+
+##         # turn off editing of static fields 
+##         self.fields['melder'].widget.attrs['disabled'] = True
+##         self.fields['aufgabe'].widget.attrs['disabled'] = True
+##         self.fields['wann'].widget.attrs['disabled'] = True
+##         self.fields['zeit'].widget.attrs['disabled'] = True
+##         self.fields['auslagen'].widget.attrs['disabled'] = True
+##         self.fields['km'].widget.attrs['disabled'] = True
+##         self.fields['bemerkung'].widget.attrs['disabled'] = True
+
+##         self.helper.layout = Layout (
+##             'melder',
+##             'aufgabe',
+##             'wann',
+##             'zeit',
+##             'auslagen',
+##             'km',
+##             # 'bemerkung',
+##             'status',     
+##             'bemerkungVorstand',
+##             # Submit ('filter', 'Filter anwenden'),        
+##             )
+##     class Meta:
+##         model = models.Leistung
+##         exclude = (
+##             'erstellt',
+##             'veraendert',
+##             )

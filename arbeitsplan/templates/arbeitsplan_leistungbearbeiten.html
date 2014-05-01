@@ -1,28 +1,33 @@
 {% extends "bootstrap/bootstrap_base.html" %}
 {% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
 
 {% load l10n %}
 
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
-<html> <head>
-<title>Meldungen eintragen</title>
-</head>
-
-<body>
 {% block branding %}
-<h1>Gemeldete Leistungen bearbeiten</h1>
+Gemeldete Leistungen bearbeiten
 {% endblock %}
 
 {% block content %}
 
 
 Bitte akzeptieren, lehnen ab, oder rückfragen Sie die folgenden gemeldeten Leistungen.  Wählen Sie einen neuen Status und tragen ggf. eine Bemerkung ein. 
-<br>(Es werden hier nur offen Leistungsmeldungen oder solche mit Rückfragen angezeigt.)
+
+{# <br>(Es werden hier nur offen Leistungsmeldungen oder solche mit Rückfragen angezeigt.) #} 
+
+
+
+<p> 
+
 
 <p> 
 
 <form method="POST" action=".">
 {% csrf_token %}
+{% render_table table %}
+
+{% comment %}
 <ul>
 {% for f in qs %}
   <li> Leistungsmeldung von {{ f.melder }} 
@@ -55,6 +60,18 @@ Bitte akzeptieren, lehnen ab, oder rückfragen Sie die folgenden gemeldeten Leis
         > {{s.1}} </option> 
       {% endfor %} 
       </select>
+    </li>
+    </ul>
+  </li>
+{% endfor %}
+</ul>
+{% endcomment %}
+<input type=submit>
+</form>
+
+
+{% endblock %}
+
       {% comment %}
       <br>
       Status: {{f.status}}
@@ -73,18 +90,4 @@ Bitte akzeptieren, lehnen ab, oder rückfragen Sie die folgenden gemeldeten Leis
       {% endfor %} 
       </ul>
       {% endcomment %}
-    </li>
-    </ul>
-  </li>
-{% endfor %}
-</ul>
-<input type=submit>
-</form>
 
-  
-{% endblock %}
-
-<hr>
-<address></address>
-<!-- hhmts start -->Last modified: Sun Apr 27 18:27:25 CEST 2014 <!-- hhmts end -->
-</body> </html>

@@ -4,8 +4,13 @@
 Collect all the tables and column types relevant for django_tables2 here. 
 """
 
+from django.utils.safestring import mark_safe
+from django.utils.html import escape
+from string import Template
+
 import django_tables2
 import models
+import unicodedata
 
 
 ####################################
@@ -33,6 +38,18 @@ class ValuedCheckBoxColumn (django_tables2.columns.Column):
                           ("checked" if value[0]==1 else "") +
                           '/>'
                           )
+
+
+class TextareaInputColumn (django_tables2.columns.Column):
+
+    def render (self, value):
+        print "render: ", value, self.__dict__
+        return mark_safe ('<input class="textinput textInput" id="id_bemerkungVorstand" maxlength="20" name="bemerkungVorstand" placeholder="Bemerkung Vorstand" value="'
+                          +    escape (value) +
+                          '" type="text" />'
+                        )
+    
+
     
 ##############################
 ## Table facotires
@@ -146,3 +163,75 @@ def ZuteilungsTableFactory (l, aufgabenQs):
     t = NameTableFactory ('ZuteilungsTable', attrs, l)
  
     return t 
+
+##############################
+
+
+
+class LeistungBearbeitenTable (django_tables2.Table):
+
+    ## bemerkungVorstand = TextareaInputColumn (orderable=False,
+    ##                                          verbose_name="Bemerkung Vorstand")
+
+    # Column.empty_values = ()
+    
+    def render_bemerkungVorstand (value, bound_row):
+
+        # print value 
+        # print bound_row._record.bemerkungVorstand
+        ## return mark_safe ('<input class="textinput textInput" id="id_bermerkungVorstand_{0}" maxlength="20" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" value="{1}" type="text" />'.format(str(bound_row._record.id),
+        ##                         escape (bound_row._record.bemerkungVorstand),
+        ##                         )
+        ##                 )        
+        return mark_safe ('<textarea class="textinput textInput" id="id_bermerkungVorstand_{0}" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" rows=6>{1}</textarea>'.format(str(bound_row._record.id),
+                                escape (bound_row._record.bemerkungVorstand),
+                                )
+                        )        
+
+
+    def render_status (value, bound_row):
+        ## tmp = Template("""
+        ## <div id="div_id_status_${id}" class="ctrlHolder">
+        ## <label for="id_status_${id} class="requiredField">
+        ## <ul>
+        ## ${rows}
+        ## </ul>
+        ## </div>
+        ## """)
+
+        ## for s in models.Leistung.STATUS:
+        ##     row = """<li><label for="id_status_${0}" class
+        ##     """
+
+        tmp = '\n'.join(["""
+            <label class="btn {5} {4}">
+            <input type="radio" name="status_{0}_{2}" id="status_{0}_{2}"> {3}
+            </label>
+            """.format(bound_row._record.id,
+                       counter,
+                       status[0],
+                       status[1],
+                       " active" if bound_row._record.status == status[0] else "",
+                       models.Leistung.STATUSButtons[status[0]])
+                        for (counter, status) in enumerate(models.Leistung.STATUS)],
+                        )
+        
+            
+        return mark_safe("""
+<div class="btn-group" data-toggle="buttons">
+""" +
+tmp +
+"""
+</div>    
+    """)
+    
+    bemerkungVorstand = django_tables2.Column (empty_values=())
+    
+        
+    class Meta:
+        model = models.Leistung
+        attrs = {"class": "paleblue"}
+        exclude = ("erstellt", "veraendert", 'id')        
+        sequence = ('melder', 'aufgabe', 'wann', 'zeit', 'auslagen', 'km',
+                    'bemerkung', 'status', 'bemerkungVorstand')
+    

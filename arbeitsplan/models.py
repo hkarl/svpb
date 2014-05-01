@@ -117,6 +117,12 @@ class Leistung (models.Model):
         (NEG, 'Abgelehnt'), 
         )
 
+    STATUSButtons = {
+        OFFEN: 'btn-default', 
+        ACK: 'btn-success', 
+        RUECKFRAGE: 'btn-warning', 
+        NEG: 'btn-danger', 
+        }
     status = models.CharField (max_length=2,
                                choices = STATUS,
                                default = OFFEN) 
