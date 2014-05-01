@@ -5,13 +5,13 @@ Collect all the tables and column types relevant for django_tables2 here.
 """
 
 from django.utils.safestring import mark_safe
-from django.utils.html import escape
+from django.utils.html import escape, format_html
 from string import Template
 
 import django_tables2
 import models
 import unicodedata
-
+import django.utils.encoding 
 
 ####################################
 ### Colum Types
@@ -170,11 +170,6 @@ def ZuteilungsTableFactory (l, aufgabenQs):
 
 class LeistungBearbeitenTable (django_tables2.Table):
 
-    ## bemerkungVorstand = TextareaInputColumn (orderable=False,
-    ##                                          verbose_name="Bemerkung Vorstand")
-
-    # Column.empty_values = ()
-    
     def render_bemerkungVorstand (value, bound_row):
 
         # print value 
@@ -182,11 +177,16 @@ class LeistungBearbeitenTable (django_tables2.Table):
         ## return mark_safe ('<input class="textinput textInput" id="id_bermerkungVorstand_{0}" maxlength="20" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" value="{1}" type="text" />'.format(str(bound_row._record.id),
         ##                         escape (bound_row._record.bemerkungVorstand),
         ##                         )
-        ##                 )        
-        return mark_safe ('<textarea class="textinput textInput" id="id_bermerkungVorstand_{0}" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" rows=6>{1}</textarea>'.format(str(bound_row._record.id),
-                                escape (bound_row._record.bemerkungVorstand),
-                                )
-                        )        
+        ##                 )
+        
+        tmp =  format_html (u'<textarea class="textinput textInput" id="id_bermerkungVorstand_{0}" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" rows=6>{1}</textarea>',
+                            str(bound_row._record.id),
+                            bound_row._record.bemerkungVorstand,
+                            )
+
+        ## print tmp
+        ## print type(tmp)
+        return tmp 
 
 
     def render_status (value, bound_row):
@@ -203,18 +203,19 @@ class LeistungBearbeitenTable (django_tables2.Table):
         ##     row = """<li><label for="id_status_${0}" class
         ##     """
 
-        tmp = '\n'.join(["""
+        tmp = '\n'.join([format_html(u"""
             <label class="btn {5} {4}">
             <input type="radio" name="status_{0}_{2}" id="status_{0}_{2}"> {3}
             </label>
-            """.format(bound_row._record.id,
-                       counter,
-                       status[0],
-                       status[1],
-                       " active" if bound_row._record.status == status[0] else "",
-                       models.Leistung.STATUSButtons[status[0]])
-                        for (counter, status) in enumerate(models.Leistung.STATUS)],
-                        )
+            """,
+            bound_row._record.id,
+            counter,
+            status[0],
+            status[1],
+            " active" if bound_row._record.status == status[0] else "",
+            models.Leistung.STATUSButtons[status[0]])
+            for (counter, status) in enumerate(models.Leistung.STATUS)]
+            )
         
             
         return mark_safe("""
