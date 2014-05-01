@@ -118,10 +118,10 @@ class Leistung (models.Model):
         )
 
     STATUSButtons = {
-        OFFEN: 'btn-default', 
-        ACK: 'btn-success', 
-        RUECKFRAGE: 'btn-warning', 
-        NEG: 'btn-danger', 
+        OFFEN: 'btn-mydefault', 
+        ACK: 'btn-mysuccess', 
+        RUECKFRAGE: 'btn-mywarning', 
+        NEG: 'btn-mydanger', 
         }
     status = models.CharField (max_length=2,
                                choices = STATUS,

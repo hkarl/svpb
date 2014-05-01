@@ -1,0 +1,193 @@
+
+.btn-mydefault { 
+  color: #000000; 
+  background-color: #FFFFFF; 
+  border-color: #000; 
+} 
+ 
+.btn-mydefault:hover, 
+.btn-mydefault:focus, 
+.btn-mydefault:active, 
+.btn-mydefault.active, 
+.open .dropdown-toggle.btn-mydefault { 
+  color: #fff; 
+  background-color: #5C5C5C; 
+  border-color: #000; 
+  border-width:3px;
+} 
+ 
+.btn-mydefault:active, 
+.btn-mydefault.active, 
+.open .dropdown-toggle.btn-mydefault { 
+  background-image: none; 
+} 
+ 
+.btn-mydefault.disabled, 
+.btn-mydefault[disabled], 
+fieldset[disabled] .btn-mydefault, 
+.btn-mydefault.disabled:hover, 
+.btn-mydefault[disabled]:hover, 
+fieldset[disabled] .btn-mydefault:hover, 
+.btn-mydefault.disabled:focus, 
+.btn-mydefault[disabled]:focus, 
+fieldset[disabled] .btn-mydefault:focus, 
+.btn-mydefault.disabled:active, 
+.btn-mydefault[disabled]:active, 
+fieldset[disabled] .btn-mydefault:active, 
+.btn-mydefault.disabled.active, 
+.btn-mydefault[disabled].active, 
+fieldset[disabled] .btn-mydefault.active { 
+  background-color: #FFFFFF; 
+  border-color: #CCCCCC; 
+} 
+ 
+.btn-mydefault .badge { 
+  color: #FFFFFF; 
+  background-color: #000000; 
+}
+
+
+
+.btn-mysuccess { 
+  color: #000000; 
+  background-color: #5CB85C; 
+  border-color: #000; 
+} 
+ 
+.btn-mysuccess:hover, 
+.btn-mysuccess:focus, 
+.btn-mysuccess:active, 
+.btn-mysuccess.active, 
+.open .dropdown-toggle.btn-mysuccess { 
+  color: #fff; 
+  background-color: #367A36; 
+  border-color: #0000; 
+  border-width:3px;
+} 
+ 
+.btn-mysuccess:active, 
+.btn-mysuccess.active, 
+.open .dropdown-toggle.btn-mysuccess { 
+  background-image: none; 
+} 
+ 
+.btn-mysuccess.disabled, 
+.btn-mysuccess[disabled], 
+fieldset[disabled] .btn-mysuccess, 
+.btn-mysuccess.disabled:hover, 
+.btn-mysuccess[disabled]:hover, 
+fieldset[disabled] .btn-mysuccess:hover, 
+.btn-mysuccess.disabled:focus, 
+.btn-mysuccess[disabled]:focus, 
+fieldset[disabled] .btn-mysuccess:focus, 
+.btn-mysuccess.disabled:active, 
+.btn-mysuccess[disabled]:active, 
+fieldset[disabled] .btn-mysuccess:active, 
+.btn-mysuccess.disabled.active, 
+.btn-mysuccess[disabled].active, 
+fieldset[disabled] .btn-mysuccess.active { 
+  background-color: #5CB85C; 
+  border-color: #130269; 
+} 
+ 
+.btn-mysuccess .badge { 
+  color: #5CB85C; 
+  background-color: #000000; 
+}
+
+
+.btn-mywarning { 
+  color: #000000; 
+  background-color: #F0AD4E; 
+  border-color: #000; 
+} 
+ 
+.btn-mywarning:hover, 
+.btn-mywarning:focus, 
+.btn-mywarning:active, 
+.btn-mywarning.active, 
+.open .dropdown-toggle.btn-mywarning { 
+  color: #fff; 
+  background-color: #CC821A; 
+  border-color: #000; 
+  border-width:3px;
+} 
+ 
+.btn-mywarning:active, 
+.btn-mywarning.active, 
+.open .dropdown-toggle.btn-mywarning { 
+  background-image: none; 
+} 
+ 
+.btn-mywarning.disabled, 
+.btn-mywarning[disabled], 
+fieldset[disabled] .btn-mywarning, 
+.btn-mywarning.disabled:hover, 
+.btn-mywarning[disabled]:hover, 
+fieldset[disabled] .btn-mywarning:hover, 
+.btn-mywarning.disabled:focus, 
+.btn-mywarning[disabled]:focus, 
+fieldset[disabled] .btn-mywarning:focus, 
+.btn-mywarning.disabled:active, 
+.btn-mywarning[disabled]:active, 
+fieldset[disabled] .btn-mywarning:active, 
+.btn-mywarning.disabled.active, 
+.btn-mywarning[disabled].active, 
+fieldset[disabled] .btn-mywarning.active { 
+  background-color: #F0AD4E; 
+  border-color: #EEA236; 
+} 
+ 
+.btn-mywarning .badge { 
+  color: #F0AD4E; 
+  background-color: #000000; 
+}
+
+
+
+.btn-mydanger { 
+  color: #000000; 
+  background-color: #F2534E; 
+  border-color: #000; 
+} 
+ 
+.btn-mydanger:hover, 
+.btn-mydanger:focus, 
+.btn-mydanger:active, 
+.btn-mydanger.active, 
+.open .dropdown-toggle.btn-mydanger { 
+  color: #fff; 
+  background-color: #C21D18; 
+  border-color: #000; 
+  border-width:3px;
+} 
+ 
+.btn-mydanger:active, 
+.btn-mydanger.active, 
+.open .dropdown-toggle.btn-mydanger { 
+  background-image: none; 
+} 
+ 
+.btn-mydanger.disabled, 
+.btn-mydanger[disabled], 
+fieldset[disabled] .btn-mydanger, 
+.btn-mydanger.disabled:hover, 
+.btn-mydanger[disabled]:hover, 
+fieldset[disabled] .btn-mydanger:hover, 
+.btn-mydanger.disabled:focus, 
+.btn-mydanger[disabled]:focus, 
+fieldset[disabled] .btn-mydanger:focus, 
+.btn-mydanger.disabled:active, 
+.btn-mydanger[disabled]:active, 
+fieldset[disabled] .btn-mydanger:active, 
+.btn-mydanger.disabled.active, 
+.btn-mydanger[disabled].active, 
+fieldset[disabled] .btn-mydanger.active { 
+  background-color: #F2534E; 
+  border-color: #D43F3A; 
+} 
+ 
+.btn-mydanger .badge { 
+  color: #F2534E; 
+  background-color: #000000; 
+}
