@@ -36,6 +36,7 @@ SVPB -- Arbeitsverwaltung
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="/">Home</a></li>
+          {% if user.is_active %}
             <li class="dropdown">
             <!-- AUFGABEN --> 
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Aufgaben <b class="caret"></b></a>
@@ -90,6 +91,7 @@ SVPB -- Arbeitsverwaltung
                 {% endfor %}
               </ul>
             </li>
+            {% endif %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <!-- ABOUT --> 
