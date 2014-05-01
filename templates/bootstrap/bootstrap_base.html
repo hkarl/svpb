@@ -21,30 +21,140 @@ SVPB -- Arbeitsverwaltung
 
 <body role="document">
 
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand">SVPB</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/">Home</a></li>
+            <li class="dropdown">
+            <!-- AUFGABEN --> 
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Aufgaben <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/arbeitsplan/meldungAnzeige/">Anzeigen</a></li>
+              </ul>
+            </li>
+            <!-- MELDUNG --> 
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Meldung <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/arbeitsplan/meldung/">Melden</a></li>
+                {% for g in  user.groups.all %}
+                  {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li><a href="/arbeitsplan/meldungAnzeige/">Anzeigen</a></li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </li>
+            <!-- ZUTEILUNG --> 
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Zuteilung <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/arbeitsplan/zuteilungAnzeige/me/">Anzeigen</a></li>
+                {% for g in  user.groups.all %}
+                  {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li><a href="/arbeitsplan/zuteilungAnzeige/all/">Anzeigen alle</a></li>
+                <li><a href="/arbeitsplan/manuelleZuteilung/">Manuell zuteilen</a></li>
+                <li><a href="/arbeitsplan/erstelleZuteilung/">Automatisch zuteilen (TODO)</a></li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </li>
+            <!-- LEISTUNG --> 
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Leistung <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/arbeitsplan/leistung/">Eintragen</a></li>
+                <li><a href="/arbeitsplan/leistungListe/">Anzeigen</a></li>
+                {% for g in  user.groups.all %}
+                  {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li><a href="/arbeitsplan/leistungenBearbeiten/z=me/">Bearbeiten (für mich)</a></li>
+                <li><a href="/arbeitsplan/leistungenBearbeiten/z=all/">Bearbeiten (für alle Vorstände)</a></li>
+                <li><a href="/arbeitsplan/salden/">Saldenübersicht</a></li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <!-- ABOUT --> 
+            <li><a href="/about">About</a></li>
+            {% if user.is_active %}
+            {% if user.has_usable_password %}
+            <li>
+            <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> 
+            </li>
+            {% endif %}
+            <li>
+                <a href="/logout/">{% trans 'Log out' %}</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    {% comment %}
     <!-- Fixed navbar -->
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
+        <!-- 
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">SVPB</a>
+        </div>
+        -->
+        <div class="navbar-collapse collapse">        
           <ul class="nav navbar-nav">
             <li class="active"><a href="/">Home</a></li>
-            <li class="navbar-right">
-                {% if user.has_usable_password %}
-                <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
-                {% endif %}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Aufgaben <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li> <a href="">Anzeigen</li>
+              </ul>
             </li>
-            {% if user.is_active %}
-            <li class="navbar-right">
-                <a href="/logout/">{% trans 'Log out' %}</a>
-            </li>
-            {% if user.is_active %}
+          </ul>
+          {% if user.is_active %}
+          <ul class="nav navbar-nav narvbar-right">
+            <li>
             <p class="navbar-text navbar-right">
               {% trans 'Welcome,' %}
               <strong>{% filter force_escape %}{% firstof user.get_short_name user.get_username %}{% endfilter %}</strong>.
             </p>
-            {% endif %}
-            {% endif %}
+            </li>
+            <li>
+                {% if user.has_usable_password %}
+                <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
+                {% endif %}
+            </li>
+            <li>
+                <a href="/logout/">{% trans 'Log out' %}</a>
+            </li>
           </ul>
+          {% endif %}
+      </div>
       </div>
     </div>
+    {% endcomment %}
 
     <div  class="container theme-showcase" role="main">
 
