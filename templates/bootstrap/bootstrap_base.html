@@ -139,12 +139,6 @@ SVPB -- Arbeitsverwaltung
           {% if user.is_active %}
           <ul class="nav navbar-nav narvbar-right">
             <li>
-            <p class="navbar-text navbar-right">
-              {% trans 'Welcome,' %}
-              <strong>{% filter force_escape %}{% firstof user.get_short_name user.get_username %}{% endfilter %}</strong>.
-            </p>
-            </li>
-            <li>
                 {% if user.has_usable_password %}
                 <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
                 {% endif %}
