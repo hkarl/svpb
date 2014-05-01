@@ -37,10 +37,16 @@ class Aufgabengruppe (models.Model):
     
 class Aufgabe (models.Model):
     aufgabe = models.CharField (max_length=30)
-    datum = models.DateField (blank=True, null=True)
     verantwortlich = models.ForeignKey (User)
     gruppe = models.ForeignKey (Aufgabengruppe)
-    anzahl = models.IntegerField ()
+    anzahl = models.IntegerField (default = 0,
+                                  help_text="Wieviele Personen werden für diese Aufgabe gebraucht?")
+    stunden = models.IntegerField (default = 0,
+                                   help_text="Wieviele Stunden Arbeit pro Person?")
+    
+    datum = models.DateField (blank=True, null=True,
+                              help_text="Wann fällt die Aufgabe an? (keine Angabe möglich)")
+
     bemerkung = models.TextField(blank=True)
 
     def __unicode__ (self):
@@ -50,12 +56,41 @@ class Aufgabe (models.Model):
         verbose_name_plural = "Aufgaben"
         verbose_name = "Aufgabe"
 
+class Stundenplan (models.Model):
+    aufgabe = models.ForeignKey (Aufgabe)
+    uhrzeit = models.IntegerField (help_text="Beginn")
+    anzahl = models.IntegerField (default= 0,
+                                  help_text="Wieviele Personen werden um diese Uhrzeit benötigt?")
+
+    def __unicode__ (self):
+        return self.aufgabe.__unicode__() + "@" + str(self.uhrzeit) + ": " + str(self.anzahl)
+    
+    class Meta:
+        verbose_name_plural = "Studenpläne" 
+    
 class Meldung (models.Model):
     erstellt = models.DateField (auto_now_add=True)
     veraendert = models.DateField (auto_now=True)
     melder = models.ForeignKey (User)
     aufgabe = models.ForeignKey (Aufgabe)
 
+    WENNSMUSS = 0
+    NORMAL = 1
+    GERNE = 2
+
+    PRAEFERENZ = (
+        (WENNSMUSS, "Wenn's sein muss"),
+        (NORMAL, "Ok" ),
+        (GERNE, "Gerne!"),
+        )
+
+    prefMitglied = models.IntegerField (choices = PRAEFERENZ,
+                                        default = NORMAL,
+                                        help_text="Haben Sie Vorlieben für diese Aufgabe?",)
+    prefVorstand = models.IntegerField (choices = PRAEFERENZ,
+                                        default = NORMAL,
+                                        help_text = "Trauen Sie diesem Mitglied die Aufgabe zu?",)
+        
     def __unicode__ (self):
         return (self.melder.__unicode__() + " ; " +
                 self.aufgabe.__unicode__() + " ; " +
@@ -72,6 +107,8 @@ class Zuteilung (models.Model):
     aufgabe = models.ForeignKey (Aufgabe)
     ausfuehrer = models.ForeignKey (User)
     automatisch = models.BooleanField (default=False)
+    uhrzeit = models.IntegerField (blank=True, null=True)
+    
     class Meta:
         verbose_name_plural = "Zuteilungen"
 
@@ -81,6 +118,7 @@ class Zuteilung (models.Model):
     class Meta:
         verbose_name_plural = "Zuteilungen"
         verbose_name = "Zuteilung"
+
 
     
 class Leistung (models.Model):
