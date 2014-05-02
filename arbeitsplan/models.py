@@ -24,8 +24,10 @@ from django.contrib.auth.models import User
 ##         return self.user.__unicode__()
 
 class Aufgabengruppe (models.Model):
-    gruppe = models.CharField (max_length=30)
-    verantwortlich = models.ForeignKey (User) 
+    gruppe = models.CharField (max_length=30,
+                               help_text="Aussagefähiger Name für Gruppe von Aufgaben")
+    verantwortlich = models.ForeignKey (User,
+                                        help_text="Verantwortliches Vorstandsmitglied") 
     bemerkung = models.TextField(blank=True)
 
     def __unicode__ (self):
@@ -37,7 +39,8 @@ class Aufgabengruppe (models.Model):
     
 class Aufgabe (models.Model):
     aufgabe = models.CharField (max_length=30)
-    verantwortlich = models.ForeignKey (User)
+    verantwortlich = models.ForeignKey (User,
+                                        help_text="Verantwortliches Vorstandsmitglied")
     gruppe = models.ForeignKey (Aufgabengruppe)
     anzahl = models.IntegerField (default = 0,
                                   help_text="Wieviele Personen werden für diese Aufgabe gebraucht?")
