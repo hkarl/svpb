@@ -1,5 +1,7 @@
 from django import forms
 import models
+from django.forms.models import inlineformset_factory
+from django.core.exceptions import ValidationError
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Button
@@ -205,3 +207,40 @@ class PersonAufgabengruppeFilterForm (NameFilterForm):
 ##             'erstellt',
 ##             'veraendert',
 ##             )
+
+class AufgabeForm (forms.ModelForm):
+    class Meta:
+        model = models.Aufgabe
+
+    def __init__ (self, request, *args, **kwargs):
+        self.request = request 
+        super(AufgabeForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+
+    def clean (self):
+        ## print "in form clean"
+        ## print self.request 
+
+        cleaned_data = super(AufgabeForm, self).clean()
+
+        stundenplan = []
+        for k,v in self.request.POST.iteritems():
+            if 'uhrzeit' == k[:7] and v <> '0':
+                v = int(v)
+                if v <0:
+                    raise ValidationError ("Keine negativen Personen im Stundenplan",
+                                           code="negativNumber") 
+                    
+                uhrzeit = int(k.split('_')[1])
+                stundenplan.append ((uhrzeit, v))
+
+        print stundenplan
+        print cleaned_data['datum'] 
+        if (len(stundenplan) > 0) and (cleaned_data['datum'] == None):
+            raise ValidationError ("Angaben im Stundenplan erfordern ein Datum.",
+                                   code ="illogic") 
+
+        cleaned_data['stundenplan'] = stundenplan 
+        return cleaned_data 

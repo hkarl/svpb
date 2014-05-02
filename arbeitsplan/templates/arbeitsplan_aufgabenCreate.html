@@ -1,0 +1,51 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Aufgabe neu anlegen
+{% endblock %}
+
+{% block content %}
+
+
+<form id="aufgabe-form" method="POST" action=".">
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Aufgaben
+        </div>
+      </div>
+      <div class="panel-body">
+        {% crispy form %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Zeiten
+        </div>
+      </div>
+      <div class="panel-body">
+        <table class="table-striped">
+          {%  for x in "0123456789" %}
+          <tr id="{{ x.prefix }}-row">
+            <td>  {{x}}: </td>
+            <td> <div class="controls"> <input class="numberinput" id="id_uhrzeit_{{x}}" name="uhrzeit_{{x}}" type="number" value="0" /> </div>  </td> 
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<input type="submit" class="btn btn-primary" value="Neue Aufgabe anlegen">
+</form>
+
+
+{% endblock %}

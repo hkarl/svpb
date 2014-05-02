@@ -80,6 +80,10 @@ urlpatterns = patterns('',
          login_required(arbeitsplan.views.Salden.as_view()),
          name="arbeitsplan-salden",),
 
+    url (r'^arbeitsplan/aufgabeErzeugen/$',
+         login_required(arbeitsplan.views.AufgabenCreate.as_view()),
+         name="arbeitsplan-aufgabenErzeugen",),
+         
     url (r'^bootstrap$',
          TemplateView.as_view (template_name="bootstrap.html"),
          name="bootstrap", 

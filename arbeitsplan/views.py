@@ -563,6 +563,38 @@ class ErstelleZuteilungView (View):
 #####################
 
 
-    
+class AufgabenCreate (CreateView):
+    model = models.Aufgabe
+    form_class = forms.AufgabeForm
+    template_name = "arbeitsplan_aufgabenCreate.html"
+    success_url = "home.html"
+
+    def get_form_kwargs (self):
+        kwargs = super(AufgabenCreate, self).get_form_kwargs()
+        kwargs.update({
+            'request' : self.request
+            })
+        return kwargs
+            
+    def form_valid (self, form):
+
+        # store the aufgabe
+        super (AufgabenCreate, self).form_valid(form)
+
+        # and now store the STundenplan entries
+        for s in form.cleaned_data['stundenplan']:
+            uhrzeit = s[0]
+            anzahl = s[1]
+
+            sobj = models.Stundenplan (aufgabe = self.object,
+                                       uhrzeit = uhrzeit,
+                                       anzahl = anzahl)
+            sobj.save()
+            
         
+        return render (self.request,
+                       self.get_success_url(),
+                       {'msg': 'Die Aufgabe wurde erfolgreich angelegt.',
+                        'msgclass': 'success'} )
+    
                           

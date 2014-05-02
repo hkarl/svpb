@@ -13,6 +13,14 @@
 
 {% if user.is_authenticated %}
 
+{% if msg %}
+<div class="alert alert-{{msgclass}}">
+  {{ msg }}
+</div>
+<p>
+{% endif %}
+
+
 
 Ihnen stehen folgende Funktionen zur Verfügung: 
 <p>
@@ -96,7 +104,7 @@ Es ist uns eine besondere Ehre, unseren Vorstandsmitgliedern erweiterte Funktion
         </div>
       </div>
       <div class="panel-body">
-        Aufgaben und Aufgabengruppen einfach verwalten (TODO) 
+        Aufgaben und Aufgabengruppen einfach verwalten (TODO) <a href="/arbeitsplan/aufgabeErzeugen/"> TEST </a>
       </div>
     </div>
   </div>
@@ -197,5 +205,5 @@ Bist Du ein Mitglied, so <a href="/accounts/login/?next=/home/"> melde Dich bitt
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Mon Apr 28 19:29:27 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Fri May  2 07:09:17 CEST 2014 <!-- hhmts end -->
 </body> </html>
