@@ -9,6 +9,8 @@ from django.utils.html import escape, format_html
 from string import Template
 
 import django_tables2
+from django_tables2.utils import A  # alias for Accessor
+
 import models
 import unicodedata
 import django.utils.encoding 
@@ -108,10 +110,25 @@ class AufgabenTable (django_tables2.Table):
         model = models.Aufgabe
         attrs = {"class": "paleblue"}
         # fields=("aufgabe", "datum", django_tables2.A("verantwortlich.last_name"), "gruppe", "anzahl", "bemerkung")
-        fields=("aufgabe", "datum", "gruppe", "anzahl", "bemerkung")
+        fields=("gruppe", "aufgabe", "datum", "anzahl", "bemerkung")
 
         # TODO: anzahl muss man wahrscheinlich auf die ANzahl FREIE Plaetze umrechnen!?!?
 
+class AufgabenTableVorstand (django_tables2.Table):
+    verantwortlicher = django_tables2.Column (accessor="verantwortlich.last_name",
+                                              verbose_name="Verantwortlicher")
+    id = django_tables2.LinkColumn ('arbeitsplan-aufgabenEdit',
+                                          args=[A('pk')],
+                                          # kwargs={'pk': A('pk')},
+                                          verbose_name="Editieren")
+    
+    class Meta:
+        model = models.Aufgabe
+        attrs = {"class": "paleblue"}
+        # fields=("aufgabe", "datum", django_tables2.A("verantwortlich.last_name"), "gruppe", "anzahl", "bemerkung")
+        fields=("gruppe", "aufgabe", "datum", "anzahl", "bemerkung", 'verantwortlicher', 'id')
+
+        # TODO: anzahl muss man wahrscheinlich auf die ANzahl FREIE Plaetze umrechnen!?!?
 
 ##############################
 

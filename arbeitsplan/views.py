@@ -141,15 +141,23 @@ class ListAufgabenView (FilteredListView):
     title = "Alle Aufgaben anzeigen"
     
     def get_queryset (self):
-
+    
+        if isVorstand (self.request.user):
+            tableClass = AufgabenTableVorstand
+        else:
+            tableClass = AufgabenTable
+            
+            
         # evaluate the form:
         self.filterform = self.filterform_class(self.request.GET)
         if self.filterform.is_valid() and self.filterform.cleaned_data['aufgabengruppe'] <> None:
-            table = AufgabenTable(models.Aufgabe.objects.filter(gruppe__gruppe=
+            table = tableClass(models.Aufgabe.objects.filter(gruppe__gruppe=
                                                                 self.filterform.cleaned_data['aufgabengruppe']))
         else:
-            table = AufgabenTable(models.Aufgabe.objects.all())
+            table = tableClass(models.Aufgabe.objects.all())
         django_tables2.RequestConfig(self.request).configure(table)
+
+        print table 
         return table
 
         

@@ -4,7 +4,7 @@
 {% load crispy_forms_tags %}
 
 {% block branding %}
-Aufgabe neu anlegen
+{{ title }}
 {% endblock %}
 
 {% block content %}
@@ -28,15 +28,17 @@ Aufgabe neu anlegen
     <div class="panel panel-default">
       <div class="panel-heading">
         <div class="panel-title">
-          Zeiten
+          Stundenplan - Personen zu Uhrzeiten 
         </div>
       </div>
       <div class="panel-body">
         <table class="table-striped">
-          {%  for x in "0123456789" %}
-          <tr id="{{ x.prefix }}-row">
-            <td>  {{x}}: </td>
-            <td> <div class="controls"> <input class="numberinput" id="id_uhrzeit_{{x}}" name="uhrzeit_{{x}}" type="number" value="0" /> </div>  </td> 
+          {%  for x in stundenplan %}
+          <tr id="{{x.0}}-row">
+            <td>  {{x.0}}: </td>
+            <td> <div class="controls">
+              <input class="numberinput" id="id_uhrzeit_{{x.0}}" name="uhrzeit_{{x.0}}" type="number" value="{{x.1}}" />
+            </div>  </td> 
           </tr>
           {% endfor %}
         </table>
@@ -44,8 +46,11 @@ Aufgabe neu anlegen
     </div>
   </div>
 </div>
-<input type="submit" class="btn btn-primary" value="Neue Aufgabe anlegen">
+<input type="submit" class="btn btn-primary" value="{{buttontext}}">
 </form>
 
-
+<h2>Hinweise </h2>
+<ul>
+  <li> Wenn Personen zu bestimmten Uhrzeiten angefordert werden, MUSS ein Datum angegeben werden!  </li>
+</ul>
 {% endblock %}
