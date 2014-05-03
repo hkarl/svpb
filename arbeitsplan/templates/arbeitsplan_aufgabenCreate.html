@@ -9,6 +9,16 @@
 
 {% block content %}
 
+{% comment %}
+{# TODO it would be nicer to render the errors outside the left form, but no idea how to suppress that #}
+{% if form.non_field_errors %}
+   {% for f in form.non_field_errors %}
+    <div class="alert alert-danger">
+      {{ f }}
+    </div>
+   {% endfor %}
+{% endif %}
+{% endcomment %}
 
 <form id="aufgabe-form" method="POST" action=".">
 <div class="row">

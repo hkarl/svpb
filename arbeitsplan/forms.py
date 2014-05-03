@@ -217,7 +217,8 @@ class AufgabeForm (forms.ModelForm):
         super(AufgabeForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-
+        self.helper.form_show_errors =  True
+        self.helper.form_error_title = "Allgemeine Fehler" 
 
     def clean (self):
         ## print "in form clean"
@@ -245,5 +246,9 @@ class AufgabeForm (forms.ModelForm):
             raise ValidationError ("Angaben im Stundenplan erfordern ein Datum.",
                                    code ="illogic") 
 
+        if (len(stundenplan) > 0) and (cleaned_data['anzahl'] > 0):
+            raise ValidationError ("Entweder Stundenplan oder Anzahl Personen angeben, nicht beides!",
+                                   code="illogic")
+        
         cleaned_data['stundenplan'] = stundenplan 
         return cleaned_data 

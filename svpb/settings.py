@@ -147,7 +147,7 @@ INSTALLED_APPS = (
     'arbeitsplan',
 )
 
-CRISPY_TEMPLATE_PACK = "bootstrap"
+CRISPY_TEMPLATE_PACK = "bootstrap3"
 
     
 # A sample logging configuration. The only tangible logging
