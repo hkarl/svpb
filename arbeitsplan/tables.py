@@ -19,6 +19,48 @@ import django.utils.encoding
 ### Colum Types
 ####################################
 
+class RadioButtonTable (django_tables2.Table):
+        
+    def render_radio (self, bound_row, fieldname, choices, buttontexts):
+        print bound_row._record 
+        print type(bound_row._record )
+        print getattr (bound_row._record, fieldname)
+
+
+        tmp = '\n'.join([
+            format_html(u"""
+            <label class="btn {4} {5}">
+            <input type="radio" name="{0}_{1}_{2}"> {3}
+            </label>
+            """,
+            fieldname,
+            bound_row._record.id, 
+            counter,
+            choice[1],
+            buttontexts[choice[0]],
+            " active" if getattr(bound_row._record, fieldname) == choice[0] else "",
+            )
+            for (counter, choice) in enumerate(choices)])        
+        ## tmp = '\n'.join([format_html(u"""
+        ##     <label class="btn {5} {4}">
+        ##     <input type="radio" name="status_{0}_{2}" id="status_{0}_{2}"> {3}
+        ##     </label>
+        ##     """,
+        ##     self.bound_row._record.id,
+        ##     counter,
+        ##     status[0],
+        ##     status[1],
+        ##     " active" if bound_row._record.status == status[0] else "",
+        ##     models.Leistung.STATUSButtons[status[0]])
+        ##     for (counter, status) in enumerate(models.Leistung.STATUS)]
+        ##     )
+        
+            
+        return mark_safe("""<div class="btn-group" data-toggle="buttons">""" +
+                          tmp +
+                          """</div>""")
+
+
 
 
 class ValuedCheckBoxColumn (django_tables2.columns.Column):
@@ -110,7 +152,7 @@ class AufgabenTable (django_tables2.Table):
         model = models.Aufgabe
         attrs = {"class": "paleblue"}
         # fields=("aufgabe", "datum", django_tables2.A("verantwortlich.last_name"), "gruppe", "anzahl", "bemerkung")
-        fields=("gruppe", "aufgabe", "datum", "anzahl", "bemerkung")
+        fields=("gruppe", "aufgabe", "datum", "anzahl", "stunden", "bemerkung")
 
         # TODO: anzahl muss man wahrscheinlich auf die ANzahl FREIE Plaetze umrechnen!?!?
 
@@ -126,7 +168,7 @@ class AufgabenTableVorstand (django_tables2.Table):
         model = models.Aufgabe
         attrs = {"class": "paleblue"}
         # fields=("aufgabe", "datum", django_tables2.A("verantwortlich.last_name"), "gruppe", "anzahl", "bemerkung")
-        fields=("gruppe", "aufgabe", "datum", "anzahl", "bemerkung", 'verantwortlicher', 'id')
+        fields=("gruppe", "aufgabe", "datum", "anzahl", "stunden", "bemerkung", 'verantwortlicher', 'id')
 
         # TODO: anzahl muss man wahrscheinlich auf die ANzahl FREIE Plaetze umrechnen!?!?
 
@@ -143,18 +185,43 @@ class ZuteilungTable (django_tables2.Table):
 
 ##############################
 
-class MeldungTable (django_tables2.Table):
+class MeldungTable (RadioButtonTable):
+
     melder_last = django_tables2.Column (accessor="melder.last_name",
                                          verbose_name="Nachname")
     melder_first = django_tables2.Column (accessor="melder.first_name",
                                          verbose_name="Vorname")
     aufgabe =  django_tables2.Column (accessor="aufgabe",
                                          verbose_name="Aufgabe")
+    gruppe =   django_tables2.Column (accessor="aufgabe.gruppe",
+                                         verbose_name="Aufgabengruppe")
+    
+    datum  =   django_tables2.Column (accessor="aufgabe.datum",
+                                         verbose_name="Datum")
+
+    stunden =   django_tables2.Column (accessor="aufgabe.stunden",
+                                         verbose_name="Umfang (h)")
+
+    ## radio = RadioButtonColumn (fieldname="",
+    ##                            verbose_name="Präferenz",
+    ##                            accessor = "prefMitglied")
+
+    prefMitglied = django_tables2.Column (accessor="prefMitglied",
+                                      verbose_name="Vorlieben",
+                                     )
+
+    def render_prefMitglied (self, value, bound_row):
+        return self.render_radio (choices=models.Meldung.PRAEFERENZ,
+                                buttontexts=models.Meldung.PRAEFERENZButtons,
+                                fieldname="prefMitglied",
+                                bound_row=bound_row)
+                                      
+    
     class Meta:
         model = models.Meldung
         attrs = {"class": "paleblue"}
 
-        exclude = ("erstellt","veraendert", 'melder')
+        fields = ('gruppe', 'aufgabe', 'datum', 'stunden', 'melder_last', 'melder_first', 'prefMitglied') 
 
 ##############################
 
@@ -184,7 +251,7 @@ def ZuteilungsTableFactory (l, aufgabenQs):
 ##############################
 
 
-
+    
 class LeistungBearbeitenTable (django_tables2.Table):
 
     def render_bemerkungVorstand (value, bound_row):

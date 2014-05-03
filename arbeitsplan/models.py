@@ -77,16 +77,25 @@ class Meldung (models.Model):
     melder = models.ForeignKey (User)
     aufgabe = models.ForeignKey (Aufgabe)
 
+    GARNICHT = -1 
     WENNSMUSS = 0
     NORMAL = 1
     GERNE = 2
 
     PRAEFERENZ = (
+        (GARNICHT, "--"), 
         (WENNSMUSS, "Wenn's sein muss"),
         (NORMAL, "Ok" ),
         (GERNE, "Gerne!"),
         )
 
+    PRAEFERENZButtons = {
+        GARNICHT: 'btn-mydefault', 
+        GERNE: 'btn-mysuccess',
+        NORMAL: 'btn-info', 
+        WENNSMUSS: 'btn-mywarning', 
+        }
+        
     prefMitglied = models.IntegerField (choices = PRAEFERENZ,
                                         default = NORMAL,
                                         help_text="Haben Sie Vorlieben für diese Aufgabe?",)
