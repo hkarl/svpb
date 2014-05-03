@@ -246,9 +246,10 @@ class AufgabeForm (forms.ModelForm):
             raise ValidationError ("Angaben im Stundenplan erfordern ein Datum.",
                                    code ="illogic") 
 
-        if (len(stundenplan) > 0) and (cleaned_data['anzahl'] > 0):
-            raise ValidationError ("Entweder Stundenplan oder Anzahl Personen angeben, nicht beides!",
-                                   code="illogic")
+        # das kann schon sinnvoll sein: 5 h pro Person... und im Stundenplan dann verteilt 
+        ## if (len(stundenplan) > 0) and (cleaned_data['anzahl'] > 0):
+        ##     raise ValidationError ("Entweder Stundenplan oder Anzahl Personen angeben, nicht beides!",
+        ##                            code="illogic")
         
         cleaned_data['stundenplan'] = stundenplan 
         return cleaned_data 
