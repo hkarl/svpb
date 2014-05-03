@@ -568,7 +568,17 @@ class AufgabenCreate (CreateView):
     form_class = forms.AufgabeForm
     template_name = "arbeitsplan_aufgabenCreate.html"
     success_url = "home.html"
+    title = "Neue Aufgabe anlegen"
+    buttontext = "Aufgabe anlegen"
 
+    def get_context_data (self, **kwargs):
+        context = super (AufgabenCreate, self).get_context_data (**kwargs)
+        context['title'] = self.title
+        context['buttontext'] = self.buttontext
+        context['stundenplan'] = [(u, 0) for u in range(8,24)]
+
+        return context 
+            
     def get_form_kwargs (self):
         kwargs = super(AufgabenCreate, self).get_form_kwargs()
         kwargs.update({
@@ -582,10 +592,7 @@ class AufgabenCreate (CreateView):
         super (AufgabenCreate, self).form_valid(form)
 
         # and now store the STundenplan entries
-        for s in form.cleaned_data['stundenplan']:
-            uhrzeit = s[0]
-            anzahl = s[1]
-
+        for uhrzeit, anzahl  in form.cleaned_data['stundenplan'].iteritems():
             sobj = models.Stundenplan (aufgabe = self.object,
                                        uhrzeit = uhrzeit,
                                        anzahl = anzahl)

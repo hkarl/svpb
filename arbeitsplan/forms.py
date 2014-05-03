@@ -225,16 +225,19 @@ class AufgabeForm (forms.ModelForm):
 
         cleaned_data = super(AufgabeForm, self).clean()
 
-        stundenplan = []
+        stundenplan = {}
         for k,v in self.request.POST.iteritems():
             if 'uhrzeit' == k[:7] and v <> '0':
-                v = int(v)
+                try:
+                    v = int(v)
+                except:
+                    v = 0 
                 if v <0:
                     raise ValidationError ("Keine negativen Personen im Stundenplan",
                                            code="negativNumber") 
                     
                 uhrzeit = int(k.split('_')[1])
-                stundenplan.append ((uhrzeit, v))
+                stundenplan[uhrzeit] =  v
 
         print stundenplan
         print cleaned_data['datum'] 
