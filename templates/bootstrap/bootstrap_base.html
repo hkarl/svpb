@@ -42,6 +42,14 @@ SVPB -- Arbeitsverwaltung
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Aufgaben <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/arbeitsplan/aufgaben/">Anzeigen</a></li>
+                {% for g in  user.groups.all %}
+                  {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li> <a href="/arbeitsplan/aufgabeErzeugen/"> Neue Aufgabe anlegen </a> </li>
+                <li>  <a href="/arbeitsplan/aufgaben/"> Aufgaben anzeigen und editieren </a> </li>
+                  {% endif %}
+                {% endfor %}
               </ul>
             </li>
             <!-- MELDUNG --> 
@@ -91,6 +99,11 @@ SVPB -- Arbeitsverwaltung
                 {% endfor %}
               </ul>
             </li>
+            <!-- Rohdaten Admin -->
+            {% if user.is_staff %}
+            <li> <a href="/admin/"> Rodaten </a>
+            </li>
+            {% endif %}
             {% endif %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -161,6 +174,16 @@ SVPB -- Arbeitsverwaltung
       {% endblock %}
       </h1>
     </div>
+    {% block messages %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}">
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endblock %}
+
       {% block content %}
       {% endblock %}
     </div><!-- /.container -->

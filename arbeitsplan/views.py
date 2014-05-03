@@ -14,6 +14,7 @@ from django.contrib.auth import logout
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
  
 import django_tables2
 
@@ -621,7 +622,7 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
     template_name = "arbeitsplan_aufgabenCreate.html"
     # success_url = "home.html"
     success_url = reverse_lazy("arbeitsplan-aufgaben")
-    success_message = 'Die Aufgabe <a href="%(url)s">%(id)s</a> wurde erfolgreich verändert.'
+    success_message = 'Die  <a href="%(url)s">Aufgabe %(id)s</a> wurde erfolgreich verändert.'
     title = "Aufgabe ändern"
     buttontext = "Änderung eintragen"
 
@@ -632,7 +633,10 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
                                                       url = reverse ('arbeitsplan-aufgabenEdit',
                                                                      args=(self.object.id,)), 
                                                       id=self.object.id))
-        print "succesS_msg: ", msg
+
+        # messages.warning(self.request, "aber komisch ist die schon")
+        
+        # print "succesS_msg: ", msg
         return msg
     
     
