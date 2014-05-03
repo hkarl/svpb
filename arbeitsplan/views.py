@@ -4,7 +4,8 @@
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.views.generic import View, ListView, CreateView, FormView
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.views.generic import View, ListView, CreateView, FormView, UpdateView 
 from django.contrib.auth.models import User 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
@@ -12,6 +13,7 @@ from django.db.models import Sum
 from django.contrib.auth import logout
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
+from django.contrib.messages.views import SuccessMessageMixin
  
 import django_tables2
 
@@ -613,3 +615,84 @@ class AufgabenCreate (CreateView):
                         'msgclass': 'success'} )
     
                           
+class AufgabenUpdate (SuccessMessageMixin, UpdateView):
+    model = models.Aufgabe
+    form_class = forms.AufgabeForm
+    template_name = "arbeitsplan_aufgabenCreate.html"
+    # success_url = "home.html"
+    success_url = reverse_lazy("arbeitsplan-aufgaben")
+    success_message = 'Die Aufgabe <a href="%(url)s">%(id)s</a> wurde erfolgreich verändert.'
+    title = "Aufgabe ändern"
+    buttontext = "Änderung eintragen"
+
+    def get_success_message (self, cleaned_data):
+        """See documentation at: https://docs.djangoproject.com/en/1.6/ref/contrib/messages/
+        """
+        msg =  mark_safe(self.success_message % dict (cleaned_data,
+                                                      url = reverse ('arbeitsplan-aufgabenEdit',
+                                                                     args=(self.object.id,)), 
+                                                      id=self.object.id))
+        print "succesS_msg: ", msg
+        return msg
+    
+    
+    def get_context_data (self, **kwargs):
+        context = super (AufgabenUpdate, self).get_context_data (**kwargs)
+        context['title'] = self.title
+        context['buttontext'] = self.buttontext
+
+        # hier Stundenplanwerte aus DB holen
+        # a dict with default values, to be overwirtten with values from data base
+        # then converted back into a list to be passed into the template
+        stundenplan = dict([(u, 0) for u in range(8,24)])
+        for s in models.Stundenplan.objects.filter (aufgabe=self.object):
+            stundenplan[s.uhrzeit] = s.anzahl
+        
+        context['stundenplan'] = stundenplan.items()
+        
+        return context 
+        
+    
+    def get_form_kwargs (self):
+        kwargs = super(AufgabenUpdate, self).get_form_kwargs()
+        kwargs.update({
+            'request' : self.request
+            })
+        return kwargs
+
+    def form_valid (self, form):
+
+        # store the aufgabe
+        super (AufgabenUpdate, self).form_valid(form)
+
+        # manipulate the stundenplan
+        stundenplan = form.cleaned_data['stundenplan']
+        for sDB in models.Stundenplan.objects.filter(aufgabe=self.object):
+            print sDB
+            if sDB.uhrzeit in stundenplan:
+                if stundenplan[sDB.uhrzeit] <> sDB.anzahl:
+                    sDB.anzahl = stundenplan[sDB.uhrzeit]
+                    sDB.save()
+                    del stundenplan[sDB.uhrzeit]
+            else:
+                sDB.delete()
+
+        # all the keys remaining in stundenplan have to be added
+        for uhrzeit, anzahl in stundenplan.iteritems():
+            sobj = models.Stundenplan (aufgabe = self.object,
+                                       uhrzeit = uhrzeit,
+                                       anzahl = anzahl)
+            sobj.save()
+
+
+        return redirect ("arbeitsplan-aufgaben")
+        ## return render (self.request,
+        ##                self.get_success_url(),
+        ##                ## {'msg': format_html(u'Die Aufgabe <a href="{1}">{0}</a> wurde erfolgreich verändert.',
+        ##                ##                     self.object.id,
+        ##                ##                     reverse ('arbeitsplan-aufgabenEdit',
+        ##                ##                              args=(self.object.id,),
+        ##                ##                              )
+        ##                ##                     ),
+        ##                ##  'msgclass': 'success'}
+        ##                 )

@@ -84,6 +84,10 @@ urlpatterns = patterns('',
          login_required(arbeitsplan.views.AufgabenCreate.as_view()),
          name="arbeitsplan-aufgabenErzeugen",),
          
+    url (r'^arbeitsplan/aufgabeEditieren/(?P<pk>\d+)/$',
+         login_required(arbeitsplan.views.AufgabenUpdate.as_view()),
+         name="arbeitsplan-aufgabenEdit",),
+         
     url (r'^bootstrap$',
          TemplateView.as_view (template_name="bootstrap.html"),
          name="bootstrap", 
