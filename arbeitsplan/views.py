@@ -352,81 +352,108 @@ class CreateMeldungenView (FilteredListView):
         return redirect ("arbeitsplan-meldung")
         
     
-class MeldungVorstandView (FilteredListView):
+class MeldungVorstandView (isVorstandMixin, FilteredListView):
+    """Display a (filtered) list of all Meldungen from all Users, with all preferences.
+    Allow Vorstand to update its fields and store them.
+    """
+    
+    title = "Meldungen für Aufgaben bewerten"
+    filterform_class = forms.PersonAufgabengruppeFilterForm
+    filtertitle = "Meldungen nach Person, Aufgabengruppen oder Präferenz filtern"
+    tabletitle = "Meldungen bewerten"
+    ## tableform = {'name': "eintragen",
+    ##              'value': "Meldungen eintragen/ändern"}
 
-    def get(self,request, *args, **kwargs):
-        myForm = forms.MeldungForm()
+    def get_queryset (self):
+        qs = models.Meldung.objects.all()
+        self.filterform = self.filterform_class (self.request.GET)
+        if self.filterform.is_valid():
+            if self.filterform.cleaned_data['aufgabengruppe'] <> None:
+                qs = qs.filter (aufgabe__gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
+            if self.filterform.cleaned_data['first_name'] <> "":
+                qs = qs.filter (ausfuehrer__first_name__icontains = self.filterform.cleaned_data['first_name'])
+            if self.filterform.cleaned_data['last_name'] <> "":
+                qs = qs.filter (ausfuehrer__last_name__icontains = self.filterform.cleaned_data['last_name'])
 
-        # which questions should get an initial check?
-        aufgabenMitMeldung = [m.aufgabe.id for m in 
-                                models.Meldung.objects.filter(melder_id=request.user.id)]
-        # print aufgabenMitMeldung
+        table = MeldungTableVorstand (qs)
+        django_tables2.RequestConfig(self.request).configure(table)
+        return table
         
-        return render (request,
-                       "arbeitsplan_meldung.html",
-                       dictionary = {'form': myForm,
-                                     'groups': [ (g.id,
-                                                  g.gruppe,
-                                                  [(a.id,
-                                                    a.aufgabe,
-                                                    a.datum if a.datum else "",
-                                                    a.id in aufgabenMitMeldung, 
-                                                    )
-                                                    for a in models.Aufgabe.objects.filter(gruppe__exact=g)],
-                                                  )
-                                                 for g in models.Aufgabengruppe.objects.all()]},
-                       )
+        
+    ############ Old Meldung Vorstand 
+    ## def get(self,request, *args, **kwargs):
+    ##     myForm = forms.MeldungForm()
 
-    def post (self,request, *args, **kwargs):
+    ##     # which questions should get an initial check?
+    ##     aufgabenMitMeldung = [m.aufgabe.id for m in 
+    ##                             models.Meldung.objects.filter(melder_id=request.user.id)]
+    ##     # print aufgabenMitMeldung
+        
+    ##     return render (request,
+    ##                    "arbeitsplan_meldung.html",
+    ##                    dictionary = {'form': myForm,
+    ##                                  'groups': [ (g.id,
+    ##                                               g.gruppe,
+    ##                                               [(a.id,
+    ##                                                 a.aufgabe,
+    ##                                                 a.datum if a.datum else "",
+    ##                                                 a.id in aufgabenMitMeldung, 
+    ##                                                 )
+    ##                                                 for a in models.Aufgabe.objects.filter(gruppe__exact=g)],
+    ##                                               )
+    ##                                              for g in models.Aufgabengruppe.objects.all()]},
+    ##                    )
 
-        myForm = forms.MeldungForm (request.POST)
-        if myForm.is_valid():
-            # print "processing valid form"
-            # print myForm.cleaned_data
+    ## def post (self,request, *args, **kwargs):
 
-            for k, userInput in myForm.cleaned_data.iteritems():
-                aid = int(k.split('a')[1])
-                # print aid, userInput
+    ##     myForm = forms.MeldungForm (request.POST)
+    ##     if myForm.is_valid():
+    ##         # print "processing valid form"
+    ##         # print myForm.cleaned_data
 
-                # try to find a meldung with that aid and for this user
-                try: 
-                    meldungStatus = models.Meldung.objects.get (aufgabe_id=aid,
-                                                                melder_id=request.user.id)
-                except:
-                    # print "get failed"
-                    meldungStatus = False
+    ##         for k, userInput in myForm.cleaned_data.iteritems():
+    ##             aid = int(k.split('a')[1])
+    ##             # print aid, userInput
 
-                # print "mledung status",  meldungStatus
+    ##             # try to find a meldung with that aid and for this user
+    ##             try: 
+    ##                 meldungStatus = models.Meldung.objects.get (aufgabe_id=aid,
+    ##                                                             melder_id=request.user.id)
+    ##             except:
+    ##                 # print "get failed"
+    ##                 meldungStatus = False
+
+    ##             # print "mledung status",  meldungStatus
                     
-                if userInput:
-                    # we have to add or update the corresponding meldung
-                    if meldungStatus:
-                        # update existing object 
-                        newMeld = models.Meldung (aufgabe = models.Aufgabe.objects.get(id=aid),
-                                                  erstellt = meldungStatus.erstellt, 
-                                                  melder = request.user, 
-                                                  id = meldungStatus.id)
-                    else:
-                        #create a new one:
-                        newMeld = models.Meldung (aufgabe = models.Aufgabe.objects.get(id=aid),
-                                                  melder = request.user, 
-                                                  )
+    ##             if userInput:
+    ##                 # we have to add or update the corresponding meldung
+    ##                 if meldungStatus:
+    ##                     # update existing object 
+    ##                     newMeld = models.Meldung (aufgabe = models.Aufgabe.objects.get(id=aid),
+    ##                                               erstellt = meldungStatus.erstellt, 
+    ##                                               melder = request.user, 
+    ##                                               id = meldungStatus.id)
+    ##                 else:
+    ##                     #create a new one:
+    ##                     newMeld = models.Meldung (aufgabe = models.Aufgabe.objects.get(id=aid),
+    ##                                               melder = request.user, 
+    ##                                               )
                         
-                    # print newMeld
-                    newMeld.save()
-                else:
-                    # user does not work on a particular job;
-                    # if meldung exists, delete it
+    ##                 # print newMeld
+    ##                 newMeld.save()
+    ##             else:
+    ##                 # user does not work on a particular job;
+    ##                 # if meldung exists, delete it
 
-                    if meldungStatus:
-                        meldungStatus.delete()
+    ##                 if meldungStatus:
+    ##                     meldungStatus.delete()
                         
                     
             
-            return redirect ('arbeitsplan-meldung')
+    ##         return redirect ('arbeitsplan-meldung')
 
-        # print "processing INvalid form"
-        return HttpResponse ("Form was invalid - what to do?")
+    ##     # print "processing INvalid form"
+    ##     return HttpResponse ("Form was invalid - what to do?")
 
     
 ########################################################################################

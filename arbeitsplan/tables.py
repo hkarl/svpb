@@ -27,21 +27,37 @@ class RadioButtonTable (django_tables2.Table):
         ## print getattr (bound_row._record, fieldname)
         # print "render_radio ", record
 
-        tmp = '\n'.join([
-            format_html(u"""
-            <label class="btn {4} {5}">
-            <input type="radio" name="{0}_{1}_{2}"> {3}
-            </label>
-            """,
-            fieldname,
-            record['id'], 
-            choice[0],
-            choice[1],
-            buttontexts[choice[0]],
-            " active" if record[fieldname] == choice[0] else "",
-            )
-            for (counter, choice) in enumerate(choices)])        
-        
+        try: 
+            tmp = '\n'.join([
+                format_html(u"""
+                <label class="btn {4} {5}">
+                <input type="radio" name="{0}_{1}_{2}"> {3}
+                </label>
+                """,
+                fieldname,
+                record['id'], 
+                choice[0],
+                choice[1],
+                buttontexts[choice[0]],
+                " active" if record[fieldname] == choice[0] else "",
+                )
+                for (counter, choice) in enumerate(choices)])        
+        except TypeError:
+            tmp = '\n'.join([
+                format_html(u"""
+                <label class="btn {4} {5}">
+                <input type="radio" name="{0}_{1}_{2}"> {3}
+                </label>
+                """,
+                fieldname,
+                record.id, 
+                choice[0],
+                choice[1],
+                buttontexts[choice[0]],
+                " active" if getattr(record,fieldname) == choice[0] else "",
+                )
+                for (counter, choice) in enumerate(choices)])        
+            
             
         return mark_safe("""<div class="btn-group-vertical" data-toggle="buttons">""" +
                           tmp +
@@ -174,8 +190,6 @@ class ZuteilungTable (django_tables2.Table):
 
 class MeldungTable (RadioButtonTable):
 
-    editMitglied = True
-    
     # id = django_tables2.Column ()
     
     aufgabe =  django_tables2.Column (accessor="aufgabe",
@@ -200,24 +214,18 @@ class MeldungTable (RadioButtonTable):
                                      )
 
     def render_prefMitglied (self, value, record):
-        if self.editMitglied: 
-            return self.render_radio (choices=models.Meldung.PRAEFERENZ,
+        return self.render_radio (choices=models.Meldung.PRAEFERENZ,
                                     buttontexts=models.Meldung.PRAEFERENZButtons,
                                     fieldname="prefMitglied",
                                     record=record)
-        else:
-            return record['prefMitglied'] 
             
     def render_bemerkung (self, value, record, bound_row):
         # print record
         # print bound_row
-        if self.editMitglied: 
-            tmp =  format_html (u'<textarea class="textinput textInput" id="id_bemerkung_{0}" name="bemerkung_{0}" placeholder="Bemerkung eingeben" rows=6>{1}</textarea>',
+        tmp =  format_html (u'<textarea class="textinput textInput" id="id_bemerkung_{0}" name="bemerkung_{0}" placeholder="Bemerkung eingeben" rows=6>{1}</textarea>',
                                 str(record['id']),
                                 record['bemerkung'] if record['bemerkung'] else ""
                                 )
-        else:
-            return bound_row._record.bemerkung 
             
         return tmp 
         
@@ -227,34 +235,59 @@ class MeldungTable (RadioButtonTable):
 
         fields = ('gruppe', 'aufgabe', 'datum', 'stunden', 'bemerkung', 'prefMitglied') 
 
-class MeldungTableVorstand (MeldungTable):
-    editMitglied = False
+class MeldungTableVorstand (RadioButtonTable):
+
     
+    aufgabe =  django_tables2.Column (accessor="aufgabe",
+                                         verbose_name="Aufgabe")
+    gruppe =   django_tables2.Column (accessor="aufgabe.gruppe",
+                                         verbose_name="Aufgabengruppe")
+    
+    datum  =   django_tables2.Column (accessor="aufgabe.datum",
+                                         verbose_name="Datum")
+
+    stunden =   django_tables2.Column (accessor="aufgabe.stunden",
+                                         verbose_name="Umfang (h)")
+    
+    prefMitglied = django_tables2.Column (accessor="prefMitglied",
+                                      verbose_name="Vorlieben",
+                                      empty_values=(), 
+                                     )
+
+    bemerkung = django_tables2.Column (accessor="bemerkung",
+                                      verbose_name="Bemerkung",
+                                      empty_values=(), 
+                                     )
     melder_last = django_tables2.Column (accessor="melder.last_name",
                                          verbose_name="Melder Nachname")
     melder_first = django_tables2.Column (accessor="melder.first_name",
                                          verbose_name="Melder Vorname")
 
-    bemerkungVorstand = django_tables2.Column (accessor="bemerkungVorstand",
-                                        verbose_name="Bemerkung Vorstand",
-                                        empty_values=(), 
-                                        )
+    ## bemerkungVorstand = django_tables2.Column (accessor="bemerkungVorstand",
+    ##                                     verbose_name="Bemerkung Vorstand",
+    ##                                     empty_values=(), 
+    ##                                     )
 
-    def render_bemerkungVorstand (self, value, bound_row):
-        tmp =  format_html (u'<textarea class="textinput textInput" id="id_bemerkungVorstand_{0}" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" rows=6>{1}</textarea>',
-                                str(bound_row._record.id),
-                                bound_row._record.bemerkungVorstand,
-                                )
-        return tmp 
+    bemerkungVorstand = django_tables2.Column (empty_values=(),)
+    
+    def render_prefVorstand (self, value, record):
 
-    def render_prefVorstand (self, value, bound_row):
 
         return self.render_radio (choices=models.Meldung.PRAEFERENZ,
                                     buttontexts=models.Meldung.PRAEFERENZButtons,
                                     fieldname="prefVorstand",
-                                    bound_row=bound_row)
+                                    record=record)
+
+    def render_bemerkungVorstand (self, value, record):
+        tmp =  format_html (u'<textarea class="textinput textInput" id="id_bemerkungVorstand_{0}" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" rows=6>{1}</textarea>',
+                                str(record.id),
+                                record.bemerkungVorstand if record.bemerkungVorstand else ""
+                                )
+        return tmp 
+
     
     class Meta (MeldungTable.Meta):
+        model = models.Meldung 
         fields = ('gruppe', 'aufgabe', 'datum', 'stunden', 'melder_last', 'melder_first', 'bemerkung', 'prefMitglied', 'bemerkungVorstand', 'prefVorstand') 
     
 ##############################
