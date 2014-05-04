@@ -83,7 +83,7 @@ class Meldung (models.Model):
     GERNE = 2
 
     PRAEFERENZ = (
-        (GARNICHT, "--"), 
+        (GARNICHT, "Nein"), 
         (WENNSMUSS, "Wenn's sein muss"),
         (NORMAL, "Ok" ),
         (GERNE, "Gerne!"),
@@ -102,7 +102,10 @@ class Meldung (models.Model):
     prefVorstand = models.IntegerField (choices = PRAEFERENZ,
                                         default = NORMAL,
                                         help_text = "Trauen Sie diesem Mitglied die Aufgabe zu?",)
-        
+
+    bemerkung = models.TextField (blank=True)
+    bemerkungVorstand = models.TextField (blank=True)
+    
     def __unicode__ (self):
         return (self.melder.__unicode__() + " ; " +
                 self.aufgabe.__unicode__() + " ; " +
