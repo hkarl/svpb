@@ -247,26 +247,6 @@ class AufgabenCreate (CreateView):
 #########   MELDUNG 
 ########################################################################################
 
-## class ListMeldungenView (isVorstandMixin, FilteredListView):
-
-##     title = "Alle Meldungen anzeigen"
-##     filterform_class = forms.PersonAufgabengruppeFilterForm
-    
-##     def get_queryset (self):
-##         qs = models.Meldung.objects.all()
-##         self.filterform = self.filterform_class(self.request.GET)
-##         if self.filterform.is_valid():
-##             print self.filterform.cleaned_data
-##             if self.filterform.cleaned_data['aufgabengruppe'] <> None:
-##                 qs = qs.filter (aufgabe__gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
-##             if self.filterform.cleaned_data['first_name'] <> "":
-##                 qs = qs.filter (melder__first_name__icontains = self.filterform.cleaned_data['first_name'])
-##             if self.filterform.cleaned_data['last_name'] <> "":
-##                 qs = qs.filter (melder__last_name__icontains = self.filterform.cleaned_data['last_name'])
-            
-##         table = MeldungTable(qs)
-##         django_tables2.RequestConfig(self.request).configure(table)
-##         return table
 
 class CreateMeldungenView (FilteredListView):
     """
@@ -372,7 +352,7 @@ class CreateMeldungenView (FilteredListView):
         return redirect ("arbeitsplan-meldung")
         
     
-class UpdateMeldungView (View):
+class MeldungVorstandView (FilteredListView):
 
     def get(self,request, *args, **kwargs):
         myForm = forms.MeldungForm()
