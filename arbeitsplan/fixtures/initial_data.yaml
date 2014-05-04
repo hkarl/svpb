@@ -185,19 +185,19 @@
     wann: 2014-06-01, zeit: '5'}
   model: arbeitsplan.leistung
   pk: 2
-- fields: {aufgabe: 4, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29}
+- fields: {aufgabe: 4, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
   model: arbeitsplan.meldung
   pk: 3
-- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 3, veraendert: 2014-03-29}
+- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 3, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
   model: arbeitsplan.meldung
   pk: 5
-- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 2, veraendert: 2014-03-29}
+- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 2, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
   model: arbeitsplan.meldung
   pk: 6
-- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29}
+- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
   model: arbeitsplan.meldung
   pk: 7
-- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29}
+- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
   model: arbeitsplan.meldung
   pk: 8
 - fields: {anzahl: 5, aufgabe: Boote aus Winterlager, bemerkung: '', datum: 2014-03-29,
