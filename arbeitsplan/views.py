@@ -15,6 +15,7 @@ from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
  
 import django_tables2
 
@@ -42,10 +43,335 @@ def logout_view (request):
     # print "logout view" 
     logout(request)
     return  render (request, "registration/logged_out.html", {})
+
 ###############
 
+class FilteredListView (ListView):
+    title = ""
+    filterform = None 
+    template_name = "arbeitsplan_tff.html"
+    tableform = None
+    filtertitle = None
+    tabletitle = None
+    tableform = None # tableform should be dict with keys: name, value for the submit button 
+    
+    def get_context_data (self, **kwargs):
+        context= super (FilteredListView, self).get_context_data()
+        context['title'] = self.title 
+        context['filterform'] = self.filterform
+        context['filtertitle'] = self.filtertitle
+        context['tabletitle'] = self.tabletitle
+        context['tableform'] = self.tableform
+
+        return context
 
 
+############### 
+
+class NameFilterView (View):
+    
+    def applyFilter (self, request):
+
+        qs = models.User.objects.all()
+
+        form = self.filterFormClass(request.GET)
+        if form.is_valid():
+            if 'filter' in request.GET:
+                last_name = form.cleaned_data['last_name']
+
+                if last_name <> "":
+                    qs= qs.filter (last_name__icontains=last_name)
+                
+                first_name = form.cleaned_data['first_name']
+                if first_name <> "":
+                    qs= qs.filter (first_name__icontains=first_name)
+                
+        else:
+            print "filter not valid"
+            
+        return (qs, form)
+
+########################################################################################
+#########   AUFGABEN 
+########################################################################################
+
+class AufgabenUpdate (SuccessMessageMixin, UpdateView):
+    model = models.Aufgabe
+    form_class = forms.AufgabeForm
+    template_name = "arbeitsplan_aufgabenCreate.html"
+    # success_url = "home.html"
+    success_url = reverse_lazy("arbeitsplan-aufgaben")
+    success_message = 'Die  <a href="%(url)s">Aufgabe %(id)s</a> wurde erfolgreich verändert.'
+    title = "Aufgabe ändern"
+    buttontext = "Änderung eintragen"
+
+    def get_success_message (self, cleaned_data):
+        """See documentation at: https://docs.djangoproject.com/en/1.6/ref/contrib/messages/
+        """
+        msg =  mark_safe(self.success_message % dict (cleaned_data,
+                                                      url = reverse ('arbeitsplan-aufgabenEdit',
+                                                                     args=(self.object.id,)), 
+                                                      id=self.object.id))
+
+        # messages.warning(self.request, "aber komisch ist die schon")
+        
+        # print "succesS_msg: ", msg
+        return msg
+    
+    
+    def get_context_data (self, **kwargs):
+        context = super (AufgabenUpdate, self).get_context_data (**kwargs)
+        context['title'] = self.title
+        context['buttontext'] = self.buttontext
+
+        # hier Stundenplanwerte aus DB holen
+        # a dict with default values, to be overwirtten with values from data base
+        # then converted back into a list to be passed into the template
+        stundenplan = dict([(u, 0) for u in range(8,24)])
+        for s in models.Stundenplan.objects.filter (aufgabe=self.object):
+            stundenplan[s.uhrzeit] = s.anzahl
+        
+        context['stundenplan'] = stundenplan.items()
+        
+        return context 
+        
+    
+    def get_form_kwargs (self):
+        kwargs = super(AufgabenUpdate, self).get_form_kwargs()
+        kwargs.update({
+            'request' : self.request
+            })
+        return kwargs
+
+    def form_valid (self, form):
+
+        # store the aufgabe
+        super (AufgabenUpdate, self).form_valid(form)
+
+        # manipulate the stundenplan
+        stundenplan = form.cleaned_data['stundenplan']
+        for sDB in models.Stundenplan.objects.filter(aufgabe=self.object):
+            print sDB
+            if sDB.uhrzeit in stundenplan:
+                if stundenplan[sDB.uhrzeit] <> sDB.anzahl:
+                    sDB.anzahl = stundenplan[sDB.uhrzeit]
+                    sDB.save()
+                    del stundenplan[sDB.uhrzeit]
+            else:
+                sDB.delete()
+
+        # all the keys remaining in stundenplan have to be added
+        for uhrzeit, anzahl in stundenplan.iteritems():
+            sobj = models.Stundenplan (aufgabe = self.object,
+                                       uhrzeit = uhrzeit,
+                                       anzahl = anzahl)
+            sobj.save()
+
+
+        return redirect ("arbeitsplan-aufgaben")
+
+###############################
+
+class ListAufgabenView (FilteredListView):
+
+    filterform_class = forms.AufgabengruppeFilterForm
+    title = "Alle Aufgaben anzeigen"
+    
+    def get_queryset (self):
+    
+        if isVorstand (self.request.user):
+            tableClass = AufgabenTableVorstand
+        else:
+            tableClass = AufgabenTable
+            
+            
+        # evaluate the form:
+        self.filterform = self.filterform_class(self.request.GET)
+        if self.filterform.is_valid() and self.filterform.cleaned_data['aufgabengruppe'] <> None:
+            table = tableClass(models.Aufgabe.objects.filter(gruppe__gruppe=
+                                                                self.filterform.cleaned_data['aufgabengruppe']))
+        else:
+            table = tableClass(models.Aufgabe.objects.all())
+        django_tables2.RequestConfig(self.request).configure(table)
+
+        print table 
+        return table
+
+#####################
+
+
+class AufgabenCreate (CreateView):
+    model = models.Aufgabe
+    form_class = forms.AufgabeForm
+    template_name = "arbeitsplan_aufgabenCreate.html"
+    success_url = "home.html"
+    title = "Neue Aufgabe anlegen"
+    buttontext = "Aufgabe anlegen"
+
+    def get_context_data (self, **kwargs):
+        context = super (AufgabenCreate, self).get_context_data (**kwargs)
+        context['title'] = self.title
+        context['buttontext'] = self.buttontext
+        context['stundenplan'] = [(u, 0) for u in range(8,24)]
+
+        return context 
+            
+    def get_form_kwargs (self):
+        kwargs = super(AufgabenCreate, self).get_form_kwargs()
+        kwargs.update({
+            'request' : self.request
+            })
+        return kwargs
+            
+    def form_valid (self, form):
+
+        # store the aufgabe
+        super (AufgabenCreate, self).form_valid(form)
+
+        # and now store the STundenplan entries
+        for uhrzeit, anzahl  in form.cleaned_data['stundenplan'].iteritems():
+            sobj = models.Stundenplan (aufgabe = self.object,
+                                       uhrzeit = uhrzeit,
+                                       anzahl = anzahl)
+            sobj.save()
+            
+        
+        return render (self.request,
+                       self.get_success_url(),
+                       {'msg': 'Die Aufgabe wurde erfolgreich angelegt.',
+                        'msgclass': 'success'} )
+    
+                          
+
+########################################################################################
+#########   MELDUNG 
+########################################################################################
+
+## class ListMeldungenView (isVorstandMixin, FilteredListView):
+
+##     title = "Alle Meldungen anzeigen"
+##     filterform_class = forms.PersonAufgabengruppeFilterForm
+    
+##     def get_queryset (self):
+##         qs = models.Meldung.objects.all()
+##         self.filterform = self.filterform_class(self.request.GET)
+##         if self.filterform.is_valid():
+##             print self.filterform.cleaned_data
+##             if self.filterform.cleaned_data['aufgabengruppe'] <> None:
+##                 qs = qs.filter (aufgabe__gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
+##             if self.filterform.cleaned_data['first_name'] <> "":
+##                 qs = qs.filter (melder__first_name__icontains = self.filterform.cleaned_data['first_name'])
+##             if self.filterform.cleaned_data['last_name'] <> "":
+##                 qs = qs.filter (melder__last_name__icontains = self.filterform.cleaned_data['last_name'])
+            
+##         table = MeldungTable(qs)
+##         django_tables2.RequestConfig(self.request).configure(table)
+##         return table
+
+class CreateMeldungenView (FilteredListView):
+    """
+    Display a table with all Aufgaben and fields to set preferences and add remarks.
+    Accept updates and enter them into the Meldung table. 
+    Intended for the non-Vorstand user. 
+    """
+
+    title = "Meldungen für Aufgaben eintragen oder ändern"
+    filterform_class = forms.AufgabengruppeFilterForm
+    filtertitle = "Meldungen nach Aufgabengruppen filtern"
+    tabletitle = "Meldungen für Aufgaben eintragen oder ändern"
+    tableform = {'name': "eintragen",
+                 'value': "Meldungen eintragen/ändern"}
+    
+    def get_queryset (self):
+
+        qsAufgaben =  models.Aufgabe.objects.all()
+        self.filterform = self.filterform_class(self.request.GET)
+        if self.filterform.is_valid():
+            if self.filterform.cleaned_data['aufgabengruppe'] <> None:
+                qsAufgaben = qsAufgaben.filter (gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
+
+        # fill the table with all aufgaben
+        # overwrite preferences and bemerkung if for them, a value exists
+        aufgabenliste = []
+        for a in qsAufgaben:
+            # initialize with values from Aufgabe
+            d = {'aufgabe': a.aufgabe,
+                 'gruppe': a.gruppe,
+                 'datum' : a.datum,
+                 'stunden': a.stunden,
+                 'id': a.id, 
+                }
+            # add what we can find from Meldung:
+            try:
+                m = models.Meldung.objects.get(aufgabe=a, melder=self.request.user)
+                d['prefMitglied'] = m.prefMitglied
+                d['bemerkung'] = m.bemerkung
+            except ObjectDoesNotExist: 
+                d['prefMitglied'] = models.Meldung.GARNICHT 
+                d['bemerkung'] = None 
+            
+
+            # and collect
+            aufgabenliste.append(d)
+
+            # print aufgabenliste
+        
+        table = MeldungTable(aufgabenliste)
+        django_tables2.RequestConfig(self.request).configure(table)
+        return table
+
+
+    def post(self, request, *args, **kwargs):
+        print "post in CreateMeldungenView"
+        print request.POST
+
+        for k, value in request.POST.iteritems():
+            if k.startswith('bemerkung') or k.startswith('prefMitglied'):
+                key, tmp = k.split('_', 1)
+                try:
+                    id, choice = tmp.split('_', 1)
+                except ValueError:
+                    id = tmp
+                    choice = None
+                id = int(id)
+                
+                aufgabe = models.Aufgabe.objects.get(id=id)
+                print key, id, choice, value, aufgabe 
+                safeit = False
+                
+                try: 
+                    m = models.Meldung.objects.get(aufgabe=aufgabe,
+                                                   melder=self.request.user)
+                except ObjectDoesNotExist: 
+                    m = models.Meldung(melder=self.request.user,
+                                        aufgabe=aufgabe,
+                                        prefMitglied = models.Meldung.NORMAL,
+                                        bemerkung= "",
+                                        prefVorstand = models.Meldung.NORMAL,
+                                        bemerkungVorstand= "",                                         
+                                    )
+                    safeit = True
+                    
+                if key == 'bemerkung':
+                    if m.bemerkung <> value: 
+                        m.bemerkung = value
+                        safeit = True
+                        
+                if key == 'prefMitglied':
+                    if m.prefMitglied <> choice:
+                        m.prefMitglied  = choice
+                        safeit = True
+
+                if safeit: 
+                    m.save()
+            else:
+                pass # not interested in those keys
+
+                
+        ## request.POST has: all bemerkung fields, irrespective of change; preferneces only if they changed ? ! “
+        return redirect ("arbeitsplan-meldung")
+        
+    
 class UpdateMeldungView (View):
 
     def get(self,request, *args, **kwargs):
@@ -122,46 +448,11 @@ class UpdateMeldungView (View):
         # print "processing INvalid form"
         return HttpResponse ("Form was invalid - what to do?")
 
-###############################
-
-class FilteredListView (ListView):
-    title = ""
-    filterform = None 
-    template_name = "arbeitsplan_tff.html"
-
-    def get_context_data (self, **kwargs):
-        context= super (FilteredListView, self).get_context_data()
-        context['title'] = self.title 
-        context['filterform'] = self.filterform
-
-        return context
     
-    
-        
-class ListAufgabenView (FilteredListView):
+########################################################################################
+#########   ZUTEILUNG 
+########################################################################################
 
-    filterform_class = forms.AufgabengruppeFilterForm
-    title = "Alle Aufgaben anzeigen"
-    
-    def get_queryset (self):
-    
-        if isVorstand (self.request.user):
-            tableClass = AufgabenTableVorstand
-        else:
-            tableClass = AufgabenTable
-            
-            
-        # evaluate the form:
-        self.filterform = self.filterform_class(self.request.GET)
-        if self.filterform.is_valid() and self.filterform.cleaned_data['aufgabengruppe'] <> None:
-            table = tableClass(models.Aufgabe.objects.filter(gruppe__gruppe=
-                                                                self.filterform.cleaned_data['aufgabengruppe']))
-        else:
-            table = tableClass(models.Aufgabe.objects.all())
-        django_tables2.RequestConfig(self.request).configure(table)
-
-        print table 
-        return table
 
         
     
@@ -192,29 +483,134 @@ class ListZuteilungenView (FilteredListView):
         
         django_tables2.RequestConfig(self.request).configure(table)
         return table 
-        
-        
-class ListMeldungenView (isVorstandMixin, FilteredListView):
 
-    title = "Alle Meldungen anzeigen"
-    filterform_class = forms.PersonAufgabengruppeFilterForm
+
+class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
+    """Manuelles Eintragen von Zuteilungen
+    """
+
+    filterFormClass = forms.PersonAufgabengruppeFilterForm
     
-    def get_queryset (self):
-        qs = models.Meldung.objects.all()
-        self.filterform = self.filterform_class(self.request.GET)
-        if self.filterform.is_valid():
-            print self.filterform.cleaned_data
-            if self.filterform.cleaned_data['aufgabengruppe'] <> None:
-                qs = qs.filter (aufgabe__gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
-            if self.filterform.cleaned_data['first_name'] <> "":
-                qs = qs.filter (melder__first_name__icontains = self.filterform.cleaned_data['first_name'])
-            if self.filterform.cleaned_data['last_name'] <> "":
-                qs = qs.filter (melder__last_name__icontains = self.filterform.cleaned_data['last_name'])
-            
-        table = MeldungTable(qs)
-        django_tables2.RequestConfig(self.request).configure(table)
-        return table
+    def get (self,request, *args, **kwargs):
+        """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank
+        entspricht."""
 
+        userQs, filterForm = self.applyFilter (request)
+
+        if filterForm.cleaned_data['aufgabengruppe'] <> None:
+            print filterForm.cleaned_data['aufgabengruppe']
+            aufgabenQs = models.Aufgabe.objects.filter (gruppe__gruppe = filterForm.cleaned_data['aufgabengruppe'])
+        else:
+            aufgabenQs = models.Aufgabe.objects.all()
+            
+        ztlist = []
+        statuslist = {}
+        aufgaben = dict([(unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore'),
+                          (-1, 'x'))
+                          for a in aufgabenQs])
+
+        for u in userQs: 
+            tmp = {'last_name': u.last_name,
+                    'first_name': u.first_name,
+                    }
+            # print 'user:', u.id 
+            tmp.update(aufgaben)
+            mQs =  models.Meldung.objects.filter(melder=u)
+            if filterForm.cleaned_data['aufgabengruppe'] <> None:
+                mQs = mQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
+            for m in mQs: 
+                tag = unicodedata.normalize('NFKD', m.aufgabe.aufgabe).encode('ASCII', 'ignore')
+                tmp[tag] = (0, 'box_'+  str(u.id)+"_"+str(m.aufgabe.id))
+                statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
+
+            zQs =  models.Zuteilung.objects.filter(ausfuehrer=u)
+            if filterForm.cleaned_data['aufgabengruppe'] <> None:
+                zQs = zQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
+            
+            for z in zQs: 
+                tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore')
+                tmp[tag] = (1, 'box_'+ str(u.id)+"_"+str(z.aufgabe.id))
+                statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
+
+
+                
+            ztlist.append(tmp)
+
+        ## print ztlist
+        ## print statuslist
+        zt = ZuteilungsTableFactory(ztlist, aufgabenQs)
+        django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(zt)
+
+        return render (request,
+                       'arbeitsplan_manuelleZuteilung.html',
+                       {'table': zt,
+                        'status': ';'.join([k+'='+v for k, v in statuslist.iteritems()]),
+                        'filter': filterForm, 
+                        })
+    
+    def post (self,request, *args, **kwargs):
+        # print request.body 
+        ## print (request.POST )
+        ## print (request.POST.get('status') )
+        ## print (request.POST.getlist('box') )
+
+        ## filterForm = self.filterFormClass (request.POST)
+        
+        previousStatus = dict([ tuple(s.split('=') )
+                   for s in 
+                    request.POST.get('status').split(';')
+                  ])
+
+        print "prevState:"
+        print previousStatus
+
+        ## for item in request.POST.iteritems():
+        ##     # containts tuple: name, value
+        ##     # print item
+        ##     if item[0][:4] == "box_":
+        ##         print "item: ", item
+
+        newState = dict([ (item[0][4:], item[1])
+                     for item in request.POST.iteritems()
+                     if item[0][:4] == "box_"
+                    ])
+
+        print "newState"
+        print newState
+
+        # find all items in  newState  that have a zero in prevState
+        # add that zuteilung
+        for k,v in newState.iteritems():
+            if previousStatus[k] == '0':
+                print "add ", k
+                user, aufgabe = k.split('_')
+                z = models.Zuteilung(aufgabe = models.Aufgabe.objects.get(id=int(aufgabe)),
+                                     ausfuehrer = models.User.objects.get(id=int(user)),
+                                     )
+                z.save()
+
+
+        # find all items in prevState with a 1 there that do no appear in newState
+        # remove that zuteilung
+        for k,v in previousStatus.iteritems():
+            if v=='1' and k not in newState:
+                print "delete ", k
+                user, aufgabe = k.split('_')
+                z = models.Zuteilung.objects.get (aufgabe = models.Aufgabe.objects.get(id=int(aufgabe)),
+                                                  ausfuehrer = models.User.objects.get(id=int(user)),
+                                                 )
+                z.delete()
+
+        # TODO: emails senden? 
+        return redirect ("arbeitsplan-manuellezuteilung")
+
+            
+########################################################################################
+#########   LEISTUNG
+########################################################################################
+
+
+        
 
 
 class CreateLeistungView (CreateView):
@@ -344,32 +740,10 @@ class LeistungBearbeitenView (isVorstandMixin, View):
         # TODO: bei Rueckfrage koennte man eine email senden? oder immer?
         
         return redirect ('/arbeitsplan/leistungenBearbeiten/z=all')    
+
+
 ##########################    
 
-
-
-class NameFilterView (View):
-    
-    def applyFilter (self, request):
-
-        qs = models.User.objects.all()
-
-        form = self.filterFormClass(request.GET)
-        if form.is_valid():
-            if 'filter' in request.GET:
-                last_name = form.cleaned_data['last_name']
-
-                if last_name <> "":
-                    qs= qs.filter (last_name__icontains=last_name)
-                
-                first_name = form.cleaned_data['first_name']
-                if first_name <> "":
-                    qs= qs.filter (first_name__icontains=first_name)
-                
-        else:
-            print "filter not valid"
-            
-        return (qs, form)
         
 class Salden(isVorstandMixin, NameFilterView):
 
@@ -410,134 +784,13 @@ class Salden(isVorstandMixin, NameFilterView):
         return redirect ("arbeitsplan-salden")
     
     
-##########################    
 
+
+########################################################################################
+### EXPERIMENTELL 
+########################################################################################
     
-    
 
-        
-class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
-    """Manuelles Eintragen von Zuteilungen
-    """
-
-    filterFormClass = forms.PersonAufgabengruppeFilterForm
-    
-    def get (self,request, *args, **kwargs):
-        """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank
-        entspricht."""
-
-        userQs, filterForm = self.applyFilter (request)
-
-        if filterForm.cleaned_data['aufgabengruppe'] <> None:
-            print filterForm.cleaned_data['aufgabengruppe']
-            aufgabenQs = models.Aufgabe.objects.filter (gruppe__gruppe = filterForm.cleaned_data['aufgabengruppe'])
-        else:
-            aufgabenQs = models.Aufgabe.objects.all()
-            
-        ztlist = []
-        statuslist = {}
-        aufgaben = dict([(unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore'),
-                          (-1, 'x'))
-                          for a in aufgabenQs])
-
-        for u in userQs: 
-            tmp = {'last_name': u.last_name,
-                    'first_name': u.first_name,
-                    }
-            # print 'user:', u.id 
-            tmp.update(aufgaben)
-            mQs =  models.Meldung.objects.filter(melder=u)
-            if filterForm.cleaned_data['aufgabengruppe'] <> None:
-                mQs = mQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
-            for m in mQs: 
-                tag = unicodedata.normalize('NFKD', m.aufgabe.aufgabe).encode('ASCII', 'ignore')
-                tmp[tag] = (0, 'box_'+  str(u.id)+"_"+str(m.aufgabe.id))
-                statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
-
-            zQs =  models.Zuteilung.objects.filter(ausfuehrer=u)
-            if filterForm.cleaned_data['aufgabengruppe'] <> None:
-                zQs = zQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
-            
-            for z in zQs: 
-                tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore')
-                tmp[tag] = (1, 'box_'+ str(u.id)+"_"+str(z.aufgabe.id))
-                statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
-
-
-                
-            ztlist.append(tmp)
-
-        ## print ztlist
-        ## print statuslist
-        zt = ZuteilungsTableFactory(ztlist, aufgabenQs)
-        django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(zt)
-
-        return render (request,
-                       'arbeitsplan_manuelleZuteilung.html',
-                       {'table': zt,
-                        'status': ';'.join([k+'='+v for k, v in statuslist.iteritems()]),
-                        'filter': filterForm, 
-                        })
-    
-    def post (self,request, *args, **kwargs):
-        # print request.body 
-        ## print (request.POST )
-        ## print (request.POST.get('status') )
-        ## print (request.POST.getlist('box') )
-
-        ## filterForm = self.filterFormClass (request.POST)
-        
-        previousStatus = dict([ tuple(s.split('=') )
-                   for s in 
-                    request.POST.get('status').split(';')
-                  ])
-
-        print "prevState:"
-        print previousStatus
-
-        ## for item in request.POST.iteritems():
-        ##     # containts tuple: name, value
-        ##     # print item
-        ##     if item[0][:4] == "box_":
-        ##         print "item: ", item
-
-        newState = dict([ (item[0][4:], item[1])
-                     for item in request.POST.iteritems()
-                     if item[0][:4] == "box_"
-                    ])
-
-        print "newState"
-        print newState
-
-        # find all items in  newState  that have a zero in prevState
-        # add that zuteilung
-        for k,v in newState.iteritems():
-            if previousStatus[k] == '0':
-                print "add ", k
-                user, aufgabe = k.split('_')
-                z = models.Zuteilung(aufgabe = models.Aufgabe.objects.get(id=int(aufgabe)),
-                                     ausfuehrer = models.User.objects.get(id=int(user)),
-                                     )
-                z.save()
-
-
-        # find all items in prevState with a 1 there that do no appear in newState
-        # remove that zuteilung
-        for k,v in previousStatus.iteritems():
-            if v=='1' and k not in newState:
-                print "delete ", k
-                user, aufgabe = k.split('_')
-                z = models.Zuteilung.objects.get (aufgabe = models.Aufgabe.objects.get(id=int(aufgabe)),
-                                                  ausfuehrer = models.User.objects.get(id=int(user)),
-                                                 )
-                z.delete()
-
-        # TODO: emails senden? 
-        return redirect ("arbeitsplan-manuellezuteilung")
-
-    
-##########################    
-    
 class ErstelleZuteilungView (View):
     """Automatisches Berechnen von Zuteilungen"""
     
@@ -571,132 +824,3 @@ class ErstelleZuteilungView (View):
             
         return redirect ('arbeitsplan-zuteilunglist')
 
-#####################
-
-
-class AufgabenCreate (CreateView):
-    model = models.Aufgabe
-    form_class = forms.AufgabeForm
-    template_name = "arbeitsplan_aufgabenCreate.html"
-    success_url = "home.html"
-    title = "Neue Aufgabe anlegen"
-    buttontext = "Aufgabe anlegen"
-
-    def get_context_data (self, **kwargs):
-        context = super (AufgabenCreate, self).get_context_data (**kwargs)
-        context['title'] = self.title
-        context['buttontext'] = self.buttontext
-        context['stundenplan'] = [(u, 0) for u in range(8,24)]
-
-        return context 
-            
-    def get_form_kwargs (self):
-        kwargs = super(AufgabenCreate, self).get_form_kwargs()
-        kwargs.update({
-            'request' : self.request
-            })
-        return kwargs
-            
-    def form_valid (self, form):
-
-        # store the aufgabe
-        super (AufgabenCreate, self).form_valid(form)
-
-        # and now store the STundenplan entries
-        for uhrzeit, anzahl  in form.cleaned_data['stundenplan'].iteritems():
-            sobj = models.Stundenplan (aufgabe = self.object,
-                                       uhrzeit = uhrzeit,
-                                       anzahl = anzahl)
-            sobj.save()
-            
-        
-        return render (self.request,
-                       self.get_success_url(),
-                       {'msg': 'Die Aufgabe wurde erfolgreich angelegt.',
-                        'msgclass': 'success'} )
-    
-                          
-class AufgabenUpdate (SuccessMessageMixin, UpdateView):
-    model = models.Aufgabe
-    form_class = forms.AufgabeForm
-    template_name = "arbeitsplan_aufgabenCreate.html"
-    # success_url = "home.html"
-    success_url = reverse_lazy("arbeitsplan-aufgaben")
-    success_message = 'Die  <a href="%(url)s">Aufgabe %(id)s</a> wurde erfolgreich verändert.'
-    title = "Aufgabe ändern"
-    buttontext = "Änderung eintragen"
-
-    def get_success_message (self, cleaned_data):
-        """See documentation at: https://docs.djangoproject.com/en/1.6/ref/contrib/messages/
-        """
-        msg =  mark_safe(self.success_message % dict (cleaned_data,
-                                                      url = reverse ('arbeitsplan-aufgabenEdit',
-                                                                     args=(self.object.id,)), 
-                                                      id=self.object.id))
-
-        # messages.warning(self.request, "aber komisch ist die schon")
-        
-        # print "succesS_msg: ", msg
-        return msg
-    
-    
-    def get_context_data (self, **kwargs):
-        context = super (AufgabenUpdate, self).get_context_data (**kwargs)
-        context['title'] = self.title
-        context['buttontext'] = self.buttontext
-
-        # hier Stundenplanwerte aus DB holen
-        # a dict with default values, to be overwirtten with values from data base
-        # then converted back into a list to be passed into the template
-        stundenplan = dict([(u, 0) for u in range(8,24)])
-        for s in models.Stundenplan.objects.filter (aufgabe=self.object):
-            stundenplan[s.uhrzeit] = s.anzahl
-        
-        context['stundenplan'] = stundenplan.items()
-        
-        return context 
-        
-    
-    def get_form_kwargs (self):
-        kwargs = super(AufgabenUpdate, self).get_form_kwargs()
-        kwargs.update({
-            'request' : self.request
-            })
-        return kwargs
-
-    def form_valid (self, form):
-
-        # store the aufgabe
-        super (AufgabenUpdate, self).form_valid(form)
-
-        # manipulate the stundenplan
-        stundenplan = form.cleaned_data['stundenplan']
-        for sDB in models.Stundenplan.objects.filter(aufgabe=self.object):
-            print sDB
-            if sDB.uhrzeit in stundenplan:
-                if stundenplan[sDB.uhrzeit] <> sDB.anzahl:
-                    sDB.anzahl = stundenplan[sDB.uhrzeit]
-                    sDB.save()
-                    del stundenplan[sDB.uhrzeit]
-            else:
-                sDB.delete()
-
-        # all the keys remaining in stundenplan have to be added
-        for uhrzeit, anzahl in stundenplan.iteritems():
-            sobj = models.Stundenplan (aufgabe = self.object,
-                                       uhrzeit = uhrzeit,
-                                       anzahl = anzahl)
-            sobj.save()
-
-
-        return redirect ("arbeitsplan-aufgaben")
-        ## return render (self.request,
-        ##                self.get_success_url(),
-        ##                ## {'msg': format_html(u'Die Aufgabe <a href="{1}">{0}</a> wurde erfolgreich verändert.',
-        ##                ##                     self.object.id,
-        ##                ##                     reverse ('arbeitsplan-aufgabenEdit',
-        ##                ##                              args=(self.object.id,),
-        ##                ##                              )
-        ##                ##                     ),
-        ##                ##  'msgclass': 'success'}
-        ##                 )

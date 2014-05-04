@@ -44,10 +44,10 @@ urlpatterns = patterns('',
          name="arbeitsplan-zuteilunglist",
          ),
 
-    url (r'^arbeitsplan/meldungAnzeige/$',
-         login_required(arbeitsplan.views.ListMeldungenView.as_view()),
-         name="arbeitsplan-meldunglist",
-         ),
+    ## url (r'^arbeitsplan/meldungAnzeige/$',
+    ##      login_required(arbeitsplan.views.CreateMeldungenView.as_view()),
+    ##      name="arbeitsplan-meldunglist",
+    ##      ),
 
     url (r'^arbeitsplan/erstelleZuteilung/$',
          login_required(arbeitsplan.views.ErstelleZuteilungView.as_view()),
@@ -60,7 +60,7 @@ urlpatterns = patterns('',
          ),
 
     url (r'^arbeitsplan/meldung/$',
-         login_required(arbeitsplan.views.UpdateMeldungView.as_view()),
+         login_required(arbeitsplan.views.CreateMeldungenView.as_view()),
          name="arbeitsplan-meldung",),
          
     url (r'^arbeitsplan/leistung/$',
