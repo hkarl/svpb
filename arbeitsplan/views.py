@@ -47,16 +47,22 @@ def logout_view (request):
 ###############
 
 class FilteredListView (ListView):
+    """A fairly generic way of specifying a view that returns a table
+    that can be filtered, along specified fields. 
+    """
+
+    # Specify the following: 
     title = ""
-    filterform = None 
     template_name = "arbeitsplan_tff.html"
-    tableform = None
-    tableclass = None 
+    tableClass = None 
     filtertitle = None
     tabletitle = None
     tableform = None # tableform should be dict with keys: name, value for the submit button 
     filterconfig = [] # a list of tuples, with (fieldnmae in form, filter keyword to apply)     
     model = None
+
+    # Only as variable needed: 
+    filterform = None  # yes, this should be an instance variable, to pass around 
     
     def get_context_data (self, **kwargs):
         context= super (FilteredListView, self).get_context_data()
@@ -545,29 +551,42 @@ class MeldungVorstandView (isVorstandMixin, FilteredListView):
 class ListZuteilungenView (FilteredListView):
     title = "Alle Zuteilungen anzeigen"
     filterform_class = forms.PersonAufgabengruppeFilterForm
+    tableClass = ZuteilungTable
+    filtertitle = "Zuteilungen nach Personen oder Aufgabengruppen filtern"
+    tabletitle = "Zuteilungen"
+    filterconfig = [('aufgabengruppe', 'aufgabe__gruppe__gruppe'),
+                    ('first_name', 'ausfuehrer__first_name__icontains'), 
+                    ('last_name', 'ausfuehrer__last_name__icontains'),
+                    ]
     
     def get_queryset (self):
-        if "all" in  self.request.path: 
+        if (("all" in  self.request.path) and
+            (isVorstand(self.request.user))): 
             qs = models.Zuteilung.objects.all()
         else:
             qs = models.Zuteilung.objects.filter (ausfuehrer =self.request.user)
-
-        self.filterform = self.filterform_class(self.request.GET)
-        if self.filterform.is_valid():
-            print self.filterform.cleaned_data
-            if self.filterform.cleaned_data['aufgabengruppe'] <> None:
-                qs = qs.filter (aufgabe__gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
-            if self.filterform.cleaned_data['first_name'] <> "":
-                qs = qs.filter (ausfuehrer__first_name__icontains = self.filterform.cleaned_data['first_name'])
-            if self.filterform.cleaned_data['last_name'] <> "":
-                qs = qs.filter (ausfuehrer__last_name__icontains = self.filterform.cleaned_data['last_name'])
-        
-
-        table = ZuteilungTable(qs)
-        # TODO: actually, "me" should be enforced when the user is not a Vorstand!
-        
-        django_tables2.RequestConfig(self.request).configure(table)
+            
+        qs = self.apply_filter (qs)
+        table =  self.get_filtered_table (qs)
         return table 
+
+            
+        ## self.filterform = self.filterform_class(self.request.GET)
+        ## if self.filterform.is_valid():
+        ##     print self.filterform.cleaned_data
+        ##     if self.filterform.cleaned_data['aufgabengruppe'] <> None:
+        ##         qs = qs.filter (aufgabe__gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
+        ##     if self.filterform.cleaned_data['first_name'] <> "":
+        ##         qs = qs.filter (ausfuehrer__first_name__icontains = self.filterform.cleaned_data['first_name'])
+        ##     if self.filterform.cleaned_data['last_name'] <> "":
+        ##         qs = qs.filter (ausfuehrer__last_name__icontains = self.filterform.cleaned_data['last_name'])
+        
+
+        ## table = ZuteilungTable(qs)
+        ## # TODO: actually, "me" should be enforced when the user is not a Vorstand!
+        
+        ## django_tables2.RequestConfig(self.request).configure(table)
+        ## return table 
 
 
 class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
