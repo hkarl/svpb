@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Button
-from crispy_forms.bootstrap import StrictButton, FormActions
+from crispy_forms.bootstrap import StrictButton, FormActions, InlineCheckboxes
 
 
 class MeldungForm (forms.Form):
@@ -142,6 +142,30 @@ class PersonAufgabengruppeFilterForm (NameFilterForm):
     aufgabengruppe = forms.ModelChoiceField (queryset = models.Aufgabengruppe.objects.all(),
                                             label="Aufgabengruppe", 
                                             required=False) 
+
+class PersonAufgGrpPraefernzFilterForm (PersonAufgabengruppeFilterForm):
+    def __init__(self, *args, **kwargs):
+        super(PersonAufgGrpPraefernzFilterForm, self).__init__(*args, **kwargs)
+        self.helper.form_id = "PersonAufgGrpPraefernzFilterForm"
+
+        
+        self.helper.layout = Layout(
+            'last_name',
+            'first_name',
+            'aufgabengruppe',
+            InlineCheckboxes('praeferenz'), 
+            Submit ('filter', 'Filter anwenden'),
+            )
+
+    praeferenz = forms.MultipleChoiceField(choices=models.Meldung.PRAEFERENZ,
+                                           widget=forms.CheckboxSelectMultiple,
+                                           label="Praeferenz Mitglied",
+                                           required =False,
+                                           initial=[models.Meldung.PRAEFERENZ[1][0],
+                                                    models.Meldung.PRAEFERENZ[2][0],
+                                                    models.Meldung.PRAEFERENZ[3][0],
+                                                    ],
+                                             )
 
     
 ## class LeistungBearbeitenForm (forms.ModelForm):

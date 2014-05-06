@@ -51,9 +51,12 @@ class FilteredListView (ListView):
     filterform = None 
     template_name = "arbeitsplan_tff.html"
     tableform = None
+    tableclass = None 
     filtertitle = None
     tabletitle = None
     tableform = None # tableform should be dict with keys: name, value for the submit button 
+    filterconfig = [] # a list of tuples, with (fieldnmae in form, filter keyword to apply)     
+    model = None
     
     def get_context_data (self, **kwargs):
         context= super (FilteredListView, self).get_context_data()
@@ -65,7 +68,58 @@ class FilteredListView (ListView):
 
         return context
 
+    def apply_filter (self, qs=None):
 
+        # print self.request.GET
+        
+        if qs==None:
+            qs = self.model.objects.all()
+            
+
+        if 'filter' not in self.request.GET:
+            self.filterform = self.filterform_class()
+            filterconfig = []
+            fieldsWithInitials = [k
+                                  for k,v
+                                  in self.filterform.fields.iteritems()
+                                  if v.initial<>None]
+            filterconfig = [(x[0], x[1], self.filterform.fields[x[0]].initial)
+                            for x in self.filterconfig
+                            if x[0] in fieldsWithInitials]
+
+            for fieldname, filterexp, initialValues in filterconfig:
+                qs = qs.filter (**{filterexp: initialValues})
+        else: 
+            self.filterform = self.filterform_class(self.request.GET)
+            filterconfig = self.filterconfig
+        
+            if self.filterform.is_valid():
+                # apply filters
+                for fieldname, filterexp in filterconfig:
+                    if ((self.filterform.cleaned_data[fieldname] <> None) and
+                        (self.filterform.cleaned_data[fieldname] <> "")):
+                        qs = qs.filter(**{filterexp: self.filterform.cleaned_data[fieldname]})
+            else:
+                print "filterform not valid" 
+
+        return qs
+    
+    def get_filtered_table (self, qs):
+        table = self.tableClass(qs)
+        django_tables2.RequestConfig(self.request).configure(table)
+
+        return table
+        
+    def get_queryset (self):
+        """standard way of displaying a filtered table,
+        might have to be overwritten if some non-standard processing is necessary,
+        e.g., to determine the table depending on user role 
+        """
+        qs = self.model.objects.all()
+        qs = self.apply_filter (qs)
+        table =  self.get_filtered_table (qs)
+        return table 
+    
 ############### 
 
 class NameFilterView (View):
@@ -176,26 +230,31 @@ class ListAufgabenView (FilteredListView):
 
     filterform_class = forms.AufgabengruppeFilterForm
     title = "Alle Aufgaben anzeigen"
+    filterconfig = [('aufgabengruppe', 'gruppe__gruppe')]
+    model = models.Aufgabe
     
     def get_queryset (self):
-    
-        if isVorstand (self.request.user):
-            tableClass = AufgabenTableVorstand
-        else:
-            tableClass = AufgabenTable
-            
-            
-        # evaluate the form:
-        self.filterform = self.filterform_class(self.request.GET)
-        if self.filterform.is_valid() and self.filterform.cleaned_data['aufgabengruppe'] <> None:
-            table = tableClass(models.Aufgabe.objects.filter(gruppe__gruppe=
-                                                                self.filterform.cleaned_data['aufgabengruppe']))
-        else:
-            table = tableClass(models.Aufgabe.objects.all())
-        django_tables2.RequestConfig(self.request).configure(table)
 
-        print table 
-        return table
+        print self.request.GET
+            
+        if isVorstand (self.request.user):
+            self.tableClass = AufgabenTableVorstand
+        else:
+            self.tableClass = AufgabenTable
+            
+        return self.get_filtered_table (self.model.objects.all())
+    
+        # evaluate the form:
+        ## self.filterform = self.filterform_class(self.request.GET)
+        ## if self.filterform.is_valid() and self.filterform.cleaned_data['aufgabengruppe'] <> None:
+        ##     table = tableClass(models.Aufgabe.objects.filter(gruppe__gruppe=
+        ##                                                         self.filterform.cleaned_data['aufgabengruppe']))
+        ## else:
+        ##     table = tableClass(models.Aufgabe.objects.all())
+        ## django_tables2.RequestConfig(self.request).configure(table)
+
+        ## print table 
+        ## return table
 
 #####################
 
@@ -261,15 +320,22 @@ class CreateMeldungenView (FilteredListView):
     tabletitle = "Meldungen für Aufgaben eintragen oder ändern"
     tableform = {'name': "eintragen",
                  'value': "Meldungen eintragen/ändern"}
-    
+    filterconfig = [('aufgabengruppe', 'gruppe__gruppe')]
+    model = models.Aufgabe
+    tableClass = MeldungTable 
+        
     def get_queryset (self):
 
-        qsAufgaben =  models.Aufgabe.objects.all()
-        self.filterform = self.filterform_class(self.request.GET)
-        if self.filterform.is_valid():
-            if self.filterform.cleaned_data['aufgabengruppe'] <> None:
-                qsAufgaben = qsAufgaben.filter (gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
+        ## manual filtering: 
+        ## qsAufgaben =  models.Aufgabe.objects.all()
+        ## self.filterform = self.filterform_class(self.request.GET)
+        ## if self.filterform.is_valid():
+        ##     if self.filterform.cleaned_data['aufgabengruppe'] <> None:
+        ##         qsAufgaben = qsAufgaben.filter (gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
 
+        ## filter by pre-defined methods: 
+        qsAufgaben = self.apply_filter ()
+        
         # fill the table with all aufgaben
         # overwrite preferences and bemerkung if for them, a value exists
         aufgabenliste = []
@@ -296,8 +362,10 @@ class CreateMeldungenView (FilteredListView):
 
             # print aufgabenliste
         
-        table = MeldungTable(aufgabenliste)
-        django_tables2.RequestConfig(self.request).configure(table)
+        ## table = MeldungTable(aufgabenliste)
+        ## django_tables2.RequestConfig(self.request).configure(table)
+        table = self.get_filtered_table (aufgabenliste)
+        
         return table
 
 
@@ -358,26 +426,36 @@ class MeldungVorstandView (isVorstandMixin, FilteredListView):
     """
     
     title = "Meldungen für Aufgaben bewerten"
-    filterform_class = forms.PersonAufgabengruppeFilterForm
+    # filterform_class = forms.PersonAufgabengruppeFilterForm
+    filterform_class = forms.PersonAufgGrpPraefernzFilterForm
     filtertitle = "Meldungen nach Person, Aufgabengruppen oder Präferenz filtern"
     tabletitle = "Meldungen bewerten"
-    ## tableform = {'name': "eintragen",
-    ##              'value': "Meldungen eintragen/ändern"}
+    # tableform ?
+    filterconfig = [('aufgabengruppe', 'aufgabe__gruppe__gruppe'),
+                    ('first_name', 'melder__first_name__icontains'), 
+                    ('last_name', 'melder__last_name__icontains'),
+                    ('praeferenz', 'prefMitglied__in')
+                    ]
+    tableClass = MeldungTableVorstand
+    model = models.Meldung 
+    
+    tableform = {'name': "eintragen",
+                 'value': "Meldungen eintragen/ändern"}
 
-    def get_queryset (self):
-        qs = models.Meldung.objects.all()
-        self.filterform = self.filterform_class (self.request.GET)
-        if self.filterform.is_valid():
-            if self.filterform.cleaned_data['aufgabengruppe'] <> None:
-                qs = qs.filter (aufgabe__gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
-            if self.filterform.cleaned_data['first_name'] <> "":
-                qs = qs.filter (ausfuehrer__first_name__icontains = self.filterform.cleaned_data['first_name'])
-            if self.filterform.cleaned_data['last_name'] <> "":
-                qs = qs.filter (ausfuehrer__last_name__icontains = self.filterform.cleaned_data['last_name'])
+    ## def get_queryset (self):
+    ##     qs = models.Meldung.objects.all()
+    ##     self.filterform = self.filterform_class (self.request.GET)
+    ##     if self.filterform.is_valid():
+    ##         if self.filterform.cleaned_data['aufgabengruppe'] <> None:
+    ##             qs = qs.filter (aufgabe__gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
+    ##         if self.filterform.cleaned_data['first_name'] <> "":
+    ##             qs = qs.filter (ausfuehrer__first_name__icontains = self.filterform.cleaned_data['first_name'])
+    ##         if self.filterform.cleaned_data['last_name'] <> "":
+    ##             qs = qs.filter (ausfuehrer__last_name__icontains = self.filterform.cleaned_data['last_name'])
 
-        table = MeldungTableVorstand (qs)
-        django_tables2.RequestConfig(self.request).configure(table)
-        return table
+    ##     table = MeldungTableVorstand (qs)
+    ##     django_tables2.RequestConfig(self.request).configure(table)
+    ##     return table
         
         
     ############ Old Meldung Vorstand 
