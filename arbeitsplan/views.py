@@ -76,8 +76,6 @@ class FilteredListView (ListView):
 
     def apply_filter (self, qs=None):
 
-        # print self.request.GET
-        
         if qs==None:
             qs = self.model.objects.all()
             
@@ -241,8 +239,6 @@ class ListAufgabenView (FilteredListView):
     
     def get_queryset (self):
 
-        print self.request.GET
-            
         if isVorstand (self.request.user):
             self.tableClass = AufgabenTableVorstand
         else:
@@ -250,17 +246,6 @@ class ListAufgabenView (FilteredListView):
             
         return self.get_filtered_table (self.model.objects.all())
     
-        # evaluate the form:
-        ## self.filterform = self.filterform_class(self.request.GET)
-        ## if self.filterform.is_valid() and self.filterform.cleaned_data['aufgabengruppe'] <> None:
-        ##     table = tableClass(models.Aufgabe.objects.filter(gruppe__gruppe=
-        ##                                                         self.filterform.cleaned_data['aufgabengruppe']))
-        ## else:
-        ##     table = tableClass(models.Aufgabe.objects.all())
-        ## django_tables2.RequestConfig(self.request).configure(table)
-
-        ## print table 
-        ## return table
 
 #####################
 
@@ -332,14 +317,6 @@ class CreateMeldungenView (FilteredListView):
         
     def get_queryset (self):
 
-        ## manual filtering: 
-        ## qsAufgaben =  models.Aufgabe.objects.all()
-        ## self.filterform = self.filterform_class(self.request.GET)
-        ## if self.filterform.is_valid():
-        ##     if self.filterform.cleaned_data['aufgabengruppe'] <> None:
-        ##         qsAufgaben = qsAufgaben.filter (gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
-
-        ## filter by pre-defined methods: 
         qsAufgaben = self.apply_filter ()
         
         # fill the table with all aufgaben
@@ -361,15 +338,10 @@ class CreateMeldungenView (FilteredListView):
             except ObjectDoesNotExist: 
                 d['prefMitglied'] = models.Meldung.GARNICHT 
                 d['bemerkung'] = None 
-            
 
             # and collect
             aufgabenliste.append(d)
 
-            # print aufgabenliste
-        
-        ## table = MeldungTable(aufgabenliste)
-        ## django_tables2.RequestConfig(self.request).configure(table)
         table = self.get_filtered_table (aufgabenliste)
         
         return table
@@ -448,45 +420,6 @@ class MeldungVorstandView (isVorstandMixin, FilteredListView):
     tableform = {'name': "eintragen",
                  'value': "Meldungen eintragen/ändern"}
 
-    ## def get_queryset (self):
-    ##     qs = models.Meldung.objects.all()
-    ##     self.filterform = self.filterform_class (self.request.GET)
-    ##     if self.filterform.is_valid():
-    ##         if self.filterform.cleaned_data['aufgabengruppe'] <> None:
-    ##             qs = qs.filter (aufgabe__gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
-    ##         if self.filterform.cleaned_data['first_name'] <> "":
-    ##             qs = qs.filter (ausfuehrer__first_name__icontains = self.filterform.cleaned_data['first_name'])
-    ##         if self.filterform.cleaned_data['last_name'] <> "":
-    ##             qs = qs.filter (ausfuehrer__last_name__icontains = self.filterform.cleaned_data['last_name'])
-
-    ##     table = MeldungTableVorstand (qs)
-    ##     django_tables2.RequestConfig(self.request).configure(table)
-    ##     return table
-        
-        
-    ############ Old Meldung Vorstand 
-    ## def get(self,request, *args, **kwargs):
-    ##     myForm = forms.MeldungForm()
-
-    ##     # which questions should get an initial check?
-    ##     aufgabenMitMeldung = [m.aufgabe.id for m in 
-    ##                             models.Meldung.objects.filter(melder_id=request.user.id)]
-    ##     # print aufgabenMitMeldung
-        
-    ##     return render (request,
-    ##                    "arbeitsplan_meldung.html",
-    ##                    dictionary = {'form': myForm,
-    ##                                  'groups': [ (g.id,
-    ##                                               g.gruppe,
-    ##                                               [(a.id,
-    ##                                                 a.aufgabe,
-    ##                                                 a.datum if a.datum else "",
-    ##                                                 a.id in aufgabenMitMeldung, 
-    ##                                                 )
-    ##                                                 for a in models.Aufgabe.objects.filter(gruppe__exact=g)],
-    ##                                               )
-    ##                                              for g in models.Aufgabengruppe.objects.all()]},
-    ##                    )
 
     ## def post (self,request, *args, **kwargs):
 
@@ -571,22 +504,6 @@ class ListZuteilungenView (FilteredListView):
         return table 
 
             
-        ## self.filterform = self.filterform_class(self.request.GET)
-        ## if self.filterform.is_valid():
-        ##     print self.filterform.cleaned_data
-        ##     if self.filterform.cleaned_data['aufgabengruppe'] <> None:
-        ##         qs = qs.filter (aufgabe__gruppe__gruppe = self.filterform.cleaned_data['aufgabengruppe'])
-        ##     if self.filterform.cleaned_data['first_name'] <> "":
-        ##         qs = qs.filter (ausfuehrer__first_name__icontains = self.filterform.cleaned_data['first_name'])
-        ##     if self.filterform.cleaned_data['last_name'] <> "":
-        ##         qs = qs.filter (ausfuehrer__last_name__icontains = self.filterform.cleaned_data['last_name'])
-        
-
-        ## table = ZuteilungTable(qs)
-        ## # TODO: actually, "me" should be enforced when the user is not a Vorstand!
-        
-        ## django_tables2.RequestConfig(self.request).configure(table)
-        ## return table 
 
 
 class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
