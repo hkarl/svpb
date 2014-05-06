@@ -128,7 +128,9 @@ class Zuteilung (models.Model):
         verbose_name_plural = "Zuteilungen"
 
     def __unicode__ (self):
-        return self.aufgabe.__unicode__() + ": " + self.ausfuehrer.__unicode__()
+        return (self.aufgabe.__unicode__() + ": " + self.ausfuehrer.__unicode__() +
+                (" @ " + self.uhrzeit) if self.uhrzeit else "" 
+                )
     
     class Meta:
         verbose_name_plural = "Zuteilungen"

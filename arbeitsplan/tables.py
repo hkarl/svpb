@@ -268,10 +268,14 @@ class MeldungTableVorstand (RadioButtonTable):
     ##                                     empty_values=(), 
     ##                                     )
 
-    bemerkungVorstand = django_tables2.Column (empty_values=(),)
+    bemerkungVorstand = django_tables2.Column (empty_values=(),
+                                               verbose_name = "Bemerkungen des Vorstandes")
+    prefVorstand = django_tables2.Column (accessor="prefVorstand",
+                                      verbose_name="Vorlieben des Vorstandes",
+                                      empty_values=(), 
+                                     )
     
     def render_prefVorstand (self, value, record):
-
 
         return self.render_radio (choices=models.Meldung.PRAEFERENZ,
                                     buttontexts=models.Meldung.PRAEFERENZButtons,
@@ -358,7 +362,8 @@ class LeistungBearbeitenTable (RadioButtonTable):
 ## </div>    
 ##     """)
     
-    bemerkungVorstand = django_tables2.Column (empty_values=())
+    bemerkungVorstand = django_tables2.Column (empty_values=(),
+                                               verbose_name = "Bemerkungen des Vorstandes")
     
         
     class Meta:
