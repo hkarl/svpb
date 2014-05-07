@@ -297,8 +297,66 @@ class AufgabenCreate (CreateView):
 #########   MELDUNG 
 ########################################################################################
 
+class MeldungEdit  (FilteredListView):
 
-class CreateMeldungenView (FilteredListView):
+    def processUpdate (self, request):
+        for k, value in request.POST.iteritems():
+            if (k.startswith('bemerkung') or
+                k.startswith('prefMitglied') or
+                k.startswith('prefVorstand') 
+                ):
+                key, tmp = k.split('_', 1)
+                try:
+                    id, choice = tmp.split('_', 1)
+                except ValueError:
+                    id = tmp
+                    choice = None
+                id = int(id)
+                
+                ## aufgabe = models.Aufgabe.objects.get(id=id)
+                ## print key, id, choice, value, aufgabe 
+                safeit = False
+                
+                ## m, newcreated = models.Meldung.objects.get_or_create(
+                ##     aufgabe=aufgabe,
+                ##     melder=self.request.user,
+                ##     defaults = models.Meldung.MODELDEFAULTS, 
+                ## )
+
+                try:
+                    m = models.Meldung.objects.get(id=id)
+                except DoesNotExist:
+                    print "consistency of dsatabase destryoed"
+                    # TODO: display error 
+                    continue 
+                    
+                if key == 'bemerkung':
+                    if m.bemerkung <> value: 
+                        m.bemerkung = value
+                        safeit = True
+
+                if key == 'bemerkungVorstand' and isVorstand(self.request.user):
+                    if m.bemerkungVorstand <> value: 
+                        m.bemerkungVorstand = value
+                        safeit = True
+                                        
+                if key == 'prefMitglied':
+                    if m.prefMitglied <> choice:
+                        m.prefMitglied  = choice
+                        safeit = True
+
+                if key == 'prefVorstand' and isVorstand(self.request.user):
+                    if m.prefVorstand <> choice:
+                        m.prefVorstand  = choice
+                        safeit = True
+
+                if safeit: 
+                    m.save()
+            else:
+                pass # not interested in those keys
+        
+    
+class CreateMeldungenView (MeldungEdit):
     """
     Display a table with all Aufgaben and fields to set preferences and add remarks.
     Accept updates and enter them into the Meldung table. 
@@ -328,7 +386,6 @@ class CreateMeldungenView (FilteredListView):
                  'gruppe': a.gruppe,
                  'datum' : a.datum,
                  'stunden': a.stunden,
-                 'id': a.id, 
                 }
             # add what we can find from Meldung:
             m, newcreated = models.Meldung.objects.get_or_create(
@@ -336,6 +393,7 @@ class CreateMeldungenView (FilteredListView):
                 melder=self.request.user,
                 defaults = models.Meldung.MODELDEFAULTS, 
                 )
+            d['id'] = m.id 
             d['prefMitglied'] = m.prefMitglied
             d['bemerkung'] = m.bemerkung
   
@@ -351,47 +409,12 @@ class CreateMeldungenView (FilteredListView):
         print "post in CreateMeldungenView"
         print request.POST
 
-        for k, value in request.POST.iteritems():
-            if k.startswith('bemerkung') or k.startswith('prefMitglied'):
-                key, tmp = k.split('_', 1)
-                try:
-                    id, choice = tmp.split('_', 1)
-                except ValueError:
-                    id = tmp
-                    choice = None
-                id = int(id)
-                
-                aufgabe = models.Aufgabe.objects.get(id=id)
-                print key, id, choice, value, aufgabe 
-                safeit = False
-                
-                m, newcreated = models.Meldung.objects.get_or_create(
-                    aufgabe=aufgabe,
-                    melder=self.request.user,
-                    defaults = models.Meldung.MODELDEFAULTS, 
-                )
-                    
-                if key == 'bemerkung':
-                    if m.bemerkung <> value: 
-                        m.bemerkung = value
-                        safeit = True
-                        
-                if key == 'prefMitglied':
-                    if m.prefMitglied <> choice:
-                        m.prefMitglied  = choice
-                        safeit = True
+        self.processUpdate(request)
 
-                if safeit: 
-                    m.save()
-            else:
-                pass # not interested in those keys
-
-                
-        ## request.POST has: all bemerkung fields, irrespective of change; preferneces only if they changed ? ! “
         return redirect ("arbeitsplan-meldung")
         
     
-class MeldungVorstandView (isVorstandMixin, FilteredListView):
+class MeldungVorstandView (isVorstandMixin, MeldungEdit):
     """Display a (filtered) list of all Meldungen from all Users, with all preferences.
     Allow Vorstand to update its fields and store them.
     """
@@ -414,8 +437,12 @@ class MeldungVorstandView (isVorstandMixin, FilteredListView):
                  'value': "Meldungen eintragen/ändern"}
 
 
-    ## def post (self,request, *args, **kwargs):
+    def post (self,request, *args, **kwargs):
+        print request.POST
+        self.processUpdate(request)
+        return redirect ('arbeitsplan-meldungVorstand')        
 
+        
     ##     myForm = forms.MeldungForm (request.POST)
     ##     if myForm.is_valid():
     ##         # print "processing valid form"
@@ -503,6 +530,8 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
     """Manuelles Eintragen von Zuteilungen
     """
 
+    # TODO: filter by preferences? show preferences in table?
+    
     filterFormClass = forms.PersonAufgabengruppeFilterForm
     
     def get (self,request, *args, **kwargs):
