@@ -331,14 +331,14 @@ class CreateMeldungenView (FilteredListView):
                  'id': a.id, 
                 }
             # add what we can find from Meldung:
-            try:
-                m = models.Meldung.objects.get(aufgabe=a, melder=self.request.user)
-                d['prefMitglied'] = m.prefMitglied
-                d['bemerkung'] = m.bemerkung
-            except ObjectDoesNotExist: 
-                d['prefMitglied'] = models.Meldung.GARNICHT 
-                d['bemerkung'] = None 
-
+            m, newcreated = models.Meldung.objects.get_or_create(
+                aufgabe=a,
+                melder=self.request.user,
+                defaults = models.Meldung.MODELDEFAULTS, 
+                )
+            d['prefMitglied'] = m.prefMitglied
+            d['bemerkung'] = m.bemerkung
+  
             # and collect
             aufgabenliste.append(d)
 
@@ -365,18 +365,11 @@ class CreateMeldungenView (FilteredListView):
                 print key, id, choice, value, aufgabe 
                 safeit = False
                 
-                try: 
-                    m = models.Meldung.objects.get(aufgabe=aufgabe,
-                                                   melder=self.request.user)
-                except ObjectDoesNotExist: 
-                    m = models.Meldung(melder=self.request.user,
-                                        aufgabe=aufgabe,
-                                        prefMitglied = models.Meldung.NORMAL,
-                                        bemerkung= "",
-                                        prefVorstand = models.Meldung.NORMAL,
-                                        bemerkungVorstand= "",                                         
-                                    )
-                    safeit = True
+                m, newcreated = models.Meldung.objects.get_or_create(
+                    aufgabe=aufgabe,
+                    melder=self.request.user,
+                    defaults = models.Meldung.MODELDEFAULTS, 
+                )
                     
                 if key == 'bemerkung':
                     if m.bemerkung <> value: 

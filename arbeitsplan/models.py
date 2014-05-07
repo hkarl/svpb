@@ -95,7 +95,12 @@ class Meldung (models.Model):
         NORMAL: 'btn-info', 
         WENNSMUSS: 'btn-mywarning', 
         }
-        
+
+    MODELDEFAULTS = {'prefMitglied': GARNICHT,
+                     'prefVorstand': NORMAL,
+                     'bemerkung': '',
+                     'bemerkungVorstand': '', 
+                    }
     prefMitglied = models.IntegerField (choices = PRAEFERENZ,
                                         default = NORMAL,
                                         help_text="Haben Sie Vorlieben für diese Aufgabe?",)
