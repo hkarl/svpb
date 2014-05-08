@@ -63,102 +63,123 @@
 - fields: {codename: delete_logentry, content_type: 7, name: Can delete log entry}
   model: auth.permission
   pk: 21
-- fields: {codename: add_mitgliedsstatus, content_type: 8, name: Can add mitgliedsstatus}
+- fields: {codename: add_aufgabengruppe, content_type: 8, name: Can add Aufgabengruppe}
   model: auth.permission
   pk: 22
-- fields: {codename: change_mitgliedsstatus, content_type: 8, name: Can change mitgliedsstatus}
+- fields: {codename: change_aufgabengruppe, content_type: 8, name: Can change Aufgabengruppe}
   model: auth.permission
   pk: 23
-- fields: {codename: delete_mitgliedsstatus, content_type: 8, name: Can delete mitgliedsstatus}
+- fields: {codename: delete_aufgabengruppe, content_type: 8, name: Can delete Aufgabengruppe}
   model: auth.permission
   pk: 24
-- fields: {codename: add_mitglied, content_type: 9, name: Can add mitglied}
+- fields: {codename: add_aufgabe, content_type: 9, name: Can add Aufgabe}
   model: auth.permission
   pk: 25
-- fields: {codename: change_mitglied, content_type: 9, name: Can change mitglied}
+- fields: {codename: change_aufgabe, content_type: 9, name: Can change Aufgabe}
   model: auth.permission
   pk: 26
-- fields: {codename: delete_mitglied, content_type: 9, name: Can delete mitglied}
+- fields: {codename: delete_aufgabe, content_type: 9, name: Can delete Aufgabe}
   model: auth.permission
   pk: 27
-- fields: {codename: add_aufgabengruppe, content_type: 10, name: Can add aufgabengruppe}
+- fields: {codename: add_stundenplan, content_type: 10, name: Can add Stundenplan}
   model: auth.permission
   pk: 28
-- fields: {codename: change_aufgabengruppe, content_type: 10, name: Can change aufgabengruppe}
+- fields: {codename: change_stundenplan, content_type: 10, name: Can change Stundenplan}
   model: auth.permission
   pk: 29
-- fields: {codename: delete_aufgabengruppe, content_type: 10, name: Can delete aufgabengruppe}
+- fields: {codename: delete_stundenplan, content_type: 10, name: Can delete Stundenplan}
   model: auth.permission
   pk: 30
-- fields: {codename: add_aufgabe, content_type: 11, name: Can add aufgabe}
+- fields: {codename: add_meldung, content_type: 11, name: Can add Meldung}
   model: auth.permission
   pk: 31
-- fields: {codename: change_aufgabe, content_type: 11, name: Can change aufgabe}
+- fields: {codename: change_meldung, content_type: 11, name: Can change Meldung}
   model: auth.permission
   pk: 32
-- fields: {codename: delete_aufgabe, content_type: 11, name: Can delete aufgabe}
+- fields: {codename: delete_meldung, content_type: 11, name: Can delete Meldung}
   model: auth.permission
   pk: 33
-- fields: {codename: add_meldung, content_type: 12, name: Can add meldung}
+- fields: {codename: add_zuteilung, content_type: 12, name: Can add Zuteilung}
   model: auth.permission
   pk: 34
-- fields: {codename: change_meldung, content_type: 12, name: Can change meldung}
+- fields: {codename: change_zuteilung, content_type: 12, name: Can change Zuteilung}
   model: auth.permission
   pk: 35
-- fields: {codename: delete_meldung, content_type: 12, name: Can delete meldung}
+- fields: {codename: delete_zuteilung, content_type: 12, name: Can delete Zuteilung}
   model: auth.permission
   pk: 36
-- fields: {codename: add_zuteilung, content_type: 13, name: Can add zuteilung}
+- fields: {codename: add_leistung, content_type: 13, name: Can add Leistung}
   model: auth.permission
   pk: 37
-- fields: {codename: change_zuteilung, content_type: 13, name: Can change zuteilung}
+- fields: {codename: change_leistung, content_type: 13, name: Can change Leistung}
   model: auth.permission
   pk: 38
-- fields: {codename: delete_zuteilung, content_type: 13, name: Can delete zuteilung}
+- fields: {codename: delete_leistung, content_type: 13, name: Can delete Leistung}
   model: auth.permission
   pk: 39
 - fields:
-    date_joined: 2014-03-29 21:24:03+00:00
-    email: hkarl@ieee.org
+    name: Vorstand
+    permissions: []
+  model: auth.group
+  pk: 1
+- fields:
+    date_joined: 2014-05-08 18:47:24+00:00
+    email: ''
     first_name: Holger
     groups: []
     is_active: true
     is_staff: true
     is_superuser: true
-    last_login: 2014-03-29 17:13:28+00:00
-    last_name: KArl
-    password: pbkdf2_sha256$10000$BKtbuYL5kM7v$uOT2hfRCwi/CjYxWURp/iYJr9ck1ii86YAiwFFdEhJI=
+    last_login: 2014-05-08 18:47:42+00:00
+    last_name: Karl
+    password: pbkdf2_sha256$12000$EVhJRgxGOARc$8Iif9zNZnIG73to67Uzt7BSFrmUhXZrQQDDd1dfwjYs=
     user_permissions: []
     username: hkarl
   model: auth.user
   pk: 1
 - fields:
-    date_joined: 2014-03-29 17:25:53+00:00
+    date_joined: 2014-05-08 18:48:31+00:00
     email: ''
-    first_name: 'Dirk '
-    groups: []
+    first_name: Captain
+    groups: [1]
     is_active: true
-    is_staff: false
+    is_staff: true
     is_superuser: false
-    last_login: 2014-03-29 17:25:53+00:00
-    last_name: Haensgen
-    password: pbkdf2_sha256$10000$rpkPtmEAQhN1$9it0E07CnN+o72b9ju0RczkmSSGeYqpOIBr1FauLNBs=
-    user_permissions: []
-    username: DirkHaengsen
+    last_login: 2014-05-08 18:49:03+00:00
+    last_name: Hook
+    password: pbkdf2_sha256$12000$lVo10eCHvw3G$ycNMywT4uEJuQTEI4+29l/2BdosrqjCV+LoBOriyKcE=
+    user_permissions: [19, 20, 21, 25, 26, 27, 22, 23, 24, 37, 38, 39, 31, 32, 33,
+      28, 29, 30, 34, 35, 36, 4, 5, 6, 1, 2, 3, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    username: CaptainHook
   model: auth.user
   pk: 2
 - fields:
-    date_joined: 2014-03-29 17:26:27+00:00
+    date_joined: 2014-05-08 18:49:50+00:00
     email: ''
     first_name: Peter
     groups: []
     is_active: true
-    is_staff: true
+    is_staff: false
     is_superuser: false
-    last_login: 2014-03-29 17:26:27+00:00
+    last_login: 2014-05-08 18:49:50+00:00
     last_name: Pan
-    password: pbkdf2_sha256$10000$HryaYCa7hD35$ASdscSjY18wBZbK27MAxTxRsPj6yGChuhFmBjDghI+Y=
+    password: pbkdf2_sha256$12000$YtBt3CUz83Ni$yUOIke0eJS5/o969yFm0N7ncb3kt5adxbcFRDyBvbME=
     user_permissions: []
     username: PeterPan
   model: auth.user
   pk: 3
+- fields:
+    date_joined: 2014-05-08 18:50:14+00:00
+    email: ''
+    first_name: Dirk
+    groups: [1]
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2014-05-08 18:50:14+00:00
+    last_name: Haensgen
+    password: pbkdf2_sha256$12000$JIubYixdzwWl$xA8m7OysZsO3DLDVQDpJsJRcvJlrWaGw7VD9bs5Q7SM=
+    user_permissions: []
+    username: DirkHaensgen
+  model: auth.user
+  pk: 4

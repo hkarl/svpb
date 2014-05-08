@@ -1,0 +1,50 @@
+- fields: {aufgabe: 1, auslagen: '0', bemerkung: kjsdfhjdsk, bemerkungVorstand: '',
+    erstellt: 2014-04-06, km: '0', melder: 3, status: OF, veraendert: 2014-04-06,
+    wann: 2014-02-01, zeit: '1'}
+  model: arbeitsplan.leistung
+  pk: 1
+- fields: {aufgabe: 4, auslagen: '50', bemerkung: ksdfjlskdjf, bemerkungVorstand: '',
+    erstellt: 2014-04-06, km: '0', melder: 3, status: RU, veraendert: 2014-04-06,
+    wann: 2014-06-01, zeit: '5'}
+  model: arbeitsplan.leistung
+  pk: 2
+- fields: {aufgabe: 4, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
+  model: arbeitsplan.meldung
+  pk: 3
+- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 3, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
+  model: arbeitsplan.meldung
+  pk: 5
+- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 2, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
+  model: arbeitsplan.meldung
+  pk: 6
+- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
+  model: arbeitsplan.meldung
+  pk: 7
+- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
+  model: arbeitsplan.meldung
+  pk: 8
+- fields: {anzahl: 5, aufgabe: Boote aus Winterlager, bemerkung: '', datum: 2014-03-29,
+    gruppe: 2, verantwortlich: 1}
+  model: arbeitsplan.aufgabe
+  pk: 1
+- fields: {anzahl: 6, aufgabe: 'Boote einlagern ', bemerkung: '', datum: 2014-10-03,
+    gruppe: 2, verantwortlich: 2}
+  model: arbeitsplan.aufgabe
+  pk: 2
+- fields: {anzahl: 10, aufgabe: Ansegln, bemerkung: '', datum: 2014-05-01, gruppe: 3,
+    verantwortlich: 3}
+  model: arbeitsplan.aufgabe
+  pk: 3
+- fields: {anzahl: 20, aufgabe: "Rasen m\xE4hen ", bemerkung: '', datum: 2014-03-29,
+    gruppe: 1, verantwortlich: 2}
+  model: arbeitsplan.aufgabe
+  pk: 4
+- fields: {bemerkung: '', gruppe: Revier, verantwortlich: 1}
+  model: arbeitsplan.aufgabengruppe
+  pk: 1
+- fields: {bemerkung: '', gruppe: Boote, verantwortlich: 2}
+  model: arbeitsplan.aufgabengruppe
+  pk: 2
+- fields: {bemerkung: '', gruppe: Bewirtung, verantwortlich: 3}
+  model: arbeitsplan.aufgabengruppe
+  pk: 3
