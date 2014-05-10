@@ -429,7 +429,8 @@ def ZuteilungsTableFactory (l, aufgabenQs):
     attrs={}
     for a in aufgabenQs:
         tag = unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore')
-        attrs[tag] = ValuedCheckBoxColumn(verbose_name=a.aufgabe,
+        attrs[tag] = ValuedCheckBoxColumn(verbose_name= (u"{} ({})".format (a.aufgabe,
+                                                                               a.gruppe,)),
                                           orderable=False)
 
     t = NameTableFactory ('ZuteilungsTable', attrs, l)
