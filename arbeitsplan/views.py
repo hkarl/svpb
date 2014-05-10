@@ -3,7 +3,7 @@
 # Create your views here.
 
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404 
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import View, ListView, CreateView, FormView, UpdateView 
 from django.contrib.auth.models import User 
@@ -16,6 +16,7 @@ from django.forms.formsets import formset_factory
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from collections import defaultdict
  
 import django_tables2
 
@@ -55,9 +56,11 @@ class FilteredListView (ListView):
     title = ""
     template_name = "arbeitsplan_tff.html"
     tableClass = None 
+    tableClassFactory = None 
     filtertitle = None
     tabletitle = None
-    tableform = None # tableform should be dict with keys: name, value for the submit button 
+    tableform = None # tableform should be dict with keys: name, value for the submit button
+    tableformHidden =[]
     filterconfig = [] # a list of tuples, with (fieldnmae in form, filter keyword to apply)     
     model = None
 
@@ -71,6 +74,7 @@ class FilteredListView (ListView):
         context['filtertitle'] = self.filtertitle
         context['tabletitle'] = self.tabletitle
         context['tableform'] = self.tableform
+        context['tableformHidden'] = self.tableformHidden
 
         return context
 
@@ -109,7 +113,11 @@ class FilteredListView (ListView):
         return qs
     
     def get_filtered_table (self, qs):
-        table = self.tableClass(qs)
+        if self.tableClassFactory:
+            f = self.tableClassFactory
+            table = f(qs)
+        else:
+            table = self.tableClass(qs)
         django_tables2.RequestConfig(self.request).configure(table)
 
         return table
@@ -185,7 +193,8 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
         # hier Stundenplanwerte aus DB holen
         # a dict with default values, to be overwirtten with values from data base
         # then converted back into a list to be passed into the template
-        stundenplan = dict([(u, 0) for u in range(8,24)])
+        stundenplan = dict([(u, 0) for u in range(models.Stundenplan.startZeit,
+                                                  models.Stundenplan.stopZeit+1)])
         for s in models.Stundenplan.objects.filter (aufgabe=self.object):
             stundenplan[s.uhrzeit] = s.anzahl
         
@@ -325,7 +334,7 @@ class MeldungEdit  (FilteredListView):
 
                 try:
                     m = models.Meldung.objects.get(id=id)
-                except DoesNotExist:
+                except models.Meldung.DoesNotExist:
                     print "consistency of dsatabase destryoed"
                     # TODO: display error 
                     continue 
@@ -647,7 +656,173 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
         # TODO: emails senden? 
         return redirect ("arbeitsplan-manuellezuteilung")
 
+
+class StundenplaeneView (FilteredListView):
+    title = "Übersicht der Aufgaben mit Stundenplänen"
+    tableClassFactory = staticmethod(StundenplanTableFactory)
+    tabletitle = "Aufgaben mit benötigten/zugeteilten Personen pro Stunde"
+    
+    def get_queryset (self):
+
+        # which Aufgaben have a Stundenplan in the first place?
+        aufgabenWithStunden = [ x[0]
+                                for x in models.Stundenplan.objects.values_list('aufgabe').distinct()
+                               ]
+
+        # qs = models.Aufgabe.objects.filter(id__in = aufgabenWithStunden).values('id', 'aufgabe', 'gruppe__gruppe')
+        qs = models.Aufgabe.objects.filter(id__in = aufgabenWithStunden)
+
+        data = []
+        for aufgabe in qs:
+            newEntry = defaultdict(int)
+            newEntry['id'] = aufgabe.id
+            newEntry['aufgabe'] = aufgabe.aufgabe
+            newEntry['gruppe'] = aufgabe.gruppe.gruppe
+
+            # for s in models.Stundenplan.objects.filter (aufgabe__id=q['id']):
+            for s in aufgabe.stundenplan_set.all():
+                print s
+                newEntry['u'+str(s.uhrzeit)] = {'required': s.anzahl, 'zugeteilt': 0}
+
+            # TODO: Die Schleifen auf aggregate processing umstellen 
+            for zs in aufgabe.zuteilung_set.all():
+                print zs
+                for stdzut in zs.stundenzuteilung_set.all():
+                    newEntry['u'+str(s.uhrzeit)]['zugeteilt'] += 1
             
+            data.append(newEntry)
+
+        print data
+        
+        # TODO: allow filtering of those Aufgaben 
+        # qs = self.apply_filter(qs)
+
+    
+        # for each remaining Aufgabe in qs, find the already assigned STunden 
+        
+        
+        table = self.get_filtered_table(data)
+
+        return table 
+
+
+class StundenplaeneEdit (FilteredListView):
+
+    title = "Weisen Sie einer Aufgabe Personen zu den benötigten Zeitpunkten zu"
+    tableClassFactory = staticmethod(StundenplanEditFactory)
+    tabletilte = "Zuweisung eintragen"
+    tableform = {'name': "eintragen",
+                 'value': "Stundenzuteilung eintragen/ändern"}
+
+    def get_queryset (self):
+
+        # find out which aufgabe we are talking about?
+
+        # print self.request.GET
+
+        try: 
+            aufgabeid = self.kwargs['aufgabeid']
+        except:
+            messages.error (self.request, "Die angegebene URL bezeichnet keine Aufgabe")
+            return None
+
+        aufgabe = get_object_or_404 (models.Aufgabe, pk=aufgabeid)
+        
+        data = []
+
+        stundenplaene = aufgabe.stundenplan_set.all()
+
+        # print "Stundenplan fuer Auzfgabe: ", stundenplaene
+
+        checkedboxes = []
+        for u in models.User.objects.all():
+            newEntry = {'last_name': u.last_name,
+                        'first_name': u.first_name,
+                        }
+
+            try: 
+                zuteilung = models.Zuteilung.objects.get(ausfuehrer=u,
+                                                         aufgabe=aufgabe)
+                stundenzuteilungen =  zuteilung.stundenzuteilung_set.values_list('uhrzeit',
+                                                                                 flat=True )
+                
+                # print "Zuteilung fuer User: ", u, stundenzuteilungen 
+
+                for s in stundenplaene:
+                    tag = 'uhrzeit_' + str(u.id) + "_" + str(s.uhrzeit)
+                    present = s.uhrzeit in stundenzuteilungen 
+                    newEntry['u'+ str(s.uhrzeit)] = (1 if present else 0, tag)
+                    if present: 
+                        checkedboxes.append(str(u.id) + "_" + str(s.uhrzeit))
+
+                data.append(newEntry)
+
+            except models.Zuteilung.DoesNotExist:  # keine Zuteilung gefunden 
+                pass 
+
+        # prepare user id list to be passed into the hidden field, to ease processing later
+        self.tableformHidden = [{'name': 'checkedboxes',
+                                  'value': ','.join(checkedboxes)}]
+
+        table = self.get_filtered_table (data)
+
+        return table
+
+    def post (self, request, aufgabeid, *args, **kwargs):
+
+        tmp = [  x.split('_')
+                    for x in
+                    self.request.POST.get('checkedboxes').split(',')
+                ]
+        checkedboxes = [ (int(x[0]), int(x[1])) for x in tmp ]
+        # print checkedboxes
+
+        # any values to delete?
+        ## find all zuteilungen that pertain to this aufgabe
+        
+        # any values to add? 
+        for v in self.request.POST:
+            if v.startswith('uhrzeit_'):
+                tag, uid, uhrzeit = v.split('_')
+
+                # try to remove this checked box from the list of originally checked boxes,
+                # not a problem if not there, then it is simply a new check
+                try:
+                    checkedboxes.remove ((int(uid), int(uhrzeit)))
+                except ValueError:
+                    pass
+                
+                # print aufgabeid, uid, uhrzeit
+                zuteilung = models.Zuteilung.objects.get (ausfuehrer__id = uid,
+                                                          aufgabe__id = aufgabeid)
+                # print "Z: ", zuteilung
+                stundenzuteilung, created  = models.StundenZuteilung.objects.get_or_create (
+                    zuteilung = zuteilung,
+                    uhrzeit = int(uhrzeit), 
+                    )
+                if created:
+                    stundenzuteilung.save()
+
+        # anything still in checkedboxes had been checked before, but was not in QueryDict
+        # i.e., it has been uncheked by user and should be removed
+        for uid, uhrzeit  in checkedboxes:
+            # print "remove: ", uid, uhrzeit
+
+            zuteilung =  models.Zuteilung.objects.get (ausfuehrer__id = uid,
+                                                          aufgabe__id = aufgabeid)
+
+            stundenzuteilung = zuteilung.stundenzuteilung_set.get(uhrzeit=uhrzeit)
+
+            # print stundenzuteilung
+
+            stundenzuteilung.delete()
+            
+        
+        return redirect ("arbeitsplan-stundenplaeneEdit",
+                         aufgabeid = aufgabeid, 
+                         )
+        
+
 ########################################################################################
 #########   LEISTUNG
 ########################################################################################

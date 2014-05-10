@@ -69,13 +69,14 @@ class RadioButtonTable (django_tables2.Table):
 class ValuedCheckBoxColumn (django_tables2.columns.Column):
     """A checkbox column where a pair of values is expected:
     name and whether the box is checked or not.
-    Control tags:
+    Control tags (intergeres, not strings!):
     -1: show no field
     0: unchecked checkbox
     1: checked checkbox 
     """
     
     def render (self, value):
+        # print value 
         if value[0] == -1:
             return ""
         
@@ -90,13 +91,26 @@ class ValuedCheckBoxColumn (django_tables2.columns.Column):
 class TextareaInputColumn (django_tables2.columns.Column):
 
     def render (self, value):
-        print "render: ", value, self.__dict__
+        # print "render: ", value, self.__dict__
         return mark_safe ('<input class="textinput textInput" id="id_bemerkungVorstand" maxlength="20" name="bemerkungVorstand" placeholder="Bemerkung Vorstand" value="'
                           +    escape (value) +
                           '" type="text" />'
                         )
     
 
+class RequiredAssignedColumn (django_tables2.columns.Column):
+    """
+    A column used by the stundenplan survey table. Renders both required and assigned  numbers in one cell.
+    """
+
+    def render (self, value):
+        # print value
+        try: 
+            r = mark_safe (str(value['required']) + " / " + str(value['zugeteilt']))
+        except TypeError:
+            r = ""
+            
+        return r
     
 ##############################
 ## Table facotires
@@ -132,7 +146,7 @@ def TableFactory (name, attrs, l, meta={}):
 
 ##############################
 
-def NameTableFactory (name, attrs, l):
+def NameTableFactory (name, attrs, l, meta=None):
     """
     A Factory for django_tables2 with dynamic colums.
     Always adds a Nachame, Vorname column to the given attributes 
@@ -144,8 +158,54 @@ def NameTableFactory (name, attrs, l):
     nameattrs.update(attrs)
 
     return TableFactory (name, nameattrs, l,
-                         meta={'sequence': ('last_name', 'first_name', '...')})
+                         meta=meta if meta else {'sequence': ('last_name', 'first_name', '...')})
 
+##############################
+
+def StundenplanTableFactory (l):
+    """
+    A factory to produce a table with aufgaben and uhrzeiten columns. 
+    """
+
+    newattrs = {}
+    for i in  range(models.Stundenplan.startZeit,
+                         models.Stundenplan.stopZeit+1):
+        ## newattrs['u'+str(i)] = django_tables2.Column (accessor='u'+str(i),
+        ##                                        verbose_name = str(i)+'-'+str(i+1))
+        newattrs['u'+str(i)] = RequiredAssignedColumn (accessor='u'+str(i),
+                                               verbose_name = str(i)+'-'+str(i+1))
+        
+    newattrs['id'] = django_tables2.LinkColumn ('arbeitsplan-stundenplaeneEdit',
+                                        args=[A('id'),],
+                                        verbose_name="Stundenplan editieren")
+    newattrs['aufgabe'] = django_tables2.Column (accessor='aufgabe')
+    newattrs['gruppe'] = django_tables2.Column (accessor='gruppe', verbose_name="Aufgabengruppe")
+
+    # newattrs.update(attrs)
+
+    return TableFactory ("Stundenplan",
+                         newattrs, l,
+                         meta = {'sequence': ('aufgabe', 'gruppe', 'id', '...', )})
+
+def StundenplanEditFactory (l):
+    """
+    Produce a table with persons as row, uhrzeiten as columns. Checkboxes in the uhrzeit columns. 
+    """
+
+    newattrs = {}
+
+    for i in  range(models.Stundenplan.startZeit,
+                         models.Stundenplan.stopZeit+1):
+        ## newattrs['u'+str(i)] = django_tables2.Column (accessor='u'+str(i),
+        ##                                        verbose_name = str(i)+'-'+str(i+1))
+        newattrs['u'+str(i)] = ValuedCheckBoxColumn (accessor='u'+str(i),
+                                                verbose_name = str(i)+'-'+str(i+1))
+
+    return NameTableFactory ("StundenplanEdit",
+                             newattrs, l,
+                             meta = {'sequence': ('last_name', 'first_name', '...')}
+                             )
+    
 ##############################
 
 class AufgabenTable (django_tables2.Table):
@@ -164,7 +224,6 @@ class AufgabenTableVorstand (django_tables2.Table):
                                               verbose_name="Verantwortlicher")
     id = django_tables2.LinkColumn ('arbeitsplan-aufgabenEdit',
                                           args=[A('pk')],
-                                          # kwargs={'pk': A('pk')},
                                           verbose_name="Editieren")
     
     class Meta:
@@ -174,6 +233,40 @@ class AufgabenTableVorstand (django_tables2.Table):
         fields=("gruppe", "aufgabe", "datum", "anzahl", "stunden", "bemerkung", 'verantwortlicher', 'id')
 
         # TODO: anzahl muss man wahrscheinlich auf die ANzahl FREIE Plaetze umrechnen!?!?
+
+
+########################
+
+class StundenplanTable (django_tables2.Table):
+    id = django_tables2.LinkColumn ('arbeitsplan-stundenplaeneEdit',
+                                      args=[A('id'),],
+                                      verbose_name="Stundenplan editieren")
+    aufgabe = django_tables2.Column (accessor='aufgabe')
+    gruppe = django_tables2.Column (accessor='gruppe__gruppe', verbose_name="Aufgabengruppe")
+
+    u0 = django_tables2.Column (accessor='u0', verbose_name='0-1')
+    u1 = django_tables2.Column (accessor='u1', verbose_name='0-1')
+    u2 = django_tables2.Column (accessor='u2', verbose_name='0-1')
+    u3 = django_tables2.Column (accessor='u3', verbose_name='0-1')
+    u4 = django_tables2.Column (accessor='u4', verbose_name='0-1')
+    u5 = django_tables2.Column (accessor='u5', verbose_name='0-1')
+    u6 = django_tables2.Column (accessor='u6', verbose_name='0-1')
+    u7 = django_tables2.Column (accessor='u7', verbose_name='0-1')
+    u8 = django_tables2.Column (accessor='u8', verbose_name='0-1')
+    u9 = django_tables2.Column (accessor='u9', verbose_name='0-1')
+    u10 = django_tables2.Column (accessor='u10', verbose_name='0-1')
+    u11 = django_tables2.Column (accessor='u11', verbose_name='0-1')
+    u12 = django_tables2.Column (accessor='u12', verbose_name='0-1')
+    u13 = django_tables2.Column (accessor='u13', verbose_name='0-1')
+    u14 = django_tables2.Column (accessor='u14', verbose_name='0-1')
+    u15 = django_tables2.Column (accessor='u15', verbose_name='0-1')
+    u16 = django_tables2.Column (accessor='u16', verbose_name='0-1')
+    u17 = django_tables2.Column (accessor='u17', verbose_name='0-1')
+                            
+    class Meta:
+        # model = models.Aufgabe
+        attrs = {"class": "paleblue"}
+        # fields = ('aufgabe', 'gruppe', 'id', )
 
 ##############################
 

@@ -81,7 +81,6 @@ STATICFILES_DIRS = (
     os.path.join (APPLICATION_DIR, '..', 'templates'),
 )
 
-print STATICFILES_DIRS
 
 # List of finder classes that know how to find static files in
 # various locations.
