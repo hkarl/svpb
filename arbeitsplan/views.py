@@ -17,11 +17,13 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from collections import defaultdict
+from pprint import pprint as pp
+
  
 import django_tables2
 
 import models, forms
-# import networkx as nx 
+
 
 import unicodedata
 
@@ -681,18 +683,18 @@ class StundenplaeneView (FilteredListView):
 
             # for s in models.Stundenplan.objects.filter (aufgabe__id=q['id']):
             for s in aufgabe.stundenplan_set.all():
-                print s
+                # print s
                 newEntry['u'+str(s.uhrzeit)] = {'required': s.anzahl, 'zugeteilt': 0}
 
             # TODO: Die Schleifen auf aggregate processing umstellen 
             for zs in aufgabe.zuteilung_set.all():
                 print zs
                 for stdzut in zs.stundenzuteilung_set.all():
-                    newEntry['u'+str(s.uhrzeit)]['zugeteilt'] += 1
+                    newEntry['u'+str(stdzut.uhrzeit)]['zugeteilt'] += 1
             
             data.append(newEntry)
 
-        print data
+        pp( data)
         
         # TODO: allow filtering of those Aufgaben 
         # qs = self.apply_filter(qs)
@@ -770,10 +772,17 @@ class StundenplaeneEdit (FilteredListView):
 
     def post (self, request, aufgabeid, *args, **kwargs):
 
-        tmp = [  x.split('_')
+        print self.request.POST
+
+        if len(self.request.POST.get('checkedboxes')) > 0:
+            tmp = [  x.split('_')
                     for x in
                     self.request.POST.get('checkedboxes').split(',')
-                ]
+                    ]
+        else:
+            tmp = []
+
+        pp(tmp) 
         checkedboxes = [ (int(x[0]), int(x[1])) for x in tmp ]
         # print checkedboxes
 
