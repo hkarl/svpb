@@ -545,18 +545,21 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
     
     filterFormClass = forms.PersonAufgabengruppeFilterForm
     
-    def get (self,request, *args, **kwargs):
+    def get (self, request, aufgabe=None, *args, **kwargs):
         """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank
         entspricht."""
 
         userQs, filterForm = self.applyFilter (request)
 
-        if filterForm.cleaned_data['aufgabengruppe'] <> None:
-            print filterForm.cleaned_data['aufgabengruppe']
-            aufgabenQs = models.Aufgabe.objects.filter (gruppe__gruppe = filterForm.cleaned_data['aufgabengruppe'])
-        else:
-            aufgabenQs = models.Aufgabe.objects.all()
-            
+        if aufgabe:
+            aufgabenQs = models.Aufgabe.objects.filter (id=aufgabe)
+        else: 
+            if filterForm.cleaned_data['aufgabengruppe'] <> None:
+                print filterForm.cleaned_data['aufgabengruppe']
+                aufgabenQs = models.Aufgabe.objects.filter (gruppe__gruppe = filterForm.cleaned_data['aufgabengruppe'])
+            else:
+                aufgabenQs = models.Aufgabe.objects.all()
+                
         ztlist = []
         statuslist = {}
         aufgaben = dict([(unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore'),
@@ -659,10 +662,10 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
         return redirect ("arbeitsplan-manuellezuteilung")
 
 
-class StundenplaeneView (FilteredListView):
-    title = "Übersicht der Aufgaben mit Stundenplänen"
+class ZuteilungUebersichtView (FilteredListView):
+    title = "Übersicht der Aufgaben und Zuteilungen"
     tableClassFactory = staticmethod(StundenplanTableFactory)
-    tabletitle = "Aufgaben mit benötigten/zugeteilten Personen pro Stunde"
+    tabletitle = "Aufgaben mit benötigten/zugeteilten Personen"
     
     def get_queryset (self):
 
@@ -672,29 +675,53 @@ class StundenplaeneView (FilteredListView):
                                ]
 
         # qs = models.Aufgabe.objects.filter(id__in = aufgabenWithStunden).values('id', 'aufgabe', 'gruppe__gruppe')
-        qs = models.Aufgabe.objects.filter(id__in = aufgabenWithStunden)
+        qs = models.Aufgabe.objects.all()
+
 
         data = []
         for aufgabe in qs:
             newEntry = defaultdict(int)
             newEntry['id'] = aufgabe.id
-            newEntry['aufgabe'] = aufgabe.aufgabe
+            newEntry['aufgabe'] = mark_safe (u'<a href="{1}">{0}</a>'.format(aufgabe.aufgabe,
+                                                        reverse('arbeitsplan-aufgabenEdit',
+                                                                args=(aufgabe.id,))))
+
             newEntry['gruppe'] = aufgabe.gruppe.gruppe
+            newEntry['gemeldet'] = aufgabe.meldung_set.count()
+            newEntry['editlink'] = mark_safe('<a href="{0}">Zuteilung</a>'.format(reverse
+                                                                                  ('arbeitsplan-manuellezuteilungAufgabe',
+                                                                                  args=(aufgabe.id,), 
+                                                                                    )))
 
-            # for s in models.Stundenplan.objects.filter (aufgabe__id=q['id']):
-            for s in aufgabe.stundenplan_set.all():
-                # print s
-                newEntry['u'+str(s.uhrzeit)] = {'required': s.anzahl, 'zugeteilt': 0}
-
-            # TODO: Die Schleifen auf aggregate processing umstellen 
-            for zs in aufgabe.zuteilung_set.all():
-                print zs
-                for stdzut in zs.stundenzuteilung_set.all():
-                    newEntry['u'+str(stdzut.uhrzeit)]['zugeteilt'] += 1
             
+            if aufgabe.id in aufgabenWithStunden:
+
+                # for s in models.Stundenplan.objects.filter (aufgabe__id=q['id']):
+                for s in aufgabe.stundenplan_set.all():
+                    # print s
+                    newEntry['u'+str(s.uhrzeit)] = {'required': s.anzahl, 'zugeteilt': 0}
+
+                # TODO: Die Schleifen auf aggregate processing umstellen 
+                for zs in aufgabe.zuteilung_set.all():
+                    print zs
+                    for stdzut in zs.stundenzuteilung_set.all():
+                        newEntry['u'+str(stdzut.uhrzeit)]['zugeteilt'] += 1
+
+
+                newEntry['zugeteilt'] = None 
+                newEntry['stundenplanlink'] = mark_safe('<a href="{0}">Stundenplan</a>'.format(
+                    reverse ('arbeitsplan-stundenplaeneEdit',
+                             args=(aufgabe.id,)),
+                    ))
+            else:
+                # normale Aufgaben, kein Stundenplan
+                newEntry['required'] = aufgabe.anzahl
+                newEntry['zugeteilt'] = aufgabe.zuteilung_set.count()
+                newEntry['stundenplanlink'] = None 
+                        
             data.append(newEntry)
 
-        pp( data)
+        # pp( data)
         
         # TODO: allow filtering of those Aufgaben 
         # qs = self.apply_filter(qs)
@@ -708,7 +735,7 @@ class StundenplaeneView (FilteredListView):
         return table 
 
 
-class StundenplaeneEdit (FilteredListView):
+class  StundenplaeneEdit (FilteredListView):
 
     title = "Weisen Sie einer Aufgabe Personen zu den benötigten Zeitpunkten zu"
     tableClassFactory = staticmethod(StundenplanEditFactory)
@@ -832,6 +859,7 @@ class StundenplaeneEdit (FilteredListView):
                          )
         
 
+    
 ########################################################################################
 #########   LEISTUNG
 ########################################################################################
