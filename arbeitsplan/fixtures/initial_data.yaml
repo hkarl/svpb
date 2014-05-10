@@ -1,136 +1,12 @@
-- fields: {codename: add_permission, content_type: 1, name: Can add permission}
-  model: auth.permission
-  pk: 1
-- fields: {codename: change_permission, content_type: 1, name: Can change permission}
-  model: auth.permission
-  pk: 2
-- fields: {codename: delete_permission, content_type: 1, name: Can delete permission}
-  model: auth.permission
-  pk: 3
-- fields: {codename: add_group, content_type: 2, name: Can add group}
-  model: auth.permission
-  pk: 4
-- fields: {codename: change_group, content_type: 2, name: Can change group}
-  model: auth.permission
-  pk: 5
-- fields: {codename: delete_group, content_type: 2, name: Can delete group}
-  model: auth.permission
-  pk: 6
-- fields: {codename: add_user, content_type: 3, name: Can add user}
-  model: auth.permission
-  pk: 7
-- fields: {codename: change_user, content_type: 3, name: Can change user}
-  model: auth.permission
-  pk: 8
-- fields: {codename: delete_user, content_type: 3, name: Can delete user}
-  model: auth.permission
-  pk: 9
-- fields: {codename: add_contenttype, content_type: 4, name: Can add content type}
-  model: auth.permission
-  pk: 10
-- fields: {codename: change_contenttype, content_type: 4, name: Can change content
-      type}
-  model: auth.permission
-  pk: 11
-- fields: {codename: delete_contenttype, content_type: 4, name: Can delete content
-      type}
-  model: auth.permission
-  pk: 12
-- fields: {codename: add_session, content_type: 5, name: Can add session}
-  model: auth.permission
-  pk: 13
-- fields: {codename: change_session, content_type: 5, name: Can change session}
-  model: auth.permission
-  pk: 14
-- fields: {codename: delete_session, content_type: 5, name: Can delete session}
-  model: auth.permission
-  pk: 15
-- fields: {codename: add_site, content_type: 6, name: Can add site}
-  model: auth.permission
-  pk: 16
-- fields: {codename: change_site, content_type: 6, name: Can change site}
-  model: auth.permission
-  pk: 17
-- fields: {codename: delete_site, content_type: 6, name: Can delete site}
-  model: auth.permission
-  pk: 18
-- fields: {codename: add_logentry, content_type: 7, name: Can add log entry}
-  model: auth.permission
-  pk: 19
-- fields: {codename: change_logentry, content_type: 7, name: Can change log entry}
-  model: auth.permission
-  pk: 20
-- fields: {codename: delete_logentry, content_type: 7, name: Can delete log entry}
-  model: auth.permission
-  pk: 21
-- fields: {codename: add_aufgabengruppe, content_type: 8, name: Can add Aufgabengruppe}
-  model: auth.permission
-  pk: 22
-- fields: {codename: change_aufgabengruppe, content_type: 8, name: Can change Aufgabengruppe}
-  model: auth.permission
-  pk: 23
-- fields: {codename: delete_aufgabengruppe, content_type: 8, name: Can delete Aufgabengruppe}
-  model: auth.permission
-  pk: 24
-- fields: {codename: add_aufgabe, content_type: 9, name: Can add Aufgabe}
-  model: auth.permission
-  pk: 25
-- fields: {codename: change_aufgabe, content_type: 9, name: Can change Aufgabe}
-  model: auth.permission
-  pk: 26
-- fields: {codename: delete_aufgabe, content_type: 9, name: Can delete Aufgabe}
-  model: auth.permission
-  pk: 27
-- fields: {codename: add_stundenplan, content_type: 10, name: Can add Stundenplan}
-  model: auth.permission
-  pk: 28
-- fields: {codename: change_stundenplan, content_type: 10, name: Can change Stundenplan}
-  model: auth.permission
-  pk: 29
-- fields: {codename: delete_stundenplan, content_type: 10, name: Can delete Stundenplan}
-  model: auth.permission
-  pk: 30
-- fields: {codename: add_meldung, content_type: 11, name: Can add Meldung}
-  model: auth.permission
-  pk: 31
-- fields: {codename: change_meldung, content_type: 11, name: Can change Meldung}
-  model: auth.permission
-  pk: 32
-- fields: {codename: delete_meldung, content_type: 11, name: Can delete Meldung}
-  model: auth.permission
-  pk: 33
-- fields: {codename: add_zuteilung, content_type: 12, name: Can add Zuteilung}
-  model: auth.permission
-  pk: 34
-- fields: {codename: change_zuteilung, content_type: 12, name: Can change Zuteilung}
-  model: auth.permission
-  pk: 35
-- fields: {codename: delete_zuteilung, content_type: 12, name: Can delete Zuteilung}
-  model: auth.permission
-  pk: 36
-- fields: {codename: add_leistung, content_type: 13, name: Can add Leistung}
-  model: auth.permission
-  pk: 37
-- fields: {codename: change_leistung, content_type: 13, name: Can change Leistung}
-  model: auth.permission
-  pk: 38
-- fields: {codename: delete_leistung, content_type: 13, name: Can delete Leistung}
-  model: auth.permission
-  pk: 39
 - fields:
-    name: Vorstand
-    permissions: []
-  model: auth.group
-  pk: 1
-- fields:
-    date_joined: 2014-05-08 18:47:24+00:00
+    date_joined: 2014-05-09 09:47:24+00:00
     email: ''
     first_name: Holger
     groups: []
     is_active: true
     is_staff: true
     is_superuser: true
-    last_login: 2014-05-08 18:47:42+00:00
+    last_login: 2014-05-10 16:09:10.102414+00:00
     last_name: Karl
     password: pbkdf2_sha256$12000$EVhJRgxGOARc$8Iif9zNZnIG73to67Uzt7BSFrmUhXZrQQDDd1dfwjYs=
     user_permissions: []
@@ -138,30 +14,31 @@
   model: auth.user
   pk: 1
 - fields:
-    date_joined: 2014-05-08 18:48:31+00:00
+    date_joined: 2014-05-09 09:48:31+00:00
     email: ''
     first_name: Captain
     groups: [1]
     is_active: true
     is_staff: true
     is_superuser: false
-    last_login: 2014-05-08 18:49:03+00:00
+    last_login: 2014-05-10 11:11:29.841244+00:00
     last_name: Hook
     password: pbkdf2_sha256$12000$lVo10eCHvw3G$ycNMywT4uEJuQTEI4+29l/2BdosrqjCV+LoBOriyKcE=
-    user_permissions: [19, 20, 21, 25, 26, 27, 22, 23, 24, 37, 38, 39, 31, 32, 33,
-      28, 29, 30, 34, 35, 36, 4, 5, 6, 1, 2, 3, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    user_permissions: [19, 20, 21, 25, 26, 27, 22, 23, 24, 40, 41, 42, 31, 32, 33,
+      28, 29, 30, 37, 38, 39, 34, 35, 36, 4, 5, 6, 1, 2, 3, 7, 8, 9, 10, 11, 12, 13,
+      14, 15, 16, 17, 18]
     username: CaptainHook
   model: auth.user
   pk: 2
 - fields:
-    date_joined: 2014-05-08 18:49:50+00:00
+    date_joined: 2014-05-09 09:49:50+00:00
     email: ''
     first_name: Peter
     groups: []
     is_active: true
     is_staff: false
     is_superuser: false
-    last_login: 2014-05-08 18:49:50+00:00
+    last_login: 2014-05-09 09:49:50+00:00
     last_name: Pan
     password: pbkdf2_sha256$12000$YtBt3CUz83Ni$yUOIke0eJS5/o969yFm0N7ncb3kt5adxbcFRDyBvbME=
     user_permissions: []
@@ -169,60 +46,19 @@
   model: auth.user
   pk: 3
 - fields:
-    date_joined: 2014-05-08 18:50:14+00:00
+    date_joined: 2014-05-09 09:50:14+00:00
     email: ''
     first_name: Dirk
     groups: [1]
     is_active: true
     is_staff: false
     is_superuser: false
-    last_login: 2014-05-08 18:50:14+00:00
+    last_login: 2014-05-09 09:50:14+00:00
     last_name: Haensgen
     password: pbkdf2_sha256$12000$JIubYixdzwWl$xA8m7OysZsO3DLDVQDpJsJRcvJlrWaGw7VD9bs5Q7SM=
     user_permissions: []
     username: DirkHaensgen
   model: auth.user
-  pk: 4
-- fields: {aufgabe: 1, auslagen: '0', bemerkung: kjsdfhjdsk, bemerkungVorstand: '',
-    erstellt: 2014-04-06, km: '0', melder: 3, status: OF, veraendert: 2014-04-06,
-    wann: 2014-02-01, zeit: '1'}
-  model: arbeitsplan.leistung
-  pk: 1
-- fields: {aufgabe: 4, auslagen: '50', bemerkung: ksdfjlskdjf, bemerkungVorstand: '',
-    erstellt: 2014-04-06, km: '0', melder: 3, status: RU, veraendert: 2014-04-06,
-    wann: 2014-06-01, zeit: '5'}
-  model: arbeitsplan.leistung
-  pk: 2
-- fields: {aufgabe: 4, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
-  model: arbeitsplan.meldung
-  pk: 3
-- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 3, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
-  model: arbeitsplan.meldung
-  pk: 5
-- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 2, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
-  model: arbeitsplan.meldung
-  pk: 6
-- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
-  model: arbeitsplan.meldung
-  pk: 7
-- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
-  model: arbeitsplan.meldung
-  pk: 8
-- fields: {anzahl: 5, aufgabe: Boote aus Winterlager, bemerkung: '', datum: 2014-03-29,
-    gruppe: 2, verantwortlich: 1}
-  model: arbeitsplan.aufgabe
-  pk: 1
-- fields: {anzahl: 6, aufgabe: 'Boote einlagern ', bemerkung: '', datum: 2014-10-03,
-    gruppe: 2, verantwortlich: 2}
-  model: arbeitsplan.aufgabe
-  pk: 2
-- fields: {anzahl: 10, aufgabe: Ansegln, bemerkung: '', datum: 2014-05-01, gruppe: 3,
-    verantwortlich: 3}
-  model: arbeitsplan.aufgabe
-  pk: 3
-- fields: {anzahl: 20, aufgabe: "Rasen m\xE4hen ", bemerkung: '', datum: 2014-03-29,
-    gruppe: 1, verantwortlich: 2}
-  model: arbeitsplan.aufgabe
   pk: 4
 - fields: {bemerkung: '', gruppe: Revier, verantwortlich: 1}
   model: arbeitsplan.aufgabengruppe
@@ -233,3 +69,113 @@
 - fields: {bemerkung: '', gruppe: Bewirtung, verantwortlich: 3}
   model: arbeitsplan.aufgabengruppe
   pk: 3
+- fields: {anzahl: 5, aufgabe: Boote aus Winterlager, bemerkung: '', datum: 2014-03-29,
+    gruppe: 2, stunden: 0, verantwortlich: 1}
+  model: arbeitsplan.aufgabe
+  pk: 1
+- fields: {anzahl: 6, aufgabe: 'Boote einlagern ', bemerkung: '', datum: 2014-10-03,
+    gruppe: 2, stunden: 0, verantwortlich: 2}
+  model: arbeitsplan.aufgabe
+  pk: 2
+- fields: {anzahl: 10, aufgabe: Ansegln, bemerkung: '', datum: 2014-05-01, gruppe: 3,
+    stunden: 4, verantwortlich: 3}
+  model: arbeitsplan.aufgabe
+  pk: 3
+- fields: {anzahl: 20, aufgabe: "Rasen m\xE4hen ", bemerkung: '', datum: 2014-03-29,
+    gruppe: 1, stunden: 0, verantwortlich: 2}
+  model: arbeitsplan.aufgabe
+  pk: 4
+- fields: {anzahl: 5, aufgabe: Absegeln, bemerkung: '', datum: 2014-10-31, gruppe: 3,
+    stunden: 3, verantwortlich: 1}
+  model: arbeitsplan.aufgabe
+  pk: 5
+- fields: {anzahl: 2, aufgabe: 3, uhrzeit: 12}
+  model: arbeitsplan.stundenplan
+  pk: 1
+- fields: {anzahl: 3, aufgabe: 3, uhrzeit: 13}
+  model: arbeitsplan.stundenplan
+  pk: 2
+- fields: {anzahl: 3, aufgabe: 3, uhrzeit: 14}
+  model: arbeitsplan.stundenplan
+  pk: 3
+- fields: {anzahl: 4, aufgabe: 3, uhrzeit: 15}
+  model: arbeitsplan.stundenplan
+  pk: 4
+- fields: {anzahl: 2, aufgabe: 5, uhrzeit: 10}
+  model: arbeitsplan.stundenplan
+  pk: 5
+- fields: {anzahl: 2, aufgabe: 5, uhrzeit: 11}
+  model: arbeitsplan.stundenplan
+  pk: 6
+- fields: {anzahl: 2, aufgabe: 5, uhrzeit: 12}
+  model: arbeitsplan.stundenplan
+  pk: 7
+- fields: {anzahl: 1, aufgabe: 5, uhrzeit: 13}
+  model: arbeitsplan.stundenplan
+  pk: 8
+- fields: {aufgabe: 4, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
+    melder: 1, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 3
+- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
+    melder: 3, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 5
+- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
+    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 6
+- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
+    melder: 1, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 7
+- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
+    melder: 1, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 8
+- fields: {aufgabe: 1, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
+    melder: 2, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-05-10}
+  model: arbeitsplan.meldung
+  pk: 9
+- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
+    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-10}
+  model: arbeitsplan.meldung
+  pk: 10
+- fields: {aufgabe: 4, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
+    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-10}
+  model: arbeitsplan.meldung
+  pk: 11
+- fields: {aufgabe: 5, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
+    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-10}
+  model: arbeitsplan.meldung
+  pk: 12
+- fields: {aufgabe: 3, ausfuehrer: 3, automatisch: false}
+  model: arbeitsplan.zuteilung
+  pk: 1
+- fields: {aufgabe: 3, ausfuehrer: 1, automatisch: false}
+  model: arbeitsplan.zuteilung
+  pk: 2
+- fields: {aufgabe: 3, ausfuehrer: 2, automatisch: false}
+  model: arbeitsplan.zuteilung
+  pk: 3
+- fields: {aufgabe: 5, ausfuehrer: 2, automatisch: false}
+  model: arbeitsplan.zuteilung
+  pk: 4
+- fields: {uhrzeit: 12, zuteilung: 3}
+  model: arbeitsplan.stundenzuteilung
+  pk: 1
+- fields: {aufgabe: 1, auslagen: '0', bemerkung: kjsdfhjdsk, bemerkungVorstand: '',
+    erstellt: 2014-04-06, km: '0', melder: 3, status: OF, veraendert: 2014-04-06,
+    wann: 2014-02-01, zeit: '1'}
+  model: arbeitsplan.leistung
+  pk: 1
+- fields: {aufgabe: 4, auslagen: '50', bemerkung: ksdfjlskdjf, bemerkungVorstand: '',
+    erstellt: 2014-04-06, km: '0', melder: 3, status: RU, veraendert: 2014-04-06,
+    wann: 2014-06-01, zeit: '5'}
+  model: arbeitsplan.leistung
+  pk: 2
+- fields:
+    name: Vorstand
+    permissions: []
+  model: auth.group
+  pk: 1

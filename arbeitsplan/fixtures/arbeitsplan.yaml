@@ -1,3 +1,107 @@
+- fields: {bemerkung: '', gruppe: Revier, verantwortlich: 1}
+  model: arbeitsplan.aufgabengruppe
+  pk: 1
+- fields: {bemerkung: '', gruppe: Boote, verantwortlich: 2}
+  model: arbeitsplan.aufgabengruppe
+  pk: 2
+- fields: {bemerkung: '', gruppe: Bewirtung, verantwortlich: 3}
+  model: arbeitsplan.aufgabengruppe
+  pk: 3
+- fields: {anzahl: 5, aufgabe: Boote aus Winterlager, bemerkung: '', datum: 2014-03-29,
+    gruppe: 2, stunden: 0, verantwortlich: 1}
+  model: arbeitsplan.aufgabe
+  pk: 1
+- fields: {anzahl: 6, aufgabe: 'Boote einlagern ', bemerkung: '', datum: 2014-10-03,
+    gruppe: 2, stunden: 0, verantwortlich: 2}
+  model: arbeitsplan.aufgabe
+  pk: 2
+- fields: {anzahl: 10, aufgabe: Ansegln, bemerkung: '', datum: 2014-05-01, gruppe: 3,
+    stunden: 4, verantwortlich: 3}
+  model: arbeitsplan.aufgabe
+  pk: 3
+- fields: {anzahl: 20, aufgabe: "Rasen m\xE4hen ", bemerkung: '', datum: 2014-03-29,
+    gruppe: 1, stunden: 0, verantwortlich: 2}
+  model: arbeitsplan.aufgabe
+  pk: 4
+- fields: {anzahl: 5, aufgabe: Absegeln, bemerkung: '', datum: 2014-10-31, gruppe: 3,
+    stunden: 3, verantwortlich: 1}
+  model: arbeitsplan.aufgabe
+  pk: 5
+- fields: {anzahl: 2, aufgabe: 3, uhrzeit: 12}
+  model: arbeitsplan.stundenplan
+  pk: 1
+- fields: {anzahl: 3, aufgabe: 3, uhrzeit: 13}
+  model: arbeitsplan.stundenplan
+  pk: 2
+- fields: {anzahl: 3, aufgabe: 3, uhrzeit: 14}
+  model: arbeitsplan.stundenplan
+  pk: 3
+- fields: {anzahl: 4, aufgabe: 3, uhrzeit: 15}
+  model: arbeitsplan.stundenplan
+  pk: 4
+- fields: {anzahl: 2, aufgabe: 5, uhrzeit: 10}
+  model: arbeitsplan.stundenplan
+  pk: 5
+- fields: {anzahl: 2, aufgabe: 5, uhrzeit: 11}
+  model: arbeitsplan.stundenplan
+  pk: 6
+- fields: {anzahl: 2, aufgabe: 5, uhrzeit: 12}
+  model: arbeitsplan.stundenplan
+  pk: 7
+- fields: {anzahl: 1, aufgabe: 5, uhrzeit: 13}
+  model: arbeitsplan.stundenplan
+  pk: 8
+- fields: {aufgabe: 4, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
+    melder: 1, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 3
+- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
+    melder: 3, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 5
+- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
+    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 6
+- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
+    melder: 1, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 7
+- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
+    melder: 1, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+  model: arbeitsplan.meldung
+  pk: 8
+- fields: {aufgabe: 1, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
+    melder: 2, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-05-10}
+  model: arbeitsplan.meldung
+  pk: 9
+- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
+    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-10}
+  model: arbeitsplan.meldung
+  pk: 10
+- fields: {aufgabe: 4, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
+    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-10}
+  model: arbeitsplan.meldung
+  pk: 11
+- fields: {aufgabe: 5, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
+    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-10}
+  model: arbeitsplan.meldung
+  pk: 12
+- fields: {aufgabe: 3, ausfuehrer: 3, automatisch: false}
+  model: arbeitsplan.zuteilung
+  pk: 1
+- fields: {aufgabe: 3, ausfuehrer: 1, automatisch: false}
+  model: arbeitsplan.zuteilung
+  pk: 2
+- fields: {aufgabe: 3, ausfuehrer: 2, automatisch: false}
+  model: arbeitsplan.zuteilung
+  pk: 3
+- fields: {aufgabe: 5, ausfuehrer: 2, automatisch: false}
+  model: arbeitsplan.zuteilung
+  pk: 4
+- fields: {uhrzeit: 12, zuteilung: 3}
+  model: arbeitsplan.stundenzuteilung
+  pk: 1
 - fields: {aufgabe: 1, auslagen: '0', bemerkung: kjsdfhjdsk, bemerkungVorstand: '',
     erstellt: 2014-04-06, km: '0', melder: 3, status: OF, veraendert: 2014-04-06,
     wann: 2014-02-01, zeit: '1'}
@@ -8,43 +112,3 @@
     wann: 2014-06-01, zeit: '5'}
   model: arbeitsplan.leistung
   pk: 2
-- fields: {aufgabe: 4, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
-  model: arbeitsplan.meldung
-  pk: 3
-- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 3, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
-  model: arbeitsplan.meldung
-  pk: 5
-- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 2, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
-  model: arbeitsplan.meldung
-  pk: 6
-- fields: {aufgabe: 2, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
-  model: arbeitsplan.meldung
-  pk: 7
-- fields: {aufgabe: 3, erstellt: 2014-03-29, melder: 1, veraendert: 2014-03-29, bemerkung: '', bemerkungVorstand: ''}
-  model: arbeitsplan.meldung
-  pk: 8
-- fields: {anzahl: 5, aufgabe: Boote aus Winterlager, bemerkung: '', datum: 2014-03-29,
-    gruppe: 2, verantwortlich: 1}
-  model: arbeitsplan.aufgabe
-  pk: 1
-- fields: {anzahl: 6, aufgabe: 'Boote einlagern ', bemerkung: '', datum: 2014-10-03,
-    gruppe: 2, verantwortlich: 2}
-  model: arbeitsplan.aufgabe
-  pk: 2
-- fields: {anzahl: 10, aufgabe: Ansegln, bemerkung: '', datum: 2014-05-01, gruppe: 3,
-    verantwortlich: 3}
-  model: arbeitsplan.aufgabe
-  pk: 3
-- fields: {anzahl: 20, aufgabe: "Rasen m\xE4hen ", bemerkung: '', datum: 2014-03-29,
-    gruppe: 1, verantwortlich: 2}
-  model: arbeitsplan.aufgabe
-  pk: 4
-- fields: {bemerkung: '', gruppe: Revier, verantwortlich: 1}
-  model: arbeitsplan.aufgabengruppe
-  pk: 1
-- fields: {bemerkung: '', gruppe: Boote, verantwortlich: 2}
-  model: arbeitsplan.aufgabengruppe
-  pk: 2
-- fields: {bemerkung: '', gruppe: Bewirtung, verantwortlich: 3}
-  model: arbeitsplan.aufgabengruppe
-  pk: 3

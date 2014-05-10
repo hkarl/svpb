@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from arbeitsplan.models import Aufgabengruppe, Aufgabe, Meldung, Zuteilung, Leistung, Stundenplan
+from arbeitsplan.models import Aufgabengruppe, Aufgabe, Meldung, Zuteilung, Leistung, Stundenplan, StundenZuteilung
 
 
 ## class MitgliedInline (admin.StackedInline):
@@ -39,12 +39,17 @@ class LeistungAdmin (admin.ModelAdmin):
 class StundenplanAdmin (admin.ModelAdmin):
     # date_hierarchy = ('aufgabe__datum',) 
     list_filter = ('aufgabe__datum', )
+
+class StundenZuteilungAdmin (admin.ModelAdmin):
+    # date_hierarchy = ('aufgabe__datum',) 
+    # list_filter = ('aufgabe__datum', )
     pass 
     
 ## admin.site.unregister(User)
 ## admin.site.register (User, UserAdmin)
 
 admin.site.register (Zuteilung, ZuteilungAdmin)
+admin.site.register (StundenZuteilung, StundenZuteilungAdmin)
 admin.site.register(Aufgabengruppe)
 admin.site.register(Aufgabe, AufgabeAdmin)
 admin.site.register(Meldung, MeldungAdmin)

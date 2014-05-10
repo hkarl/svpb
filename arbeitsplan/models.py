@@ -65,11 +65,15 @@ class Stundenplan (models.Model):
     anzahl = models.IntegerField (default= 0,
                                   help_text="Wieviele Personen werden um diese Uhrzeit benötigt?")
 
+    startZeit = 8
+    stopZeit = 23
+    
     def __unicode__ (self):
         return self.aufgabe.__unicode__() + "@" + str(self.uhrzeit) + ": " + str(self.anzahl)
     
     class Meta:
-        verbose_name_plural = "Studenpläne" 
+        verbose_name_plural = "Stundenpläne" 
+        verbose_name = "Stundenplan" 
     
 class Meldung (models.Model):
     erstellt = models.DateField (auto_now_add=True)
@@ -127,20 +131,31 @@ class Zuteilung (models.Model):
     aufgabe = models.ForeignKey (Aufgabe)
     ausfuehrer = models.ForeignKey (User)
     automatisch = models.BooleanField (default=False)
-    uhrzeit = models.IntegerField (blank=True, null=True)
     
     class Meta:
         verbose_name_plural = "Zuteilungen"
 
     def __unicode__ (self):
-        return (self.aufgabe.__unicode__() + ": " + self.ausfuehrer.__unicode__() +
-                (" @ " + self.uhrzeit) if self.uhrzeit else "" 
+        # print self.stundenzuteilung_set.all() 
+        return (self.aufgabe.__unicode__() + ": " + self.ausfuehrer.__unicode__() 
+                + (" @ " + ','.join([s.__unicode__() for s in self.stundenzuteilung_set.all()] ))
+                # + ('@' + ','.join(self.StundenZuteilung_set.all().values('uhrzeit')))
                 )
     
     class Meta:
         verbose_name_plural = "Zuteilungen"
         verbose_name = "Zuteilung"
 
+class StundenZuteilung (models.Model):
+    zuteilung = models.ForeignKey (Zuteilung)
+    uhrzeit = models.IntegerField (blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Zuteilung einer Stunde"
+        verbose_name_plural = "Zuteilungen für einzelne Stunden"
+
+    def __unicode__ (self):
+        return str(self.uhrzeit) 
 
     
 class Leistung (models.Model):
