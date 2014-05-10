@@ -575,9 +575,17 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
             mQs =  models.Meldung.objects.filter(melder=u)
             if filterForm.cleaned_data['aufgabengruppe'] <> None:
                 mQs = mQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
+
+            # filter out all veto'ed meldungen
+            mQs = mQs.exclude (prefMitglied=models.Meldung.GARNICHT)
+            
             for m in mQs: 
                 tag = unicodedata.normalize('NFKD', m.aufgabe.aufgabe).encode('ASCII', 'ignore')
-                tmp[tag] = (0, 'box_'+  str(u.id)+"_"+str(m.aufgabe.id))
+                tmp[tag] = (0,
+                            'box_'+  str(u.id)+"_"+str(m.aufgabe.id),
+                            ' ({0} / {1})'.format(m.prefMitglied,
+                                                 m.prefVorstand)
+                            )
                 statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
 
             zQs =  models.Zuteilung.objects.filter(ausfuehrer=u)
@@ -586,10 +594,13 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
             
             for z in zQs: 
                 tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore')
-                tmp[tag] = (1, 'box_'+ str(u.id)+"_"+str(z.aufgabe.id))
+                meldung = z.aufgabe.meldung_set.get(melder=u)
+                tmp[tag] = (1,
+                            'box_'+ str(u.id)+"_"+str(z.aufgabe.id),
+                            ' ({0} / {1})'.format(meldung.prefMitglied,
+                                                 meldung.prefVorstand)
+                            )
                 statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
-
-
                 
             ztlist.append(tmp)
 
