@@ -79,12 +79,17 @@ class ValuedCheckBoxColumn (django_tables2.columns.Column):
         # print value 
         if value[0] == -1:
             return ""
-        
+
+        if len(value)>2:
+            text = value[2]
+        else:
+            text = ""
+            
         return mark_safe ('<input type="checkbox" value="1" name="' +
                           escape(value[1]) +
                           '" ' +
                           ("checked" if value[0]==1 else "") +
-                          '/>'
+                          '/>' + text 
                           )
 
 
