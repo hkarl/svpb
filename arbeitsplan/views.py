@@ -61,7 +61,6 @@ class FilteredListView(ListView):
     template_name = "arbeitsplan_tff.html"
     tableClass = None
     tableClassFactory = None
-    filtertitle = None
     tabletitle = None
 
     tableform = None
@@ -69,6 +68,8 @@ class FilteredListView(ListView):
 
     tableformHidden = []
     
+    filtertitle = None
+    filterform_class = None 
     filterconfig = []
     # filterconfig: a list of tuples, with (fieldnmae in form, filter keyword to apply)     
     model = None
@@ -111,7 +112,9 @@ class FilteredListView(ListView):
 
             if self.filterform.is_valid():
                 # apply filters
+                print "filter: ", self.filterform.cleaned_data
                 for fieldname, filterexp in filterconfig:
+                    print fieldname, filterexp
                     if ((self.filterform.cleaned_data[fieldname] is not None) and
                         (self.filterform.cleaned_data[fieldname] != "")):
                         qs = qs.filter(**{filterexp: self.filterform.cleaned_data[fieldname]})
@@ -138,6 +141,14 @@ class FilteredListView(ListView):
 
         return self.model.objects.all()
 
+    def annotate_data(self, qs):
+        """Once the data has been obtained and filtered,
+        use this method to further annotate it.
+        Typically turns the queryset into a list of dictionaries
+        """
+
+        return qs
+    
     def get_queryset(self):
         """standard way of displaying a filtered table,
         might have to be overwritten if some non-standard
@@ -146,6 +157,7 @@ class FilteredListView(ListView):
         """
         qs = self.get_data()
         qs = self.apply_filter(qs)
+        qs = self.annotate_data(qs)
         table = self.get_filtered_table(qs)
         return table
 
@@ -442,10 +454,11 @@ class CreateMeldungenView (MeldungEdit):
         
     
 class MeldungVorstandView (isVorstandMixin, MeldungEdit):
-    """Display a (filtered) list of all Meldungen from all Users, with all preferences.
+    """Display a (filtered) list of all Meldungen from all Users,
+    with all preferences.
     Allow Vorstand to update its fields and store them.
     """
-    
+
     title = "Meldungen für Aufgaben bewerten"
     # filterform_class = forms.PersonAufgabengruppeFilterForm
     filterform_class = forms.PersonAufgGrpPraefernzFilterForm
@@ -453,7 +466,7 @@ class MeldungVorstandView (isVorstandMixin, MeldungEdit):
     tabletitle = "Meldungen bewerten"
     # tableform ?
     filterconfig = [('aufgabengruppe', 'aufgabe__gruppe__gruppe'),
-                    ('first_name', 'melder__first_name__icontains'), 
+                    ('first_name', 'melder__first_name__icontains'),
                     ('last_name', 'melder__last_name__icontains'),
                     ('praeferenz', 'prefMitglied__in')
                     ]
@@ -1031,46 +1044,40 @@ class LeistungBearbeitenView (isVorstandMixin, View):
 
 ##########################    
 
-        
-class Salden(isVorstandMixin, NameFilterView):
+
+class Salden(isVorstandMixin, FilteredListView):
 
     filterFormClass = forms.NameFilterForm
-    
-    def get (self, request, *args, **kwargs):
+    title = "Saldenüberblick über geleistete Arbeit"
 
-        userQs, filterForm = self.applyFilter(request)
+    tableClassFactory = staticmethod(SaldenTableFactory)
+    tabletitle = "Saldenübersicht"
 
+    filtertitle = "Salden nach Vor- oder Nachnamen filtern"
+    filterform_class = forms.NameFilterForm
+    filterconfig = [('first_name', 'first_name__icontains'),
+                    ('last_name', 'last_name__icontains'),
+                    ]
+
+    model = models.User
+
+    def annotate_data(self, userQs):
         res = []
-        for u in userQs.order_by('last_name', 'first_name'):
+        for u in userQs:
             tmp = {}
             tmp['last_name'] = u.last_name
             tmp['first_name'] = u.first_name
-            tmp['box'] = ("box-" + str(u.id), True) 
+            tmp['box'] = ("box-" + str(u.id), True)
             qs = models.Leistung.objects.filter(melder=u)
-            for s in  models.Leistung.STATUS:
+            for s in models.Leistung.STATUS:
                 zeit = qs.filter(status=s[0]
-                                ).aggregate(Sum('zeit'))['zeit__sum']
+                                 ).aggregate(Sum('zeit'))['zeit__sum']
                 tmp[s[0]] = zeit
 
             res.append(tmp)
-            
-        table = SaldenTableFactory(res)
 
-        django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(table)
+        return res
 
-        # for filtering:
-
-        return render (request,
-                       "arbeitsplan_salden.html",
-                        {'salden': table,
-                         'filter': filterForm, 
-                        })
-    
-    def post (self, request, *args, **kwargs):
-        print request
-        return redirect ("arbeitsplan-salden")
-    
-    
 
 
 ########################################################################################
