@@ -1,27 +1,28 @@
 # -*- coding: utf-8 -*-
 
 """
-Collect all the tables and column types relevant for django_tables2 here. 
+Collect all the tables and column types relevant for django_tables2 here.
 """
 
 from django.utils.safestring import mark_safe
 from django.utils.html import escape, format_html
-from string import Template
+
 
 import django_tables2
 from django_tables2.utils import A  # alias for Accessor
 
 import models
 import unicodedata
-import django.utils.encoding 
+
 
 ####################################
-### Colum Types
+# Colum Types
 ####################################
+
 
 class RadioButtonTable (django_tables2.Table):
-        
-    def render_radio (self, record, fieldname, choices, buttontexts):
+
+    def render_radio(self, record, fieldname, choices, buttontexts):
         ## print bound_row._record 
         ## print type(bound_row._record )
         ## print getattr (bound_row._record, fieldname)
@@ -184,23 +185,22 @@ def StundenplanTableFactory (l):
     ## newattrs['id'] = django_tables2.LinkColumn ('arbeitsplan-stundenplaeneEdit',
     ##                                     args=[A('id'),],
     ##                                     verbose_name="Zuteilung editieren")
-    newattrs['aufgabe'] = django_tables2.Column (accessor='aufgabe')
-    newattrs['gruppe'] = django_tables2.Column (accessor='gruppe', verbose_name="Aufgabengruppe")
+    newattrs['aufgabe'] = django_tables2.Column(accessor='aufgabe')
+    newattrs['gruppe'] = django_tables2.Column(accessor='gruppe', verbose_name="Aufgabengruppe")
 
-    newattrs['gemeldet'] = django_tables2.Column (accessor='gemeldet',
+    newattrs['gemeldet'] = django_tables2.Column(accessor='gemeldet',
                                                   verbose_name="# Meldungen")
-    newattrs['required'] = django_tables2.Column (accessor='required',
+    newattrs['required'] = django_tables2.Column(accessor='required',
                                                   verbose_name="# Anforderungen")
-    newattrs['zugeteilt'] = django_tables2.Column (accessor='zugeteilt',
+    newattrs['zugeteilt'] = django_tables2.Column(accessor='zugeteilt',
                                                    verbose_name ="# Zuteilungen")
-    # newattrs.update(attrs)
 
-    newattrs['editlink'] = django_tables2.Column (accessor="editlink",
+    newattrs['editlink'] = django_tables2.Column(accessor="editlink",
                                                   verbose_name="Zuteilen")
 
-    newattrs['stundenplanlink'] = django_tables2.Column (accessor="stundenplanlink",
-                                                  verbose_name="Stundenplan")
-        
+    newattrs['stundenplanlink'] = django_tables2.Column(accessor="stundenplanlink",
+                                                        verbose_name="Stundenplan")
+
     t = TableFactory ("Stundenplan",
                          newattrs, l,
                          meta = {'sequence': ('aufgabe', 'gruppe', # 'id',
@@ -433,6 +433,7 @@ def ZuteilungsTableFactory (l, aufgabenQs):
                                                                                a.gruppe,)),
                                           orderable=False)
 
+    attrs['zugeteilt'] = django_tables2.Column(verbose_name="Bereits zugeteilt (h)")
     t = NameTableFactory ('ZuteilungsTable', attrs, l)
  
     return t 
@@ -456,38 +457,14 @@ class LeistungBearbeitenTable (RadioButtonTable):
                                   choices= models.Leistung.STATUS,
                                   buttontexts=models.Leistung.STATUSButtons,
                                   fieldname="status")
-    
-##         tmp = '\n'.join([format_html(u"""
-##             <label class="btn {5} {4}">
-##             <input type="radio" name="status_{0}_{2}" id="status_{0}_{2}"> {3}
-##             </label>
-##             """,
-##             bound_row._record.id,
-##             counter,
-##             status[0],
-##             status[1],
-##             " active" if bound_row._record.status == status[0] else "",
-##             models.Leistung.STATUSButtons[status[0]])
-##             for (counter, status) in enumerate(models.Leistung.STATUS)]
-##             )
-        
-            
-##         return mark_safe("""
-## <div class="btn-group" data-toggle="buttons">
-## """ +
-## tmp +
-## """
-## </div>    
-##     """)
-    
+
     bemerkungVorstand = django_tables2.Column (empty_values=(),
                                                verbose_name = "Bemerkungen des Vorstandes")
-    
-        
+
+
     class Meta:
         model = models.Leistung
         attrs = {"class": "paleblue"}
         exclude = ("erstellt", "veraendert", 'id')        
         sequence = ('melder', 'aufgabe', 'wann', 'zeit', 'auslagen', 'km',
                     'bemerkung', 'status', 'bemerkungVorstand')
-    

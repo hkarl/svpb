@@ -3,10 +3,10 @@
 # Create your views here.
 
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404 
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import View, ListView, CreateView, FormView, UpdateView 
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Sum
@@ -19,59 +19,66 @@ from django.core.exceptions import ObjectDoesNotExist
 from collections import defaultdict
 from pprint import pprint as pp
 
- 
+
 import django_tables2
-
-import models, forms
-
-
 import unicodedata
 
-from tables import *  # TODO: change import not to polute name space 
+# Arbeitsplan-Importe: 
+import models
+import forms
+from tables import *  # TODO: change import not to polute name space
 
 
 #################
 
-def isVorstand (user):
+def isVorstand(user):
     return user.groups.filter(name='Vorstand')
 
-class isVorstandMixin (object):
+
+class isVorstandMixin(object):
     @method_decorator(user_passes_test(isVorstand, login_url="/keinVorstand/"))
     def dispatch(self, *args, **kwargs):
         return super(isVorstandMixin, self).dispatch(*args, **kwargs)
-    
+
 ###############
 
-def logout_view (request):
-    # print "logout view" 
+
+def logout_view(request):
+    # print "logout view"
     logout(request)
-    return  render (request, "registration/logged_out.html", {})
+    return render(request, "registration/logged_out.html", {})
 
 ###############
 
-class FilteredListView (ListView):
+
+class FilteredListView(ListView):
     """A fairly generic way of specifying a view that returns a table
-    that can be filtered, along specified fields. 
+    that can be filtered, along specified fields.
     """
 
-    # Specify the following: 
+    # Specify the following:
     title = ""
     template_name = "arbeitsplan_tff.html"
-    tableClass = None 
-    tableClassFactory = None 
+    tableClass = None
+    tableClassFactory = None
     filtertitle = None
     tabletitle = None
-    tableform = None # tableform should be dict with keys: name, value for the submit button
-    tableformHidden =[]
-    filterconfig = [] # a list of tuples, with (fieldnmae in form, filter keyword to apply)     
+
+    tableform = None
+    # tableform should be dict with keys: name, value for the submit button
+
+    tableformHidden = []
+    
+    filterconfig = []
+    # filterconfig: a list of tuples, with (fieldnmae in form, filter keyword to apply)     
     model = None
 
-    # Only as variable needed: 
+    # Only as variable needed:
     filterform = None  # yes, this should be an instance variable, to pass around 
     
-    def get_context_data (self, **kwargs):
-        context= super (FilteredListView, self).get_context_data()
-        context['title'] = self.title 
+    def get_context_data(self, **kwargs):
+        context = super(FilteredListView, self).get_context_data()
+        context['title'] = self.title
         context['filterform'] = self.filterform
         context['filtertitle'] = self.filtertitle
         context['tabletitle'] = self.tabletitle
@@ -80,41 +87,40 @@ class FilteredListView (ListView):
 
         return context
 
-    def apply_filter (self, qs=None):
+    def apply_filter(self, qs=None):
 
-        if qs==None:
+        if qs is None:
             qs = self.model.objects.all()
-            
 
         if 'filter' not in self.request.GET:
             self.filterform = self.filterform_class()
             filterconfig = []
             fieldsWithInitials = [k
-                                  for k,v
+                                  for k, v
                                   in self.filterform.fields.iteritems()
-                                  if v.initial<>None]
+                                  if v.initial is not None]
             filterconfig = [(x[0], x[1], self.filterform.fields[x[0]].initial)
                             for x in self.filterconfig
                             if x[0] in fieldsWithInitials]
 
             for fieldname, filterexp, initialValues in filterconfig:
-                qs = qs.filter (**{filterexp: initialValues})
-        else: 
+                qs = qs.filter(**{filterexp: initialValues})
+        else:
             self.filterform = self.filterform_class(self.request.GET)
             filterconfig = self.filterconfig
-        
+
             if self.filterform.is_valid():
                 # apply filters
                 for fieldname, filterexp in filterconfig:
-                    if ((self.filterform.cleaned_data[fieldname] <> None) and
-                        (self.filterform.cleaned_data[fieldname] <> "")):
+                    if ((self.filterform.cleaned_data[fieldname] is not None) and
+                        (self.filterform.cleaned_data[fieldname] != "")):
                         qs = qs.filter(**{filterexp: self.filterform.cleaned_data[fieldname]})
             else:
-                print "filterform not valid" 
+                print "filterform not valid"
 
         return qs
-    
-    def get_filtered_table (self, qs):
+
+    def get_filtered_table(self, qs):
         if self.tableClassFactory:
             f = self.tableClassFactory
             table = f(qs)
@@ -123,22 +129,32 @@ class FilteredListView (ListView):
         django_tables2.RequestConfig(self.request).configure(table)
 
         return table
-        
-    def get_queryset (self):
-        """standard way of displaying a filtered table,
-        might have to be overwritten if some non-standard processing is necessary,
-        e.g., to determine the table depending on user role 
-        """
-        qs = self.model.objects.all()
-        qs = self.apply_filter (qs)
-        table =  self.get_filtered_table (qs)
-        return table 
-    
-############### 
 
-class NameFilterView (View):
-    
-    def applyFilter (self, request):
+    def get_data(self):
+        """Provide the data to be used in the get_queryset.
+        Defaults here to return all data of the model; typically overwritten in
+        derived classes.
+        """
+
+        return self.model.objects.all()
+
+    def get_queryset(self):
+        """standard way of displaying a filtered table,
+        might have to be overwritten if some non-standard
+        processing is necessary,
+        e.g., to determine the table depending on user role
+        """
+        qs = self.get_data()
+        qs = self.apply_filter(qs)
+        table = self.get_filtered_table(qs)
+        return table
+
+###############
+
+
+class NameFilterView(View):
+
+    def applyFilter(self, request):
 
         qs = models.User.objects.all()
 
@@ -147,21 +163,22 @@ class NameFilterView (View):
             if 'filter' in request.GET:
                 last_name = form.cleaned_data['last_name']
 
-                if last_name <> "":
-                    qs= qs.filter (last_name__icontains=last_name)
-                
+                if last_name != "":
+                    qs = qs.filter(last_name__icontains=last_name)
+
                 first_name = form.cleaned_data['first_name']
-                if first_name <> "":
-                    qs= qs.filter (first_name__icontains=first_name)
-                
+                if first_name != "":
+                    qs = qs.filter(first_name__icontains=first_name)
+
         else:
             print "filter not valid"
-            
+
         return (qs, form)
 
-########################################################################################
-#########   AUFGABEN 
-########################################################################################
+#######################################################################
+#   AUFGABEN
+#######################################################################
+
 
 class AufgabenUpdate (SuccessMessageMixin, UpdateView):
     model = models.Aufgabe
@@ -173,56 +190,56 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
     title = "Aufgabe ändern"
     buttontext = "Änderung eintragen"
 
-    def get_success_message (self, cleaned_data):
-        """See documentation at: https://docs.djangoproject.com/en/1.6/ref/contrib/messages/
+    def get_success_message(self, cleaned_data):
+        """See documentation at:
+        https://docs.djangoproject.com/en/1.6/ref/contrib/messages/
         """
-        msg =  mark_safe(self.success_message % dict (cleaned_data,
-                                                      url = reverse ('arbeitsplan-aufgabenEdit',
-                                                                     args=(self.object.id,)), 
+        msg = mark_safe(self.success_message % dict(cleaned_data,
+                                                    url = reverse('arbeitsplan-aufgabenEdit',
+                                                                  args=(self.object.id,)), 
                                                       id=self.object.id))
 
         # messages.warning(self.request, "aber komisch ist die schon")
-        
+
         # print "succesS_msg: ", msg
         return msg
-    
-    
-    def get_context_data (self, **kwargs):
-        context = super (AufgabenUpdate, self).get_context_data (**kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(AufgabenUpdate, self).get_context_data(**kwargs)
         context['title'] = self.title
         context['buttontext'] = self.buttontext
 
         # hier Stundenplanwerte aus DB holen
-        # a dict with default values, to be overwirtten with values from data base
+        # a dict with default values, to be overwirtten with
+        # values from data base
         # then converted back into a list to be passed into the template
         stundenplan = dict([(u, 0) for u in range(models.Stundenplan.startZeit,
                                                   models.Stundenplan.stopZeit+1)])
-        for s in models.Stundenplan.objects.filter (aufgabe=self.object):
+        for s in models.Stundenplan.objects.filter(aufgabe=self.object):
             stundenplan[s.uhrzeit] = s.anzahl
-        
+
         context['stundenplan'] = stundenplan.items()
-        
-        return context 
-        
-    
-    def get_form_kwargs (self):
+
+        return context
+
+    def get_form_kwargs(self):
         kwargs = super(AufgabenUpdate, self).get_form_kwargs()
         kwargs.update({
-            'request' : self.request
+            'request': self.request
             })
         return kwargs
 
-    def form_valid (self, form):
+    def form_valid(self, form):
 
         # store the aufgabe
-        super (AufgabenUpdate, self).form_valid(form)
+        super(AufgabenUpdate, self).form_valid(form)
 
         # manipulate the stundenplan
         stundenplan = form.cleaned_data['stundenplan']
         for sDB in models.Stundenplan.objects.filter(aufgabe=self.object):
             print sDB
             if sDB.uhrzeit in stundenplan:
-                if stundenplan[sDB.uhrzeit] <> sDB.anzahl:
+                if stundenplan[sDB.uhrzeit] != sDB.anzahl:
                     sDB.anzahl = stundenplan[sDB.uhrzeit]
                     sDB.save()
                     del stundenplan[sDB.uhrzeit]
@@ -231,11 +248,10 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
 
         # all the keys remaining in stundenplan have to be added
         for uhrzeit, anzahl in stundenplan.iteritems():
-            sobj = models.Stundenplan (aufgabe = self.object,
-                                       uhrzeit = uhrzeit,
-                                       anzahl = anzahl)
+            sobj = models.Stundenplan(aufgabe = self.object,
+                                      uhrzeit = uhrzeit,
+                                      anzahl = anzahl)
             sobj.save()
-
 
         return redirect ("arbeitsplan-aufgaben")
 
@@ -534,7 +550,6 @@ class ListZuteilungenView (FilteredListView):
         table =  self.get_filtered_table (qs)
         return table 
 
-            
 
 
 class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
@@ -542,13 +557,15 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
     """
 
     # TODO: filter by preferences? show preferences in table?
-    
+
     filterFormClass = forms.PersonAufgabengruppeFilterForm
-    
+
     def get (self, request, aufgabe=None, *args, **kwargs):
         """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank
         entspricht."""
 
+        print self.request.get_full_path()        
+        
         userQs, filterForm = self.applyFilter (request)
 
         if aufgabe:
@@ -601,7 +618,9 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
                                                  meldung.prefVorstand)
                             )
                 statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
-                
+
+            # TODO: Add to tmp the amount of already zugeteilt work per user
+            
             ztlist.append(tmp)
 
         ## print ztlist
@@ -623,7 +642,9 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
         ## print (request.POST.getlist('box') )
 
         ## filterForm = self.filterFormClass (request.POST)
-        
+
+        print self.request.get_full_path()
+                
         previousStatus = dict([ tuple(s.split('=') )
                    for s in 
                     request.POST.get('status').split(';')
@@ -670,7 +691,7 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
                 z.delete()
 
         # TODO: emails senden? 
-        return redirect ("arbeitsplan-manuellezuteilung")
+        return redirect("arbeitsplan-manuellezuteilung")
 
 
 class ZuteilungUebersichtView (FilteredListView):
