@@ -112,9 +112,9 @@ class FilteredListView(ListView):
 
             if self.filterform.is_valid():
                 # apply filters
-                print "filter: ", self.filterform.cleaned_data
+                # print "filter: ", self.filterform.cleaned_data
                 for fieldname, filterexp in filterconfig:
-                    print fieldname, filterexp
+                    # print fieldname, filterexp
                     if ((self.filterform.cleaned_data[fieldname] is not None) and
                         (self.filterform.cleaned_data[fieldname] != "")):
                         qs = qs.filter(**{filterexp: self.filterform.cleaned_data[fieldname]})
@@ -565,31 +565,60 @@ class ListZuteilungenView (FilteredListView):
 
 
 
-class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
+class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
     """Manuelles Eintragen von Zuteilungen
     """
 
+    title = "Aufgaben an Mitglieder zuteilen"
+    tableClassFactory = staticmethod(ZuteilungsTableFactory)
+    tabletitle = "Zuteilung eintragen"
+    tableform = {'name': "eintragen",
+                 'value': "Zuteilung eintragen/ändern"}
+
+
+    filtertitle = "Nach Aufgabengruppen oder Mitgliedern filtern"
+    filterform_class = forms.PersonAufgabengruppeFilterForm
+    filterconfigAufgabe = [('aufgabengruppe', 'gruppe__gruppe'),]
+    filterconfigUser = [('first_name', 'first_name__icontains'),
+                        ('last_name', 'last_name__icontains'),
+                        ]
     # TODO: filter by preferences? show preferences in table?
 
-    filterFormClass = forms.PersonAufgabengruppeFilterForm
 
-    def get (self, request, aufgabe=None, *args, **kwargs):
-        """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank
-        entspricht."""
-
-        print self.request.get_full_path()        
+    def get_data (self):
+        userQs = models.User.objects.all()
+        aufgabeQs = models.Aufgabe.objects.all()
         
-        userQs, filterForm = self.applyFilter (request)
+        return (userQs, aufgabeQs)
+        
 
-        if aufgabe:
-            aufgabenQs = models.Aufgabe.objects.filter (id=aufgabe)
-        else: 
-            if filterForm.cleaned_data['aufgabengruppe'] <> None:
-                print filterForm.cleaned_data['aufgabengruppe']
-                aufgabenQs = models.Aufgabe.objects.filter (gruppe__gruppe = filterForm.cleaned_data['aufgabengruppe'])
-            else:
-                aufgabenQs = models.Aufgabe.objects.all()
-                
+    def apply_filter (self, qs):
+
+        userQs, aufgabeQs = qs
+        self.aufgabengruppe = None
+
+        # need to get our hands on the aufgabe as passed by the URL
+
+        if 'aufgabe' in self.kwargs:
+            aufgabeQs = models.Aufgabe.objects.filter(id=self.kwargs['aufgabe'])
+        else:
+            self.filterconfig = self.filterconfigAufgabe
+            aufgabeQs = super(ManuelleZuteilungView, self).apply_filter(aufgabeQs)
+
+            if self.filterform.is_valid():
+                self.aufgabengruppe = self.filterform.cleaned_data['aufgabengruppe']
+
+
+        self.filterconfig = self.filterconfigUser
+        userQs = super(ManuelleZuteilungView, self).apply_filter(userQs)
+
+        return (userQs, aufgabeQs)
+
+
+    def annotate_data (self, qs):
+
+        userQs, aufgabenQs = qs
+
         ztlist = []
         statuslist = {}
         aufgaben = dict([(unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore'),
@@ -603,12 +632,12 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
             # print 'user:', u.id 
             tmp.update(aufgaben)
             mQs =  models.Meldung.objects.filter(melder=u)
-            if filterForm.cleaned_data['aufgabengruppe'] <> None:
-                mQs = mQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
+            if self.aufgabengruppe <> None:
+                mQs = mQs.filter(aufgabe__gruppe__gruppe =  self.aufgabengruppe)
 
             # filter out all veto'ed meldungen
             mQs = mQs.exclude (prefMitglied=models.Meldung.GARNICHT)
-            
+
             for m in mQs: 
                 tag = unicodedata.normalize('NFKD', m.aufgabe.aufgabe).encode('ASCII', 'ignore')
                 tmp[tag] = (0,
@@ -619,9 +648,9 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
                 statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
 
             zQs =  models.Zuteilung.objects.filter(ausfuehrer=u)
-            if filterForm.cleaned_data['aufgabengruppe'] <> None:
-                zQs = zQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
-            
+            if self.aufgabengruppe <> None:
+                zQs = zQs.filter(aufgabe__gruppe__gruppe =  self.aufgabengruppe)
+
             for z in zQs: 
                 tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore')
                 meldung = z.aufgabe.meldung_set.get(melder=u)
@@ -633,20 +662,93 @@ class ManuelleZuteilungView (isVorstandMixin, NameFilterView):
                 statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
 
             # TODO: Add to tmp the amount of already zugeteilt work per user
-            
+
             ztlist.append(tmp)
 
-        ## print ztlist
-        ## print statuslist
-        zt = ZuteilungsTableFactory(ztlist, aufgabenQs)
-        django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(zt)
+        # store the statuslist in the hidden field, to be accessible to POST later on
+        self.tableformHidden = [{'name': 'status',
+                                 'value': ';'.join([k+'='+v
+                                                    for k, v
+                                                    in statuslist.iteritems()]),
+                                 }
+                                ]
 
-        return render (request,
-                       'arbeitsplan_manuelleZuteilung.html',
-                       {'table': zt,
-                        'status': ';'.join([k+'='+v for k, v in statuslist.iteritems()]),
-                        'filter': filterForm, 
-                        })
+        return (ztlist, aufgabenQs)
+
+    ## def get (self, request, aufgabe=None, *args, **kwargs):
+    ##     """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank
+    ##     entspricht."""
+
+    ##     print self.request.get_full_path()
+        
+    ##     userQs, filterForm = self.applyFilter (request)
+
+    ##     if aufgabe:
+    ##         aufgabenQs = models.Aufgabe.objects.filter (id=aufgabe)
+    ##     else: 
+    ##         if filterForm.cleaned_data['aufgabengruppe'] <> None:
+    ##             print filterForm.cleaned_data['aufgabengruppe']
+    ##             aufgabenQs = models.Aufgabe.objects.filter (gruppe__gruppe = filterForm.cleaned_data['aufgabengruppe'])
+    ##         else:
+    ##             aufgabenQs = models.Aufgabe.objects.all()
+                
+    ##     ztlist = []
+    ##     statuslist = {}
+    ##     aufgaben = dict([(unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore'),
+    ##                       (-1, 'x'))
+    ##                       for a in aufgabenQs])
+
+    ##     for u in userQs: 
+    ##         tmp = {'last_name': u.last_name,
+    ##                 'first_name': u.first_name,
+    ##                 }
+    ##         # print 'user:', u.id 
+    ##         tmp.update(aufgaben)
+    ##         mQs =  models.Meldung.objects.filter(melder=u)
+    ##         if filterForm.cleaned_data['aufgabengruppe'] <> None:
+    ##             mQs = mQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
+
+    ##         # filter out all veto'ed meldungen
+    ##         mQs = mQs.exclude (prefMitglied=models.Meldung.GARNICHT)
+            
+    ##         for m in mQs: 
+    ##             tag = unicodedata.normalize('NFKD', m.aufgabe.aufgabe).encode('ASCII', 'ignore')
+    ##             tmp[tag] = (0,
+    ##                         'box_'+  str(u.id)+"_"+str(m.aufgabe.id),
+    ##                         ' ({0} / {1})'.format(m.prefMitglied,
+    ##                                              m.prefVorstand)
+    ##                         )
+    ##             statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
+
+    ##         zQs =  models.Zuteilung.objects.filter(ausfuehrer=u)
+    ##         if filterForm.cleaned_data['aufgabengruppe'] <> None:
+    ##             zQs = zQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
+            
+    ##         for z in zQs: 
+    ##             tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore')
+    ##             meldung = z.aufgabe.meldung_set.get(melder=u)
+    ##             tmp[tag] = (1,
+    ##                         'box_'+ str(u.id)+"_"+str(z.aufgabe.id),
+    ##                         ' ({0} / {1})'.format(meldung.prefMitglied,
+    ##                                              meldung.prefVorstand)
+    ##                         )
+    ##             statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
+
+    ##         # TODO: Add to tmp the amount of already zugeteilt work per user
+            
+    ##         ztlist.append(tmp)
+
+    ##     ## print ztlist
+    ##     ## print statuslist
+    ##     zt = ZuteilungsTableFactory(ztlist, aufgabenQs)
+    ##     django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(zt)
+
+    ##     return render (request,
+    ##                    'arbeitsplan_manuelleZuteilung.html',
+    ##                    {'table': zt,
+    ##                     'status': ';'.join([k+'='+v for k, v in statuslist.iteritems()]),
+    ##                     'filter': filterForm, 
+    ##                     })
     
     def post (self,request, *args, **kwargs):
         # print request.body 
@@ -711,17 +813,16 @@ class ZuteilungUebersichtView (FilteredListView):
     title = "Übersicht der Aufgaben und Zuteilungen"
     tableClassFactory = staticmethod(StundenplanTableFactory)
     tabletitle = "Aufgaben mit benötigten/zugeteilten Personen"
-    
-    def get_queryset (self):
+
+    def get_queryset(self):
 
         # which Aufgaben have a Stundenplan in the first place?
-        aufgabenWithStunden = [ x[0]
-                                for x in models.Stundenplan.objects.values_list('aufgabe').distinct()
-                               ]
+        aufgabenWithStunden = [x[0]
+                               for x in models.Stundenplan.objects.values_list('aufgabe').distinct()
+                              ]
 
         # qs = models.Aufgabe.objects.filter(id__in = aufgabenWithStunden).values('id', 'aufgabe', 'gruppe__gruppe')
         qs = models.Aufgabe.objects.all()
-
 
         data = []
         for aufgabe in qs:
@@ -738,7 +839,7 @@ class ZuteilungUebersichtView (FilteredListView):
                                                                                   args=(aufgabe.id,), 
                                                                                     )))
 
-            
+
             if aufgabe.id in aufgabenWithStunden:
 
                 # for s in models.Stundenplan.objects.filter (aufgabe__id=q['id']):
@@ -746,7 +847,7 @@ class ZuteilungUebersichtView (FilteredListView):
                     # print s
                     newEntry['u'+str(s.uhrzeit)] = {'required': s.anzahl, 'zugeteilt': 0}
 
-                # TODO: Die Schleifen auf aggregate processing umstellen 
+                # TODO: Die Schleifen auf aggregate processing umstellen
                 for zs in aufgabe.zuteilung_set.all():
                     print zs
                     for stdzut in zs.stundenzuteilung_set.all():

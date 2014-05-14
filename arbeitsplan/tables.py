@@ -425,7 +425,9 @@ def SaldenTableFactory (l):
 ##############################
 
 
-def ZuteilungsTableFactory (l, aufgabenQs):
+def ZuteilungsTableFactory (tuple):
+    l, aufgabenQs = tuple
+
     attrs={}
     for a in aufgabenQs:
         tag = unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore')
@@ -434,6 +436,7 @@ def ZuteilungsTableFactory (l, aufgabenQs):
                                           orderable=False)
 
     attrs['zugeteilt'] = django_tables2.Column(verbose_name="Bereits zugeteilt (h)")
+
     t = NameTableFactory ('ZuteilungsTable', attrs, l)
  
     return t 
