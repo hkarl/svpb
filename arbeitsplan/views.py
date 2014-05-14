@@ -148,7 +148,7 @@ class FilteredListView(ListView):
         """
 
         return qs
-    
+
     def get_queryset(self):
         """standard way of displaying a filtered table,
         might have to be overwritten if some non-standard
@@ -163,29 +163,6 @@ class FilteredListView(ListView):
 
 ###############
 
-
-class NameFilterView(View):
-
-    def applyFilter(self, request):
-
-        qs = models.User.objects.all()
-
-        form = self.filterFormClass(request.GET)
-        if form.is_valid():
-            if 'filter' in request.GET:
-                last_name = form.cleaned_data['last_name']
-
-                if last_name != "":
-                    qs = qs.filter(last_name__icontains=last_name)
-
-                first_name = form.cleaned_data['first_name']
-                if first_name != "":
-                    qs = qs.filter(first_name__icontains=first_name)
-
-        else:
-            print "filter not valid"
-
-        return (qs, form)
 
 #######################################################################
 #   AUFGABEN
@@ -351,16 +328,8 @@ class MeldungEdit  (FilteredListView):
                     id = tmp
                     choice = None
                 id = int(id)
-                
-                ## aufgabe = models.Aufgabe.objects.get(id=id)
-                ## print key, id, choice, value, aufgabe 
+
                 safeit = False
-                
-                ## m, newcreated = models.Meldung.objects.get_or_create(
-                ##     aufgabe=aufgabe,
-                ##     melder=self.request.user,
-                ##     defaults = models.Meldung.MODELDEFAULTS, 
-                ## )
 
                 try:
                     m = models.Meldung.objects.get(id=id)
@@ -368,7 +337,7 @@ class MeldungEdit  (FilteredListView):
                     print "consistency of dsatabase destryoed"
                     # TODO: display error 
                     continue 
-                    
+
                 if key == 'bemerkung':
                     if m.bemerkung <> value: 
                         m.bemerkung = value
@@ -378,7 +347,7 @@ class MeldungEdit  (FilteredListView):
                     if m.bemerkungVorstand <> value: 
                         m.bemerkungVorstand = value
                         safeit = True
-                                        
+
                 if key == 'prefMitglied':
                     if m.prefMitglied <> choice:
                         m.prefMitglied  = choice
@@ -389,17 +358,17 @@ class MeldungEdit  (FilteredListView):
                         m.prefVorstand  = choice
                         safeit = True
 
-                if safeit: 
+                if safeit:
                     m.save()
             else:
                 pass # not interested in those keys
-        
-    
+
+
 class CreateMeldungenView (MeldungEdit):
     """
     Display a table with all Aufgaben and fields to set preferences and add remarks.
-    Accept updates and enter them into the Meldung table. 
-    Intended for the non-Vorstand user. 
+    Accept updates and enter them into the Meldung table.
+    Intended for the non-Vorstand user.
     """
 
     title = "Meldungen für Aufgaben eintragen oder ändern"
@@ -482,65 +451,13 @@ class MeldungVorstandView (isVorstandMixin, MeldungEdit):
         self.processUpdate(request)
         return redirect ('arbeitsplan-meldungVorstand')        
 
-        
-    ##     myForm = forms.MeldungForm (request.POST)
-    ##     if myForm.is_valid():
-    ##         # print "processing valid form"
-    ##         # print myForm.cleaned_data
 
-    ##         for k, userInput in myForm.cleaned_data.iteritems():
-    ##             aid = int(k.split('a')[1])
-    ##             # print aid, userInput
 
-    ##             # try to find a meldung with that aid and for this user
-    ##             try: 
-    ##                 meldungStatus = models.Meldung.objects.get (aufgabe_id=aid,
-    ##                                                             melder_id=request.user.id)
-    ##             except:
-    ##                 # print "get failed"
-    ##                 meldungStatus = False
-
-    ##             # print "mledung status",  meldungStatus
-                    
-    ##             if userInput:
-    ##                 # we have to add or update the corresponding meldung
-    ##                 if meldungStatus:
-    ##                     # update existing object 
-    ##                     newMeld = models.Meldung (aufgabe = models.Aufgabe.objects.get(id=aid),
-    ##                                               erstellt = meldungStatus.erstellt, 
-    ##                                               melder = request.user, 
-    ##                                               id = meldungStatus.id)
-    ##                 else:
-    ##                     #create a new one:
-    ##                     newMeld = models.Meldung (aufgabe = models.Aufgabe.objects.get(id=aid),
-    ##                                               melder = request.user, 
-    ##                                               )
-                        
-    ##                 # print newMeld
-    ##                 newMeld.save()
-    ##             else:
-    ##                 # user does not work on a particular job;
-    ##                 # if meldung exists, delete it
-
-    ##                 if meldungStatus:
-    ##                     meldungStatus.delete()
-                        
-                    
-            
-    ##         return redirect ('arbeitsplan-meldung')
-
-    ##     # print "processing INvalid form"
-    ##     return HttpResponse ("Form was invalid - what to do?")
-
-    
 ########################################################################################
 #########   ZUTEILUNG 
 ########################################################################################
 
 
-        
-    
-        
 class ListZuteilungenView (FilteredListView):
     title = "Alle Zuteilungen anzeigen"
     filterform_class = forms.PersonAufgabengruppeFilterForm
@@ -558,7 +475,7 @@ class ListZuteilungenView (FilteredListView):
             qs = models.Zuteilung.objects.all()
         else:
             qs = models.Zuteilung.objects.filter (ausfuehrer =self.request.user)
-            
+
         qs = self.apply_filter (qs)
         table =  self.get_filtered_table (qs)
         return table 
@@ -588,9 +505,9 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
     def get_data (self):
         userQs = models.User.objects.all()
         aufgabeQs = models.Aufgabe.objects.all()
-        
+
         return (userQs, aufgabeQs)
-        
+
 
     def apply_filter (self, qs):
 
@@ -675,88 +592,8 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
         return (ztlist, aufgabenQs)
 
-    ## def get (self, request, aufgabe=None, *args, **kwargs):
-    ##     """Baue eine Tabelle zusammen, die den Zuteilungen aus der DAtenbank
-    ##     entspricht."""
-
-    ##     print self.request.get_full_path()
-        
-    ##     userQs, filterForm = self.applyFilter (request)
-
-    ##     if aufgabe:
-    ##         aufgabenQs = models.Aufgabe.objects.filter (id=aufgabe)
-    ##     else: 
-    ##         if filterForm.cleaned_data['aufgabengruppe'] <> None:
-    ##             print filterForm.cleaned_data['aufgabengruppe']
-    ##             aufgabenQs = models.Aufgabe.objects.filter (gruppe__gruppe = filterForm.cleaned_data['aufgabengruppe'])
-    ##         else:
-    ##             aufgabenQs = models.Aufgabe.objects.all()
-                
-    ##     ztlist = []
-    ##     statuslist = {}
-    ##     aufgaben = dict([(unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore'),
-    ##                       (-1, 'x'))
-    ##                       for a in aufgabenQs])
-
-    ##     for u in userQs: 
-    ##         tmp = {'last_name': u.last_name,
-    ##                 'first_name': u.first_name,
-    ##                 }
-    ##         # print 'user:', u.id 
-    ##         tmp.update(aufgaben)
-    ##         mQs =  models.Meldung.objects.filter(melder=u)
-    ##         if filterForm.cleaned_data['aufgabengruppe'] <> None:
-    ##             mQs = mQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
-
-    ##         # filter out all veto'ed meldungen
-    ##         mQs = mQs.exclude (prefMitglied=models.Meldung.GARNICHT)
-            
-    ##         for m in mQs: 
-    ##             tag = unicodedata.normalize('NFKD', m.aufgabe.aufgabe).encode('ASCII', 'ignore')
-    ##             tmp[tag] = (0,
-    ##                         'box_'+  str(u.id)+"_"+str(m.aufgabe.id),
-    ##                         ' ({0} / {1})'.format(m.prefMitglied,
-    ##                                              m.prefVorstand)
-    ##                         )
-    ##             statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
-
-    ##         zQs =  models.Zuteilung.objects.filter(ausfuehrer=u)
-    ##         if filterForm.cleaned_data['aufgabengruppe'] <> None:
-    ##             zQs = zQs.filter(aufgabe__gruppe__gruppe =  filterForm.cleaned_data['aufgabengruppe'])
-            
-    ##         for z in zQs: 
-    ##             tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore')
-    ##             meldung = z.aufgabe.meldung_set.get(melder=u)
-    ##             tmp[tag] = (1,
-    ##                         'box_'+ str(u.id)+"_"+str(z.aufgabe.id),
-    ##                         ' ({0} / {1})'.format(meldung.prefMitglied,
-    ##                                              meldung.prefVorstand)
-    ##                         )
-    ##             statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
-
-    ##         # TODO: Add to tmp the amount of already zugeteilt work per user
-            
-    ##         ztlist.append(tmp)
-
-    ##     ## print ztlist
-    ##     ## print statuslist
-    ##     zt = ZuteilungsTableFactory(ztlist, aufgabenQs)
-    ##     django_tables2.RequestConfig (request, paginate={"per_page": 25}).configure(zt)
-
-    ##     return render (request,
-    ##                    'arbeitsplan_manuelleZuteilung.html',
-    ##                    {'table': zt,
-    ##                     'status': ';'.join([k+'='+v for k, v in statuslist.iteritems()]),
-    ##                     'filter': filterForm, 
-    ##                     })
     
     def post (self,request, *args, **kwargs):
-        # print request.body 
-        ## print (request.POST )
-        ## print (request.POST.get('status') )
-        ## print (request.POST.getlist('box') )
-
-        ## filterForm = self.filterFormClass (request.POST)
 
         print self.request.get_full_path()
                 
@@ -767,12 +604,6 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
         print "prevState:"
         print previousStatus
-
-        ## for item in request.POST.iteritems():
-        ##     # containts tuple: name, value
-        ##     # print item
-        ##     if item[0][:4] == "box_":
-        ##         print "item: ", item
 
         newState = dict([ (item[0][4:], item[1])
                      for item in request.POST.iteritems()
