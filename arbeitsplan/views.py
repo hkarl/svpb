@@ -84,7 +84,9 @@ class FilteredListView(ListView):
         context['filtertitle'] = self.filtertitle
         context['tabletitle'] = self.tabletitle
         context['tableform'] = self.tableform
+
         context['tableformHidden'] = self.tableformHidden
+        context['fullpath'] = self.request.get_full_path()
 
         return context
 
@@ -619,11 +621,17 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             if previousStatus[k] == '0':
                 print "add ", k
                 user, aufgabe = k.split('_')
-                z = models.Zuteilung(aufgabe = models.Aufgabe.objects.get(id=int(aufgabe)),
-                                     ausfuehrer = models.User.objects.get(id=int(user)),
+                aufgabeObj = models.Aufgabe.objects.get(id=int(aufgabe))
+                ausfuehrerObj = models.User.objects.get(id=int(user))
+                z = models.Zuteilung(aufgabe=aufgabeObj,
+                                     ausfuehrer=ausfuehrerObj,
                                      )
                 z.save()
 
+                messages.success(request,
+                                 u"Aufgabe {0} wurde an {1} {2} zugeteilt".format(aufgabeObj.aufgabe,
+                                                                                 ausfuehrerObj.first_name,
+                                                                                 ausfuehrerObj.last_name))
 
         # find all items in prevState with a 1 there that do no appear in newState
         # remove that zuteilung
@@ -631,14 +639,22 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             if v=='1' and k not in newState:
                 print "delete ", k
                 user, aufgabe = k.split('_')
-                z = models.Zuteilung.objects.get (aufgabe = models.Aufgabe.objects.get(id=int(aufgabe)),
-                                                  ausfuehrer = models.User.objects.get(id=int(user)),
+                aufgabeObj = models.Aufgabe.objects.get(id=int(aufgabe))
+                ausfuehrerObj = models.User.objects.get(id=int(user))
+                z = models.Zuteilung.objects.filter (aufgabe=aufgabeObj,
+                                                  ausfuehrer=ausfuehrerObj,
                                                  )
-                z.delete()
+                for zz in z:
+                    zz.delete()
 
-        # TODO: emails senden? 
-        return redirect("arbeitsplan-manuellezuteilung")
+                messages.success(request,
+                                 u"Aufgabe {0} wird nicht mehr von  {1} {2} durchgeführt.".format(aufgabeObj.aufgabe,
+                                                                                 ausfuehrerObj.first_name,
+                                                                                 ausfuehrerObj.last_name))
+                
+        # TODO: emails senden?
 
+        return redirect(self.request.get_full_path())
 
 class ZuteilungUebersichtView (FilteredListView):
     title = "Übersicht der Aufgaben und Zuteilungen"
