@@ -588,11 +588,11 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             ztlist.append(tmp)
 
         # store the statuslist in the hidden field, to be accessible to POST later on
-        self.tableformHidden.append({'name': 'status',
+        self.tableformHidden = [{'name': 'status',
                                  'value': ';'.join([k+'='+v
                                                     for k, v
                                                     in statuslist.iteritems()]),
-                                 })
+                                 }]
 
         return (ztlist, aufgabenQs)
 
