@@ -244,7 +244,9 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
                                       anzahl = anzahl)
             sobj.save()
 
-        return redirect ("arbeitsplan-aufgaben")
+        # return redirect ("arbeitsplan-aufgaben")
+        return redirect(self.request.get_full_path())
+
 
 ###############################
 
@@ -421,9 +423,9 @@ class CreateMeldungenView (MeldungEdit):
 
         self.processUpdate(request)
 
-        return redirect ("arbeitsplan-meldung")
-        
-    
+        # return redirect ("arbeitsplan-meldung")
+        return redirect(self.request.get_full_path())
+
 class MeldungVorstandView (isVorstandMixin, MeldungEdit):
     """Display a (filtered) list of all Meldungen from all Users,
     with all preferences.
@@ -442,16 +444,17 @@ class MeldungVorstandView (isVorstandMixin, MeldungEdit):
                     ('praeferenz', 'prefMitglied__in')
                     ]
     tableClass = MeldungTableVorstand
-    model = models.Meldung 
-    
+    model = models.Meldung
+
     tableform = {'name': "eintragen",
                  'value': "Meldungen eintragen/ändern"}
 
 
-    def post (self,request, *args, **kwargs):
+    def post(self,request, *args, **kwargs):
         print request.POST
         self.processUpdate(request)
-        return redirect ('arbeitsplan-meldungVorstand')        
+        # return redirect ('arbeitsplan-meldungVorstand')
+        return redirect(self.request.get_full_path())
 
 
 
@@ -585,20 +588,16 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             ztlist.append(tmp)
 
         # store the statuslist in the hidden field, to be accessible to POST later on
-        self.tableformHidden = [{'name': 'status',
+        self.tableformHidden.append({'name': 'status',
                                  'value': ';'.join([k+'='+v
                                                     for k, v
                                                     in statuslist.iteritems()]),
-                                 }
-                                ]
+                                 })
 
         return (ztlist, aufgabenQs)
 
-    
     def post (self,request, *args, **kwargs):
 
-        print self.request.get_full_path()
-                
         previousStatus = dict([ tuple(s.split('=') )
                    for s in 
                     request.POST.get('status').split(';')
@@ -711,21 +710,19 @@ class ZuteilungUebersichtView (FilteredListView):
                 newEntry['required'] = aufgabe.anzahl
                 newEntry['zugeteilt'] = aufgabe.zuteilung_set.count()
                 newEntry['stundenplanlink'] = None 
-                        
+
             data.append(newEntry)
 
         # pp( data)
-        
+
         # TODO: allow filtering of those Aufgaben 
         # qs = self.apply_filter(qs)
 
-    
         # for each remaining Aufgabe in qs, find the already assigned STunden 
-        
-        
+
         table = self.get_filtered_table(data)
 
-        return table 
+        return table
 
 
 class  StundenplaeneEdit (FilteredListView):
@@ -845,12 +842,11 @@ class  StundenplaeneEdit (FilteredListView):
             # print stundenzuteilung
 
             stundenzuteilung.delete()
-            
-        
-        return redirect ("arbeitsplan-stundenplaeneEdit",
+
+        return redirect (# "arbeitsplan-stundenplaeneEdit",
+                         self.request.get_full_path(),
                          aufgabeid = aufgabeid, 
                          )
-        
 
     
 ########################################################################################
@@ -987,7 +983,8 @@ class LeistungBearbeitenView (isVorstandMixin, View):
 
         # TODO: bei Rueckfrage koennte man eine email senden? oder immer?
         
-        return redirect ('/arbeitsplan/leistungenBearbeiten/z=all')    
+        # return redirect ('/arbeitsplan/leistungenBearbeiten/z=all')    
+        return redirect(self.request.get_full_path())
 
 
 ##########################    
@@ -1064,5 +1061,6 @@ class ErstelleZuteilungView (View):
         ##     G.add_edge ('')
         
             
-        return redirect ('arbeitsplan-zuteilunglist')
+        # return redirect ('arbeitsplan-zuteilunglist')
+        return redirect(self.request.get_full_path())
 
