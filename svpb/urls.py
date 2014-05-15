@@ -31,7 +31,7 @@ urlpatterns = patterns('',
          
     url (r'^keinVorstand/$',
          TemplateView.as_view (template_name='keinVorstand.html'),
-         name="home", 
+         name="keinVorstand", 
          ), 
          
     url (r'^arbeitsplan/aufgaben/$',
