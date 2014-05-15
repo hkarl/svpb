@@ -631,7 +631,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                                                                      ausfuehrer=ausfuehrerObj)
                 if created:
                     messages.debug (request,
-                                    "warnung: Aufgabe {0} war bereits an {1} {2} zugeteilt".format(aufgabeObj.aufgabe,
+                                    u"warnung: Aufgabe {0} war bereits an {1} {2} zugeteilt".format(aufgabeObj.aufgabe,
                                                                                  ausfuehrerObj.first_name,
                                                                                  ausfuehrerObj.last_name))
                 messages.success(request,
@@ -1067,7 +1067,8 @@ class ErstelleZuteilungView (View):
         ## for m in models.Meldung.objects.all():
         ##     G.add_edge ('')
         
-            
-        # return redirect ('arbeitsplan-zuteilunglist')
-        return redirect(self.request.get_full_path())
+        messages.error(request,
+                        "Diese Funktion ist noch nicht implementiert!")
+        return redirect ('home')
+
 
