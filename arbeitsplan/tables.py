@@ -22,13 +22,20 @@ import unicodedata
 
 class RadioButtonTable (django_tables2.Table):
 
-    def render_radio(self, record, fieldname, choices, buttontexts):
+    def render_radio(self, fieldname, choices, buttontexts, **kwargs):
         ## print bound_row._record 
         ## print type(bound_row._record )
         ## print getattr (bound_row._record, fieldname)
         # print "render_radio ", record
 
-        try: 
+        print kwargs
+        if 'bound_row' in kwargs:
+            record = kwargs['bound_row']._record
+        if 'record' in kwargs:
+            record = kwargs['record']
+        print 'rec: ', record
+
+        try:
             tmp = '\n'.join([
                 format_html(u"""
                 <label class="btn {4} {5}">
