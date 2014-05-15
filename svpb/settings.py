@@ -81,7 +81,6 @@ STATICFILES_DIRS = (
     os.path.join (APPLICATION_DIR, '..', 'templates'),
 )
 
-print STATICFILES_DIRS
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -103,7 +102,8 @@ TEMPLATE_LOADERS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth', 
-    'django.core.context_processors.request', 
+    'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages',
     ) 
     
 MIDDLEWARE_CLASSES = (
@@ -146,7 +146,7 @@ INSTALLED_APPS = (
     'arbeitsplan',
 )
 
-CRISPY_TEMPLATE_PACK = "bootstrap"
+CRISPY_TEMPLATE_PACK = "bootstrap3"
 
     
 # A sample logging configuration. The only tangible logging
@@ -177,3 +177,10 @@ LOGGING = {
         },
     }
 }
+
+from django.contrib.messages import constants as message_constants
+MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
+                message_constants.INFO: 'info',
+                message_constants.SUCCESS: 'success',
+                message_constants.WARNING: 'warning',
+                message_constants.ERROR: 'danger',}

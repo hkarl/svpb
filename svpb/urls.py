@@ -31,7 +31,7 @@ urlpatterns = patterns('',
          
     url (r'^keinVorstand/$',
          TemplateView.as_view (template_name='keinVorstand.html'),
-         name="home", 
+         name="keinVorstand", 
          ), 
          
     url (r'^arbeitsplan/aufgaben/$',
@@ -44,9 +44,9 @@ urlpatterns = patterns('',
          name="arbeitsplan-zuteilunglist",
          ),
 
-    url (r'^arbeitsplan/meldungAnzeige/$',
-         login_required(arbeitsplan.views.ListMeldungenView.as_view()),
-         name="arbeitsplan-meldunglist",
+    url (r'^arbeitsplan/meldungVorstand/$',
+         login_required(arbeitsplan.views.MeldungVorstandView.as_view()),
+         name="arbeitsplan-meldungVorstand",
          ),
 
     url (r'^arbeitsplan/erstelleZuteilung/$',
@@ -59,8 +59,23 @@ urlpatterns = patterns('',
          name="arbeitsplan-manuellezuteilung",
          ),
 
+    url (r'^arbeitsplan/manuelleZuteilung/(?P<aufgabe>\d+)/$',
+         login_required(arbeitsplan.views.ManuelleZuteilungView.as_view()),
+         name="arbeitsplan-manuellezuteilungAufgabe",
+         ),
+
+    url (r'^arbeitsplan/zuteilungUebersicht/$',
+         login_required(arbeitsplan.views.ZuteilungUebersichtView.as_view()),
+         name="arbeitsplan-zuteilungUebersicht",
+         ),
+         
+    url (r'^arbeitsplan/stundenplaene/(?P<aufgabeid>\d+)/$',
+         login_required(arbeitsplan.views.StundenplaeneEdit.as_view()),
+         name="arbeitsplan-stundenplaeneEdit",
+         ),
+         
     url (r'^arbeitsplan/meldung/$',
-         login_required(arbeitsplan.views.UpdateMeldungView.as_view()),
+         login_required(arbeitsplan.views.CreateMeldungenView.as_view()),
          name="arbeitsplan-meldung",),
          
     url (r'^arbeitsplan/leistung/$',
@@ -80,6 +95,14 @@ urlpatterns = patterns('',
          login_required(arbeitsplan.views.Salden.as_view()),
          name="arbeitsplan-salden",),
 
+    url (r'^arbeitsplan/aufgabeErzeugen/$',
+         login_required(arbeitsplan.views.AufgabenCreate.as_view()),
+         name="arbeitsplan-aufgabenErzeugen",),
+         
+    url (r'^arbeitsplan/aufgabeEditieren/(?P<pk>\d+)/$',
+         login_required(arbeitsplan.views.AufgabenUpdate.as_view()),
+         name="arbeitsplan-aufgabenEdit",),
+         
     url (r'^bootstrap$',
          TemplateView.as_view (template_name="bootstrap.html"),
          name="bootstrap", 

@@ -13,6 +13,14 @@
 
 {% if user.is_authenticated %}
 
+{% if msg %}
+<div class="alert alert-{{msgclass}}">
+  {{ msg }}
+</div>
+<p>
+{% endif %}
+
+
 
 Ihnen stehen folgende Funktionen zur Verfügung: 
 <p>
@@ -92,16 +100,19 @@ Es ist uns eine besondere Ehre, unseren Vorstandsmitgliedern erweiterte Funktion
     <div class="panel panel-default">
       <div class="panel-heading">
         <div class="panel-title">
-          Aufgaben
+          Aufgaben und Aufgabengruppen
         </div>
       </div>
       <div class="panel-body">
-        Aufgaben und Aufgabengruppen einfach verwalten (TODO) 
+        <ul class="list-group">
+          <li class="list-group-item"> <a href="/arbeitsplan/aufgabeErzeugen/"> Neue Aufgabe anlegen </a> </li>
+          <li class="list-group-item">  <a href="/arbeitsplan/aufgaben/"> Aufgaben anzeigen und editieren </a> </li>
+        </ul>
       </div>
     </div>
   </div>
   <div class="col-md-6">
-    <a href="/arbeitsplan/meldungAnzeige/"> 
+    <a href="/arbeitsplan/meldungVorstand/"> 
     <div class="panel panel-info">
       <div class="panel-heading">
         <div class="panel-title">
@@ -109,7 +120,7 @@ Es ist uns eine besondere Ehre, unseren Vorstandsmitgliedern erweiterte Funktion
         </div>
       </div>
       <div class="panel-body">
-        Existierende Meldungen anzeigen 
+        Existierende Meldungen anzeigen und bewerten
       </div>
     </div>
     </a>
@@ -125,9 +136,12 @@ Es ist uns eine besondere Ehre, unseren Vorstandsmitgliedern erweiterte Funktion
       </div>
       <div class="panel-body">
         <ul class="list-group">
+          <li class="list-group-item"> <a href="/arbeitsplan/zuteilungAnzeige/all/"> Existierende Zuteilungen anzeigen </a> </li>
+          <li class="list-group-item"> <a href="/arbeitsplan/zuteilungUebersicht/"> Aufgaben und Zuteilungsübersicht </a> </li>
           <li class="list-group-item"> <a href="/arbeitsplan/manuelleZuteilung/"> Zuteilungen manuell vornehmen </a> 
           </li>
-          <li class="list-group-item"> <a href="/arbeitsplan/zuteilungAnzeige/all/"> Existierende Zuteilungen anzeigen </a> </li>
+          <li class="list-group-item"> Zuteilungen ohne Meldung vornehmen (TODO)
+          </li>
           <li class="list-group-item"> <a href="/arbeitsplan/erstelleZuteilung/"> Zuteilungen automatisch erstellen </a>  (noch nicht implementiert!) </li> 
         </ul>
       </div>
@@ -197,5 +211,5 @@ Bist Du ein Mitglied, so <a href="/accounts/login/?next=/home/"> melde Dich bitt
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Mon Apr 28 19:29:27 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sat May 10 18:44:52 CEST 2014 <!-- hhmts end -->
 </body> </html>

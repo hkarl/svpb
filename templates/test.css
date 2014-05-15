@@ -1,0 +1,9 @@
+.jumbotron {
+    margin-bottom: 0px;
+    background-image: url(media/head_startseite_01.jpg);
+    background-position: 0% 25%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    color: black;
+    text-shadow: black 0.3em 0.3em 0.3em;
+}

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from arbeitsplan.models import Aufgabengruppe, Aufgabe, Meldung, Zuteilung, Leistung
+from arbeitsplan.models import Aufgabengruppe, Aufgabe, Meldung, Zuteilung, Leistung, Stundenplan, StundenZuteilung
 
 
 ## class MitgliedInline (admin.StackedInline):
@@ -25,9 +25,10 @@ class AufgabeAdmin (admin.ModelAdmin):
 
 class MeldungAdmin (admin.ModelAdmin):
     date_hierachy = 'erstellt'
-    list_display = 'melder', 'aufgabe'
+    list_display = 'melder', 'aufgabe', 'prefMitglied', 'prefVorstand'
     list_filter = ('melder', 'aufgabe')
 
+    
 class LeistungAdmin (admin.ModelAdmin):
     date_hierarchy = 'erstellt'
     list_display = ('melder', 'aufgabe', 'wann',  'status')
@@ -35,12 +36,22 @@ class LeistungAdmin (admin.ModelAdmin):
     radio_fields = {'status': admin.HORIZONTAL}
     search_fields = ('melder__username',)
 
+class StundenplanAdmin (admin.ModelAdmin):
+    # date_hierarchy = ('aufgabe__datum',) 
+    list_filter = ('aufgabe__datum', )
+
+class StundenZuteilungAdmin (admin.ModelAdmin):
+    # date_hierarchy = ('aufgabe__datum',) 
+    # list_filter = ('aufgabe__datum', )
+    pass 
+    
 ## admin.site.unregister(User)
 ## admin.site.register (User, UserAdmin)
 
 admin.site.register (Zuteilung, ZuteilungAdmin)
+admin.site.register (StundenZuteilung, StundenZuteilungAdmin)
 admin.site.register(Aufgabengruppe)
 admin.site.register(Aufgabe, AufgabeAdmin)
 admin.site.register(Meldung, MeldungAdmin)
 admin.site.register(Leistung, LeistungAdmin) 
-
+admin.site.register(Stundenplan, StundenplanAdmin)

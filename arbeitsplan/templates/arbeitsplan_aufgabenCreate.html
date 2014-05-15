@@ -1,0 +1,66 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+
+{% comment %}
+{# TODO it would be nicer to render the errors outside the left form, but no idea how to suppress that #}
+{% if form.non_field_errors %}
+   {% for f in form.non_field_errors %}
+    <div class="alert alert-danger">
+      {{ f }}
+    </div>
+   {% endfor %}
+{% endif %}
+{% endcomment %}
+
+<form id="aufgabe-form" method="POST" action=".">
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Aufgaben
+        </div>
+      </div>
+      <div class="panel-body">
+        {% crispy form %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Stundenplan - Personen zu Uhrzeiten 
+        </div>
+      </div>
+      <div class="panel-body">
+        <table class="table-striped">
+          {%  for x in stundenplan %}
+          <tr id="{{x.0}}-row">
+            <td>  {{x.0}}: </td>
+            <td> <div class="controls">
+              <input class="numberinput" id="id_uhrzeit_{{x.0}}" name="uhrzeit_{{x.0}}" type="number" value="{{x.1}}" />
+            </div>  </td> 
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<input type="submit" class="btn btn-primary" value="{{buttontext}}">
+</form>
+
+<h2>Hinweise </h2>
+<ul>
+  <li> Wenn Personen zu bestimmten Uhrzeiten angefordert werden, MUSS ein Datum angegeben werden!  </li>
+</ul>
+{% endblock %}

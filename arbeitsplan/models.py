@@ -24,8 +24,10 @@ from django.contrib.auth.models import User
 ##         return self.user.__unicode__()
 
 class Aufgabengruppe (models.Model):
-    gruppe = models.CharField (max_length=30)
-    verantwortlich = models.ForeignKey (User) 
+    gruppe = models.CharField (max_length=30,
+                               help_text="Aussagefähiger Name für Gruppe von Aufgaben")
+    verantwortlich = models.ForeignKey (User,
+                                        help_text="Verantwortliches Vorstandsmitglied") 
     bemerkung = models.TextField(blank=True)
 
     def __unicode__ (self):
@@ -37,10 +39,17 @@ class Aufgabengruppe (models.Model):
     
 class Aufgabe (models.Model):
     aufgabe = models.CharField (max_length=30)
-    datum = models.DateField (blank=True, null=True)
-    verantwortlich = models.ForeignKey (User)
+    verantwortlich = models.ForeignKey (User,
+                                        help_text="Verantwortliches Vorstandsmitglied")
     gruppe = models.ForeignKey (Aufgabengruppe)
-    anzahl = models.IntegerField ()
+    anzahl = models.IntegerField (default = 0,
+                                  help_text="Wieviele Personen werden für diese Aufgabe gebraucht?")
+    stunden = models.IntegerField (default = 0,
+                                   help_text="Wieviele Stunden Arbeit pro Person?")
+    
+    datum = models.DateField (blank=True, null=True,
+                              help_text="Wann fällt die Aufgabe an? (keine Angabe möglich)")
+
     bemerkung = models.TextField(blank=True)
 
     def __unicode__ (self):
@@ -50,12 +59,62 @@ class Aufgabe (models.Model):
         verbose_name_plural = "Aufgaben"
         verbose_name = "Aufgabe"
 
+class Stundenplan (models.Model):
+    aufgabe = models.ForeignKey (Aufgabe)
+    uhrzeit = models.IntegerField (help_text="Beginn")
+    anzahl = models.IntegerField (default= 0,
+                                  help_text="Wieviele Personen werden um diese Uhrzeit benötigt?")
+
+    startZeit = 8
+    stopZeit = 23
+    
+    def __unicode__ (self):
+        return self.aufgabe.__unicode__() + "@" + str(self.uhrzeit) + ": " + str(self.anzahl)
+    
+    class Meta:
+        verbose_name_plural = "Stundenpläne" 
+        verbose_name = "Stundenplan" 
+    
 class Meldung (models.Model):
     erstellt = models.DateField (auto_now_add=True)
     veraendert = models.DateField (auto_now=True)
     melder = models.ForeignKey (User)
     aufgabe = models.ForeignKey (Aufgabe)
 
+    GARNICHT = -1 
+    WENNSMUSS = 0
+    NORMAL = 1
+    GERNE = 2
+
+    PRAEFERENZ = (
+        (GARNICHT, "Nein"), 
+        (WENNSMUSS, "Wenn's sein muss"),
+        (NORMAL, "Ok" ),
+        (GERNE, "Gerne!"),
+        )
+
+    PRAEFERENZButtons = {
+        GARNICHT: 'btn-mydefault', 
+        GERNE: 'btn-mysuccess',
+        NORMAL: 'btn-info', 
+        WENNSMUSS: 'btn-mywarning', 
+        }
+
+    MODELDEFAULTS = {'prefMitglied': GARNICHT,
+                     'prefVorstand': NORMAL,
+                     'bemerkung': '',
+                     'bemerkungVorstand': '', 
+                    }
+    prefMitglied = models.IntegerField (choices = PRAEFERENZ,
+                                        default = NORMAL,
+                                        help_text="Haben Sie Vorlieben für diese Aufgabe?",)
+    prefVorstand = models.IntegerField (choices = PRAEFERENZ,
+                                        default = NORMAL,
+                                        help_text = "Trauen Sie diesem Mitglied die Aufgabe zu?",)
+
+    bemerkung = models.TextField (blank=True)
+    bemerkungVorstand = models.TextField (blank=True)
+    
     def __unicode__ (self):
         return (self.melder.__unicode__() + " ; " +
                 self.aufgabe.__unicode__() + " ; " +
@@ -72,15 +131,31 @@ class Zuteilung (models.Model):
     aufgabe = models.ForeignKey (Aufgabe)
     ausfuehrer = models.ForeignKey (User)
     automatisch = models.BooleanField (default=False)
+    
     class Meta:
         verbose_name_plural = "Zuteilungen"
 
     def __unicode__ (self):
-        return self.aufgabe.__unicode__() + ": " + self.ausfuehrer.__unicode__()
+        # print self.stundenzuteilung_set.all() 
+        return (self.aufgabe.__unicode__() + ": " + self.ausfuehrer.__unicode__() 
+                + (" @ " + ','.join([s.__unicode__() for s in self.stundenzuteilung_set.all()] ))
+                # + ('@' + ','.join(self.StundenZuteilung_set.all().values('uhrzeit')))
+                )
     
     class Meta:
         verbose_name_plural = "Zuteilungen"
         verbose_name = "Zuteilung"
+
+class StundenZuteilung (models.Model):
+    zuteilung = models.ForeignKey (Zuteilung)
+    uhrzeit = models.IntegerField (blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Zuteilung einer Stunde"
+        verbose_name_plural = "Zuteilungen für einzelne Stunden"
+
+    def __unicode__ (self):
+        return str(self.uhrzeit) 
 
     
 class Leistung (models.Model):

@@ -9,9 +9,30 @@
 
 {% block content %}
 
+{% if filtertitle %}
+<h3> {{filtertitle}} </h3>
+<p>
+{% endif %}
 {% crispy filterform %}
 <p>
-{% render_table object_list  %}
 
+{% if tabletitle %}
+<h3> {{tabletitle}} </h3>
+<p>
+{% endif %}
+
+{% if tableform %}
+<form method="POST" action="{{fullpath}}">
+{% csrf_token %}
+{% endif %}
+
+{% render_table object_list  %}
+{% if tableform %}
+<br>
+<input type=submit class="btn btn-primary" name="{{tableform.name}}" value="{{tableform.value}}">
+    {% for h in tableformHidden %}
+        <input type="hidden" name="{{ h.name }}" value="{{ h.value }}"
+    {% endfor %}
+{% endif %}
 
 {% endblock %}
