@@ -21,7 +21,7 @@
     is_active: true
     is_staff: true
     is_superuser: false
-    last_login: 2014-05-10 11:11:29.841244+00:00
+    last_login: 2014-05-15 18:25:35.676723+00:00
     last_name: Hook
     password: pbkdf2_sha256$12000$lVo10eCHvw3G$ycNMywT4uEJuQTEI4+29l/2BdosrqjCV+LoBOriyKcE=
     user_permissions: [19, 20, 21, 25, 26, 27, 22, 23, 24, 40, 41, 42, 31, 32, 33,
@@ -38,7 +38,7 @@
     is_active: true
     is_staff: false
     is_superuser: false
-    last_login: 2014-05-09 09:49:50+00:00
+    last_login: 2014-05-11 07:30:23.169829+00:00
     last_name: Pan
     password: pbkdf2_sha256$12000$YtBt3CUz83Ni$yUOIke0eJS5/o969yFm0N7ncb3kt5adxbcFRDyBvbME=
     user_permissions: []
@@ -114,23 +114,23 @@
   model: arbeitsplan.stundenplan
   pk: 8
 - fields: {aufgabe: 4, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 1, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+    melder: 1, prefMitglied: 1, prefVorstand: -1, veraendert: 2014-05-10}
   model: arbeitsplan.meldung
   pk: 3
 - fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 3, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+    melder: 3, prefMitglied: 1, prefVorstand: 2, veraendert: 2014-05-15}
   model: arbeitsplan.meldung
   pk: 5
 - fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-10}
   model: arbeitsplan.meldung
   pk: 6
 - fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 1, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+    melder: 1, prefMitglied: 1, prefVorstand: 2, veraendert: 2014-05-10}
   model: arbeitsplan.meldung
   pk: 7
 - fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 1, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-03-29}
+    melder: 1, prefMitglied: 1, prefVorstand: -1, veraendert: 2014-05-10}
   model: arbeitsplan.meldung
   pk: 8
 - fields: {aufgabe: 1, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
@@ -138,32 +138,44 @@
   model: arbeitsplan.meldung
   pk: 9
 - fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
-    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-10}
+    melder: 2, prefMitglied: 1, prefVorstand: 0, veraendert: 2014-05-10}
   model: arbeitsplan.meldung
   pk: 10
-- fields: {aufgabe: 4, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
-    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-10}
+- fields: {aufgabe: 4, bemerkung: 'test test ', bemerkungVorstand: '', erstellt: 2014-05-10,
+    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-15}
   model: arbeitsplan.meldung
   pk: 11
 - fields: {aufgabe: 5, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
-    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-10}
+    melder: 2, prefMitglied: 1, prefVorstand: 2, veraendert: 2014-05-10}
   model: arbeitsplan.meldung
   pk: 12
-- fields: {aufgabe: 3, ausfuehrer: 3, automatisch: false}
+- fields: {aufgabe: 4, ausfuehrer: 1, automatisch: false}
   model: arbeitsplan.zuteilung
-  pk: 1
+  pk: 16
 - fields: {aufgabe: 3, ausfuehrer: 1, automatisch: false}
   model: arbeitsplan.zuteilung
-  pk: 2
-- fields: {aufgabe: 3, ausfuehrer: 2, automatisch: false}
+  pk: 25
+- fields: {aufgabe: 3, ausfuehrer: 3, automatisch: false}
   model: arbeitsplan.zuteilung
-  pk: 3
+  pk: 26
+- fields: {aufgabe: 2, ausfuehrer: 1, automatisch: false}
+  model: arbeitsplan.zuteilung
+  pk: 27
 - fields: {aufgabe: 5, ausfuehrer: 2, automatisch: false}
   model: arbeitsplan.zuteilung
-  pk: 4
-- fields: {uhrzeit: 12, zuteilung: 3}
+  pk: 29
+- fields: {uhrzeit: 14, zuteilung: 25}
   model: arbeitsplan.stundenzuteilung
   pk: 1
+- fields: {uhrzeit: 15, zuteilung: 25}
+  model: arbeitsplan.stundenzuteilung
+  pk: 2
+- fields: {uhrzeit: 13, zuteilung: 25}
+  model: arbeitsplan.stundenzuteilung
+  pk: 3
+- fields: {uhrzeit: 14, zuteilung: 26}
+  model: arbeitsplan.stundenzuteilung
+  pk: 4
 - fields: {aufgabe: 1, auslagen: '0', bemerkung: kjsdfhjdsk, bemerkungVorstand: '',
     erstellt: 2014-04-06, km: '0', melder: 3, status: OF, veraendert: 2014-04-06,
     wann: 2014-02-01, zeit: '1'}
