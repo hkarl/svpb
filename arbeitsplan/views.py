@@ -622,11 +622,18 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                 user, aufgabe = k.split('_')
                 aufgabeObj = models.Aufgabe.objects.get(id=int(aufgabe))
                 ausfuehrerObj = models.User.objects.get(id=int(user))
-                z = models.Zuteilung(aufgabe=aufgabeObj,
-                                     ausfuehrer=ausfuehrerObj,
-                                     )
-                z.save()
+                ## z = models.Zuteilung(aufgabe=aufgabeObj,
+                ##                      ausfuehrer=ausfuehrerObj,
+                ##                      )
+                ## z.save()
 
+                z, created = models.Zuteilung.objects.get_or_create (aufgabe=aufgabeObj,
+                                                                     ausfuehrer=ausfuehrerObj)
+                if created:
+                    messages.debug (request,
+                                    "warnung: Aufgabe {0} war bereits an {1} {2} zugeteilt".format(aufgabeObj.aufgabe,
+                                                                                 ausfuehrerObj.first_name,
+                                                                                 ausfuehrerObj.last_name))
                 messages.success(request,
                                  u"Aufgabe {0} wurde an {1} {2} zugeteilt".format(aufgabeObj.aufgabe,
                                                                                  ausfuehrerObj.first_name,
