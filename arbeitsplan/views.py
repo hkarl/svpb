@@ -985,6 +985,13 @@ class ListLeistungView (FilteredListView):
     intro_text = """
     Es liegen die folgenden Leistungen vor. 
     """
+
+    todo_text="""
+    <li> Die Aufgaben zu links machen  </li>
+    <li> links zum Editieren der Meldung machen - für alle, oder nur offene, rückfrage? akzeptierte oder abgelehnte sollten nicht mehr editiert werden können! </li>
+    <li> </li>
+    """
+    
     model = models.Leistung
 
     def get_data(self):
