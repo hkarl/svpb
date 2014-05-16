@@ -39,7 +39,7 @@ class RadioButtonTable (django_tables2.Table):
             tmp = '\n'.join([
                 format_html(u"""
                 <label class="btn {4} {5}">
-                <input type="radio" name="{0}_{1}_{2}"> {3}
+                <input type="radio" name="{0}_{1}" value="{2}"> {3}
                 </label>
                 """,
                 fieldname,
@@ -54,7 +54,7 @@ class RadioButtonTable (django_tables2.Table):
             tmp = '\n'.join([
                 format_html(u"""
                 <label class="btn {4} {5}">
-                <input type="radio" name="{0}_{1}_{2}"> {3}
+                <input type="radio" name="{0}_{1}" value="{2}"> {3}
                 </label>
                 """,
                 fieldname,

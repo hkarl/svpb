@@ -359,12 +359,12 @@ class MeldungEdit  (FilteredListView):
                 k.startswith('prefMitglied') or
                 k.startswith('prefVorstand') 
                 ):
-                key, tmp = k.split('_', 1)
-                try:
-                    id, choice = tmp.split('_', 1)
-                except ValueError:
-                    id = tmp
-                    choice = None
+                key, id = k.split('_', 1)
+                ## try:
+                ##     id, choice = tmp.split('_', 1)
+                ## except ValueError:
+                ##     id = tmp
+                ##     choice = None
                 id = int(id)
 
                 safeit = False
@@ -387,13 +387,13 @@ class MeldungEdit  (FilteredListView):
                         safeit = True
 
                 if key == 'prefMitglied':
-                    if m.prefMitglied <> choice:
-                        m.prefMitglied  = choice
+                    if m.prefMitglied <> value:
+                        m.prefMitglied  = value
                         safeit = True
 
                 if key == 'prefVorstand' and isVorstand(self.request.user):
-                    if m.prefVorstand <> choice:
-                        m.prefVorstand  = choice
+                    if m.prefVorstand <> value:
+                        m.prefVorstand  = value
                         safeit = True
 
                 if safeit:
@@ -1010,68 +1010,58 @@ class ListLeistungView (FilteredListView):
 
         return qsLeistungen
 
-class ListLeistungView_old (ListView):
-    # TODO: auf FilteredListView umbauen
-    template_name = "arbeitsplan_listLeistung.html"
-    
-    def get_queryset(self):
-        res = []
-        for s in models.Leistung.STATUS:
-            qs = models.Leistung.objects.filter(status=s[0],
-                                                melder=self.request.user,
-                                                )
-            sum = qs.aggregate(Sum('zeit'))
-            res.append((s[0], s[1], qs, sum['zeit__sum']))
 
-        return res
+class LeistungBearbeitenView (isVorstandMixin, FilteredListView):
+    """
+    A view to show a table of non-accepted/rejected Leistungen to a Vorstand.
+    Allows to accept, reject, or enquiry them. 
+    """
 
-        # return models.Leistung.objects.filter(melder=self.request.user)
+    title = "Gemeldete Leistungen bearbeiten"
+    tableClass = LeistungBearbeitenTable
+    tabletitle = "Leistungen akzeptieren, ablehnen, oder rückfragen"
+    tableform = {'name': "submit",
+                 'value': "Leistungen ändern"}
+
+    intro_text = """
+    Bitte akzeptieren, lehnen ab, oder rückfragen Sie die folgenden gemeldeten Leistungen. Wählen Sie einen neuen Status und tragen ggf. eine Bemerkung ein.
+    """
+
+    model = models.Leistung
 
 
+    def get_data (self):
+        # print self.kwargs
+        zustaendig = self.kwargs['zustaendig']
 
-class LeistungBearbeitenView (isVorstandMixin, View):
-    # TODO: auf FilteredListView umbauen
-    def get(self, request, zustaendig, *args, **kwargs):
-        # print zustaendig
+        # self.context['statusvalues'] = models.Leistung.STATUS
+
         if zustaendig=="me": 
-            mainqs = models.Leistung.objects.filter(aufgabe__verantwortlich=request.user)
+            mainqs = models.Leistung.objects.filter(aufgabe__verantwortlich=
+                                                    self.request.user)
         else:
             mainqs = models.Leistung.objects.all()
 
-        # and filter further only the open or rueckfragen;
-        # for simplicity, we exlude the other ones:
-
-        table = LeistungBearbeitenTable(mainqs)
-        django_tables2.RequestConfig(self.request).configure(table)
-
-        return render (request,
-                       "arbeitsplan_leistungbearbeiten.html",
-                       dictionary = {
-                           # 'formset': formset,
-                           'qs': mainqs,
-                           'statusvalues': models.Leistung.STATUS,
-                           'table': table,
-                           # 'form': formset,
-                           },
-                       )
-
+        return mainqs
+    
     def post (self, request, zustaendig, *args, **kwargs):
         # clean up data by hand here
         print request.POST 
         data = {}
         for k, v in request.POST.iteritems():
             try:
-                print k, v 
+                # TODO: shorten to startswith construction 
+                print 'post value: ', k, v 
                 if "status" == k[:6]:
                     print "status detected"
-                    opt, num, status = k.split('_')
-                    print opt, num, status 
+                    opt, num = k.split('_')
+                    print opt, num 
                     if not num in data.keys():
                         data[num] = {'status': "",
                                      'bemerkungVorstand': "",
                         }
-                    if v=='on':
-                        data[num]['status'] = status
+
+                    data[num]['status'] = v
 
                 if 'bemerkungVorstand' == k[:17]:
                     tag, num = k.split('_')
@@ -1079,9 +1069,9 @@ class LeistungBearbeitenView (isVorstandMixin, View):
                         data[num] = {'status': "",
                                      'bemerkungVorstand': "",
                         }
-                    
+
                     data[num][tag] = v
-                    
+
             except:
                 pass 
 
@@ -1111,6 +1101,33 @@ class LeistungBearbeitenView (isVorstandMixin, View):
 
         # return redirect ('/arbeitsplan/leistungenBearbeiten/z=all')    
         return redirect(self.request.get_full_path())
+        
+class LeistungBearbeitenView_old (isVorstandMixin, View):
+    # TODO: auf FilteredListView umbauen
+    def get(self, request, zustaendig, *args, **kwargs):
+        # print zustaendig
+        if zustaendig=="me": 
+            mainqs = models.Leistung.objects.filter(aufgabe__verantwortlich=request.user)
+        else:
+            mainqs = models.Leistung.objects.all()
+
+        # and filter further only the open or rueckfragen;
+        # for simplicity, we exlude the other ones:
+
+        table = LeistungBearbeitenTable(mainqs)
+        django_tables2.RequestConfig(self.request).configure(table)
+
+        return render (request,
+                       "arbeitsplan_leistungbearbeiten.html",
+                       dictionary = {
+                           # 'formset': formset,
+                           'qs': mainqs,
+                           'statusvalues': models.Leistung.STATUS,
+                           'table': table,
+                           # 'form': formset,
+                           },
+                       )
+
 
 
 ##########################    
