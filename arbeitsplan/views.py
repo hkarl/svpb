@@ -115,18 +115,19 @@ class FilteredListView(ListView):
             qs = self.model.objects.all()
 
         if 'filter' not in self.request.GET:
-            self.filterform = self.filterform_class()
-            filterconfig = []
-            fieldsWithInitials = [k
-                                  for k, v
-                                  in self.filterform.fields.iteritems()
-                                  if v.initial is not None]
-            filterconfig = [(x[0], x[1], self.filterform.fields[x[0]].initial)
-                            for x in self.filterconfig
-                            if x[0] in fieldsWithInitials]
+            if self.filterform_class: 
+                self.filterform = self.filterform_class()
+                filterconfig = []
+                fieldsWithInitials = [k
+                                      for k, v
+                                      in self.filterform.fields.iteritems()
+                                      if v.initial is not None]
+                filterconfig = [(x[0], x[1], self.filterform.fields[x[0]].initial)
+                                for x in self.filterconfig
+                                if x[0] in fieldsWithInitials]
 
-            for fieldname, filterexp, initialValues in filterconfig:
-                qs = qs.filter(**{filterexp: initialValues})
+                for fieldname, filterexp, initialValues in filterconfig:
+                    qs = qs.filter(**{filterexp: initialValues})
         else:
             self.filterform = self.filterform_class(self.request.GET)
             filterconfig = self.filterconfig
