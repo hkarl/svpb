@@ -94,10 +94,10 @@ class Meldung (models.Model):
         )
 
     PRAEFERENZButtons = {
-        GARNICHT: 'btn-mydefault', 
-        GERNE: 'btn-mysuccess',
-        NORMAL: 'btn-info', 
-        WENNSMUSS: 'btn-mywarning', 
+        GARNICHT: 'btn-default', # 'btn-mydefault', 
+        GERNE: 'btn-default', # 'btn-mysuccess',
+        NORMAL: 'btn-default', # 'btn-info', 
+        WENNSMUSS: 'btn-default', # 'btn-mywarning', 
         }
 
     MODELDEFAULTS = {'prefMitglied': GARNICHT,
