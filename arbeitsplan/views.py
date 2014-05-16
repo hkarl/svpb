@@ -975,7 +975,35 @@ class CreateLeistungView (CreateView):
 ####################################
 
 
-class ListLeistungView (ListView):
+class ListLeistungView (FilteredListView):
+    title = "Arbeitsleistung auflisten"
+    template_name = "arbeitsplan_listLeistung.html"
+
+    tableClass = LeistungTable
+    tabletitle = "Eingetragene Leistungen"
+
+    intro_text = """
+    Es liegen die folgenden Leistungen vor. 
+    """
+    model = models.Leistung
+
+    def get_data(self):
+        # TODO: enable arbitrary user to be shown, if called by vorstand 
+        qsLeistungen = self.model.objects.filter(melder=self.request.user)
+
+        res = []
+        for s in models.Leistung.STATUS:
+            qs = models.Leistung.objects.filter(status=s[0],
+                                                melder=self.request.user,
+                                                )
+            sum = qs.aggregate(Sum('zeit'))
+            res.append((s[0], s[1], qs, sum['zeit__sum']))
+
+        self.context['leistungSummary'] = res
+
+        return qsLeistungen
+
+class ListLeistungView_old (ListView):
     # TODO: auf FilteredListView umbauen
     template_name = "arbeitsplan_listLeistung.html"
     

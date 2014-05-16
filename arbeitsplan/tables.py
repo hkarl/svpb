@@ -451,6 +451,25 @@ def ZuteilungsTableFactory (tuple):
 ##############################
 
 
+class LeistungTable(django_tables2.Table):
+    """
+    Show the Leistungen of an individual member.
+    """
+
+    ## melder_last = django_tables2.Column (accessor="melder.last_name",
+    ##                                      verbose_name="Melder Nachname")
+    ## melder_first = django_tables2.Column (accessor="melder.first_name",
+    ##                                      verbose_name="Melder Vorname")
+
+    aufgabe = django_tables2.Column (accessor="aufgabe.aufgabe",
+                                     verbose_name="Aufgabe")
+    class Meta:
+        model = models.Leistung
+        attrs = {"class": "paleblue"}
+        fields = (# 'melder_last', 'melder_first',
+                    'aufgabe', 'wann', 'zeit',
+                    'status',
+                    'auslagen', 'km', 'bemerkung', 'bemerkungVorstand')
     
 class LeistungBearbeitenTable (RadioButtonTable):
 

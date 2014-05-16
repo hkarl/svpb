@@ -1,79 +1,21 @@
-{% extends "bootstrap/bootstrap_base.html" %}
+{% extends "arbeitsplan_tff.html" %}
 {% load staticfiles %}
 
 
-{% block branding %}
-<h1> Arbeitsleistung auflisten  </h1>
-{% endblock %}
 
+{% block prefilter %}
 
-{% block content %}
-
-<div class="alert alert-warning">
- TODO: Auf Tabelle umbauen!
-</div>
-  
-
-<h2> Überblick </h2>
+<h3>Zusammenfassung Ihrer Leistungen </h3>
 
 <ul>
-{% for i in object_list %}
+ 
+{% for i in leistungSummary %}
   <li>  {{i.1}}:  {{i.3}}  </li>
 {% endfor %}
 </ul>
 
-Im einzelnen liegen folgende Arbeistleistungen liegen für Sie vor.
-
-<h2> Offen </h2>
-
-Offene Arbeitsleistungen wurden von Ihnen gemeldet, aber noch nicht vom zuständigen Vorstand bearbeitet.
-
-<ul>
-  {% for o in object_list.0.2 %}
-  <li>  {{o}}  </li>
-  {% endfor %}
-</ul> 
-
-Die Gesamtstunden sind: {{ object_list.0.3}}. 
-
-<h2> Akzeptiert </h2>
-
-Diese Arbeitsleistungen wurden vom Vorstand akzeptiert.
-
-<ul>
-  {% for o in object_list.1.2 %}
-  <li>  {{o}}  </li>
-  {% endfor %}
-</ul> 
-
-Die Gesamtstunden sind: {{ object_list.1.3 }}. 
-
-<h2> Rückfragen </h2>
-
-Zu diesen Leistungen liegen Rückfragen des Vorstandes vor. 
-
-<ul>
-  {% for o in object_list.2.2 %}
-  <li>  {{o}}  </li>
-  {% endfor %}
-</ul> 
-
-Die Gesamtstunden sind: {{ object_list.2.3 }}. 
-
-<h2> Abgelehnt </h2>
-
-Diese gemeldeten Arbeitsleistungen wurden vom Vorstand nicht akzeptiert.
-
-<ul>
-  {% for o in object_list.3.2 %}
-  <li>  {{o}}  </li>
-  {% endfor %}
-</ul> 
-
-Die Gesamtstunden sind: {{ object_list.3.3 }}. 
 
 
 {% endblock %} 
 
-<!-- hhmts start -->Last modified: Fri May 16 16:42:49 CEST 2014 <!-- hhmts end -->
 
