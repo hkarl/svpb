@@ -78,7 +78,11 @@ class FilteredListView(ListView):
     intro_text = ""
     post_text = ""
     todo_text = ""
-    
+
+    # pass additional context into template, if given.
+    # must  be dictionary
+    context = {}
+
     # fallback, if no actual data is provided:
     model = None
 
@@ -102,6 +106,7 @@ class FilteredListView(ListView):
         if isVorstand (self.request.user):
             context['todo_text'] = mark_safe(self.todo_text)
 
+        context.update(self.context)
         return context
 
     def apply_filter(self, qs=None):
