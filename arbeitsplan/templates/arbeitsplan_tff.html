@@ -23,8 +23,12 @@
 <h3> {{filtertitle}} </h3>
 <p>
 {% endif %}
+
+{% if filterform %}
 {% crispy filterform %}
 <p>
+{% endif %}
+
 
 {% if tabletitle %}
 <h3> {{tabletitle}} </h3>
