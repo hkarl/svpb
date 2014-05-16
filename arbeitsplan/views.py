@@ -67,16 +67,24 @@ class FilteredListView(ListView):
     # tableform should be dict with keys: name, value for the submit button
 
     tableformHidden = []
-    
+
     filtertitle = None
-    filterform_class = None 
+    filterform_class = None
     filterconfig = []
-    # filterconfig: a list of tuples, with (fieldnmae in form, filter keyword to apply)     
+    # filterconfig: a list of tuples,
+    # with (fieldnmae in form, filter keyword to apply)
+
+    # help texts for the page template
+    intro_text = ""
+    post_text = ""
+    todo_text = ""
+    
+    # fallback, if no actual data is provided:
     model = None
 
     # Only as variable needed:
     filterform = None  # yes, this should be an instance variable, to pass around 
-    
+
     def get_context_data(self, **kwargs):
         context = super(FilteredListView, self).get_context_data()
         context['title'] = self.title
@@ -87,6 +95,12 @@ class FilteredListView(ListView):
 
         context['tableformHidden'] = self.tableformHidden
         context['fullpath'] = self.request.get_full_path()
+
+        context['intro_text'] = mark_safe(self.intro_text)
+        context['post_text'] = mark_safe(self.post_text)
+
+        if isVorstand (self.request.user):
+            context['todo_text'] = mark_safe(self.todo_text)
 
         return context
 
@@ -256,6 +270,20 @@ class ListAufgabenView (FilteredListView):
     title = "Alle Aufgaben anzeigen"
     filterconfig = [('aufgabengruppe', 'gruppe__gruppe')]
     model = models.Aufgabe
+    intro_text = """
+    Die Tabelle zeigt die anstehenden Aufgaben an.
+    <ul>
+    <li> Aufgaben ohne Datum sind an flexiblen Terminen zu erledigen. </li>
+    <li> Bei Aufgaben mit Datum  erfolgt die Zeitabsprachen individuell oder nach Einteilung. </li> 
+    <li> Die Spalte Verantwortlicher benennt den Koordinator der Aufgabe. </li>
+    </ul>
+    """
+    todo_text = """
+    <li> Filter einbauen: Aufgabengruppe, Datum, Stunden, Verantwortlicher (nur wenn Vorstand?) </li>
+    <li> Spalten klickbar machen: Aufgabe, Verantowrtlicher (direkt email senden?)  </li>
+    <li> Bemerkung als Popover umbauen?  </li>  
+    """
+
     
     def get_queryset (self):
 
@@ -383,9 +411,18 @@ class CreateMeldungenView (MeldungEdit):
                  'value': "Meldungen eintragen/ändern"}
     filterconfig = [('aufgabengruppe', 'gruppe__gruppe')]
     model = models.Aufgabe
-    tableClass = MeldungTable 
-        
-    def get_queryset (self):
+    tableClass = MeldungTable
+
+    intro_text = """
+    Tragen Sie bitte ein, an welchen Aufgaben Sie mitarbeiten möchten. Wählen Sie dazu für die entsprechende Aufgabe eine entsprechende Vorliebe in der letzen Spalte aus (oder lassen Sie die Vorliebe auf `Nein'). Sie können noch zusätlich eine Bemerkung eingeben (z.B., wenn Sie die Aufgaben mit einem Partner zusammenarbeiten erledigen möchten oder nur zu bestimmten Uhrzeiten können). 
+    <p>
+    Sie können die Aufgabenliste eingrenzen, in dem Sie nach Aufgabengruppen filtern. Wählen Sie aus der Liste aus und drücken dann auf `Filter anwenden'. 
+    """
+
+    todo_text = """
+    <li> Über Button-Farben nachdenken </li>
+    """
+    def get_queryset(self):
 
         qsAufgaben = self.apply_filter ()
         
@@ -449,6 +486,20 @@ class MeldungVorstandView (isVorstandMixin, MeldungEdit):
     tableform = {'name': "eintragen",
                  'value': "Meldungen eintragen/ändern"}
 
+    intro_text = """
+    Bewerten Sie die Meldungen der Mitglieder nach Eignung für eine Aufgabe.
+    <ul>
+    <li> Nutzen Sie die Einstufung in der rechten Spalte </li>
+    <li> Eine `Nein' entspricht einer Ablehnung der Meldung; eine solche Meldung wird später bei den Zuteilungen nicht angezeigt. </li>
+    <li> Geben Sie ggf. eine zusätzliche Bemerkung ein </li>
+    <li> Sie können die Liste filtern nach Name des Mitglieds, nach Aufgabengruppe, nach den Präferenzen die das Mitglied bei der Meldung angegeben hat (Kombinationen möglich). </li>
+    </ul>
+    """
+
+    todo_text = """
+    <li> Weitere Filter einbauen?Nach Verantwortlicher? Nach Vorstandsvorlieben?  </li>
+    <li> </li>
+    """
 
     def post(self,request, *args, **kwargs):
         print request.POST
@@ -470,20 +521,37 @@ class ListZuteilungenView (FilteredListView):
     filtertitle = "Zuteilungen nach Personen oder Aufgabengruppen filtern"
     tabletitle = "Zuteilungen"
     filterconfig = [('aufgabengruppe', 'aufgabe__gruppe__gruppe'),
-                    ('first_name', 'ausfuehrer__first_name__icontains'), 
+                    ('first_name', 'ausfuehrer__first_name__icontains'),
                     ('last_name', 'ausfuehrer__last_name__icontains'),
                     ]
-    
-    def get_queryset (self):
-        if (("all" in  self.request.path) and
-            (isVorstand(self.request.user))): 
-            qs = models.Zuteilung.objects.all()
-        else:
-            qs = models.Zuteilung.objects.filter (ausfuehrer =self.request.user)
 
-        qs = self.apply_filter (qs)
-        table =  self.get_filtered_table (qs)
-        return table 
+
+    
+    todo_text = """
+    <li> Darstellung der Tabelle verbessern! </li>
+    <li> Wenn nicht alle angezeigt werden, dann Spalte Ausfuehrer nicht anzeigen. </li>
+    <li> Den Filter nicht anzeigen, wenn normaler Nutzer den View aufruft! </li> 
+    """
+    
+    def get_queryset(self):
+        if (("all" in self.request.path) and
+            (isVorstand(self.request.user))):
+            qs = models.Zuteilung.objects.all()
+            self.intro_text = """
+            Welche Zuteilung sind für Nutzer eingetragen?
+            <p>
+            Filtern Sie nach Mitgliedernamen oder Aufgabengruppe. 
+            """
+        else:
+            qs = models.Zuteilung.objects.filter(ausfuehrer=self.request.user)
+            self.intro_text = """
+            Welche Zuteilung sind für mich eingetragen?
+            """
+
+
+        qs = self.apply_filter(qs)
+        table = self.get_filtered_table(qs)
+        return table
 
 
 
@@ -506,8 +574,20 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                         ]
     # TODO: filter by preferences? show preferences in table?
 
+    info_text = """
+    In der Tabelle werden Boxen für die Meldungen der Mitglieder angezeigt. Wählen Sie die Box an (ankreuzen), wenn Sie ein Mitglied für eine Aufgabe einteilen wollen. Entfernen Sie ein Häkchen, wenn das Mitglied die Aufgabe nicht mehr ausführen soll.
+    <p>
+    Filtern Sie nach Mitgliedsnamen oder Aufgabengruppe  
+    """
 
-    def get_data (self):
+    todo_text = """
+    <li> mit -1 durch den Vorstand bewertete Meldungen ausfiltern!  </li>
+    <li> Aufgabe aus der Vergangenheit ausfiltern? </li>
+    <li> Benachrichtigungen senden, wenn Änderung? Oder nur auf explizite Anforderung senden? </li>
+    <li> Weitere Filter einbauen? Nach Mitglieds- oder Vorstandspräferenz?  </li>
+    """
+
+    def get_data(self):
         userQs = models.User.objects.all()
         aufgabeQs = models.Aufgabe.objects.all()
 
@@ -667,6 +747,20 @@ class ZuteilungUebersichtView (FilteredListView):
     tableClassFactory = staticmethod(StundenplanTableFactory)
     tabletitle = "Aufgaben mit benötigten/zugeteilten Personen"
 
+    intro_text = """
+    Die Tabelle fasst pro Aufgabe die benötigten/angeforderten, gemeldeten und bereits zugeteilten Mitglieder zusammen.
+    <ul>
+    <li>Aus den Spalten Aufgabe und Zuteilen kann man direkt die Aufgabe aufrufen bzw. Zuteilungen für diese Aufgabe anschauen und verändern. </li>
+    <li> Sind für eine Aufgabe die Anforderungen nach einzelnen Stunden aufgegliedert (typischerweise bei Bewirtung der Fall), werden pro Stunden die angeforderten bzw. bereits zugeteilten Mitglieder in den rechten Spalten angezeigt. </li>
+    <li> Bei solchen Aufgaben kann durch Klick in der Spalte `Stundenplan' direkt die Zuteilung zu einzelnen Stunden verändert werden. </li> 
+    </ul>
+    """
+    
+    todo_text = """
+    <li> Filter einbauen: Nach Aufgabengruppe; nach Aufgaben mit offenen Anforderungen </li>
+    <li> Evtl.: Stundenplan dynamisch einklappen/ausklappen ? (keine Vorstellung, wie das gehen könnte...) 
+    """
+    
     def get_queryset(self):
 
         # which Aufgaben have a Stundenplan in the first place?
@@ -861,16 +955,13 @@ class  StundenplaeneEdit (FilteredListView):
 ########################################################################################
 
 
-        
-
-
 class CreateLeistungView (CreateView):
     model = models.Leistung
-    form_class = forms.CreateLeistungForm 
+    form_class = forms.CreateLeistungForm
     template_name = "arbeitsplan_createLeistung.html"
 
-    def form_valid (self, form):
-        leistung = form.save (commit=False)
+    def form_valid(self, form):
+        leistung = form.save(commit=False)
         leistung.melder = self.request.user
         leistung.save()
         return HttpResponseRedirect(self.success_url)
@@ -879,7 +970,9 @@ class CreateLeistungView (CreateView):
 
 
 class ListLeistungView (ListView):
+    # TODO: auf FilteredListView umbauen
     template_name = "arbeitsplan_listLeistung.html"
+    
     def get_queryset(self):
         res = []
         for s in models.Leistung.STATUS:
@@ -888,14 +981,15 @@ class ListLeistungView (ListView):
                                                 )
             sum = qs.aggregate(Sum('zeit'))
             res.append((s[0], s[1], qs, sum['zeit__sum']))
-            
+
         return res
-    
+
         # return models.Leistung.objects.filter(melder=self.request.user)
-    
+
 
 
 class LeistungBearbeitenView (isVorstandMixin, View):
+    # TODO: auf FilteredListView umbauen
     def get(self, request, zustaendig, *args, **kwargs):
         # print zustaendig
         if zustaendig=="me": 
@@ -905,22 +999,8 @@ class LeistungBearbeitenView (isVorstandMixin, View):
 
         # and filter further only the open or rueckfragen;
         # for simplicity, we exlude the other ones:
-        
-        ## mainqs = mainqs.exclude(status=models.Leistung.ACK
-        ##                         ).exclude(status=models.Leistung.NEG)
-        ## print "view qs: "
-        ## print [type(l) for l in mainqs]
 
-        # formLA = forms.LeistungAkzeptierenForm (initial=mainqs[0])
-        ## ff = formset_factory (forms.LeistungAkzeptierenForm, extra =0)
-        ## formset = ff(initial = [{'wann': l.wann,
-        ##                          'zeit': l.zeit,
-        ##                          'melder': l.melder,
-        ##                          'aufgabe': l.aufgabe,
-        ##                          }
-        ##                         for l in mainqs])
-
-        table = LeistungBearbeitenTable (mainqs)
+        table = LeistungBearbeitenTable(mainqs)
         django_tables2.RequestConfig(self.request).configure(table)
 
         return render (request,
@@ -929,11 +1009,11 @@ class LeistungBearbeitenView (isVorstandMixin, View):
                            # 'formset': formset,
                            'qs': mainqs,
                            'statusvalues': models.Leistung.STATUS,
-                           'table': table, 
-                           # 'form': formset, 
+                           'table': table,
+                           # 'form': formset,
                            },
                        )
-            
+
     def post (self, request, zustaendig, *args, **kwargs):
         # clean up data by hand here
         print request.POST 
@@ -974,22 +1054,20 @@ class LeistungBearbeitenView (isVorstandMixin, View):
             ## print type(v['id_bemerkungVorstand'])
             l = models.Leistung.objects.get (id = int(k))
             safeit = False
-            if l.bemerkungVorstand <> v['bemerkungVorstand']:
+            if l.bemerkungVorstand != v['bemerkungVorstand']:
                 l.bemerkungVorstand = v['bemerkungVorstand']
                 safeit = True
-                
-            if l.status <> v['status'] and v['status'] <> '':
+
+            if l.status != v['status'] and v['status'] != "":
                 l.status = v['status']
                 safeit = True
-                
-                                 ## status = v['id_status'],
-                                 ## 
+
             if safeit:
                 l.save()
             # print l
 
         # TODO: bei Rueckfrage koennte man eine email senden? oder immer?
-        
+
         # return redirect ('/arbeitsplan/leistungenBearbeiten/z=all')    
         return redirect(self.request.get_full_path())
 
@@ -1013,6 +1091,20 @@ class Salden(isVorstandMixin, FilteredListView):
 
     model = models.User
 
+    intro_text = """
+    Ein Überblick über die von den Mitgliedern geleistete Arbeit, basiered auf den vorliegenden Leistungsmeldungen und deren Bewertungen durch Vorstände. Aufgaben, die bisher <b> nur zugeteilt </b> wurden, sind hier <b> nicht </b> berücksichtigt.
+    <p>
+    Filtern Sie nach Mitgliedsnamen. 
+    """
+
+    todo_text = """
+    <li> Weitere Filter einbauen? nach offen, abgelehnt, ... ? </li>
+    <li> User anklickbar machen, dann zu entsprechendem View verzweigen </li>
+    <li> Die einzelnen Kategoieren anklickbar machen? Und dann alle Leistungsmeldungen entsprechend anzeigen </li>
+    <li> Auch Zuteilungen berückichstigen? Nur zukünftige, oder alle? </li>
+    <li> Auf fehlende LEistungsmeldungen hinweisen? (nach Datum zugteilten Aufgaben?) </li> 
+    """
+    
     def annotate_data(self, userQs):
         res = []
         for u in userQs:

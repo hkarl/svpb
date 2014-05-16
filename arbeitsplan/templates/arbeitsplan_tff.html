@@ -9,6 +9,13 @@
 
 {% block content %}
 
+{% if intro_text %}
+<div class="alert alert-info">
+{{ intro_text }}
+  </div>
+<hr>
+{% endif %}
+
 {% if filtertitle %}
 <h3> {{filtertitle}} </h3>
 <p>
@@ -34,5 +41,21 @@
         <input type="hidden" name="{{ h.name }}" value="{{ h.value }}"
     {% endfor %}
 {% endif %}
+
+{% if post_text %}
+<hr>
+{{ post_text }}
+{% endif %}
+
+{% if todo_text %}
+<hr>
+<div class="alert alert-warning">
+<b> TODO </b>
+<ul>
+{{ todo_text }}
+</ul>
+</div>
+{% endif %}
+
 
 {% endblock %}
