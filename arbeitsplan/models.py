@@ -88,7 +88,7 @@ class Meldung (models.Model):
 
     PRAEFERENZ = (
         (GARNICHT, "Nein"), 
-        (WENNSMUSS, "Wenn's sein muss"),
+        (WENNSMUSS, "Wenn es sein muss"),
         (NORMAL, "Ok" ),
         (GERNE, "Gerne!"),
         )
@@ -193,10 +193,10 @@ class Leistung (models.Model):
         )
 
     STATUSButtons = {
-        OFFEN: 'btn-mydefault', 
-        ACK: 'btn-mysuccess', 
-        RUECKFRAGE: 'btn-mywarning', 
-        NEG: 'btn-mydanger', 
+        OFFEN: 'btn-default', # 'btn-mydefault', 
+        ACK: 'btn-default', # 'btn-mysuccess', 
+        RUECKFRAGE: 'btn-default', # 'btn-mywarning', 
+        NEG: 'btn-default', # 'btn-mydanger', 
         }
     status = models.CharField (max_length=2,
                                choices = STATUS,
