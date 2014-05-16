@@ -203,7 +203,8 @@ class Leistung (models.Model):
                                default = OFFEN) 
     
     bemerkung = models.TextField (blank=True)
-    bemerkungVorstand = models.TextField (blank=True)
+    bemerkungVorstand = models.TextField (blank=True,
+                                          verbose_name="Bemerkung Vorstand")
             
     class Meta:
         verbose_name_plural = "Leistungen"
@@ -215,4 +216,4 @@ class Leistung (models.Model):
                 (self.veraendert.strftime("%d/%m/%y")
                  if self.veraendert else "--") 
                 )
-        
+
