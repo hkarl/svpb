@@ -1099,35 +1099,8 @@ class LeistungBearbeitenView (isVorstandMixin, FilteredListView):
 
         # TODO: bei Rueckfrage koennte man eine email senden? oder immer?
 
-        # return redirect ('/arbeitsplan/leistungenBearbeiten/z=all')    
+        # return redirect ('/arbeitsplan/leistungenBearbeiten/z=all')
         return redirect(self.request.get_full_path())
-        
-class LeistungBearbeitenView_old (isVorstandMixin, View):
-    # TODO: auf FilteredListView umbauen
-    def get(self, request, zustaendig, *args, **kwargs):
-        # print zustaendig
-        if zustaendig=="me": 
-            mainqs = models.Leistung.objects.filter(aufgabe__verantwortlich=request.user)
-        else:
-            mainqs = models.Leistung.objects.all()
-
-        # and filter further only the open or rueckfragen;
-        # for simplicity, we exlude the other ones:
-
-        table = LeistungBearbeitenTable(mainqs)
-        django_tables2.RequestConfig(self.request).configure(table)
-
-        return render (request,
-                       "arbeitsplan_leistungbearbeiten.html",
-                       dictionary = {
-                           # 'formset': formset,
-                           'qs': mainqs,
-                           'statusvalues': models.Leistung.STATUS,
-                           'table': table,
-                           # 'form': formset,
-                           },
-                       )
-
 
 
 ##########################    
