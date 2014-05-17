@@ -272,9 +272,15 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
 
 class ListAufgabenView (FilteredListView):
 
-    filterform_class = forms.AufgabengruppeFilterForm
+    # filterform_class = forms.AufgabengruppeFilterForm
+    filterform_class = forms.AufgabenlisteFilter
     title = "Alle Aufgaben anzeigen"
-    filterconfig = [('aufgabengruppe', 'gruppe__gruppe')]
+    filtertitle = "Filter nach Aufgabengruppe oder Zeitintervall"
+    tabletitle = "Aufgabenliste"
+    filterconfig = [('aufgabengruppe', 'gruppe__gruppe'),
+                    ('von', 'datum__gte'),
+                    ('bis', 'datum__lte'),
+                    ]
     model = models.Aufgabe
     intro_text = """
     Die Tabelle zeigt die anstehenden Aufgaben an.
@@ -285,21 +291,23 @@ class ListAufgabenView (FilteredListView):
     </ul>
     """
     todo_text = """
-    <li> Filter einbauen: Aufgabengruppe, Datum, Stunden, Verantwortlicher (nur wenn Vorstand?) </li>
+    <li> Filter einbauen: Datum, Stunden, Verantwortlicher (nur wenn Vorstand?) </li>
     <li> Spalten klickbar machen: Aufgabe, Verantowrtlicher (direkt email senden?)  </li>
     <li> Bemerkung als Popover umbauen?  </li>  
     """
 
-    
-    def get_queryset (self):
+
+    def get_filtered_table(self,qs):
 
         if isVorstand (self.request.user):
             self.tableClass = AufgabenTableVorstand
         else:
             self.tableClass = AufgabenTable
-            
-        return self.get_filtered_table (self.model.objects.all())
-    
+
+        table = super(ListAufgabenView, self).get_filtered_table(qs)
+
+        # return self.get_filtered_table (self.model.objects.all())
+        return table 
 
 #####################
 

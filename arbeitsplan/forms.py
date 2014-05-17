@@ -8,14 +8,36 @@ from crispy_forms.layout import Submit, Layout, Button
 from crispy_forms.bootstrap import StrictButton, FormActions, InlineCheckboxes
 
 
+class CrispyFormMixin(object):
+    """Define basic crispy fields
+    """
 
-class CreateLeistungForm (forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        """
+        Add the necessary attributes for crispy to work,
+        after the superclass constructur has done its work. 
+        Arguments:
+        - `*args`:
+        - `**kwargs`:
+        """
 
-    def __init__ (self, *args, **kwargs):
-        super(CreateLeistungForm, self).__init__(*args, **kwargs)
+        super(CrispyFormMixin, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_id = ""
+        self.helper.form_id = self.__class__.__name__
         self.helper.form_method = "post"
+        self.helper.field_template = "bootstrap3/layout/inline_field.html"
+
+
+
+##############################
+## General input forms
+##############################
+
+class CreateLeistungForm (CrispyFormMixin, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(CreateLeistungForm, self).__init__(*args, **kwargs)
+
         self.helper.add_input (Submit ('apply', 'Eintragen'))
 
     class Meta:
@@ -26,124 +48,6 @@ class CreateLeistungForm (forms.ModelForm):
                    'status',
                    'bemerkungVorstand',
                    )
-            
-##################################
-
-
-
-class NameFilterForm (forms.Form):
-    last_name = forms.CharField (
-        label="Nachname",
-        max_length=20,
-        required =False,
-        )
-
-    # disabledWidget = forms.TextInput(attrs={'readonly': True})    
-    first_name = forms.CharField (
-        label = "Vorname",
-        max_length = 20,
-        required = False,
-        # widget=disabledWidget,
-        )
-
-    def __init__(self, *args, **kwargs):
-        super(NameFilterForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_id = "namefilterForm"
-        self.helper.form_method = "get"
-        self.helper.form_action = ""
-
-        # self.helper.add_input (Submit('filter', 'Filter anwenden'))
-
-        self.helper.form_class = "form-inline"
-        ## self.helper.label_class = "col-lg-2"
-        ## self.helper.field_class = "col-lg-8"
-        # self.helper.help_text_inline = True
-        self.helper.field_template = "bootstrap3/layout/inline_field.html"
-        self.helper.layout = Layout(
-            'last_name',
-            'first_name',
-            Submit ('filter', 'Filter anwenden'),
-            )
-
-        # disabluing test, this seems to work 
-        # self.fields['first_name'].widget.attrs['disabled'] = True
-
-class AufgabengruppeFilterForm (forms.Form):
-
-    def __init__(self, *args, **kwargs):
-        super(AufgabengruppeFilterForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_id = "aufgabengruppefilterForm"
-        self.helper.form_method = "get"
-        self.helper.form_action = ""
-
-        # self.helper.add_input (Submit('filter', 'Filter anwenden'))
-        
-        self.helper.form_class = "form-inline"
-        ## self.helper.label_class = "col-lg-2"
-        ## self.helper.field_class = "col-lg-8"
-        self.helper.field_template = "bootstrap3/layout/inline_field.html"
-
-        self.helper.layout = Layout(
-            'aufgabengruppe',
-            Submit ('filter', 'Filter anwenden'),
-            )
-        
-    aufgabengruppe = forms.ModelChoiceField (queryset = models.Aufgabengruppe.objects.all(),
-                                            label="Aufgabengruppe", 
-                                            required=False) 
- 
-class PersonAufgabengruppeFilterForm (NameFilterForm):
-
-    def __init__(self, *args, **kwargs):
-        super(PersonAufgabengruppeFilterForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_id = "aufgabengruppefilterForm"
-        self.helper.form_method = "get"
-        self.helper.form_action = ""
-
-        # self.helper.add_input (Submit('filter', 'Filter anwenden'))
-        
-        self.helper.form_class = "form-inline"
-        ## self.helper.label_class = "col-lg-2"
-        ## self.helper.field_class = "col-lg-8"
-        self.helper.field_template = "bootstrap3/layout/inline_field.html"
-
-        self.helper.layout = Layout(
-            'last_name',
-            'first_name',
-            'aufgabengruppe',
-            Submit ('filter', 'Filter anwenden'),
-            )
-        
-    aufgabengruppe = forms.ModelChoiceField (queryset = models.Aufgabengruppe.objects.all(),
-                                            label="Aufgabengruppe", 
-                                            required=False) 
-
-class PersonAufgGrpPraefernzFilterForm (PersonAufgabengruppeFilterForm):
-    def __init__(self, *args, **kwargs):
-        super(PersonAufgGrpPraefernzFilterForm, self).__init__(*args, **kwargs)
-        self.helper.form_id = "PersonAufgGrpPraefernzFilterForm"
-
-        
-        self.helper.layout = Layout(
-            'last_name',
-            'first_name',
-            'aufgabengruppe',
-            InlineCheckboxes('praeferenz'), 
-            Submit ('filter', 'Filter anwenden'),
-            )
-
-    praeferenz = forms.MultipleChoiceField(choices=models.Meldung.PRAEFERENZ,
-                                           widget=forms.CheckboxSelectMultiple,
-                                           label="Praeferenz Mitglied",
-                                           required =False,
-                                           initial=[models.Meldung.PRAEFERENZ[1][0],
-                                                    models.Meldung.PRAEFERENZ[2][0],
-                                                    models.Meldung.PRAEFERENZ[3][0],
-                                                    ],
-                                             )
 
 
 class AufgabeForm (forms.ModelForm):
@@ -188,6 +92,157 @@ class AufgabeForm (forms.ModelForm):
         ## if (len(stundenplan) > 0) and (cleaned_data['anzahl'] > 0):
         ##     raise ValidationError ("Entweder Stundenplan oder Anzahl Personen angeben, nicht beides!",
         ##                            code="illogic")
-        
-        cleaned_data['stundenplan'] = stundenplan 
-        return cleaned_data 
+
+        cleaned_data['stundenplan'] = stundenplan
+        return cleaned_data
+
+##################################
+## Filter forms
+#################################
+
+
+
+class CrispyFilterMixin(CrispyFormMixin):
+    """A specific Form mixin, specialiced for filters (common case).
+
+    It tries to be smart in constructing the layout object. It looks at the
+    __layout attributes of all the current class and all the mixins, up to this
+    base class. In that order, it patches together the layout object itself.
+    """
+
+    def get_mixin_names(self):
+        """
+        Get all the mixins standing between the current class and
+        this base class, in mro order.
+        We need the names later on, not the class object.
+        """
+        mixins = []
+        for m in self.__class__.mro():
+            if m == CrispyFilterMixin:
+                break
+            mixins.append(m.__name__)
+        return mixins
+
+    def get_mixin_attributes(self, attr):
+        """Assuming that the current class has several mixings
+        which all define a call attribute, get the values
+        of these attributes as a list, in mro.
+        """
+
+        mixins = self.get_mixin_names()
+        res = []
+        for m in mixins:
+            try:
+                tmp = self.__getattribute__('_' + m + '__' + attr)
+                res.append(tmp)
+            except AttributeError:
+                pass
+
+        # print "get_mixin:", res
+        return res
+
+    def __init__(self, *args, **kwargs):
+        """
+        Set the form help fields to the specific filtering case
+        """
+        super(CrispyFilterMixin, self).__init__(*args, **kwargs)
+
+        self.helper.form_method = "get"
+        self.helper.form_action = ""
+
+        self.helper.form_class = "form-inline"
+        self.helper.field_template = "bootstrap3/layout/inline_field.html"
+
+        # get all the __layout attributes from the derived classes,
+        # in mro order. Then, patch taht together into the self.helper.layout,
+        # adding the filter anwendern always as the last
+        layoutattributes = self.get_mixin_attributes('layout')
+
+        self.helper.layout = Layout()
+        for l in layoutattributes:
+            self.helper.layout = Layout (self.helper.layout,
+                                         l)
+
+        self.helper.layout = Layout (self.helper.layout,
+                                     Submit ('filter', 'Filter anwenden'),
+                                     )
+
+        # disabluing test, this seems to work 
+        # self.fields['first_name'].widget.attrs['disabled'] = True
+
+##################################
+
+
+class NameFilterForm (CrispyFilterMixin, forms.Form):
+    last_name = forms.CharField (
+        label = "Nachname",
+        max_length = 20,
+        required = False,
+        )
+
+    first_name = forms.CharField (
+        label = "Vorname",
+        max_length = 20,
+        required = False,
+        )
+
+    __layout = Layout(
+        'last_name',
+        'first_name',
+        )
+
+
+class AufgabengruppeFilterForm (CrispyFilterMixin, forms.Form):
+
+    aufgabengruppe = forms.ModelChoiceField (queryset = models.Aufgabengruppe.objects.all(),
+                                            label="Aufgabengruppe", 
+                                            required=False)
+
+    __layout = Layout (
+        'aufgabengruppe',
+        )
+ 
+class PersonAufgabengruppeFilterForm (NameFilterForm,
+                                      AufgabengruppeFilterForm,
+                                      forms.Form):
+    pass
+
+
+class PraeferenzFilterForm (CrispyFilterMixin, forms.Form):
+
+    praeferenz = forms.MultipleChoiceField(choices=models.Meldung.PRAEFERENZ,
+                                           widget=forms.CheckboxSelectMultiple,
+                                           label="Praeferenz Mitglied",
+                                           required=False,
+                                           initial=[models.Meldung.PRAEFERENZ[1][0],
+                                                    models.Meldung.PRAEFERENZ[2][0],
+                                                    models.Meldung.PRAEFERENZ[3][0],
+                                                    ],
+                                             )
+    __layout = Layout(
+        InlineCheckboxes('praeferenz'),
+        )
+
+class PersonAufgGrpPraefernzFilterForm (NameFilterForm,
+                                        AufgabengruppeFilterForm,
+                                        PraeferenzFilterForm,
+                                        forms.Form):
+    pass
+
+
+class DateFilterForm (CrispyFilterMixin, forms.Form):
+    von = forms.DateField (label="Von",
+                           required=False)
+    bis = forms.DateField (label="Bis",
+                           required=False)
+    __layout = Layout(
+        'von',
+        'bis',
+        )
+
+    
+class AufgabenlisteFilter (AufgabengruppeFilterForm,
+                           DateFilterForm,
+                           forms.Form):
+    pass 
+                           
