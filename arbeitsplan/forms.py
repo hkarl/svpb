@@ -240,9 +240,28 @@ class DateFilterForm (CrispyFilterMixin, forms.Form):
         'bis',
         )
 
+
+class StatusFilterForm (CrispyFilterMixin, forms.Form):
+    status = forms.MultipleChoiceField(choices=models.Leistung.STATUS,
+                                           widget=forms.CheckboxSelectMultiple,
+                                           label="Bearbeitungsstatus",
+                                           required=False,
+                                           initial=[models.Leistung.STATUS[0][0],
+                                                    models.Leistung.STATUS[2][0],
+                                                    ],
+                                             )
+    __layout = Layout(
+        InlineCheckboxes('status'),
+        )
     
-class AufgabenlisteFilter (AufgabengruppeFilterForm,
+class AufgabenDatumFilter (AufgabengruppeFilterForm,
                            DateFilterForm,
                            forms.Form):
     pass 
                            
+class LeistungFilter (NameFilterForm,
+                      AufgabengruppeFilterForm,
+                      DateFilterForm,
+                      StatusFilterForm,
+                      forms.Form): 
+    pass

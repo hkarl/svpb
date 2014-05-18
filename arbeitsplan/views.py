@@ -273,7 +273,7 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
 class ListAufgabenView (FilteredListView):
 
     # filterform_class = forms.AufgabengruppeFilterForm
-    filterform_class = forms.AufgabenlisteFilter
+    filterform_class = forms.AufgabenDatumFilter
     title = "Alle Aufgaben anzeigen"
     filtertitle = "Filter nach Aufgabengruppe oder Zeitintervall"
     tabletitle = "Aufgabenliste"
@@ -291,7 +291,7 @@ class ListAufgabenView (FilteredListView):
     </ul>
     """
     todo_text = """
-    <li> Filter einbauen: Datum, Stunden, Verantwortlicher (nur wenn Vorstand?) </li>
+    <li> Filter einbauen: Stunden, Verantwortlicher (nur wenn Vorstand?) </li>
     <li> Spalten klickbar machen: Aufgabe, Verantowrtlicher (direkt email senden?)  </li>
     <li> Bemerkung als Popover umbauen?  </li>  
     """
@@ -418,12 +418,16 @@ class CreateMeldungenView (MeldungEdit):
     """
 
     title = "Meldungen für Aufgaben eintragen oder ändern"
-    filterform_class = forms.AufgabengruppeFilterForm
+    # filterform_class = forms.AufgabengruppeFilterForm
+    filterform_class = forms.AufgabenDatumFilter
     filtertitle = "Meldungen nach Aufgabengruppen filtern"
     tabletitle = "Meldungen für Aufgaben eintragen oder ändern"
     tableform = {'name': "eintragen",
                  'value': "Meldungen eintragen/ändern"}
-    filterconfig = [('aufgabengruppe', 'gruppe__gruppe')]
+    filterconfig = [('aufgabengruppe', 'gruppe__gruppe'),
+                    ('von', 'datum__gte'),
+                    ('bis', 'datum__lte'),
+                    ]
     model = models.Aufgabe
     tableClass = MeldungTable
 
@@ -761,6 +765,10 @@ class ZuteilungUebersichtView (FilteredListView):
     tableClassFactory = staticmethod(StundenplanTableFactory)
     tabletitle = "Aufgaben mit benötigten/zugeteilten Personen"
 
+    # TODO: 
+    ## filtertitle = "Nach Aufgabengruppe filtern"
+    ## filterform_class = forms.AufgabengruppeFilterForm
+    
     intro_text = """
     Die Tabelle fasst pro Aufgabe die benötigten/angeforderten, gemeldeten und bereits zugeteilten Mitglieder zusammen.
     <ul>
@@ -844,7 +852,7 @@ class  StundenplaeneEdit (FilteredListView):
 
     title = "Weisen Sie einer Aufgabe Personen zu den benötigten Zeitpunkten zu"
     tableClassFactory = staticmethod(StundenplanEditFactory)
-    tabletilte = "Zuweisung eintragen"
+    tabletitle = "Zuweisung eintragen"
     tableform = {'name': "eintragen",
                  'value': "Stundenzuteilung eintragen/ändern"}
 
@@ -856,7 +864,7 @@ class  StundenplaeneEdit (FilteredListView):
 
         try: 
             aufgabeid = self.kwargs['aufgabeid']
-        except:
+        except KeyError:
             messages.error (self.request, "Die angegebene URL bezeichnet keine Aufgabe")
             return None
 
@@ -1031,6 +1039,15 @@ class LeistungBearbeitenView (isVorstandMixin, FilteredListView):
     tableform = {'name': "submit",
                  'value': "Leistungen ändern"}
 
+    filtertitle = "Nach Mitglied, Aufgabe, Datum oder Status filtern"
+    filterform_class = forms.LeistungFilter
+    filterconfig = [('first_name', 'melder__first_name__icontains'),
+                    ('last_name', 'melder__last_name__icontains'),
+                    ('aufgabengruppe', 'gruppe__gruppe'),
+                    ('von', 'datum__gte'),
+                    ('bis', 'datum__lte'),
+                    ('status', 'status__in')
+                    ]
     intro_text = """
     Bitte akzeptieren, lehnen ab, oder rückfragen Sie die folgenden gemeldeten Leistungen. Wählen Sie einen neuen Status und tragen ggf. eine Bemerkung ein.
     """

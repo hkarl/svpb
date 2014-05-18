@@ -10,7 +10,13 @@
 <ul>
  
 {% for i in leistungSummary %}
-  <li>  {{i.1}}:  {{i.3}}  </li>
+  <li>  {{i.1}}:
+  {% if i.3 %}
+  {{i.3}} Stunden 
+  {% else %}
+  --
+  {% endif %}
+  </li>
 {% endfor %}
 </ul>
 
