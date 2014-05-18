@@ -440,7 +440,7 @@ def SaldenTableFactory (l):
     for s in models.Leistung.STATUS:
         attrs[s[0]] = LinkedColumn(verbose_name=s[1])
 
-    attrs['zugeteilt'] = LinkedColumn(verbose_name="Zugeteilt (h)")
+    attrs['zugeteilt'] = LinkedColumn(verbose_name="Zugeteilt")
     t = NameTableFactory ("salden", attrs, l)
     return t 
 

@@ -1148,9 +1148,7 @@ class Salden(isVorstandMixin, FilteredListView):
     model = models.User
 
     intro_text = """
-    Ein Überblick über die von den Mitgliedern geleistete Arbeit, basiered auf den vorliegenden Leistungsmeldungen und deren Bewertungen durch Vorstände. Aufgaben, die bisher <b> nur zugeteilt </b> wurden, sind hier <b> nicht </b> berücksichtigt.
-    <p>
-    Filtern Sie nach Mitgliedsnamen. 
+    Ein Überblick über die von den Mitgliedern geleistete Arbeit, basiered auf den vorliegenden Leistungsmeldungen und deren Bewertungen durch Vorstände. Zuteilungen werden separat aufgeführt.
     """
 
     todo_text = """
