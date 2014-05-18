@@ -1160,9 +1160,14 @@ class Salden(isVorstandMixin, FilteredListView):
     <li> Auch Zuteilungen berückichstigen? Nur zukünftige, oder alle? </li>
     <li> Auf fehlende LEistungsmeldungen hinweisen? (nach Datum zugteilten Aufgaben?) </li> 
     """
-    
+
+    # TODO: für einen anklickbaren User braucht es nur:
+    # http://127.0.0.1:8000/arbeitsplan/leistungenBearbeiten/z=all/?last_name=Pan&first_name=Peter&status=OF&filter=Filter+anwenden
     def annotate_data(self, userQs):
         res = []
+
+        rurl = reverse("arbeitsplan-leistungBearbeiten", args=('all',))
+        
         for u in userQs:
             tmp = {}
             tmp['last_name'] = u.last_name
@@ -1172,9 +1177,28 @@ class Salden(isVorstandMixin, FilteredListView):
             for s in models.Leistung.STATUS:
                 zeit = qs.filter(status=s[0]
                                  ).aggregate(Sum('zeit'))['zeit__sum']
-                tmp[s[0]] = zeit
 
+                linktarget = ("{0}?last_name={1}&first_name={2}&status={3}&filter=Filter+anwenden".
+                              format(rurl,
+                                     u.last_name,
+                                     u.first_name,
+                                     s[0],
+                                 ))
+                tmp[s[0]] = (zeit, linktarget)
+
+            # TODO: add linked column here as well 
+            zugeteilt = (models.Zuteilung.objects.
+                         filter(ausfuehrer=u).aggregate(Sum('aufgabe__stunden'))['aufgabe__stunden__sum'])
+
+            linktarget = ("{0}?last_name={1}&first_name={2}&filter=Filter+anwenden".
+                          format(reverse("arbeitsplan-zuteilunglist", args=('all',)),
+                                 u.last_name,
+                                 u.first_name,
+                                 ))
+            tmp['zugeteilt'] = (zugeteilt, linktarget)
             res.append(tmp)
+
+            # print reverse(ListLeistungView,args=("all",))
 
         return res
 

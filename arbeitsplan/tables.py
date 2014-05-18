@@ -124,7 +124,21 @@ class RequiredAssignedColumn (django_tables2.columns.Column):
             r = ""
             
         return r
-    
+
+class LinkedColumn (django_tables2.columns.Column):
+    """
+    A column that redners a simple <a href>, assuming a tuple of values 
+    """
+
+    def render (self, value):
+        text, link = value
+
+        if text: 
+            return mark_safe("<a href={0}>{1}</a>".format(link, text))
+        else:
+            return "-" 
+
+            
 ##############################
 ## Table facotires
 ##############################
@@ -424,8 +438,9 @@ def SaldenTableFactory (l):
 
     attrs = {}
     for s in models.Leistung.STATUS:
-        attrs[s[0]] = django_tables2.Column(verbose_name=s[1])
+        attrs[s[0]] = LinkedColumn(verbose_name=s[1])
 
+    attrs['zugeteilt'] = LinkedColumn(verbose_name="Zugeteilt (h)")
     t = NameTableFactory ("salden", attrs, l)
     return t 
 
