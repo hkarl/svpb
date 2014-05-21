@@ -548,13 +548,13 @@ class ListZuteilungenView (FilteredListView):
     
     todo_text = """
     <li> Darstellung der Tabelle verbessern! </li>
-    <li> Wenn nicht alle angezeigt werden, dann Spalte Ausfuehrer nicht anzeigen. </li>
-    <li> Den Filter nicht anzeigen, wenn normaler Nutzer den View aufruft! </li> 
     """
     
     def get_queryset(self):
         if (("all" in self.request.path) and
             (isVorstand(self.request.user))):
+            self.tableClass = ZuteilungTableVorstand
+            
             qs = models.Zuteilung.objects.all()
             self.intro_text = """
             Welche Zuteilung sind für Nutzer eingetragen?
@@ -563,6 +563,8 @@ class ListZuteilungenView (FilteredListView):
             """
         else:
             qs = models.Zuteilung.objects.filter(ausfuehrer=self.request.user)
+            self.filterform_class = None
+            self.filtertitle = ""
             self.intro_text = """
             Welche Zuteilung sind für mich eingetragen?
             """
@@ -570,6 +572,7 @@ class ListZuteilungenView (FilteredListView):
 
         qs = self.apply_filter(qs)
         table = self.get_filtered_table(qs)
+        print table 
         return table
 
 

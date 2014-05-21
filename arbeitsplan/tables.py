@@ -316,14 +316,30 @@ class StundenplanTable (django_tables2.Table):
 ##############################
 
 class ZuteilungTable (django_tables2.Table):
-    ausfuehrer_last = django_tables2.Column (accessor="ausfuehrer.last_name",
-                                              verbose_name="Ausführer")
+    verantwortlicher = django_tables2.Column(accessor ="aufgabe.verantwortlich.last_name",
+                                             verbose_name="Verantwortlicher")
+    datum = django_tables2.Column(accessor ="aufgabe.datum",
+                                             verbose_name="Datum")
     class Meta:
         model = models.Zuteilung
         attrs = {"class": "paleblue"}
 
-        fields = ("aufgabe", )
+        fields = ("aufgabe", 'verantwortlicher', 'datum')
 
+class ZuteilungTableVorstand (django_tables2.Table):
+    verantwortlicher = django_tables2.Column(accessor ="aufgabe.verantwortlich.last_name",
+                                             verbose_name="Verantwortlicher")
+    datum = django_tables2.Column(accessor ="aufgabe.datum",
+                                             verbose_name="Datum")
+    ausfuehrer_last = django_tables2.Column (accessor="ausfuehrer.last_name",
+                                              verbose_name="Ausführer")
+    
+    class Meta:
+        model = models.Zuteilung
+        attrs = {"class": "paleblue"}
+
+        fields = ("aufgabe", 'verantwortlicher', 'datum', 'ausfuehrer_last')
+        
 ##############################
 
 class MeldungTable (RadioButtonTable):
