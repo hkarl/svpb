@@ -4,8 +4,8 @@ from django.forms.models import inlineformset_factory
 from django.core.exceptions import ValidationError
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Button
-from crispy_forms.bootstrap import StrictButton, FormActions, InlineCheckboxes
+from crispy_forms.layout import Submit, Layout, Button, Field, Div
+from crispy_forms.bootstrap import StrictButton, FormActions, InlineCheckboxes, InlineField
 
 
 class CrispyFormMixin(object):
@@ -164,7 +164,9 @@ class CrispyFilterMixin(CrispyFormMixin):
                                          l)
 
         self.helper.layout = Layout (self.helper.layout,
-                                     Submit ('filter', 'Filter anwenden'),
+                                     FormActions(
+                                        Submit ('filter', 'Filter anwenden'),
+                                        ),
                                      )
 
         # disabluing test, this seems to work 
@@ -236,8 +238,8 @@ class DateFilterForm (CrispyFilterMixin, forms.Form):
     bis = forms.DateField (label="Bis",
                            required=False)
     __layout = Layout(
-        'von',
-        'bis',
+        InlineField ('von', css_class="datepicker",), 
+        InlineField ('bis', css_class="datepicker",), 
         )
 
 

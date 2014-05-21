@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import View, ListView, CreateView, FormView, UpdateView 
 from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
+from django.utils.http import urlencode
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Sum
 from django.contrib.auth import logout
@@ -1165,7 +1166,7 @@ class Salden(isVorstandMixin, FilteredListView):
         res = []
 
         rurl = reverse("arbeitsplan-leistungBearbeiten", args=('all',))
-        
+
         for u in userQs:
             tmp = {}
             tmp['last_name'] = u.last_name
@@ -1176,23 +1177,28 @@ class Salden(isVorstandMixin, FilteredListView):
                 zeit = qs.filter(status=s[0]
                                  ).aggregate(Sum('zeit'))['zeit__sum']
 
-                linktarget = ("{0}?last_name={1}&first_name={2}&status={3}&filter=Filter+anwenden".
-                              format(rurl,
-                                     u.last_name,
-                                     u.first_name,
-                                     s[0],
-                                 ))
+                if zeit: 
+                    linktarget = rurl + "?" + urlencode({
+                        'last_name': u.last_name,
+                        'first_name': u.first_name,
+                        'status': s[0],
+                        'filter': 'Filter anwenden'})
+                else:
+                    linktarget = None 
+
                 tmp[s[0]] = (zeit, linktarget)
+
 
             # TODO: add linked column here as well 
             zugeteilt = (models.Zuteilung.objects.
                          filter(ausfuehrer=u).aggregate(Sum('aufgabe__stunden'))['aufgabe__stunden__sum'])
 
-            linktarget = ("{0}?last_name={1}&first_name={2}&filter=Filter+anwenden".
-                          format(reverse("arbeitsplan-zuteilunglist", args=('all',)),
-                                 u.last_name,
-                                 u.first_name,
-                                 ))
+            linktarget = reverse("arbeitsplan-zuteilunglist", args=('all',)) + "?" + urlencode({
+                'last_name': u.last_name,
+                'first_name': u.first_name,
+                'status': s[0],
+                'filter': 'Filter anwenden'})
+
             tmp['zugeteilt'] = (zugeteilt, linktarget)
             res.append(tmp)
 
