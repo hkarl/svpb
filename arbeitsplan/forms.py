@@ -21,11 +21,12 @@ class CrispyFormMixin(object):
         - `**kwargs`:
         """
 
+        print "crispy form mixin init" 
         super(CrispyFormMixin, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = self.__class__.__name__
         self.helper.form_method = "post"
-        self.helper.field_template = "bootstrap3/layout/inline_field.html"
+        # self.helper.field_template = "bootstrap3/layout/inline_field.html"
 
 
 
@@ -38,7 +39,18 @@ class CreateLeistungForm (CrispyFormMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CreateLeistungForm, self).__init__(*args, **kwargs)
 
+
+        self.helper.layout = Layout (
+            'aufgabe',
+            Field('wann', css_class = "datepicker"),
+            'zeit',
+            'auslagen',
+            'km',
+            'bemerkung',
+            )
+        
         self.helper.add_input (Submit ('apply', 'Eintragen'))
+        print self.helper.layout
 
     class Meta:
         model = models.Leistung
@@ -62,6 +74,16 @@ class AufgabeForm (forms.ModelForm):
         self.helper.form_show_errors =  True
         self.helper.form_error_title = "Allgemeine Fehler" 
 
+        self.helper.layout = Layout (
+            'aufgabe',
+            'verantwortlich',
+            'gruppe',
+            'anzahl',
+            'stunden',
+            Field('datum', css_class = "datepicker"),
+            'bemerkung',
+            )
+        
     def clean (self):
         ## print "in form clean"
         ## print self.request 

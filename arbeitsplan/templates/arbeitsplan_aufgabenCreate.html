@@ -9,6 +9,13 @@
 
 {% block content %}
 
+<div class="alert alert-info">
+<b>Hinweise: </b>
+<ul>
+  <li> Wenn Personen zu bestimmten Uhrzeiten angefordert werden, MUSS ein Datum angegeben werden!  </li>
+</ul>
+</div>
+
 {% comment %}
 {# TODO it would be nicer to render the errors outside the left form, but no idea how to suppress that #}
 {% if form.non_field_errors %}
@@ -59,8 +66,4 @@
 <input type="submit" class="btn btn-primary" value="{{buttontext}}">
 </form>
 
-<h2>Hinweise </h2>
-<ul>
-  <li> Wenn Personen zu bestimmten Uhrzeiten angefordert werden, MUSS ein Datum angegeben werden!  </li>
-</ul>
 {% endblock %}
