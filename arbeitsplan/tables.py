@@ -467,13 +467,15 @@ def ZuteilungsTableFactory (tuple):
     l, aufgabenQs = tuple
 
     attrs={}
-    for a in aufgabenQs:
-        tag = unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore')
-        attrs[tag] = ValuedCheckBoxColumn(verbose_name= (u"{} ({})".format (a.aufgabe,
-                                                                               a.gruppe,)),
-                                          orderable=False)
 
     attrs['zugeteilt'] = django_tables2.Column(verbose_name="Bereits zugeteilt (h)")
+    
+    for a in aufgabenQs:
+        tag = unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore')
+        attrs[tag] = ValuedCheckBoxColumn(verbose_name= (u"{}, {}h ({})".format (a.aufgabe,
+                                                                                 a.stunden,
+                                                                               a.gruppe,)),
+                                          orderable=False)
 
     t = NameTableFactory ('ZuteilungsTable', attrs, l)
  

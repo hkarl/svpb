@@ -327,15 +327,15 @@ class AufgabenCreate (CreateView):
         context['buttontext'] = self.buttontext
         context['stundenplan'] = [(u, 0) for u in range(8,24)]
 
-        return context 
-            
+        return context
+
     def get_form_kwargs (self):
         kwargs = super(AufgabenCreate, self).get_form_kwargs()
         kwargs.update({
             'request' : self.request
             })
         return kwargs
-            
+
     def form_valid (self, form):
 
         # store the aufgabe
@@ -347,8 +347,7 @@ class AufgabenCreate (CreateView):
                                        uhrzeit = uhrzeit,
                                        anzahl = anzahl)
             sobj.save()
-            
-        
+
         return render (self.request,
                        self.get_success_url(),
                        {'msg': 'Die Aufgabe wurde erfolgreich angelegt.',
@@ -369,11 +368,7 @@ class MeldungEdit  (FilteredListView):
                 k.startswith('prefVorstand') 
                 ):
                 key, id = k.split('_', 1)
-                ## try:
-                ##     id, choice = tmp.split('_', 1)
-                ## except ValueError:
-                ##     id = tmp
-                ##     choice = None
+
                 id = int(id)
 
                 safeit = False
@@ -389,21 +384,33 @@ class MeldungEdit  (FilteredListView):
                     if m.bemerkung <> value: 
                         m.bemerkung = value
                         safeit = True
+                        messages.success(request,
+                                         u"Bei Aufgabe {0} wurde die Bemerkung aktualisiert".
+                                         format(str(id)))
 
                 if key == 'bemerkungVorstand' and isVorstand(self.request.user):
                     if m.bemerkungVorstand <> value: 
                         m.bemerkungVorstand = value
                         safeit = True
+                        messages.success(request,
+                                         u"Bei Aufgabe {0} wurde die Bemerkung des Vorstandes aktualisiert".
+                                         format(str(id)))
 
                 if key == 'prefMitglied':
                     if m.prefMitglied <> value:
                         m.prefMitglied  = value
                         safeit = True
+                        messages.success(request,
+                                         u"Bei Aufgabe {0} wurde die Präferenz aktualisiert".
+                                         format(str(id)))
 
                 if key == 'prefVorstand' and isVorstand(self.request.user):
                     if m.prefVorstand <> value:
                         m.prefVorstand  = value
                         safeit = True
+                        messages.success(request,
+                                         u"Bei Aufgabe {0} wurde die Präferenz des Vorstandes aktualisiert".
+                                         format(str(id)))
 
                 if safeit:
                     m.save()
@@ -544,17 +551,15 @@ class ListZuteilungenView (FilteredListView):
                     ('last_name', 'ausfuehrer__last_name__icontains'),
                     ]
 
-
-    
     todo_text = """
     <li> Darstellung der Tabelle verbessern! </li>
     """
-    
+
     def get_queryset(self):
         if (("all" in self.request.path) and
             (isVorstand(self.request.user))):
             self.tableClass = ZuteilungTableVorstand
-            
+
             qs = models.Zuteilung.objects.all()
             self.intro_text = """
             Welche Zuteilung sind für Nutzer eingetragen?
@@ -596,7 +601,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                         ]
     # TODO: filter by preferences? show preferences in table?
 
-    info_text = """
+    intro_text = """
     In der Tabelle werden Boxen für die Meldungen der Mitglieder angezeigt. Wählen Sie die Box an (ankreuzen), wenn Sie ein Mitglied für eine Aufgabe einteilen wollen. Entfernen Sie ein Häkchen, wenn das Mitglied die Aufgabe nicht mehr ausführen soll.
     <p>
     Filtern Sie nach Mitgliedsnamen oder Aufgabengruppe  
@@ -686,9 +691,10 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                 statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
 
             # TODO: Add to tmp the amount of already zugeteilt work per user
-
+            tmp['zugeteilt'] = models.Zuteilung.objects.filter(ausfuehrer = u).aggregate(Sum('aufgabe__stunden'))['aufgabe__stunden__sum']
             ztlist.append(tmp)
 
+        pp (ztlist)
         # store the statuslist in the hidden field, to be accessible to POST later on
         self.tableformHidden = [{'name': 'status',
                                  'value': ';'.join([k+'='+v
@@ -926,13 +932,10 @@ class  StundenplaeneEdit (FilteredListView):
         else:
             tmp = []
 
-        pp(tmp) 
+        # pp(tmp) 
         checkedboxes = [ (int(x[0]), int(x[1])) for x in tmp ]
         # print checkedboxes
 
-        # any values to delete?
-        ## find all zuteilungen that pertain to this aufgabe
-        
         # any values to add? 
         for v in self.request.POST:
             if v.startswith('uhrzeit_'):
@@ -944,7 +947,7 @@ class  StundenplaeneEdit (FilteredListView):
                     checkedboxes.remove ((int(uid), int(uhrzeit)))
                 except ValueError:
                     pass
-                
+
                 # print aufgabeid, uid, uhrzeit
                 zuteilung = models.Zuteilung.objects.get (ausfuehrer__id = uid,
                                                           aufgabe__id = aufgabeid)
