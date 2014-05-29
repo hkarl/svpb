@@ -2,26 +2,24 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 
 
 # Create your models here.
 
-## class Mitgliedsstatus (models.Model):
-##     status = models.CharField (max_length=30)
-##     bemerkung = models.TextField(blank=True)
 
-##     def __unicode__ (self):
-##         return self.status 
+class Mitglied (models.Model):
+    user = models.OneToOneField(User)
+    mitgliedsnummer = models.CharField(max_length = 10,
+                                       help_text = "Mitgliedsnummer",
+                                       default = 0)
+    leistungbenachrichtigung = models.DateTimeField(help_text="Wann war die letzte Benachrichtigung zu einer Leistungsmeldung?",
+                                                    default=datetime.datetime(1900,1,1))
+    zuteilungsbenachrichtigung  = models.DateTimeField (help_text="Wann war die letzte Benachrichtigung zu einer Zuteilung?",
+                                                        default=datetime.datetime(1900,1,1))
 
-##     class Meta:
-##         verbose_name_plural ="Mitgliedsstatus"
-    
-## class Mitglied (models.Model):
-##     user = models.OneToOneField (User)
-##     status = models.ForeignKey (Mitgliedsstatus)
-
-##     def __unicode__ (self):
-##         return self.user.__unicode__()
+    def __unicode__ (self):
+        return self.user.__unicode__()
 
 class Aufgabengruppe (models.Model):
     gruppe = models.CharField (max_length=30,

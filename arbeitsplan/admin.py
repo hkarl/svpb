@@ -2,16 +2,17 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from arbeitsplan.models import Aufgabengruppe, Aufgabe, Meldung, Zuteilung, Leistung, Stundenplan, StundenZuteilung
+from arbeitsplan.models import Aufgabengruppe, Aufgabe, Meldung, Zuteilung, Leistung, Stundenplan, StundenZuteilung, Mitglied
 
 
-## class MitgliedInline (admin.StackedInline):
-##     model = Mitglied
-##     can_delete = False
-##     verbose_name_plural = "Mitglieder"
+class MitgliedInline (admin.StackedInline):
+    model = Mitglied
+    can_delete = False
+    verbose_name_plural = "Mitglieder"
+    exclude = ('leistungbenachrichtigung', 'zuteilungsbenachrichtigung')
 
-## class UserAdmin (UserAdmin):
-##     inlines = (MitgliedInline, )
+class UserAdmin (UserAdmin):
+    inlines = (MitgliedInline, )
 
 class ZuteilungAdmin (admin.ModelAdmin):
     exclude = ('automatisch', )
@@ -45,8 +46,8 @@ class StundenZuteilungAdmin (admin.ModelAdmin):
     # list_filter = ('aufgabe__datum', )
     pass 
     
-## admin.site.unregister(User)
-## admin.site.register (User, UserAdmin)
+admin.site.unregister(User)
+admin.site.register (User, UserAdmin)
 
 admin.site.register (Zuteilung, ZuteilungAdmin)
 admin.site.register (StundenZuteilung, StundenZuteilungAdmin)
