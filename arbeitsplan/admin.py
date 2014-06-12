@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from arbeitsplan.models import Aufgabengruppe, Aufgabe, Meldung, Zuteilung, Leistung, Stundenplan, StundenZuteilung, Mitglied
 
 
+
+
 class MitgliedInline (admin.StackedInline):
     model = Mitglied
     can_delete = False

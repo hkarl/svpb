@@ -41,12 +41,19 @@
 {% endif %}
 
 {% render_table object_list  %}
+
+  
 {% if tableform %}
-<br>
+  {% if furtherfields %}
+  <p>
+    {% crispy furtherfields %}
+  {% endif %}
+<p>
 <input type=submit class="btn btn-primary" name="{{tableform.name}}" value="{{tableform.value}}">
     {% for h in tableformHidden %}
         <input type="hidden" name="{{ h.name }}" value="{{ h.value }}"
     {% endfor %}
+  </form>
 {% endif %}
 
 {% if post_text %}

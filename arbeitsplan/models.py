@@ -4,6 +4,10 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 
+# needed for auto_now fields with veto 
+import datetime
+from django.utils.timezone import utc
+
 
 # Create your models here.
 
@@ -13,8 +17,8 @@ class Mitglied (models.Model):
     mitgliedsnummer = models.CharField(max_length = 10,
                                        help_text = "Mitgliedsnummer",
                                        default = 0)
-    leistungbenachrichtigung = models.DateTimeField(help_text="Wann war die letzte Benachrichtigung zu einer Leistungsmeldung?",
-                                                    default=datetime.datetime(1900,1,1))
+    ## leistungbenachrichtigung = models.DateTimeField(help_text="Wann war die letzte Benachrichtigung zu einer Leistungsmeldung?",
+    ##                                                 default=datetime.datetime(1900,1,1))
     zuteilungsbenachrichtigung  = models.DateTimeField (help_text="Wann war die letzte Benachrichtigung zu einer Zuteilung?",
                                                         default=datetime.datetime(1900,1,1))
 
@@ -159,30 +163,32 @@ class StundenZuteilung (models.Model):
 class Leistung (models.Model):
     melder = models.ForeignKey (User)
     aufgabe = models.ForeignKey (Aufgabe)
-    erstellt = models.DateField (auto_now_add=True)
-    veraendert = models.DateField (auto_now=True)
+    erstellt = models.DateTimeField (auto_now_add=True)
+    # veraendert = models.DateTimeField (auto_now=True)
+    veraendert = models.DateTimeField ()
+    benachrichtigt = models.DateTimeField (default=datetime.datetime(1900,1,1))
     wann = models.DateField (help_text="An welchem Tag haben Sie die Leistung erbracht?",
                              ) 
     zeit = models.DecimalField (max_digits=3,
                                 decimal_places = 1,
                                 help_text="Wieviel Zeit (in Stunden) haben Sie gearbeitet?", 
                                 )
-    auslagen = models.DecimalField (max_digits=6,
-                                    decimal_places = 2,
-                                    help_text = "Hatten Sie finanzielle Auslagen? Bitte Belege vorlegen!",
-                                    default = 0, 
-                                    ) 
-    km = models.DecimalField (max_digits= 4,
-                              decimal_places = 0,
-                              help_text = "Hatten Sie Wegstrecken, für die Sie km-Vergütung erhalten?",
-                              default = 0, 
-                              )
-    
+    ## auslagen = models.DecimalField (max_digits=6,
+    ##                                 decimal_places = 2,
+    ##                                 help_text = "Hatten Sie finanzielle Auslagen? Bitte Belege vorlegen!",
+    ##                                 default = 0, 
+    ##                                 ) 
+    ## km = models.DecimalField (max_digits= 4,
+    ##                           decimal_places = 0,
+    ##                           help_text = "Hatten Sie Wegstrecken, für die Sie km-Vergütung erhalten?",
+    ##                           default = 0, 
+    ##                           )
+
     OFFEN =  'OF'
     ACK = 'AK'
     RUECKFRAGE = 'RU'
     NEG = 'NE'
-    
+
     STATUS = (
         (OFFEN, 'Offen'), 
         (ACK, 'Akzeptiert'), 
@@ -207,6 +213,26 @@ class Leistung (models.Model):
     class Meta:
         verbose_name_plural = "Leistungen"
         verbose_name = "Leistung"
+
+
+    def save(self, veraendert=True, *args, **kwargs):
+        """
+        Override the save method to realize a auto_now field with a veto.
+        That is necessary for the email send logic, where save is called
+        with autonow=False.
+
+        Arguments:
+        - `self`:
+        - `veraendert`: IF true, the veranedert field is updated, similar to an auto_now field;
+                        else, no update (veto'ing the auto_now behavior)
+        - `*args`:
+        - `**kwargs`:
+        """
+        if veraendert:
+            self.veraendert = (datetime.datetime.
+                                   utcnow().replace(tzinfo=utc))
+
+        return super(Leistung, self).save(*args, **kwargs)
 
     def __unicode__ (self):
         return (self.melder.__unicode__() + " ; " +

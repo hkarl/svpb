@@ -1,3 +1,19 @@
+- fields: {mitgliedsnummer: '0', user: 2, zuteilungsbenachrichtigung: !!timestamp '1900-01-01
+      12:00:00'}
+  model: arbeitsplan.mitglied
+  pk: 1
+- fields: {mitgliedsnummer: '0', user: 4, zuteilungsbenachrichtigung: !!timestamp '1900-01-01
+      06:00:00'}
+  model: arbeitsplan.mitglied
+  pk: 2
+- fields: {mitgliedsnummer: '0', user: 3, zuteilungsbenachrichtigung: !!timestamp '1900-01-01
+      06:00:00'}
+  model: arbeitsplan.mitglied
+  pk: 3
+- fields: {mitgliedsnummer: '0', user: 1, zuteilungsbenachrichtigung: !!timestamp '1900-01-01
+      06:00:00'}
+  model: arbeitsplan.mitglied
+  pk: 4
 - fields: {bemerkung: '', gruppe: Revier, verantwortlich: 1}
   model: arbeitsplan.aufgabengruppe
   pk: 1
@@ -114,13 +130,13 @@
 - fields: {uhrzeit: 14, zuteilung: 26}
   model: arbeitsplan.stundenzuteilung
   pk: 4
-- fields: {aufgabe: 1, auslagen: '0', bemerkung: kjsdfhjdsk, bemerkungVorstand: '',
-    erstellt: 2014-04-06, km: '0', melder: 3, status: OF, veraendert: 2014-04-06,
-    wann: 2014-02-01, zeit: '1'}
+- fields: {aufgabe: 1, bemerkung: kjsdfhjdsk, bemerkungVorstand: '', benachrichtigt: !!timestamp '2014-05-31
+      04:41:19.566750', erstellt: !!timestamp '2014-04-06 05:00:00', melder: 3, status: OF,
+    veraendert: !!timestamp '2014-05-31 04:41:19.567344', wann: 2014-02-01, zeit: '1'}
   model: arbeitsplan.leistung
   pk: 1
-- fields: {aufgabe: 4, auslagen: '50', bemerkung: ksdfjlskdjf, bemerkungVorstand: '',
-    erstellt: 2014-04-06, km: '0', melder: 3, status: RU, veraendert: 2014-04-06,
-    wann: 2014-06-01, zeit: '5'}
+- fields: {aufgabe: 4, bemerkung: ksdfjlskdjf, bemerkungVorstand: '', benachrichtigt: !!timestamp '2014-05-31
+      04:41:19.579475', erstellt: !!timestamp '2014-04-06 05:00:00', melder: 3, status: OF,
+    veraendert: !!timestamp '2014-05-31 04:41:19.579888', wann: 2014-06-01, zeit: '5'}
   model: arbeitsplan.leistung
   pk: 2

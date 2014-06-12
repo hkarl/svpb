@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.contrib.auth.decorators import user_passes_test
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.contrib.auth import logout
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
@@ -18,11 +18,17 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from collections import defaultdict
-from pprint import pprint as pp
+from post_office import mail
 
+import datetime
+from django.utils.timezone import utc
+
+from pprint import pprint as pp
 
 import django_tables2
 import unicodedata
+
+import types 
 
 # Arbeitsplan-Importe: 
 import models
@@ -111,6 +117,13 @@ class FilteredListView(ListView):
         return context
 
     def apply_filter(self, qs=None):
+        """process filterconfig: a list of pairs of strings
+        - first string: field name to be handled in filterform
+        - second string: filter expression; clenead data of the
+           first string is passed as parameter.
+           (if empty, do not apply filter, just process the form.
+           useful to subclasses overriding this method)
+        """
 
         if qs is None:
             qs = self.model.objects.all()
@@ -128,7 +141,14 @@ class FilteredListView(ListView):
                                 if x[0] in fieldsWithInitials]
 
                 for fieldname, filterexp, initialValues in filterconfig:
-                    qs = qs.filter(**{filterexp: initialValues})
+                    if isinstance(filterexp, basestring):
+                        qs = qs.filter(**{filterexp: initialValues})
+                    elif isinstance(filterexp, types.FunctionType):
+                        qs = filterexp(self,
+                                       qs,
+                                       initialValues)
+                    else:
+                        print "warning: filterxpression not recognized"
         else:
             self.filterform = self.filterform_class(self.request.GET)
             filterconfig = self.filterconfig
@@ -140,7 +160,15 @@ class FilteredListView(ListView):
                     # print fieldname, filterexp
                     if ((self.filterform.cleaned_data[fieldname] is not None) and
                         (self.filterform.cleaned_data[fieldname] != "")):
-                        qs = qs.filter(**{filterexp: self.filterform.cleaned_data[fieldname]})
+                        if isinstance(filterexp, basestring):
+                            qs = qs.filter(**{filterexp:
+                                              self.filterform.cleaned_data[fieldname]})
+                        elif isinstance(filterexp, types.FunctionType):
+                            qs = filterexp(self,
+                                           qs,
+                                           self.filterform.cleaned_data[fieldname])
+                        else:
+                            print "warning: filterxpression not recognized"
             else:
                 print "filterform not valid"
 
@@ -183,6 +211,7 @@ class FilteredListView(ListView):
         qs = self.annotate_data(qs)
         table = self.get_filtered_table(qs)
         return table
+
 
 ###############
 
@@ -990,10 +1019,15 @@ class CreateLeistungView (CreateView):
     template_name = "arbeitsplan_createLeistung.html"
 
     def form_valid(self, form):
+        print "in Create Leistung View form_valid"
         leistung = form.save(commit=False)
         leistung.melder = self.request.user
         leistung.save()
+
+        print "saved leistung"
+
         return HttpResponseRedirect(self.success_url)
+
 
 ####################################
 
@@ -1252,5 +1286,157 @@ class ErstelleZuteilungView (View):
         messages.error(request,
                         "Diese Funktion ist noch nicht implementiert!")
         return redirect ('home')
+
+
+########################
+## BENACHRICHTIGUNGEN
+########################
+
+class FilteredEmailCreateView (FilteredListView):
+    
+    tableform =  {'name': "eintragen",
+                 'value': "Benachrichtigungen eintragen"}
+    intro_text = """Versenden von Benachrichtungen: Wählen Sie die zu benachrichtigenden Zeilen durch die
+    Checkbox in der letzten Spalte aus (default: alle). Sie können pro Ziele einen Kommentar eintippen,
+    der an die jeweilige email angefügt wird. Zusätzlich können Sie (in dem Eingabefeld unterhalb der Tabelle)
+    einen Text eingeben, der an ALLE ausgesendeten emails angefügt wird.
+    """
+
+    def get_context_data (self, **kwargs):
+        context = super(FilteredEmailCreateView, self).get_context_data(**kwargs)
+        context['furtherfields'] = forms.EmailAddendumForm()
+        return context
+
+    def annotate_data(self, qs):
+        """ we add a status and a anmerkung field to the queryset
+        """
+
+        for q in qs:
+            q.sendit = True if q.veraendert > q.benachrichtigt else False
+            q.anmerkung = ""
+
+        return qs
+
+    def constructTemplateDict(self, instance):
+        return {}
+
+    def getUser(self, instance):
+        return None
+
+    def saveUpdate(self, instance, thisuser):
+        return None
+
+    def post(self, request, *args, **kwargs):
+
+        users_no_email = []
+
+        ## extarct all the ids that are to be sent out
+        idlist = []
+        for k in request.POST.keys():
+            if k.startswith('sendit_'):
+                __, sendid = k.split('_')
+                idlist.append(int(sendid))
+
+        ergaenzung = request.POST['ergaenzung']
+
+        ## do the actual sending:
+        ## pull out the leistungs object and send it out
+        for i in idlist:
+            instance = self.model.objects.get(pk=i)
+            thisuser = self.getUser (instance)
+
+            if thisuser.email:
+                anmerkung = request.POST['anmerkung_'+str(i)]
+
+                ## construct the dict manually; model_to_dict or similar not plausible;
+                ## sadly, not possible to pass a model instance AND a dict into send_mail
+
+                d = self.constructTemplateDict(instance)
+                d['anmerkung'] = anmerkung
+                d['ergaenzung'] = ergaenzung 
+
+                mail.send(
+                    [thisuser.email],
+                    template = self.emailTemplate,
+                    context = d
+                    )
+
+                self.saveUpdate(instance, thisuser)
+
+                messages.success(request,
+                                 "Benachrichtigung an "
+                                 "Mitglied {0} {1} eingetragen".format(thisuser.first_name,
+                                                                       thisuser.last_name,))
+            else:
+                if not thisuser in users_no_email:
+                    messages.error(request,
+                                   "Für Nutzer {0} {1} liegt keine email-Adresse vor,"
+                                   " keine Benachrichtigung gesendet".format(thisuser.first_name,
+                                                                             thisuser.last_name,)
+                                                                             )
+                    users_no_email.append(thisuser)
+
+        if idlist:
+            messages.warning(request,
+                             "Vergessen Sie nicht, die Benachrichtigungen explizit abzuschicken!")
+
+        ## TODO: better redirect home 
+        return redirect(request.get_full_path())
+
+
+class LeistungEmailView (FilteredEmailCreateView):
+
+    title = "Benachrichtigungen für bearbeitete Leistungen"
+    model = models.Leistung
+
+    tableClass = LeistungEmailTable
+
+    filterform_class = forms.LeistungEmailFilter
+
+
+    def benachrichtigt_filter (self, qs, includeSchonBenachrichtigt):
+        ## print "benachrichtigt filter: ", self, qs, includeSchonBenachrichtigt
+        ## for q in qs:
+        ##     print q.__unicode__()
+        ##     print 'veraendert: ', q.veraendert
+        ##     print 'benachrich: ', q.benachrichtigt
+        ##     print 'schon benachrichtigt: ', q.veraendert <= q.benachrichtigt
+        # filter out those were the "benachrichtigt" is later than the last change
+        if includeSchonBenachrichtigt:
+            pass
+        else:
+            # if veraendert <= benachrichtigt, then an instance has alredy been notified
+            # so we leave only those in the queryset where the opposite  is true
+            # (filter keeps those where the attribute is TRUE!!! 
+            qs = qs.filter(veraendert__gt=F('benachrichtigt'))
+        return qs
+
+    filterconfig = [('aufgabengruppe', 'aufgabe__gruppe__gruppe'),
+                    ('status', 'status__in'),
+                    ('benachrichtigt', benachrichtigt_filter), 
+                    ]
+    # specific data about the email handling:
+    emailTemplate = "leistungEmail"
+
+    def getUser(self, instance):
+        return instance.melder
+
+    def saveUpdate(self, instance, thisuser):
+        instance.benachrichtigt = datetime.datetime.utcnow().replace(tzinfo=utc)
+        # print instance.benachrichtigt
+        instance.save(veraendert=False)
+
+    def constructTemplateDict (self, instance):
+        d = {'first_name': instance.melder.first_name,
+             'last_name': instance.melder.last_name,
+             'aufgabe': instance.aufgabe.aufgabe,
+             'wann': instance.wann,
+             'stunden': instance.zeit,
+             'bemerkung': instance.bemerkung,
+             'bemerkungVorstand': instance.bemerkungVorstand,
+             'status': instance.get_status_display(),
+             'schonbenachrichtigt': instance.veraendert < instance.benachrichtigt,             
+             }
+        return d
 
 

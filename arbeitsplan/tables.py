@@ -502,8 +502,8 @@ class LeistungTable(django_tables2.Table):
         fields = (# 'melder_last', 'melder_first',
                     'aufgabe', 'wann', 'zeit',
                     'status',
-                    'auslagen', 'km', 'bemerkung', 'bemerkungVorstand')
-    
+                    'bemerkung', 'bemerkungVorstand')
+
 class LeistungBearbeitenTable (RadioButtonTable):
 
     def render_bemerkungVorstand (value, bound_row):
@@ -527,6 +527,54 @@ class LeistungBearbeitenTable (RadioButtonTable):
     class Meta:
         model = models.Leistung
         attrs = {"class": "paleblue"}
-        exclude = ("erstellt", "veraendert", 'id')        
-        sequence = ('melder', 'aufgabe', 'wann', 'zeit', 'auslagen', 'km',
+        exclude = ("erstellt", "veraendert", 'id', 'benachrichtigt')        
+        sequence = ('melder', 'aufgabe', 'wann', 'zeit', 
                     'bemerkung', 'status', 'bemerkungVorstand')
+
+
+class BaseEmailTable (RadioButtonTable):
+
+    anmerkung = django_tables2.Column(empty_values=(),
+                                      verbose_name="Individuelle Anmerkung",
+                                      )
+
+    sendit = django_tables2.Column(verbose_name="Senden?",
+                                           accessor="sendit",
+                                           orderable=False,
+                                           empty_values=(),
+                                           )
+
+    # a purely computed field: 
+    schonbenachrichtigt = django_tables2.Column (verbose_name="Schon benachrichtigt?",
+                                            orderable=False,
+                                            empty_values=(),
+                                            )
+    def render_sendit(value, bound_row):
+        tmp = format_html(u'<div class="checkbox"> <input name="sendit_{0}" type="checkbox" {1}></div>',
+                          str(bound_row._record.id),
+                          "checked" if bound_row._record.sendit else "",
+                          )
+        return tmp
+
+    def render_schonbenachrichtigt(value, bound_row):
+        return "Ja" if bound_row._record.veraendert < bound_row._record.benachrichtigt  else "Nein"
+
+    def render_anmerkung(value, bound_row):
+        tmp = format_html (u'<textarea class="textinput textInput" id="id_anmerkung_{0}"'
+                            ' name="anmerkung_{0}" placeholder="Individuelle Anmerkung"'
+                            ' rows=4>{1}</textarea>',
+                            str(bound_row._record.id),
+                            bound_row._record.anmerkung,
+                            )
+        return tmp
+
+class LeistungEmailTable(BaseEmailTable):
+
+    class Meta:
+        model = models.Leistung
+        attrs = {"class": "paleblue"}
+        exclude = ("erstellt", "veraendert", 'id', 'benachrichtigt')
+        sequence = ('melder', 'aufgabe', 'wann', 'zeit',
+                    'bemerkung', 'status', 'bemerkungVorstand',
+                    'schonbenachrichtigt',
+                    'anmerkung', 'sendit')

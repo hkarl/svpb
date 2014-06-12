@@ -32,8 +32,13 @@ urlpatterns = patterns('',
     url (r'^keinVorstand/$',
          TemplateView.as_view (template_name='keinVorstand.html'),
          name="keinVorstand", 
-         ), 
-         
+         ),
+
+    url (r'^arbeitsplan/benachrichtigen/leistung/$',
+         arbeitsplan.views.LeistungEmailView.as_view(),
+         name="arbeitsplan-benachrichtigen-leistung",
+         ),
+
     url (r'^arbeitsplan/aufgaben/$',
          arbeitsplan.views.ListAufgabenView.as_view(),
          name="arbeitsplan-aufgaben",

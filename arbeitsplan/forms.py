@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django import forms
 import models
 from django.forms.models import inlineformset_factory
@@ -39,16 +41,15 @@ class CreateLeistungForm (CrispyFormMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CreateLeistungForm, self).__init__(*args, **kwargs)
 
-
-        self.helper.layout = Layout (
+        self.helper.layout = Layout(
             'aufgabe',
             Field('wann', css_class = "datepicker"),
             'zeit',
-            'auslagen',
-            'km',
+            ## 'auslagen',
+            ## 'km',
             'bemerkung',
             )
-        
+
         self.helper.add_input (Submit ('apply', 'Eintragen'))
         print self.helper.layout
 
@@ -59,6 +60,7 @@ class CreateLeistungForm (CrispyFormMixin, forms.ModelForm):
                    'veraendert',
                    'status',
                    'bemerkungVorstand',
+                   'benachrichtigt',
                    )
 
 
@@ -110,13 +112,26 @@ class AufgabeForm (forms.ModelForm):
             raise ValidationError ("Angaben im Stundenplan erfordern ein Datum.",
                                    code ="illogic") 
 
-        # das kann schon sinnvoll sein: 5 h pro Person... und im Stundenplan dann verteilt 
+        # das kann schon sinnvoll sein: 5 h pro Person...
+        # und im Stundenplan dann verteilt
         ## if (len(stundenplan) > 0) and (cleaned_data['anzahl'] > 0):
         ##     raise ValidationError ("Entweder Stundenplan oder Anzahl Personen angeben, nicht beides!",
         ##                            code="illogic")
 
         cleaned_data['stundenplan'] = stundenplan
         return cleaned_data
+
+
+class EmailAddendumForm (forms.Form):
+    ergaenzung = forms.CharField(required=False,
+                                 label="Ergänzender Text",
+                                 )
+
+    def __init__ (self, *args, **kwargs):
+        super(EmailAddendumForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
 
 ##################################
 ## Filter forms
@@ -277,6 +292,30 @@ class StatusFilterForm (CrispyFilterMixin, forms.Form):
     __layout = Layout(
         InlineCheckboxes('status'),
         )
+
+class StatusFilterForm2 (CrispyFilterMixin, forms.Form):
+    status = forms.MultipleChoiceField(choices=models.Leistung.STATUS,
+                                           widget=forms.CheckboxSelectMultiple,
+                                           label="Bearbeitungsstatus",
+                                           required=False,
+                                           initial=[models.Leistung.STATUS[1][0],
+                                                    models.Leistung.STATUS[2][0],
+                                                    models.Leistung.STATUS[3][0],
+                                                    ],
+                                             )
+    __layout = Layout(
+        InlineCheckboxes('status'),
+        )
+
+class LeistungBenachrichtigtForm(CrispyFilterMixin, forms.Form):
+    benachrichtigt = forms.BooleanField(required=False,
+                                        initial=False,
+                                        label="Auch schon benachrichtigte Leistungen anzeigen",
+                                     )
+
+    __layout = Layout (
+        'benachrichtigt',
+        )
     
 class AufgabenDatumFilter (AufgabengruppeFilterForm,
                            DateFilterForm,
@@ -288,4 +327,9 @@ class LeistungFilter (NameFilterForm,
                       DateFilterForm,
                       StatusFilterForm,
                       forms.Form): 
+    pass
+
+class LeistungEmailFilter (AufgabengruppeFilterForm,
+                           StatusFilterForm2,
+                           LeistungBenachrichtigtForm):
     pass
