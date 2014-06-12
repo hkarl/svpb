@@ -17,6 +17,8 @@ from django.forms.formsets import formset_factory
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.management import call_command
+
 from collections import defaultdict
 from post_office import mail
 
@@ -1440,3 +1442,36 @@ class LeistungEmailView (FilteredEmailCreateView):
         return d
 
 
+class EmailSendenView(View):
+    """Trigger sending emails via the post_office command line managemenet command
+    """
+
+    def get (self, request, *args, **kwargs):
+
+        import post_office.models as pom
+
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        print now 
+                 
+        call_command ('send_queued_mail')
+
+        # count how many newly genereated log entries have relevant status values:
+        newEmailLogs = pom.Log.objects.filter(date__gt = now)
+
+        for el in newEmailLogs:
+            print el 
+
+        failed = newEmailLogs.filter(status=pom.STATUS.failed).count()
+        sent = newEmailLogs.filter(status=pom.STATUS.sent).count()
+
+        print sent, failed
+
+        if sent>0:
+            messages.success(request,
+                             "Es wurden {0} Nachrichten versandt".format(sent))
+        if failed>0:
+            messages.error(request,
+                           "Es konnten {0} Nachrichten nicht versendet werden! Sysadmin kontaktieren!".
+                           format(failed))
+            
+        return redirect ('home')

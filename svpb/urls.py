@@ -39,6 +39,12 @@ urlpatterns = patterns('',
          name="arbeitsplan-benachrichtigen-leistung",
          ),
 
+    url (r'^arbeitsplan/benachrichtigen/senden/$',
+         arbeitsplan.views.EmailSendenView.as_view(),
+         name="arbeitsplan-benachrichtigen-senden",
+         ),
+
+         
     url (r'^arbeitsplan/aufgaben/$',
          arbeitsplan.views.ListAufgabenView.as_view(),
          name="arbeitsplan-aufgaben",
