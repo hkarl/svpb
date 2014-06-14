@@ -20,10 +20,21 @@ class Mitglied (models.Model):
     ## leistungbenachrichtigung = models.DateTimeField(help_text="Wann war die letzte Benachrichtigung zu einer Leistungsmeldung?",
     ##                                                 default=datetime.datetime(1900,1,1))
     zuteilungsbenachrichtigung  = models.DateTimeField (help_text="Wann war die letzte Benachrichtigung zu einer Zuteilung?",
-                                                        default=datetime.datetime(1900,1,1))
+                                                        default=datetime.datetime(1900,1,1),
+                                                        verbose_name="Letzte Benachrichtigung",
+                                                        )
 
+    zuteilungBenachrichtigungNoetig = models.BooleanField (help_text="Muss an diese Nutzer eine Benachrichtigung wegen Änderung der Zuteilungen gesendet werden?",
+                                                           default=True,
+                                                           verbose_name="Benachrichtigung zu Zuteilungen nötig?",
+                                                           
+                                                           )
     def __unicode__ (self):
         return self.user.__unicode__()
+    
+    class Meta:
+        verbose_name_plural = "Mitglieder"
+        verbose_name = "Mitglied"
 
 class Aufgabengruppe (models.Model):
     gruppe = models.CharField (max_length=30,
@@ -143,7 +154,17 @@ class Zuteilung (models.Model):
                 + (" @ " + ','.join([s.__unicode__() for s in self.stundenzuteilung_set.all()] ))
                 # + ('@' + ','.join(self.StundenZuteilung_set.all().values('uhrzeit')))
                 )
-    
+
+    def save(self, *args, **kwargs):
+        ausfuehrer.zuteilungBenachrichtigungNoetig = True
+        ausfuehrer.save()
+        super(Zuteilung, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        ausfuehrer.zuteilungBenachrichtigungNoetig = True
+        ausfuehrer.save()
+        super(Zuteilung, self).delete(*args, **kwargs)
+
     class Meta:
         verbose_name_plural = "Zuteilungen"
         verbose_name = "Zuteilung"
@@ -152,6 +173,16 @@ class StundenZuteilung (models.Model):
     zuteilung = models.ForeignKey (Zuteilung)
     uhrzeit = models.IntegerField (blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        ausfuehrer.zuteilungBenachrichtigungNoetig = True
+        ausfuehrer.save()
+        super(StundenZuteilung, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        ausfuehrer.zuteilungBenachrichtigungNoetig = True
+        ausfuehrer.save()
+        super(StundenZuteilung, self).delete(*args, **kwargs)
+    
     class Meta:
         verbose_name = "Zuteilung einer Stunde"
         verbose_name_plural = "Zuteilungen für einzelne Stunden"

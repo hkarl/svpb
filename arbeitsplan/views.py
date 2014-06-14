@@ -171,6 +171,7 @@ class FilteredListView(ListView):
                                            self.filterform.cleaned_data[fieldname])
                         else:
                             print "warning: filterxpression not recognized"
+                            print filterexp
             else:
                 print "filterform not valid"
 
@@ -1304,17 +1305,18 @@ class FilteredEmailCreateView (FilteredListView):
     einen Text eingeben, der an ALLE ausgesendeten emails angefügt wird.
     """
 
+    
     def get_context_data (self, **kwargs):
         context = super(FilteredEmailCreateView, self).get_context_data(**kwargs)
         context['furtherfields'] = forms.EmailAddendumForm()
         return context
-
+    
     def annotate_data(self, qs):
         """ we add a status and a anmerkung field to the queryset
         """
 
         for q in qs:
-            q.sendit = True if q.veraendert > q.benachrichtigt else False
+            q.sendit = False
             q.anmerkung = ""
 
         return qs
@@ -1394,8 +1396,7 @@ class LeistungEmailView (FilteredEmailCreateView):
     tableClass = LeistungEmailTable
 
     filterform_class = forms.LeistungEmailFilter
-
-
+    
     def benachrichtigt_filter (self, qs, includeSchonBenachrichtigt):
         ## print "benachrichtigt filter: ", self, qs, includeSchonBenachrichtigt
         ## for q in qs:
@@ -1428,6 +1429,13 @@ class LeistungEmailView (FilteredEmailCreateView):
         # print instance.benachrichtigt
         instance.save(veraendert=False)
 
+    def annotate_data(self, qs):
+        qs = super(LeistungEmailView, self).annotate_data(qs)
+        for q in qs:
+            q.sendit = True if q.veraendert > q.benachrichtigt else False    
+
+        return qs
+
     def constructTemplateDict (self, instance):
         d = {'first_name': instance.melder.first_name,
              'last_name': instance.melder.last_name,
@@ -1442,6 +1450,73 @@ class LeistungEmailView (FilteredEmailCreateView):
         return d
 
 
+
+        
+class ZuteilungEmailView(FilteredEmailCreateView):
+    """Display a list of all users where the zuteilung has changed since last
+    notification. Send them out.
+    """
+
+    title = "Benachrichtigungen für neue oder veränderte Zuteilungen"
+
+    model = models.Mitglied
+
+    tableClass = ZuteilungEmailTable
+    filterform_class = forms.ZuteilungEmailFilter
+
+    def noetig_filter (self, qs, includeSchonBenachrichtigt):
+        if includeSchonBenachrichtigt:
+            pass
+        else:
+            # if veraendert <= benachrichtigt, then an instance has alredy been notified
+            # so we leave only those in the queryset where the opposite  is true
+            # (filter keeps those where the attribute is TRUE!!! 
+            qs = qs.filter(zuteilungBenachrichtigungNoetig=True)
+        return qs
+        
+    
+    filterconfig = [('last_name', 'user__last_name__icontains'),
+                    ('first_name', 'user__first_name__icontains'), 
+                    ('benachrichtigt', noetig_filter), 
+                    ]
+
+    emailTemplate = "zuteilungEmail"
+
+    def getUser(self, instance):
+        return instance.user
+
+    def saveUpdate(self, instance, thisuser):
+        """ tell the instance (of Mitglied) that it has been notified"""
+        
+        instance.zuteilungsbenachrichtigung = datetime.datetime.utcnow().replace(tzinfo=utc)
+        instance.zuteilungBenachrichtigungNoetig = False
+        
+        # print instance.benachrichtigt
+        instance.save()
+
+
+    
+    def annotate_data(self, qs):
+        qs = super(ZuteilungEmailView, self).annotate_data(qs)
+        for q in qs:
+            q.sendit = q.zuteilungBenachrichtigungNoetig
+        return qs 
+    
+    def constructTemplateDict(self, instance):
+        """this view operates on models.User, so instance is a user object.
+        We have to find all zuteilungen for this user and stuff this data into
+        the construct Tempalte Dict for the email to render
+        """
+        
+        d = {'first_name': instance.user.first_name,
+             'last_name': instance.user.last_name,
+             'zuteilungen': models.Zuteilung.objects.filter(ausfuehrer=instance.user)
+            }
+
+        print d 
+        return d 
+
+
 class EmailSendenView(View):
     """Trigger sending emails via the post_office command line managemenet command
     """
@@ -1451,9 +1526,9 @@ class EmailSendenView(View):
         import post_office.models as pom
 
         now = datetime.datetime.utcnow().replace(tzinfo=utc)
-        print now 
-                 
-        call_command ('send_queued_mail')
+        # print now
+
+        call_command('send_queued_mail')
 
         # count how many newly genereated log entries have relevant status values:
         newEmailLogs = pom.Log.objects.filter(date__gt = now)

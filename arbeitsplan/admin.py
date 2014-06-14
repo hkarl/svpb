@@ -11,7 +11,7 @@ class MitgliedInline (admin.StackedInline):
     model = Mitglied
     can_delete = False
     verbose_name_plural = "Mitglieder"
-    exclude = ('leistungbenachrichtigung', 'zuteilungsbenachrichtigung')
+    # exclude = ('leistungbenachrichtigung', 'zuteilungsbenachrichtigung')
 
 class UserAdmin (UserAdmin):
     inlines = (MitgliedInline, )

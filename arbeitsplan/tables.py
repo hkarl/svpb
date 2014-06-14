@@ -544,20 +544,12 @@ class BaseEmailTable (RadioButtonTable):
                                            empty_values=(),
                                            )
 
-    # a purely computed field: 
-    schonbenachrichtigt = django_tables2.Column (verbose_name="Schon benachrichtigt?",
-                                            orderable=False,
-                                            empty_values=(),
-                                            )
     def render_sendit(value, bound_row):
         tmp = format_html(u'<div class="checkbox"> <input name="sendit_{0}" type="checkbox" {1}></div>',
                           str(bound_row._record.id),
                           "checked" if bound_row._record.sendit else "",
                           )
         return tmp
-
-    def render_schonbenachrichtigt(value, bound_row):
-        return "Ja" if bound_row._record.veraendert < bound_row._record.benachrichtigt  else "Nein"
 
     def render_anmerkung(value, bound_row):
         tmp = format_html (u'<textarea class="textinput textInput" id="id_anmerkung_{0}"'
@@ -570,6 +562,15 @@ class BaseEmailTable (RadioButtonTable):
 
 class LeistungEmailTable(BaseEmailTable):
 
+    # a purely computed field: 
+    schonbenachrichtigt = django_tables2.Column (verbose_name="Schon benachrichtigt?",
+                                            orderable=False,
+                                            empty_values=(),
+                                            )
+
+    def render_schonbenachrichtigt(value, bound_row):
+        return "Ja" if bound_row._record.veraendert < bound_row._record.benachrichtigt  else "Nein"
+
     class Meta:
         model = models.Leistung
         attrs = {"class": "paleblue"}
@@ -577,4 +578,26 @@ class LeistungEmailTable(BaseEmailTable):
         sequence = ('melder', 'aufgabe', 'wann', 'zeit',
                     'bemerkung', 'status', 'bemerkungVorstand',
                     'schonbenachrichtigt',
-                    'anmerkung', 'sendit')
+                    'anmerkung', 'sendit'
+                    )
+
+class ZuteilungEmailTable(BaseEmailTable):
+
+    zuteilungBenachrichtigungNoetig = django_tables2.Column(verbose_name="Nötig?",
+                                                            orderable=False,
+                                                            empty_values=(),
+                                                            )
+
+    def render_zuteilungBenachrichtigungNoetig(value, bound_row):
+        return "Ja" if bound_row._record.zuteilungBenachrichtigungNoetig  else "Nein"
+    
+    class Meta:
+        model = models.Mitglied
+        attrs = {"class": "paleblue"}
+        exclude = ('id',)
+        sequence = ('user',
+                  'mitgliedsnummer',
+                  'zuteilungsbenachrichtigung',
+                  'zuteilungBenachrichtigungNoetig',
+                  'anmerkung', 'sendit',
+                  )

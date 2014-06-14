@@ -316,7 +316,17 @@ class LeistungBenachrichtigtForm(CrispyFilterMixin, forms.Form):
     __layout = Layout (
         'benachrichtigt',
         )
-    
+
+class ZuteilungBenachrichtigungForm(CrispyFilterMixin, forms.Form):
+    benachrichtigt = forms.BooleanField(required=False,
+                                      initial=False,
+                                      label="Auch schon benachrichtige Mitglieder anzeigen?",
+                                      )
+
+    __layout = Layout(
+        'benachrichtigt'
+        )
+
 class AufgabenDatumFilter (AufgabengruppeFilterForm,
                            DateFilterForm,
                            forms.Form):
@@ -332,4 +342,9 @@ class LeistungFilter (NameFilterForm,
 class LeistungEmailFilter (AufgabengruppeFilterForm,
                            StatusFilterForm2,
                            LeistungBenachrichtigtForm):
+    pass
+
+class ZuteilungEmailFilter (NameFilterForm,
+                            ZuteilungBenachrichtigungForm,
+                            ):
     pass
