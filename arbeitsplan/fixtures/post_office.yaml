@@ -1,6 +1,6 @@
-- fields: {context: '""', created: !!timestamp '2014-06-10 19:42:02.352009+00:00',
+- fields: {context: '""', created: !!timestamp '2014-06-10 17:42:02.352009+00:00',
     from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-12
-      19:44:56.630290+00:00', message: "Liebe(r) Peter Pan, \r\n\r\nIhre Leistungsmeldung\
+      17:44:56.630290+00:00', message: "Liebe(r) Peter Pan, \r\n\r\nIhre Leistungsmeldung\
       \ f\xFCr Aufgabe Boote aus Winterlager, ausgef\xFChrt am 1. Februar 2014, wurde\
       \ von einem Vorstandsmitglied bearbeitet. Der neue Status ist: Offen. \r\n\r\
       \n\r\nNochmal senden \r\n\r\n\r\n\r\nbla\r\n\r\n\r\n\r\nMit besten Gr\xFC\xDF\
@@ -8,9 +8,9 @@
     subject: Ihre Leistungsmeldung wurde bearbeitet!, template: null, to: peter.pan@propgen.de}
   model: post_office.email
   pk: 1
-- fields: {context: '""', created: !!timestamp '2014-06-10 19:42:02.364892+00:00',
+- fields: {context: '""', created: !!timestamp '2014-06-10 17:42:02.364892+00:00',
     from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-12
-      19:47:19.471740+00:00', message: "Liebe(r) Peter Pan, \r\n\r\nIhre Leistungsmeldung\
+      17:47:19.471740+00:00', message: "Liebe(r) Peter Pan, \r\n\r\nIhre Leistungsmeldung\
       \ f\xFCr Aufgabe Rasen m\xE4hen , ausgef\xFChrt am 1. Juni 2014, wurde von einem\
       \ Vorstandsmitglied bearbeitet. Der neue Status ist: Offen. \r\n\r\n\r\nerstaussendung\
       \ \r\n\r\n\r\n\r\nbla\r\n\r\n\r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nder SVPB-Vorstand ",
@@ -18,9 +18,9 @@
       bearbeitet!, template: null, to: peter.pan@propgen.de}
   model: post_office.email
   pk: 2
-- fields: {context: '""', created: !!timestamp '2014-06-12 19:50:27.503518+00:00',
+- fields: {context: '""', created: !!timestamp '2014-06-12 17:50:27.503518+00:00',
     from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-12
-      19:51:05.475280+00:00', message: "Liebe(r) Peter Pan, \r\n\r\nIhre Leistungsmeldung\
+      17:51:05.475280+00:00', message: "Liebe(r) Peter Pan, \r\n\r\nIhre Leistungsmeldung\
       \ f\xFCr Aufgabe Boote aus Winterlager, ausgef\xFChrt am 1. Februar 2014, wurde\
       \ von einem Vorstandsmitglied bearbeitet. Der neue Status ist: Offen. \r\n\r\
       \n\r\na\r\n\r\n\r\n\r\n\r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nder SVPB-Vorstand ",
@@ -28,9 +28,9 @@
       bearbeitet!, template: null, to: peter.pan@propgen.de}
   model: post_office.email
   pk: 3
-- fields: {context: '""', created: !!timestamp '2014-06-12 19:50:27.519433+00:00',
+- fields: {context: '""', created: !!timestamp '2014-06-12 17:50:27.519433+00:00',
     from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-12
-      20:58:52.429287+00:00', message: "Liebe(r) Peter Pan, \r\n\r\nIhre Leistungsmeldung\
+      18:58:52.429287+00:00', message: "Liebe(r) Peter Pan, \r\n\r\nIhre Leistungsmeldung\
       \ f\xFCr Aufgabe Rasen m\xE4hen , ausgef\xFChrt am 1. Juni 2014, wurde von einem\
       \ Vorstandsmitglied bearbeitet. Der neue Status ist: Offen. \r\n\r\n\r\nb\r\n\
       \r\n\r\n\r\n\r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nder SVPB-Vorstand ", priority: 1,
@@ -38,9 +38,9 @@
     template: null, to: peter.pan@propgen.de}
   model: post_office.email
   pk: 4
-- fields: {context: '""', created: !!timestamp '2014-06-12 19:50:27.533655+00:00',
+- fields: {context: '""', created: !!timestamp '2014-06-12 17:50:27.533655+00:00',
     from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-12
-      20:58:52.750902+00:00', message: "Liebe(r) Holger Karl, \r\n\r\nIhre Leistungsmeldung\
+      18:58:52.750902+00:00', message: "Liebe(r) Holger Karl, \r\n\r\nIhre Leistungsmeldung\
       \ f\xFCr Aufgabe Boote einlagern , ausgef\xFChrt am 5. Juni 2014, wurde von\
       \ einem Vorstandsmitglied bearbeitet. Der neue Status ist: Offen. \r\n\r\n\r\
       \nc\r\n\r\n\r\n\r\n\r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nder SVPB-Vorstand ",
@@ -48,17 +48,53 @@
       bearbeitet!, template: null, to: holgersdfsdf.karl@uni-pasdfsdfderborn.de}
   model: post_office.email
   pk: 5
-- fields: {date: !!timestamp '2014-06-12 20:58:52.435552+00:00', email: 4, message: Sent,
+- fields: {context: '""', created: !!timestamp '2014-06-14 09:56:35.006430+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-14
+      09:56:35.006499+00:00', message: "Captain\r\nHook\r\n\r\n[&lt;Zuteilung: Absegeln:\
+      \ CaptainHook @ &gt;]\r\n\r\n", priority: 1, scheduled_time: null, status: 2,
+    subject: "[SVPB] Ihre Arbeitseinteilung hat sich ver\xE4ndert", template: null,
+    to: captain.hook@propgen.de}
+  model: post_office.email
+  pk: 6
+- fields: {context: '""', created: !!timestamp '2014-06-14 10:02:02.387571+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-14
+      10:02:02.387646+00:00', message: "Captain\r\nHook\r\n\r\n[&lt;Zuteilung: Absegeln:\
+      \ CaptainHook @ &gt;]\r\n\r\n", priority: 1, scheduled_time: null, status: 2,
+    subject: "[SVPB] Ihre Arbeitseinteilung hat sich ver\xE4ndert", template: null,
+    to: captain.hook@propgen.de}
+  model: post_office.email
+  pk: 7
+- fields: {context: '""', created: !!timestamp '2014-06-14 10:04:24.216188+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-14
+      10:04:24.216243+00:00', message: "Hallo Dirk Haensgen!\r\n\r\nDeine Arbeitseinteilungen\
+      \ haben sich ver\xE4ndert. Du bist jetzt f\xFCr die folgenden Aufgaben/Zeiten\
+      \ eingeteilt: \r\n\r\n\r\n\r\n\r\n\r\naaa\r\n\r\n\r\n\r\nallg \r\n\r\n\r\n\r\
+      \nMit besten Gr\xFC\xDFen, \r\n\r\nder SVPB-Vorstand ", priority: 1, scheduled_time: null,
+    status: 2, subject: "[SVPB] Ihre Arbeitseinteilung hat sich ver\xE4ndert", template: null,
+    to: dirk.haensgen@propgen.de}
+  model: post_office.email
+  pk: 8
+- fields: {context: '""', created: !!timestamp '2014-06-14 10:04:24.253787+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-14
+      10:04:24.253845+00:00', message: "Hallo Peter Pan!\r\n\r\nDeine Arbeitseinteilungen\
+      \ haben sich ver\xE4ndert. Du bist jetzt f\xFCr die folgenden Aufgaben/Zeiten\
+      \ eingeteilt: \r\n\r\n\r\n- Ansegln: PeterPan @ 14\r\n\r\n\r\n\r\n\r\nbbb\r\n\
+      \r\n\r\n\r\nallg \r\n\r\n\r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nder SVPB-Vorstand ",
+    priority: 1, scheduled_time: null, status: 2, subject: "[SVPB] Ihre Arbeitseinteilung\
+      \ hat sich ver\xE4ndert", template: null, to: peter.pan@propgen.de}
+  model: post_office.email
+  pk: 9
+- fields: {date: !!timestamp '2014-06-12 18:58:52.435552+00:00', email: 4, message: Sent,
     status: 0}
   model: post_office.log
   pk: 1
-- fields: {date: !!timestamp '2014-06-12 20:58:52.757433+00:00', email: 5, message: Sent,
+- fields: {date: !!timestamp '2014-06-12 18:58:52.757433+00:00', email: 5, message: Sent,
     status: 0}
   model: post_office.log
   pk: 2
 - fields: {content: "Dear {{name}} \r\n\r\nthis has been a test \r\n", created: !!timestamp '2014-05-30
-      22:25:40.603262+00:00', description: 'This is only a test ', html_content: '',
-    last_updated: !!timestamp '2014-05-30 22:25:40.603315+00:00', name: test, subject: TEst
+      20:25:40.603262+00:00', description: 'This is only a test ', html_content: '',
+    last_updated: !!timestamp '2014-05-30 20:25:40.603315+00:00', name: test, subject: TEst
       template from django post_office}
   model: post_office.emailtemplate
   pk: 1
@@ -67,7 +103,7 @@
       \ bearbeitet. Der neue Status ist: {{status}}. \r\n\r\n{% if anmerkung %}\r\n\
       {{anmerkung}}\r\n{% endif %}\r\n\r\n{% if ergaenzung %}\r\n{{ergaenzung}}\r\n\
       {% endif %}\r\n\r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nder SVPB-Vorstand ",
-    created: !!timestamp '2014-05-31 07:29:21.786276+00:00', description: "Eine email\
+    created: !!timestamp '2014-05-31 05:29:21.786276+00:00', description: "Eine email\
       \ die gesendet wird wenn Leistungen ver\xE4ndert wurden. \r\n\r\nContext: \r\
       \n\r\n        d = {'first_name': instance.melder.first_name,\r\n           \
       \  'last_name': instance.melder.last_name,\r\n             'aufgabe': instance.aufgabe.aufgabe,\r\
@@ -75,7 +111,20 @@
       \n             'bemerkung': instance.bemerkung,\r\n             'bemerkungVorstand':\
       \ instance.bemerkungVorstand,\r\n             'status': instance.status,\r\n\
       \             }\r\n\r\nund anmerkung und ergaenzung ", html_content: '', last_updated: !!timestamp '2014-05-31
-      07:30:22.207612+00:00', name: leistungEmail, subject: Ihre Leistungsmeldung
+      05:30:22.207612+00:00', name: leistungEmail, subject: Ihre Leistungsmeldung
       wurde bearbeitet!}
   model: post_office.emailtemplate
   pk: 2
+- fields: {content: "Hallo {{ first_name }} {{ last_name }}!\r\n\r\nDeine Arbeitseinteilungen\
+      \ haben sich ver\xE4ndert. Du bist jetzt f\xFCr die folgenden Aufgaben/Zeiten\
+      \ eingeteilt: \r\n\r\n{% for z in zuteilungen %}\r\n- {{ z }}\r\n{% endfor %}\r\
+      \n\r\n\r\n{% if anmerkung %}\r\n{{anmerkung}}\r\n{% endif %}\r\n\r\n{% if ergaenzung\
+      \ %}\r\n{{ergaenzung}}\r\n{% endif %}\r\n\r\n\r\nMit besten Gr\xFC\xDFen, \r\
+      \n\r\nder SVPB-Vorstand ", created: !!timestamp '2014-06-14 09:55:58.300284+00:00',
+    description: "email wird an Nutzern gesendet, wenn sich f\xFCr diesen Nutzer die\
+      \ zutielungssituation ge\xE4ndert hat. Details der \xC4nderungen werden in Datenbank\
+      \ nicht vorgehalten, daher nur die komplette Nueinformation. ", html_content: '',
+    last_updated: !!timestamp '2014-06-14 10:04:17.707271+00:00', name: zuteilungEmail,
+    subject: "[SVPB] Ihre Arbeitseinteilung hat sich ver\xE4ndert"}
+  model: post_office.emailtemplate
+  pk: 3

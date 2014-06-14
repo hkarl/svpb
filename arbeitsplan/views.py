@@ -43,12 +43,23 @@ from tables import *  # TODO: change import not to polute name space
 def isVorstand(user):
     return user.groups.filter(name='Vorstand')
 
+def isTeamlead(user):
+    return user.teamleader_set.count() > 0 
+
+def isVorstandOrTeamleader(user):
+    return isVorstand(user) or isTeamlead(user)
 
 class isVorstandMixin(object):
     @method_decorator(user_passes_test(isVorstand, login_url="/keinVorstand/"))
     def dispatch(self, *args, **kwargs):
         return super(isVorstandMixin, self).dispatch(*args, **kwargs)
 
+class isVorstandOrTeamleaderMixin(object):
+    @method_decorator(user_passes_test(isVorstandOrTeamleader, login_url="/keinVorstand/"))
+    def dispatch(self, *args, **kwargs):
+        return super(isVorstandOrTeamleaderMixin, self).dispatch(*args, **kwargs)
+
+    
 ###############
 
 
@@ -1031,7 +1042,8 @@ class CreateLeistungView (CreateView):
 
         return HttpResponseRedirect(self.success_url)
 
-
+# class CreateLeistungDritteView (CreateView):
+    
 ####################################
 
 
@@ -1071,7 +1083,7 @@ class ListLeistungView (FilteredListView):
         return qsLeistungen
 
 
-class LeistungBearbeitenView (isVorstandMixin, FilteredListView):
+class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
     """
     A view to show a table of non-accepted/rejected Leistungen to a Vorstand.
     Allows to accept, reject, or enquiry them. 
@@ -1100,31 +1112,58 @@ class LeistungBearbeitenView (isVorstandMixin, FilteredListView):
 
 
     def get_data (self):
-        # print self.kwargs
-        zustaendig = self.kwargs['zustaendig']
+        """Vorstand can elect to see all or just some.
+        Teamleaders are restricted to those tasks where they are
+        indeed the teamleader.
+        """
 
-        # self.context['statusvalues'] = models.Leistung.STATUS
+        if isVorstand(self.request.user):
+            zustaendig = self.kwargs['zustaendig']
 
-        if zustaendig=="me": 
-            mainqs = models.Leistung.objects.filter(aufgabe__verantwortlich=
-                                                    self.request.user)
+            if zustaendig=="me": 
+                mainqs = models.Leistung.objects.filter(aufgabe__verantwortlich=
+                                                        self.request.user)
+            else:
+                mainqs = models.Leistung.objects.all()
+        elif isTeamlead(self.request.user):
+            leadingTheseTasks = self.request.user.teamleader_set.all()
+
+            mainqs = models.Leistung.objects.filter(aufgabe__in = leadingTheseTasks)
         else:
-            mainqs = models.Leistung.objects.all()
+            return None
 
         return mainqs
-    
+
     def post (self, request, zustaendig, *args, **kwargs):
-        # clean up data by hand here
-        print request.POST 
+        """need to carefully check:
+        - vorstand may do everything
+        - teamleaders only for those tasks they lead.
+        They only see those tasks in regular operation, but
+        hackers might try to inject wierd stuff here. 
+        """
+
+        if isVorstand(request.user):
+            checkNeeded = False
+        elif isTeamlead(request.user):
+            checkNeeded = True
+            leadingTheseTasks = self.request.user.teamleader_set.all()
+        else:
+            messages.error(request,
+                           "Sie dürfen diese Funktion nicht benutzen!"
+                           )
+
+            redirect("home")
+
+
         data = {}
         for k, v in request.POST.iteritems():
             try:
                 # TODO: shorten to startswith construction 
-                print 'post value: ', k, v 
+                # print 'post value: ', k, v 
                 if "status" == k[:6]:
-                    print "status detected"
+                    # print "status detected"
                     opt, num = k.split('_')
-                    print opt, num 
+                    # print opt, num 
                     if not num in data.keys():
                         data[num] = {'status': "",
                                      'bemerkungVorstand': "",
@@ -1144,7 +1183,7 @@ class LeistungBearbeitenView (isVorstandMixin, FilteredListView):
             except:
                 pass 
 
-        print data
+        # print data
 
         # and now save the updated values in the data
         for k,v in data.iteritems():
@@ -1152,7 +1191,15 @@ class LeistungBearbeitenView (isVorstandMixin, FilteredListView):
             ## print "----------"
             ## print k, v
             ## print type(v['id_bemerkungVorstand'])
-            l = models.Leistung.objects.get (id = int(k))
+
+            l = models.Leistung.objects.get(id=int(k))
+            if checkNeeded:
+                if l.aufgabe not in leadingTheseTasks:
+                    messages.error(request,
+                                   "Sie dürfen Leistungsmeldungen"
+                                   " für diese Aufgabe nicht bearbeiten!")
+                    continue
+
             safeit = False
             if l.bemerkungVorstand != v['bemerkungVorstand']:
                 l.bemerkungVorstand = v['bemerkungVorstand']
@@ -1164,6 +1211,13 @@ class LeistungBearbeitenView (isVorstandMixin, FilteredListView):
 
             if safeit:
                 l.save()
+                messages.success(request,
+                                 "Leistungsmeldung von {0} {1} "
+                                 "für Aufgabe {2} aktualisiert.".format(
+                                     l.melder.first_name,
+                                     l.melder.last_name,
+                                     l.aufgabe)
+                                     )
             # print l
 
         # TODO: bei Rueckfrage koennte man eine email senden? oder immer?
@@ -1450,8 +1504,6 @@ class LeistungEmailView (FilteredEmailCreateView):
         return d
 
 
-
-        
 class ZuteilungEmailView(FilteredEmailCreateView):
     """Display a list of all users where the zuteilung has changed since last
     notification. Send them out.
@@ -1464,17 +1516,20 @@ class ZuteilungEmailView(FilteredEmailCreateView):
     tableClass = ZuteilungEmailTable
     filterform_class = forms.ZuteilungEmailFilter
 
-    def noetig_filter (self, qs, includeSchonBenachrichtigt):
+    def noetig_filter(self, qs, includeSchonBenachrichtigt):
         if includeSchonBenachrichtigt:
             pass
         else:
-            # if veraendert <= benachrichtigt, then an instance has alredy been notified
-            # so we leave only those in the queryset where the opposite  is true
-            # (filter keeps those where the attribute is TRUE!!! 
+            # if veraendert <= benachrichtigt, then an instance
+            # has alredy been notified
+            # so we leave only those in the queryset where
+            # the opposite  is true
+            # (filter keeps those where the attribute is TRUE!!!
+
             qs = qs.filter(zuteilungBenachrichtigungNoetig=True)
         return qs
-        
-    
+
+
     filterconfig = [('last_name', 'user__last_name__icontains'),
                     ('first_name', 'user__first_name__icontains'), 
                     ('benachrichtigt', noetig_filter), 

@@ -49,23 +49,37 @@ class Aufgabengruppe (models.Model):
     class Meta:
         verbose_name_plural = "Aufgabengruppen"
         verbose_name = "Aufgabengruppe"
-    
-class Aufgabe (models.Model):
-    aufgabe = models.CharField (max_length=30)
-    verantwortlich = models.ForeignKey (User,
-                                        help_text="Verantwortliches Vorstandsmitglied")
-    gruppe = models.ForeignKey (Aufgabengruppe)
-    anzahl = models.IntegerField (default = 0,
-                                  help_text="Wieviele Personen werden für diese Aufgabe gebraucht?")
-    stunden = models.IntegerField (default = 0,
-                                   help_text="Wieviele Stunden Arbeit pro Person?")
-    
-    datum = models.DateField (blank=True, null=True,
-                              help_text="Wann fällt die Aufgabe an? (keine Angabe möglich)")
+
+
+class Aufgabe(models.Model):
+    aufgabe = models.CharField(max_length=30)
+    verantwortlich = models.ForeignKey(User,
+                                       help_text="Verantwortliches "
+                                       "Vorstandsmitglied")
+    teamleader = models.ForeignKey(User,
+                                   related_name="teamleader_set",
+                                   help_text="Ein optinaler Teamleader für "
+                                   "die Aufgabe (nicht notwendig Vorstand)",
+                                   verbose_name="Team-Leader",
+                                   blank=True, null=True,
+                                   )
+
+    gruppe = models.ForeignKey(Aufgabengruppe)
+    anzahl = models.IntegerField(default=0,
+                                 help_text="Wieviele Personen werden für "
+                                 "diese Aufgabe gebraucht?")
+
+    stunden = models.IntegerField(default=0,
+                                  help_text="Wieviele Stunden Arbeit "
+                                  "pro Person?")
+
+    datum = models.DateField(blank=True, null=True,
+                             help_text="Wann fällt die Aufgabe an? "
+                             "(freilassen möglich)")
 
     bemerkung = models.TextField(blank=True)
 
-    def __unicode__ (self):
+    def __unicode__(self):
         return self.aufgabe
 
     class Meta:

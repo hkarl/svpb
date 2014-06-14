@@ -20,6 +20,8 @@
 <p>
 {% endif %}
 
+
+
 <p>
 
 Ihnen stehen folgende Funktionen zur Verfügung: 
@@ -86,6 +88,34 @@ Ihnen stehen folgende Funktionen zur Verfügung:
     </div>
   </div>
 </div>
+
+<!--- ########################################### ---!>
+
+{% if  user.teamleader_set.count > 0 %}
+<h2> Teamleader-Funktionen </h2>
+Wir freuen uns, unsere Teamleader mit  weiteren Funktionen  zu unterstützen
+<p> 
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Leistung
+        </div>
+      </div>
+      <div class="panel-body">
+        <ul class="list-group">
+          <li class="list-group-item"> <a href="/arbeitsplan/leistungenBearbeiten/z=team/"> Vorliegende Leistungsmeldungen für mein Team bearbeiten </a> </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endif %}
+
+
 
 <!--- ########################################### ---!>
 
@@ -231,5 +261,5 @@ Bist Du ein Mitglied, so <a href="/accounts/login/?next=/home/"> melde Dich bitt
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Sat Jun 14 12:19:47 CEST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sat Jun 14 17:50:35 CEST 2014 <!-- hhmts end -->
 </body> </html>

@@ -68,24 +68,25 @@ class AufgabeForm (forms.ModelForm):
     class Meta:
         model = models.Aufgabe
 
-    def __init__ (self, request, *args, **kwargs):
-        self.request = request 
+    def __init__(self, request, *args, **kwargs):
+        self.request = request
         super(AufgabeForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.form_show_errors =  True
-        self.helper.form_error_title = "Allgemeine Fehler" 
+        self.helper.form_show_errors = True
+        self.helper.form_error_title = "Allgemeine Fehler"
 
-        self.helper.layout = Layout (
+        self.helper.layout = Layout(
             'aufgabe',
             'verantwortlich',
             'gruppe',
             'anzahl',
             'stunden',
-            Field('datum', css_class = "datepicker"),
+            'teamleader',
+            Field('datum', css_class="datepicker"),
             'bemerkung',
             )
-        
+
     def clean (self):
         ## print "in form clean"
         ## print self.request 

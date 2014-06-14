@@ -100,6 +100,10 @@ SVPB -- Arbeitsverwaltung
                 <li><a href="/arbeitsplan/salden/">Saldenübersicht</a></li>
                   {% endif %}
                 {% endfor %}
+                {% if user.teamleader_set.count > 0 %}
+                <li class="divider"></li>
+                <li><a href="/arbeitsplan/leistungenBearbeiten/z=team/">Bearbeiten (für Team)</a></li>                
+                {% endif %}
               </ul>
             </li>
             <!-- BENACHRICHTIGEN --> 
