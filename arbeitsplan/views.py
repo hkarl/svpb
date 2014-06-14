@@ -922,7 +922,7 @@ class  StundenplaeneEdit (FilteredListView):
             return None
 
         aufgabe = get_object_or_404 (models.Aufgabe, pk=aufgabeid)
-        
+
         data = []
 
         stundenplaene = aufgabe.stundenplan_set.all()
@@ -940,7 +940,7 @@ class  StundenplaeneEdit (FilteredListView):
                                                          aufgabe=aufgabe)
                 stundenzuteilungen =  zuteilung.stundenzuteilung_set.values_list('uhrzeit',
                                                                                  flat=True )
-                
+
                 # print "Zuteilung fuer User: ", u, stundenzuteilungen 
 
                 for s in stundenplaene:
@@ -967,7 +967,7 @@ class  StundenplaeneEdit (FilteredListView):
 
         print self.request.POST
 
-        if len(self.request.POST.get('checkedboxes')) > 0:
+        if self.request.POST.get('checkedboxes'):
             tmp = [  x.split('_')
                     for x in
                     self.request.POST.get('checkedboxes').split(',')
@@ -977,7 +977,7 @@ class  StundenplaeneEdit (FilteredListView):
 
         # pp(tmp) 
         checkedboxes = [ (int(x[0]), int(x[1])) for x in tmp ]
-        # print checkedboxes
+        print "checkboxes: ", checkedboxes
 
         # any values to add? 
         for v in self.request.POST:

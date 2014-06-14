@@ -86,29 +86,34 @@ class Aufgabe(models.Model):
         verbose_name_plural = "Aufgaben"
         verbose_name = "Aufgabe"
 
+
 class Stundenplan (models.Model):
-    aufgabe = models.ForeignKey (Aufgabe)
-    uhrzeit = models.IntegerField (help_text="Beginn")
-    anzahl = models.IntegerField (default= 0,
-                                  help_text="Wieviele Personen werden um diese Uhrzeit benötigt?")
+    aufgabe = models.ForeignKey(Aufgabe)
+    uhrzeit = models.IntegerField(help_text="Beginn")
+    anzahl = models.IntegerField(default=0,
+                                 help_text="Wieviele Personen werden um "
+                                 "diese Uhrzeit benötigt?")
 
     startZeit = 8
     stopZeit = 23
-    
-    def __unicode__ (self):
-        return self.aufgabe.__unicode__() + "@" + str(self.uhrzeit) + ": " + str(self.anzahl)
-    
-    class Meta:
-        verbose_name_plural = "Stundenpläne" 
-        verbose_name = "Stundenplan" 
-    
-class Meldung (models.Model):
-    erstellt = models.DateField (auto_now_add=True)
-    veraendert = models.DateField (auto_now=True)
-    melder = models.ForeignKey (User)
-    aufgabe = models.ForeignKey (Aufgabe)
 
-    GARNICHT = -1 
+    def __unicode__(self):
+        return (self.aufgabe.__unicode__() +
+                "@" + str(self.uhrzeit) +
+                ": " + str(self.anzahl))
+
+    class Meta:
+        verbose_name_plural = "Stundenpläne"
+        verbose_name = "Stundenplan"
+
+
+class Meldung (models.Model):
+    erstellt = models.DateField(auto_now_add=True)
+    veraendert = models.DateField(auto_now=True)
+    melder = models.ForeignKey(User)
+    aufgabe = models.ForeignKey(Aufgabe)
+
+    GARNICHT = -1
     WENNSMUSS = 0
     NORMAL = 1
     GERNE = 2
@@ -155,12 +160,9 @@ class Meldung (models.Model):
 
 
 class Zuteilung (models.Model):
-    aufgabe = models.ForeignKey (Aufgabe)
-    ausfuehrer = models.ForeignKey (User)
-    automatisch = models.BooleanField (default=False)
-    
-    class Meta:
-        verbose_name_plural = "Zuteilungen"
+    aufgabe = models.ForeignKey(Aufgabe)
+    ausfuehrer = models.ForeignKey(User)
+    automatisch = models.BooleanField(default=False)
 
     def __unicode__ (self):
         # print self.stundenzuteilung_set.all() 
@@ -170,41 +172,85 @@ class Zuteilung (models.Model):
                 )
 
     def save(self, *args, **kwargs):
-        ausfuehrer.zuteilungBenachrichtigungNoetig = True
-        ausfuehrer.save()
         super(Zuteilung, self).save(*args, **kwargs)
+        self.ausfuehrer.zuteilungBenachrichtigungNoetig = True
+        self.ausfuehrer.save()
+
 
     def delete(self, *args, **kwargs):
-        ausfuehrer.zuteilungBenachrichtigungNoetig = True
-        ausfuehrer.save()
+        self.ausfuehrer.zuteilungBenachrichtigungNoetig = True
+        self.ausfuehrer.save()
         super(Zuteilung, self).delete(*args, **kwargs)
+
+    def stundenTuple(self):
+        """Produce a list of tuples with the Stunden
+        correpsonding to this Zuteilung. Compress it
+        so that only consecutive intervals show up. 
+
+        Arguments:
+        - `self`:
+        """
+
+        outlist = []    
+        inlist = sorted([s.uhrzeit for s in self.stundenzuteilung_set.all()])
+
+        ## print self.aufgabe, self.ausfuehrer, inlist
+        try: 
+            if inlist:
+                now = inlist.pop(0)
+                currentTuple = (now, now+1)
+                while inlist:
+                    now = inlist.pop(0)
+                    if now == currentTuple[1]:
+                        currentTuple = (currentTuple[0], now +1)
+                    else:
+                        outlist.append(currentTuple)
+                        currentTuple = (now, now+1)
+
+                outlist.append(currentTuple)
+        except Exception as e:
+            print e 
+
+        ## print "outlist: ", outlist 
+        return outlist
+
+
+    def stundenString(self):
+        st = self.stundenTuple()
+        r = ', '.join([
+            '{0} Uhr - {1} Uhr'.format(s[0], s[1])
+            for s in st
+            ])
+
+        return r
 
     class Meta:
         verbose_name_plural = "Zuteilungen"
         verbose_name = "Zuteilung"
 
-class StundenZuteilung (models.Model):
-    zuteilung = models.ForeignKey (Zuteilung)
-    uhrzeit = models.IntegerField (blank=True, null=True)
+
+class StundenZuteilung(models.Model):
+    zuteilung = models.ForeignKey(Zuteilung)
+    uhrzeit = models.IntegerField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        ausfuehrer.zuteilungBenachrichtigungNoetig = True
-        ausfuehrer.save()
         super(StundenZuteilung, self).save(*args, **kwargs)
+        self.zuteilung.ausfuehrer.zuteilungBenachrichtigungNoetig = True
+        self.zuteilung.ausfuehrer.save()
 
     def delete(self, *args, **kwargs):
-        ausfuehrer.zuteilungBenachrichtigungNoetig = True
-        ausfuehrer.save()
+        self.zuteilung.ausfuehrer.zuteilungBenachrichtigungNoetig = True
+        self.zuteilung.ausfuehrer.save()
         super(StundenZuteilung, self).delete(*args, **kwargs)
-    
+
     class Meta:
         verbose_name = "Zuteilung einer Stunde"
         verbose_name_plural = "Zuteilungen für einzelne Stunden"
 
-    def __unicode__ (self):
-        return str(self.uhrzeit) 
+    def __unicode__(self):
+        return str(self.uhrzeit)
 
-    
+
 class Leistung (models.Model):
     melder = models.ForeignKey (User)
     aufgabe = models.ForeignKey (Aufgabe)
