@@ -102,6 +102,19 @@ SVPB -- Arbeitsverwaltung
                 {% endfor %}
               </ul>
             </li>
+            <!-- BENACHRICHTIGEN --> 
+            {% for g in  user.groups.all %}
+              {% if g.name == "Vorstand" %}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Benachrichtigen <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li> <a href="/arbeitsplan/benachrichtigen/zuteilung/"> Zuteilungen </a> </li>
+                <li> <a href="/arbeitsplan/benachrichtigen/leistung/"> Leistungen </a> </li>
+                <li> <a href="/arbeitsplan/benachrichtigen/senden/"> Absenden </a> </li>
+              </ul>
+            </li> 
+              {% endif %}
+            {% endfor %}
             <!-- Rohdaten Admin -->
             {% if user.is_staff %}
             <li> <a href="/admin/"> Rodaten </a>
