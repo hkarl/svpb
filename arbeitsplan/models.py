@@ -14,36 +14,50 @@ from django.utils.timezone import utc
 
 class Mitglied (models.Model):
     user = models.OneToOneField(User)
-    mitgliedsnummer = models.CharField(max_length = 10,
-                                       help_text = "Mitgliedsnummer",
-                                       default = 0)
-    ## leistungbenachrichtigung = models.DateTimeField(help_text="Wann war die letzte Benachrichtigung zu einer Leistungsmeldung?",
-    ##                                                 default=datetime.datetime(1900,1,1))
-    zuteilungsbenachrichtigung  = models.DateTimeField (help_text="Wann war die letzte Benachrichtigung zu einer Zuteilung?",
-                                                        default=datetime.datetime(1900,1,1),
-                                                        verbose_name="Letzte Benachrichtigung",
-                                                        )
+    mitgliedsnummer = models.CharField(max_length=10,
+                                       help_text="Mitgliedsnummer",
+                                       default=0)
 
-    zuteilungBenachrichtigungNoetig = models.BooleanField (help_text="Muss an diese Nutzer eine Benachrichtigung wegen Änderung der Zuteilungen gesendet werden?",
-                                                           default=True,
-                                                           verbose_name="Benachrichtigung zu Zuteilungen nötig?",
-                                                           
+    # leistungbenachrichtigung = models.DateTimeField(help_text=
+    # "Wann war die letzte Benachrichtigung zu einer Leistungsmeldung?",
+    #                            default=datetime.datetime(1900,1,1))
+
+    zuteilungsbenachrichtigung = models.DateTimeField(help_text=
+                                                      "Wann war die letzte Benachrichtigung zu einer Zuteilung?",
+                                                      default=datetime.datetime(1900,1,1),
+                                                      verbose_name="Letzte Benachrichtigung",
+                                                      )
+
+    zuteilungBenachrichtigungNoetig = models.BooleanField(help_text=
+                                                          "Muss an diese Nutzer"
+                                                          " eine Benachrichtigung"
+                                                          " wegen Änderung der "
+                                                          "Zuteilungen gesendet werden?",
+                                                          default=True,
+                                                          verbose_name=
+                                                          "Benachrichtigung zu "
+                                                          "Zuteilungen nötig?",
                                                            )
-    def __unicode__ (self):
+    def __unicode__(self):
         return self.user.__unicode__()
-    
+
     class Meta:
         verbose_name_plural = "Mitglieder"
         verbose_name = "Mitglied"
 
+
 class Aufgabengruppe (models.Model):
-    gruppe = models.CharField (max_length=30,
-                               help_text="Aussagefähiger Name für Gruppe von Aufgaben")
-    verantwortlich = models.ForeignKey (User,
-                                        help_text="Verantwortliches Vorstandsmitglied") 
+    gruppe = models.CharField(max_length=30,
+                              help_text="Aussagefähiger Name für Gruppe"
+                              " von Aufgaben")
+
+    verantwortlich = models.ForeignKey(User,
+                                       help_text="Verantwortliches "
+                                       "Vorstandsmitglied")
+
     bemerkung = models.TextField(blank=True)
 
-    def __unicode__ (self):
+    def __unicode__(self):
         return self.gruppe
 
     class Meta:

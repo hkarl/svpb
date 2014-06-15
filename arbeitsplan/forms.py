@@ -64,6 +64,15 @@ class CreateLeistungForm (CrispyFormMixin, forms.ModelForm):
                    )
 
 
+class AufgabengruppeForm(CrispyFormMixin, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AufgabengruppeForm, self).__init__(*args, **kwargs)
+        self.helper.form_tag = False
+        
+    class Meta:
+        model = models.Aufgabengruppe
+
 class AufgabeForm (forms.ModelForm):
     class Meta:
         model = models.Aufgabe

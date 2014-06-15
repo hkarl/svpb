@@ -26,9 +26,9 @@ urlpatterns = patterns('',
 
     url (r'^home/$',
          TemplateView.as_view (template_name='home.html'),
-         name="home", 
-         ), 
-         
+         name="home",
+         ),
+
     url (r'^keinVorstand/$',
          TemplateView.as_view (template_name='keinVorstand.html'),
          name="keinVorstand", 
@@ -49,7 +49,6 @@ urlpatterns = patterns('',
          name="arbeitsplan-benachrichtigen-senden",
          ),
 
-         
     url (r'^arbeitsplan/aufgaben/$',
          arbeitsplan.views.ListAufgabenView.as_view(),
          name="arbeitsplan-aufgaben",
@@ -114,16 +113,28 @@ urlpatterns = patterns('',
     url (r'^arbeitsplan/aufgabeErzeugen/$',
          login_required(arbeitsplan.views.AufgabenCreate.as_view()),
          name="arbeitsplan-aufgabenErzeugen",),
-         
+
     url (r'^arbeitsplan/aufgabeEditieren/(?P<pk>\d+)/$',
          login_required(arbeitsplan.views.AufgabenUpdate.as_view()),
          name="arbeitsplan-aufgabenEdit",),
-         
+
+    url(r'^arbeitsplan/aufgabengruppeErzeugen/$',
+         login_required(arbeitsplan.views.AufgabengruppeCreate.as_view()),
+         name="arbeitsplan-aufgabengruppeCreate",),
+
+    url(r'^arbeitsplan/aufgabengruppen/$',
+         login_required(arbeitsplan.views.AufgabengruppeList.as_view()),
+         name="arbeitsplan-aufgabengruppeList",),
+
+    url (r'^arbeitsplan/aufgabengruppeEditieren/(?P<pk>\d+)/$',
+         login_required(arbeitsplan.views.AufgabengruppeUpdate.as_view()),
+         name="arbeitsplan-aufgabengruppeEdit",),
+
     url (r'^bootstrap$',
-         TemplateView.as_view (template_name="bootstrap.html"),
+         TemplateView.as_view(template_name="bootstrap.html"),
          name="bootstrap", 
          ),
-         
+
     url (r'^about$',
          TemplateView.as_view (template_name="about.html"),
          name="about", 

@@ -356,7 +356,26 @@ class ListAufgabenView (FilteredListView):
 #####################
 
 
-class AufgabenCreate (CreateView):
+class SimpleCreateView(CreateView):
+
+    def get_context_data (self, **kwargs):
+        context = super (SimpleCreateView, self).get_context_data (**kwargs)
+        context['title'] = self.title
+        context['buttontext'] = self.buttontext
+
+        return context
+
+class SimpleUpdateView(UpdateView):
+
+    def get_context_data (self, **kwargs):
+        context = super (SimpleUpdateView, self).get_context_data (**kwargs)
+        context['title'] = self.title
+        context['buttontext'] = self.buttontext
+
+        return context
+
+
+class AufgabenCreate (SimpleCreateView):
     model = models.Aufgabe
     form_class = forms.AufgabeForm
     template_name = "arbeitsplan_aufgabenCreate.html"
@@ -364,20 +383,18 @@ class AufgabenCreate (CreateView):
     title = "Neue Aufgabe anlegen"
     buttontext = "Aufgabe anlegen"
 
+    def get_form_kwargs (self):
+        kwargs = super(SimpleCreateView, self).get_form_kwargs()
+        kwargs.update({
+            'request': self.request
+            })
+        return kwargs
+
     def get_context_data (self, **kwargs):
         context = super (AufgabenCreate, self).get_context_data (**kwargs)
-        context['title'] = self.title
-        context['buttontext'] = self.buttontext
         context['stundenplan'] = [(u, 0) for u in range(8,24)]
 
         return context
-
-    def get_form_kwargs (self):
-        kwargs = super(AufgabenCreate, self).get_form_kwargs()
-        kwargs.update({
-            'request' : self.request
-            })
-        return kwargs
 
     def form_valid (self, form):
 
@@ -391,12 +408,43 @@ class AufgabenCreate (CreateView):
                                        anzahl = anzahl)
             sobj.save()
 
+        # TODO: auf messahes.success umstellen! 
         return render (self.request,
                        self.get_success_url(),
                        {'msg': 'Die Aufgabe wurde erfolgreich angelegt.',
                         'msgclass': 'success'} )
-    
-                          
+
+
+class AufgabengruppeCreate(isVorstandMixin, SimpleCreateView):
+    model = models.Aufgabengruppe
+    success_url = "home.html"
+    title = "Neue Aufgabengruppe anlegen"
+    buttontext = "Aufgabengruppe anlegen"
+    template_name = "arbeitsplan_aufgabengruppeCreate.html"
+    form_class = forms.AufgabengruppeForm
+
+class AufgabengruppeList(isVorstandMixin, FilteredListView):
+    title = "Aufgabegruppen"
+    tableClass = AufgabengruppeTable
+    intro_text = "Übersicht über alle Aufgabengruppe."
+    model = models.Aufgabengruppe
+
+
+class AufgabengruppeUpdate(isVorstandMixin, SimpleUpdateView):
+    model = models.Aufgabengruppe
+    template_name = "arbeitsplan_aufgabengruppeCreate.html"
+    title = "Aufgabengruppe ändern"
+    form_class = forms.AufgabengruppeForm
+    buttontext = "Aufgabengruppe ändern"
+    success_url = reverse_lazy("arbeitsplan-aufgabengruppeList")
+
+    def form_valid (self, form):
+        messages.success(self.request,
+                         "Die Aufgabengruppe wurde erfolgreich "
+                         "editiert")
+
+        return super(AufgabengruppeUpdate, self).form_valid(form)
+
 
 ########################################################################################
 #########   MELDUNG 

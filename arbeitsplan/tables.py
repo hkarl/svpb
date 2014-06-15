@@ -122,7 +122,7 @@ class RequiredAssignedColumn (django_tables2.columns.Column):
             r = mark_safe (str(value['required']) + " / " + str(value['zugeteilt']))
         except TypeError:
             r = ""
-            
+
         return r
 
 class LinkedColumn (django_tables2.columns.Column):
@@ -165,7 +165,7 @@ def TableFactory (name, attrs, l, meta={}):
                          (),
                          metadict,
                         )
-    
+
     klass = type (name, (django_tables2.Table,), attrs)
 
     t = klass(l)
@@ -270,7 +270,7 @@ class AufgabenTableVorstand (django_tables2.Table):
     id = django_tables2.LinkColumn ('arbeitsplan-aufgabenEdit',
                                           args=[A('pk')],
                                           verbose_name="Editieren")
-    
+
     class Meta:
         model = models.Aufgabe
         attrs = {"class": "paleblue"}
@@ -278,6 +278,21 @@ class AufgabenTableVorstand (django_tables2.Table):
         fields=("gruppe", "aufgabe", "datum", "anzahl", "stunden", "bemerkung", 'verantwortlicher', 'id')
 
         # TODO: anzahl muss man wahrscheinlich auf die ANzahl FREIE Plaetze umrechnen!?!?
+
+
+class AufgabengruppeTable(django_tables2.Table):
+
+    id = django_tables2.LinkColumn ('arbeitsplan-aufgabengruppeEdit',
+                                      args=[A('pk')],
+                                      verbose_name="Editieren",
+                                      )
+
+
+    class Meta:
+        model = models.Aufgabengruppe
+        attrs = {"class": "paleblue"}
+        fields = ('gruppe', 'verantwortlich', 'bemerkung', 'id', )
+        # exclude = ('id',)
 
 
 ########################
