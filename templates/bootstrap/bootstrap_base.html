@@ -128,20 +128,30 @@ SVPB -- Arbeitsverwaltung
             {% endif %}
             {% endif %}
           </ul>
+          {% if user.is_active %}
           <ul class="nav navbar-nav navbar-right">
-            <!-- ABOUT --> 
-            <li><a href="/about">About</a></li>
-            {% if user.is_active %}
-            {% if user.has_usable_password %}
-            <li>
-            <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> 
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Ich <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="/logout/">{% trans 'Log out' %}</a>
+                </li>
+                {% if user.has_usable_password %}
+                <li>
+                  <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> 
+                </li>
+                {% endif %}
+                {% for g in  user.groups.all %}
+                  {% if g.name == "Vorstand" %}
+                  <li class="divider"></li>
+                  <li class="dropdown-header">Vorstandsfunktionen</li>
+                  <li> <a href=""> Nutzerwechsel </a> </li>
+                  {% endif %}
+                {% endfor %}                
+              </ul>
             </li>
-            {% endif %}
-            <li>
-                <a href="/logout/">{% trans 'Log out' %}</a>
-            </li>
-            {% endif %}
           </ul>
+          {% endif %}
         </div><!--/.nav-collapse -->
       </div>
     </div>
@@ -209,6 +219,8 @@ SVPB -- Arbeitsverwaltung
       {% block content %}
       {% endblock %}
     </div><!-- /.container -->
+
+    
     <!--
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     -->
