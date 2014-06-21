@@ -24,17 +24,11 @@ import unicodedata
 class RadioButtonTable (django_tables2.Table):
 
     def render_radio(self, fieldname, choices, buttontexts, **kwargs):
-        ## print bound_row._record 
-        ## print type(bound_row._record )
-        ## print getattr (bound_row._record, fieldname)
-        # print "render_radio ", record
 
-        print kwargs
         if 'bound_row' in kwargs:
             record = kwargs['bound_row']._record
         if 'record' in kwargs:
             record = kwargs['record']
-        print 'rec: ', record
 
         try:
             tmp = '\n'.join([
@@ -66,35 +60,32 @@ class RadioButtonTable (django_tables2.Table):
                 " active" if getattr(record,fieldname) == choice[0] else "",
                 )
                 for (counter, choice) in enumerate(choices)])        
-            
-            
+
         return mark_safe("""<div class="btn-group-vertical" data-toggle="buttons">""" +
                           tmp +
                           """</div>""")
 
 
-
-
-class ValuedCheckBoxColumn (django_tables2.columns.Column):
+class ValuedCheckBoxColumn(django_tables2.columns.Column):
     """A checkbox column where a pair of values is expected:
     name and whether the box is checked or not.
     Control tags (intergeres, not strings!):
     -1: show no field
     0: unchecked checkbox
-    1: checked checkbox 
+    1: checked checkbox
     """
-    
-    def render (self, value):
-        # print value 
+
+    def render(self, value):
+
         if value[0] == -1:
             return ""
 
-        if len(value)>2:
+        if len(value) > 2:
             text = value[2]
         else:
             text = ""
-            
-        return mark_safe ('<input type="checkbox" value="1" name="' +
+
+        return mark_safe('<input type="checkbox" value="1" name="' +
                           escape(value[1]) +
                           '" ' +
                           ("checked" if value[0]==1 else "") +
@@ -110,7 +101,7 @@ class TextareaInputColumn (django_tables2.columns.Column):
                           +    escape (value) +
                           '" type="text" />'
                         )
-    
+
 
 class RequiredAssignedColumn (django_tables2.columns.Column):
     """
@@ -126,20 +117,21 @@ class RequiredAssignedColumn (django_tables2.columns.Column):
 
         return r
 
-class LinkedColumn (django_tables2.columns.Column):
+class LinkedColumn(django_tables2.columns.Column):
     """
-    A column that redners a simple <a href>, assuming a tuple of values 
+    A column that redners a simple <a href>,
+    assuming a tuple of values 
     """
 
-    def render (self, value):
+    def render(self, value):
         text, link = value
 
-        if text: 
+        if text:
             return mark_safe("<a href={0}>{1}</a>".format(link, text))
         else:
-            return "-" 
+            return "-"
 
-            
+
 ##############################
 ## Table facotires
 ##############################
@@ -229,7 +221,7 @@ def StundenplanTableFactory (l):
                                               'editlink', 'stundenplanlink',  
                                               'required', 'gemeldet', 'zugeteilt', 
                                               '...', )})
-        
+
     return t
 
 
@@ -254,40 +246,105 @@ def StundenplanEditFactory (l):
     
 ##############################
 
+
 class AufgabenTable (django_tables2.Table):
-    verantwortlicher = django_tables2.Column (accessor="verantwortlich.last_name",
-                                              verbose_name="Verantwortlicher")
+    verantwortlicher = django_tables2.Column(
+        accessor="verantwortlich.last_name",
+        verbose_name="Verantwortlicher")
+
+    meldungen = django_tables2.Column(
+        verbose_name="Vorliegende Meldungen",
+        empty_values=(),
+        orderable=False,        
+        )
+
+    zuteilungen = django_tables2.Column(
+        verbose_name="Erfolgte Zuteilungen",
+        empty_values=(),
+        orderable=False,        
+        )
+
+    def render_meldungen(self, record):
+        return record.meldung_set.count()
+
+    def render_zuteilungen(self, record):
+        return record.zuteilung_set.count()
+
     class Meta:
         model = models.Aufgabe
         attrs = {"class": "paleblue"}
-        # fields=("aufgabe", "datum", django_tables2.A("verantwortlich.last_name"), "gruppe", "anzahl", "bemerkung")
-        fields=("gruppe", "aufgabe", "datum", "anzahl", "stunden", "bemerkung")
+        # fields=("aufgabe", "datum",
+        # django_tables2.A("verantwortlich.last_name"),
+        # "gruppe", "anzahl", "bemerkung")
 
-        # TODO: anzahl muss man wahrscheinlich auf die ANzahl FREIE Plaetze umrechnen!?!?
+        fields = ("gruppe", "aufgabe", "datum",
+                  "stunden", 
+                  "anzahl", "meldungen", "zuteilungen", 
+                  "bemerkung")
 
-class AufgabenTableVorstand (django_tables2.Table):
-    verantwortlicher = django_tables2.Column (accessor="verantwortlich.last_name",
-                                              verbose_name="Verantwortlicher")
-    id = django_tables2.LinkColumn ('arbeitsplan-aufgabenEdit',
-                                          args=[A('pk')],
-                                          verbose_name="Editieren")
+
+class AufgabenTableVorstand(django_tables2.Table):
+    verantwortlicher = django_tables2.Column(
+        accessor="verantwortlich.last_name",
+        verbose_name="Verantwortlicher")
+
+    id = django_tables2.LinkColumn(
+        'arbeitsplan-aufgabenEdit',
+        args=[A('pk')],
+        verbose_name="Editieren")
+
+    meldungen = django_tables2.Column(
+        verbose_name="Vorliegende Meldungen",
+        empty_values=(),
+        orderable=False,        
+        )
+
+    zuteilungen = django_tables2.Column(
+        verbose_name="Erfolgte Zuteilungen",
+        empty_values=(),
+        orderable=False,        
+        )
+
+    fehlende_zuteilungen = django_tables2.Column(
+        verbose_name="Noch offene Zuteilungen",
+        empty_values=(),
+        orderable=False,        
+        )
+
+    def render_meldungen(self, record):
+        return record.meldung_set.count()
+
+    def render_zuteilungen(self, record):
+        return record.zuteilung_set.count()
+
+    def render_fehlende_zuteilungen(self, record):
+        return record.anzahl - record.zuteilung_set.count()
 
     class Meta:
         model = models.Aufgabe
         attrs = {"class": "paleblue"}
-        # fields=("aufgabe", "datum", django_tables2.A("verantwortlich.last_name"), "gruppe", "anzahl", "bemerkung")
-        fields=("gruppe", "aufgabe", "datum", "anzahl", "stunden", "bemerkung", 'verantwortlicher', 'id')
 
-        # TODO: anzahl muss man wahrscheinlich auf die ANzahl FREIE Plaetze umrechnen!?!?
+        # fields=("aufgabe", "datum",
+        # django_tables2.A("verantwortlich.last_name"),
+        # "gruppe", "anzahl", "bemerkung")
+
+        fields=("gruppe", "aufgabe", "datum",
+                "stunden",
+                "anzahl",
+                "meldungen", "zuteilungen", "fehlende_zuteilungen", 
+                "bemerkung",
+                'verantwortlicher', 'id')
+
+        # TODO: anzahl muss man wahrscheinlich
+        # auf die ANzahl FREIE Plaetze umrechnen!?!?
 
 
 class AufgabengruppeTable(django_tables2.Table):
 
-    id = django_tables2.LinkColumn ('arbeitsplan-aufgabengruppeEdit',
-                                      args=[A('pk')],
-                                      verbose_name="Editieren",
-                                      )
-
+    id = django_tables2.LinkColumn('arbeitsplan-aufgabengruppeEdit',
+                                   args=[A('pk')],
+                                   verbose_name="Editieren",
+                                   )
 
     class Meta:
         model = models.Aufgabengruppe
@@ -361,68 +418,140 @@ class ZuteilungTableVorstand (django_tables2.Table):
 class MeldungTable (RadioButtonTable):
 
     # id = django_tables2.Column ()
-    
-    aufgabe =  django_tables2.Column (accessor="aufgabe",
-                                         verbose_name="Aufgabe")
-    gruppe =   django_tables2.Column (accessor="gruppe",
-                                         verbose_name="Aufgabengruppe")
-    
-    datum  =   django_tables2.Column (accessor="datum",
-                                         verbose_name="Datum")
 
-    stunden =   django_tables2.Column (accessor="stunden",
-                                         verbose_name="Umfang (h)")
-    
-    prefMitglied = django_tables2.Column (accessor="prefMitglied",
-                                      verbose_name="Vorlieben",
-                                      empty_values=(), 
-                                     )
+    aufgabe = django_tables2.Column(accessor="aufgabe",
+                                    verbose_name="Aufgabe")
+    gruppe = django_tables2.Column(accessor="gruppe",
+                                   verbose_name="Aufgabengruppe")
 
-    bemerkung = django_tables2.Column (accessor="bemerkung",
+    datum = django_tables2.Column (accessor="datum",
+                                   verbose_name="Datum")
+
+    stunden = django_tables2.Column (accessor="stunden",
+                                     verbose_name="Umfang (h)")
+
+    prefMitglied = django_tables2.Column(accessor="prefMitglied",
+                                         verbose_name="Vorlieben",
+                                         empty_values=(),
+                                         )
+
+    bemerkung = django_tables2.Column(accessor="bemerkung",
                                       verbose_name="Bemerkung",
-                                      empty_values=(), 
-                                     )
+                                      empty_values=(),
+                                      )
 
-    def render_prefMitglied (self, value, record):
-        return self.render_radio (choices=models.Meldung.PRAEFERENZ,
-                                    buttontexts=models.Meldung.PRAEFERENZButtons,
-                                    fieldname="prefMitglied",
-                                    record=record)
-            
-    def render_bemerkung (self, value, record, bound_row):
+    anzahl = django_tables2.Column(
+        verbose_name="Benötigte Helfer",
+        empty_values=(),
+        orderable=False,)
+
+    meldungen = django_tables2.Column(
+        verbose_name="Vorliegende Meldungen",
+        empty_values=(),
+        orderable=False,        
+        )
+
+    zuteilungen = django_tables2.Column(
+        verbose_name="Erfolgte Zuteilungen",
+        empty_values=(),
+        orderable=False,        
+        )
+
+    fehlende_zuteilungen = django_tables2.Column(
+        verbose_name="Noch offene Zuteilungen",
+        empty_values=(),
+        orderable=False,        
+        )
+
+    def render_anzahl(self, record):
+        return record['aufgabeObjekt'].anzahl
+
+    def render_meldungen(self, record):
+        return record['aufgabeObjekt'].meldung_set.count()
+
+    def render_zuteilungen(self, record):
+        return record['aufgabeObjekt'].zuteilung_set.count()
+
+    def render_fehlende_zuteilungen(self, record):
+        return (record['aufgabeObjekt'].anzahl
+                - record['aufgabeObjekt'].zuteilung_set.count())
+
+    def render_aufgabe(self, value, record):
+        aufgabe = record['aufgabeObjekt']
+        tooltext = mark_safe(u'Verantwortlicher: {0} {1}{2}'.format(
+            aufgabe.verantwortlich.first_name,
+            aufgabe.verantwortlich.last_name,
+            ', Bemerkung: {0}'.format(
+                aufgabe.bemerkung) if aufgabe.bemerkung else '',
+            ))
+        tmp = mark_safe(
+            u'<div class="tooltip-demo">'
+            '<a href="{0}"'
+            'data-toggle="tooltip"'
+            'title="{2}"'
+            '>{1}</a></div>'.format(
+                '#',
+                value,
+                tooltext,
+                )
+            )
+
+        return tmp
+
+    def render_prefMitglied(self, value, record):
+        return self.render_radio(
+            choices=models.Meldung.PRAEFERENZ,
+            buttontexts=models.Meldung.PRAEFERENZButtons,
+            fieldname="prefMitglied",
+            record=record,
+            )
+
+    def render_bemerkung(self, value, record, bound_row):
         # print record
         # print bound_row
-        tmp =  format_html (u'<textarea class="textinput textInput" id="id_bemerkung_{0}" name="bemerkung_{0}" placeholder="Bemerkung eingeben" rows=6>{1}</textarea>',
-                                str(record['id']),
-                                record['bemerkung'] if record['bemerkung'] else ""
-                                )
-            
-        return tmp 
-        
+        tmp = format_html(
+            u"""<textarea class="textinput textInput"
+            id="id_bemerkung_{0}" name="bemerkung_{0}"
+            placeholder="Bemerkung eingeben" rows=6>{1}</textarea>""",
+            str(record['id']),
+            record['bemerkung'] if record['bemerkung'] else ""
+            )
+
+        return tmp
+
     class Meta:
-        # model = models.Aufgabe 
+
+        # model = models.Aufgabe
         attrs = {"class": "paleblue"}
 
-        fields = ('gruppe', 'aufgabe', 'datum', 'stunden', 'bemerkung', 'prefMitglied') 
+        fields = ('gruppe', 'aufgabe', 'datum',
+                  'stunden',
+                  'anzahl',
+                  "meldungen", "zuteilungen",
+                  'bemerkung',
+                  'prefMitglied')
+
+        exclude = ("fehlende_zuteilungen",)
+
 
 class MeldungTableVorstand (RadioButtonTable):
 
-    
-    aufgabe =  django_tables2.Column (accessor="aufgabe",
-                                         verbose_name="Aufgabe")
-    gruppe =   django_tables2.Column (accessor="aufgabe.gruppe",
-                                         verbose_name="Aufgabengruppe")
-    
-    datum  =   django_tables2.Column (accessor="aufgabe.datum",
-                                         verbose_name="Datum")
+    aufgabe = django_tables2.Column(accessor="aufgabe",
+                                    verbose_name="Aufgabe")
 
-    stunden =   django_tables2.Column (accessor="aufgabe.stunden",
-                                         verbose_name="Umfang (h)")
-    
-    prefMitglied = django_tables2.Column (accessor="prefMitglied",
-                                      verbose_name="Vorlieben",
-                                      empty_values=(), 
-                                     )
+    gruppe = django_tables2.Column(accessor="aufgabe.gruppe",
+                                   verbose_name="Aufgabengruppe")
+
+    datum = django_tables2.Column(accessor="aufgabe.datum",
+                                  verbose_name="Datum")
+
+    stunden = django_tables2.Column(accessor="aufgabe.stunden",
+                                    verbose_name="Umfang (h)")
+
+    prefMitglied = django_tables2.Column(accessor="prefMitglied",
+                                         verbose_name="Vorlieben",
+                                         empty_values=(), 
+                                         )
 
     bemerkung = django_tables2.Column (accessor="bemerkung",
                                       verbose_name="Bemerkung",

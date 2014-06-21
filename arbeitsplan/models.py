@@ -81,11 +81,14 @@ class Aufgabe(models.Model):
     gruppe = models.ForeignKey(Aufgabengruppe)
     anzahl = models.IntegerField(default=0,
                                  help_text="Wieviele Personen werden für "
-                                 "diese Aufgabe gebraucht?")
+                                 "diese Aufgabe gebraucht?",
+                                 verbose_name="Anzahl benötigte Helfer")
 
     stunden = models.IntegerField(default=0,
                                   help_text="Wieviele Stunden Arbeit "
-                                  "pro Person?")
+                                  "pro Person?",
+                                  verbose_name="Stunden",
+                                  )
 
     datum = models.DateField(blank=True, null=True,
                              help_text="Wann fällt die Aufgabe an? "
@@ -133,9 +136,9 @@ class Meldung (models.Model):
     GERNE = 2
 
     PRAEFERENZ = (
-        (GARNICHT, "Nein"), 
+        (GARNICHT, "Nein"),
         (WENNSMUSS, "Wenn es sein muss"),
-        (NORMAL, "Ok" ),
+        (NORMAL, "Ok"),
         (GERNE, "Gerne!"),
         )
 

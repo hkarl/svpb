@@ -335,7 +335,6 @@ class ListAufgabenView (FilteredListView):
     </ul>
     """
     todo_text = """
-    <li> Filter einbauen: Stunden, Verantwortlicher (nur wenn Vorstand?) </li>
     <li> Spalten klickbar machen: Aufgabe, Verantowrtlicher (direkt email senden?)  </li>
     <li> Bemerkung als Popover umbauen?  </li>  
     """
@@ -533,16 +532,19 @@ class CreateMeldungenView (MeldungEdit):
     intro_text = """
     Tragen Sie bitte ein, an welchen Aufgaben Sie mitarbeiten möchten. Wählen Sie dazu für die entsprechende Aufgabe eine entsprechende Vorliebe in der letzen Spalte aus (oder lassen Sie die Vorliebe auf `Nein'). Sie können noch zusätlich eine Bemerkung eingeben (z.B., wenn Sie die Aufgaben mit einem Partner zusammenarbeiten erledigen möchten oder nur zu bestimmten Uhrzeiten können). 
     <p>
-    Sie können die Aufgabenliste eingrenzen, in dem Sie nach Aufgabengruppen filtern. Wählen Sie aus der Liste aus und drücken dann auf `Filter anwenden'. 
+    Sie können die Aufgabenliste eingrenzen, in dem Sie nach Aufgabengruppen filtern. Wählen Sie aus der Liste aus und drücken dann auf `Filter anwenden'.
+    <p>
+    Zeigen Sie auf den Aufgabennamen um ggf. weitere Information über die Aufgabe zu sehen.
     """
 
     todo_text = """
     <li> Über Button-Farben nachdenken </li>
+    <li> Über das Nutzen von Tooltips nachdenken - zweischneidig </li>
     """
     def get_queryset(self):
 
         qsAufgaben = self.apply_filter ()
-        
+
         # fill the table with all aufgaben
         # overwrite preferences and bemerkung if for them, a value exists
         aufgabenliste = []
@@ -552,6 +554,7 @@ class CreateMeldungenView (MeldungEdit):
                  'gruppe': a.gruppe,
                  'datum' : a.datum,
                  'stunden': a.stunden,
+                 'aufgabeObjekt': a,
                 }
             # add what we can find from Meldung:
             m, newcreated = models.Meldung.objects.get_or_create(
@@ -562,12 +565,12 @@ class CreateMeldungenView (MeldungEdit):
             d['id'] = m.id 
             d['prefMitglied'] = m.prefMitglied
             d['bemerkung'] = m.bemerkung
-  
+
             # and collect
             aufgabenliste.append(d)
 
         table = self.get_filtered_table (aufgabenliste)
-        
+
         return table
 
 
@@ -1661,7 +1664,8 @@ class EmailSendenView(View):
 class ImpersonateListe(isVorstandMixin, FilteredListView):
     """Show a table with all Mitglieder,
     pick one to impersonate.
-    Needs a suitable linked Column to point to impersonate/user-id 
+    Needs a suitable linked Column to point
+    to impersonate/user-id
     """
     title = "Darzustellenden Nutzer auswählen"
     tableClass = MitgliederTable
