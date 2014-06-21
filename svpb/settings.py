@@ -105,7 +105,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
     ) 
-    
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -114,7 +114,15 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
 )
+
+IMPERSONATE_REDIRECT_URL = "/"
+
+def user_is_vorstand(request):
+    return request.user.groups.filter(name="Vorstand")
+IMPERSONATE_CUSTOM_ALLOW = "svpb.settings.user_is_vorstand"
+
 
 ROOT_URLCONF = 'svpb.urls'
 
@@ -143,6 +151,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'django_tables2',
     'crispy_forms',
+    'impersonate',
     'arbeitsplan',
     'post_office',
 )

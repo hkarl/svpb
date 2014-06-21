@@ -6,6 +6,7 @@ Collect all the tables and column types relevant for django_tables2 here.
 
 from django.utils.safestring import mark_safe
 from django.utils.html import escape, format_html
+from django.contrib.auth.models import User
 
 
 import django_tables2
@@ -616,3 +617,24 @@ class ZuteilungEmailTable(BaseEmailTable):
                   'zuteilungBenachrichtigungNoetig',
                   'anmerkung', 'sendit',
                   )
+
+class MitgliederTable(django_tables2.Table):
+
+    ## first_name = django_tables2.Column (accessor="user.first_name")
+    ## last_name = django_tables2.Column (accessor="user.last_name")
+
+    mitgliedsnummer = django_tables2.Column (accessor="mitglied.mitgliedsnummer")
+
+    id = django_tables2.LinkColumn('impersonate-start',
+                                   args=[A('pk')],
+                                   verbose_name="Nutzer darstellen",
+                                   )
+    class Meta:
+        model = User
+
+        attrs = {"class": "paleblue"}
+        fields = ('first_name',
+                    'last_name',
+                    'mitgliedsnummer',
+                    'id',
+                    )

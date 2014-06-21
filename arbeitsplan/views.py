@@ -1590,27 +1590,25 @@ class ZuteilungEmailView(FilteredEmailCreateView):
 
     def saveUpdate(self, instance, thisuser):
         """ tell the instance (of Mitglied) that it has been notified"""
-        
+
         instance.zuteilungsbenachrichtigung = datetime.datetime.utcnow().replace(tzinfo=utc)
         instance.zuteilungBenachrichtigungNoetig = False
-        
+
         # print instance.benachrichtigt
         instance.save()
 
-
-    
     def annotate_data(self, qs):
         qs = super(ZuteilungEmailView, self).annotate_data(qs)
         for q in qs:
             q.sendit = q.zuteilungBenachrichtigungNoetig
         return qs 
-    
+
     def constructTemplateDict(self, instance):
         """this view operates on models.User, so instance is a user object.
         We have to find all zuteilungen for this user and stuff this data into
         the construct Tempalte Dict for the email to render
         """
-        
+
         d = {'first_name': instance.user.first_name,
              'last_name': instance.user.last_name,
              'zuteilungen': models.Zuteilung.objects.filter(ausfuehrer=instance.user)
@@ -1644,12 +1642,42 @@ class EmailSendenView(View):
 
         print sent, failed
 
-        if sent>0:
+        if sent > 0:
             messages.success(request,
-                             "Es wurden {0} Nachrichten versandt".format(sent))
-        if failed>0:
+                             "Es wurden {0} Nachrichten versandt"
+                             .format(sent))
+        if failed > 0:
             messages.error(request,
-                           "Es konnten {0} Nachrichten nicht versendet werden! Sysadmin kontaktieren!".
+                           "Es konnten {0} Nachrichten nicht versendet"
+                           "werden! Sysadmin kontaktieren!".
                            format(failed))
-            
-        return redirect ('home')
+
+        return redirect('home')
+
+
+################################
+## Impersonateion
+
+class ImpersonateListe(FilteredListView):
+    """Show a table with all Mitglieder,
+    pick one to impersonate.
+    Needs a suitable linked Column to point to impersonate/user-id 
+    """
+    title = "Darzustellenden Nutzer auswählen"
+    tableClass = MitgliederTable
+    tabletitle = "Mitglieder"
+    model = User
+
+    filterform_class = forms.NameFilterForm
+    filterconfig = [('first_name', 'first_name__icontains'),
+                    ('last_name', 'last_name__icontains'),
+                    ]
+
+    
+
+    def get_data(self):
+        return (self.model.objects
+                .filter(is_staff=False)
+                .filter(is_superuser=False)
+                .exclude(id=self.request.user.id))
+    pass

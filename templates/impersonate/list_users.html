@@ -1,0 +1,13 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+
+{% block branding %}
+Welchen Nutzer darstellen?
+{% endblock %}
+
+{% block content %}
+<ul>
+{% for u in users %}
+  <li><a href="/impersonate/{{u.id}}">{{u.first_name}} {{u.last_name}} </li> 
+{% endfor %}
+</ul>
+{% endblock %}
