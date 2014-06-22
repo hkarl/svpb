@@ -455,14 +455,15 @@ class ZuteilungTableVorstand(django_tables2.Table):
 
     datum = django_tables2.Column(accessor ="aufgabe.datum",
                                              verbose_name="Datum")
-    ausfuehrer_last = django_tables2.Column (accessor="ausfuehrer.last_name",
-                                              verbose_name="Ausführer")
+
+    ausfuehrer = KontaktColumn(accessor="ausfuehrer",
+                               verbose_name="Ausführer")
 
     class Meta:
         model = models.Zuteilung
         attrs = {"class": "paleblue"}
 
-        fields = ("aufgabe", 'verantwortlicher', 'datum', 'ausfuehrer_last')
+        fields = ("aufgabe", 'verantwortlicher', 'datum', 'ausfuehrer')
 
 ##############################
 
