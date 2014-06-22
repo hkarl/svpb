@@ -41,6 +41,28 @@ class Mitglied (models.Model):
     def __unicode__(self):
         return self.user.__unicode__()
 
+    def zugeteilteStunden(self, time=None):
+        """How much work has already been assigned to this user?
+        Difficult because some aufgaben have easily identified hours,
+        others have to be checked specifically for the stundenplan Zuteilung.
+
+        time: -1: Past, +1: Future. 0: Tasks without date? 
+        """
+
+        qs = self.user.zuteilung_set.all()
+
+        if time == -1:
+            qs = qs.filter(aufgabe__datum__lte=datetime.date.today())
+        if time == +1:
+            qs = qs.filter(aufgabe__datum__gt=datetime.date.today())
+        if time == 0:
+            qs = qs.filter(aufgabe__datum__isnull=True)
+
+
+        stundenlist = [z.stunden() for z in qs]
+        print self.__unicode__(), time, stundenlist
+        return sum(stundenlist)
+
     class Meta:
         verbose_name_plural = "Mitglieder"
         verbose_name = "Mitglied"
@@ -110,6 +132,10 @@ class Aufgabe(models.Model):
         return self.meldung_set.exclude(prefMitglied=
                                         Meldung.GARNICHT).count()
 
+    def has_Stundenplan(self):
+        """Is there a STundenplan for this Aufgabe?"""
+
+        return self.stundenplan_set.count() > 0 
 
     def __unicode__(self):
         return self.aufgabe

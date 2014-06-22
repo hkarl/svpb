@@ -765,7 +765,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
         userQs, aufgabenQs = qs
 
         # print "Aufgaben: ", [a.__unicode__() for a in aufgabenQs]
-        
+
         ztlist = []
         statuslist = {}
         aufgaben = dict([(unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore'),
@@ -812,14 +812,18 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                 statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
 
             # TODO: Add to tmp the amount of already zugeteilt work per user
-            tmp['zugeteilt'] = (models.Zuteilung.objects
-                                .filter(ausfuehrer = u)
-                                .aggregate(Sum('aufgabe__stunden'))
-                                ['aufgabe__stunden__sum']
-                                )
-            ztlist.append(tmp)
+            # This is wrong, have to take into account Stundenplanzuteilungen! 
+            ## tmp['zugeteilt'] = (models.Zuteilung.objects
+            ##                     .filter(ausfuehrer = u)
+            ##                     .aggregate(Sum('aufgabe__stunden'))
+            ##                     ['aufgabe__stunden__sum']
+            ##                     )
 
-        pp (ztlist)
+            tmp['zugeteilt'] = u.mitglied.zugeteilteStunden()
+
+            ztlist.append(tmp)
+    
+        # pp (ztlist)
         # store the statuslist in the hidden field, to be accessible to POST later on
         self.tableformHidden = [{'name': 'status',
                                  'value': ';'.join([k+'='+v
@@ -931,12 +935,6 @@ class ZuteilungUebersichtView (FilteredListView):
 
     def get_queryset(self):
 
-        # which Aufgaben have a Stundenplan in the first place?
-        aufgabenWithStunden = [x[0]
-                               for x in models.Stundenplan.objects
-                               .values_list('aufgabe').distinct()
-                              ]
-
         qs = models.Aufgabe.objects.all()
 
         data = []
@@ -950,14 +948,14 @@ class ZuteilungUebersichtView (FilteredListView):
             newEntry['required'] = aufgabe.anzahl
             newEntry['gruppe'] = aufgabe.gruppe.gruppe
             newEntry['gemeldet'] = aufgabe.numMeldungen()
+            newEntry['zugeteilt'] = aufgabe.zuteilung_set.count()
             newEntry['editlink'] = mark_safe(
                 '<a href="{0}">Zuteilung</a>'.format(
                     reverse('arbeitsplan-manuellezuteilungAufgabe',
                             args=(aufgabe.id,),
                             )))
 
-
-            if aufgabe.id in aufgabenWithStunden:
+            if aufgabe.has_Stundenplan():
 
                 # for s in models.Stundenplan.objects.filter (aufgabe__id=q['id']):
                 for s in aufgabe.stundenplan_set.all():
@@ -971,14 +969,13 @@ class ZuteilungUebersichtView (FilteredListView):
                         newEntry['u'+str(stdzut.uhrzeit)]['zugeteilt'] += 1
 
 
-                newEntry['zugeteilt'] = None
+                # newEntry['zugeteilt'] = None
                 newEntry['stundenplanlink'] = mark_safe('<a href="{0}">Stundenplan</a>'.format(
                     reverse ('arbeitsplan-stundenplaeneEdit',
                              args=(aufgabe.id,)),
                     ))
             else:
                 # normale Aufgaben, kein Stundenplan
-                newEntry['zugeteilt'] = aufgabe.zuteilung_set.count()
                 newEntry['stundenplanlink'] = None
 
             data.append(newEntry)
@@ -997,13 +994,19 @@ class ZuteilungUebersichtView (FilteredListView):
 
 class  StundenplaeneEdit (FilteredListView):
 
-    title = "Weisen Sie einer Aufgabe Personen zu den benötigten Zeitpunkten zu"
+    title = "Weisen Sie einer Aufgabe Personen"
+    " zu den benötigten Zeitpunkten zu"
     tableClassFactory = staticmethod(StundenplanEditFactory)
     tabletitle = "Zuweisung eintragen"
     tableform = {'name': "eintragen",
                  'value': "Stundenzuteilung eintragen/ändern"}
 
-    def get_queryset (self):
+    intro_text = """Hinweis: Wenn hier keine Nutzer angezeigt werden,
+    müssen Sie zunächst Nutzer dieser Aufgabe zuteilen. Das Zuweisen zu
+    einzelnen Stunden ist erst der zweite Schritt.
+    """
+
+    def get_queryset(self):
 
         # find out which aufgabe we are talking about?
 
@@ -1332,10 +1335,7 @@ class Salden(isVorstandMixin, FilteredListView):
     tabletitle = "Saldenübersicht"
 
     filtertitle = "Salden nach Vor- oder Nachnamen filtern"
-    filterform_class = forms.NameFilterForm
-    filterconfig = [('first_name', 'first_name__icontains'),
-                    ('last_name', 'last_name__icontains'),
-                    ]
+    filterform_class = forms.SaldenFilter
 
     model = models.User
 
@@ -1344,15 +1344,32 @@ class Salden(isVorstandMixin, FilteredListView):
     """
 
     todo_text = """
-    <li> Weitere Filter einbauen? nach offen, abgelehnt, ... ? </li>
     <li> User anklickbar machen, dann zu entsprechendem View verzweigen </li>
-    <li> Die einzelnen Kategoieren anklickbar machen? Und dann alle Leistungsmeldungen entsprechend anzeigen </li>
-    <li> Auch Zuteilungen berückichstigen? Nur zukünftige, oder alle? </li>
-    <li> Auf fehlende LEistungsmeldungen hinweisen? (nach Datum zugteilten Aufgaben?) </li> 
     """
 
     # TODO: für einen anklickbaren User braucht es nur:
     # http://127.0.0.1:8000/arbeitsplan/leistungenBearbeiten/z=all/?last_name=Pan&first_name=Peter&status=OF&filter=Filter+anwenden
+
+    def check_filter(self, userdata):
+        """Apply a filter based on annotated data. HArd to do in the generic way
+        of filterprocessing...
+        """
+        filterchoice = self.filterform.cleaned_data['saldenstatus']
+        # see the Saldenstatus table for definition of these choices!
+
+        return {
+            '--': lambda u: True,
+            'OK': lambda u: u['AK'][0] >= 10,
+            'CH': lambda u: ((u['AK'][0] < 10) and
+                             ((u['AK'][0] or 0) +
+                              (u['OF'][0] or 0) +
+                              u['future'] + u['nodate'] >= 10)
+                             ),
+            'PR': lambda u: ((u['AK'][0] or 0) +
+                             (u['OF'][0] or 0) +
+                              u['future'] + u['nodate'] < 10),
+            }[filterchoice](userdata)
+
     def annotate_data(self, userQs):
         res = []
 
@@ -1381,18 +1398,26 @@ class Salden(isVorstandMixin, FilteredListView):
 
 
             # TODO: add linked column here as well 
-            zugeteilt = (models.Zuteilung.objects.
-                         filter(ausfuehrer=u).aggregate(Sum('aufgabe__stunden'))['aufgabe__stunden__sum'])
+            ## zugeteilt = (models.Zuteilung.objects.
+            ##              filter(ausfuehrer=u).aggregate(Sum('aufgabe__stunden'))['aufgabe__stunden__sum'])
+            zugeteilt = u.mitglied.zugeteilteStunden()
 
-            linktarget = reverse("arbeitsplan-zuteilunglist", args=('all',)) + "?" + urlencode({
-                'last_name': u.last_name,
-                'first_name': u.first_name,
-                'status': s[0],
-                'filter': 'Filter anwenden'})
+            tmp['past'] = u.mitglied.zugeteilteStunden(-1)
+            tmp['future'] = u.mitglied.zugeteilteStunden(+1)
+            tmp['nodate'] = u.mitglied.zugeteilteStunden(0)
+            linktarget = reverse("arbeitsplan-zuteilunglist",
+                                 args=('all',)) + "?" + urlencode({
+                                     'last_name': u.last_name,
+                                     'first_name': u.first_name,
+                                     'status': s[0],
+                                     'filter': 'Filter anwenden'})
 
             tmp['zugeteilt'] = (zugeteilt, linktarget)
-            res.append(tmp)
 
+            if self.check_filter(tmp):
+                res.append(tmp)
+
+            pp (tmp)
             # print reverse(ListLeistungView,args=("all",))
 
         return res

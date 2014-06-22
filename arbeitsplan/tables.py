@@ -7,7 +7,7 @@ Collect all the tables and column types relevant for django_tables2 here.
 from django.utils.safestring import mark_safe
 from django.utils.html import escape, format_html
 from django.contrib.auth.models import User
-
+from django.core.urlresolvers import reverse
 
 import django_tables2
 from django_tables2.utils import A  # alias for Accessor
@@ -206,8 +206,11 @@ def NameTableFactory (name, attrs, l, meta=None):
                 }
     nameattrs.update(attrs)
 
-    return TableFactory (name, nameattrs, l,
-                         meta=meta if meta else {'sequence': ('last_name', 'first_name', '...')})
+    return TableFactory(name, nameattrs, l,
+                        meta=(meta
+                              if meta
+                              else {'sequence': ('last_name',
+                                                 'first_name', '...')}))
 
 ##############################
 
@@ -649,11 +652,22 @@ def SaldenTableFactory (l):
 
     attrs = {}
     for s in models.Leistung.STATUS:
-        attrs[s[0]] = LinkedColumn(verbose_name=s[1])
+        attrs[s[0]] = LinkedColumn(verbose_name=s[1] + ' (h)')
 
-    attrs['zugeteilt'] = LinkedColumn(verbose_name="Zugeteilt")
-    t = NameTableFactory ("salden", attrs, l)
-    return t 
+    attrs['zugeteilt'] = LinkedColumn(verbose_name="Zugeteilt insgesamt (h)")
+    attrs['past'] = django_tables2.Column(verbose_name="Zuteilungen vergangener Aufgaben (h)")
+    attrs['future'] = django_tables2.Column(verbose_name="Zuteilungen zukünftiger Aufgaben (h)")
+    attrs['nodate'] = django_tables2.Column(verbose_name="Zuteilungen Aufgaben ohne Datum (h)")
+    t = NameTableFactory("salden", attrs, l,
+                         meta={'sequence': ('last_name',
+                                            'first_name',
+                                            'zugeteilt',
+                                            'past',
+                                            'future',
+                                            'nodate',
+                                            '...')
+                               })
+    return t
 
 ##############################
 
@@ -661,18 +675,24 @@ def SaldenTableFactory (l):
 def ZuteilungsTableFactory (tuple):
     l, aufgabenQs = tuple
 
-    attrs={}
+    attrs = {}
 
-    attrs['zugeteilt'] = django_tables2.Column(verbose_name="Bereits zugeteilt (h)")
+    attrs['zugeteilt'] = django_tables2.Column(verbose_name=
+                                               "Bereits zugeteilt (h)")
 
     for a in aufgabenQs:
-        tag = unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore')
-        attrs[tag] = ValuedCheckBoxColumn(verbose_name= (u"{}, {}h ({})".format (a.aufgabe,
-                                                                                 a.stunden,
-                                                                               a.gruppe,)),
-                                          orderable=False)
+        tag = unicodedata.normalize('NFKD',
+                                    a.aufgabe).encode('ASCII', 'ignore')
+        attrs[tag] = ValuedCheckBoxColumn(
+            verbose_name=mark_safe((u'<a href="{}">{}</a>, {}h ({})'
+                          .format(reverse('arbeitsplan-aufgabenEdit',
+                                          args=(a.id,)),
+                                  a.aufgabe,
+                                  a.stunden,
+                                  a.gruppe,))),
+            orderable=False)
 
-    t = NameTableFactory ('ZuteilungsTable', attrs, l)
+    t = NameTableFactory('ZuteilungsTable', attrs, l)
  
     return t 
 

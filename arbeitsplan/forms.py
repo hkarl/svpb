@@ -323,38 +323,67 @@ class LeistungBenachrichtigtForm(CrispyFilterMixin, forms.Form):
                                         label="Auch schon benachrichtigte Leistungen anzeigen",
                                      )
 
-    __layout = Layout (
+    __layout = Layout(
         'benachrichtigt',
         )
 
+
 class ZuteilungBenachrichtigungForm(CrispyFilterMixin, forms.Form):
     benachrichtigt = forms.BooleanField(required=False,
-                                      initial=False,
-                                      label="Auch schon benachrichtige Mitglieder anzeigen?",
-                                      )
+                                        initial=False,
+                                        label="Auch schon benachrichtige"
+                                        " Mitglieder anzeigen?",
+                                        )
 
     __layout = Layout(
         'benachrichtigt'
         )
 
-class AufgabenDatumFilter (AufgabengruppeFilterForm,
-                           DateFilterForm,
-                           forms.Form):
+
+class SaldenStatusForm(CrispyFilterMixin, forms.Form):
+    saldenstatus = forms.ChoiceField(required=False,
+                                     initial=False,
+                                     label="Saldenstatus",
+                                     choices=(('--', 'Kein Statusfilter'),
+                                              ('OK', 'Pensum erfüllt'),
+                                              ('CH', 'Chancen zu erfüllen'),
+                                              ('PR', 'Pensum kann nicht erfüllt werden'),
+                                              ))
+    __layout = Layout(
+        'saldenstatus'
+        )
+
+
+# Stich Forms together into Filters 
+
+class AufgabenDatumFilter(AufgabengruppeFilterForm,
+                          DateFilterForm,
+                          forms.Form):
     pass 
-                           
-class LeistungFilter (NameFilterForm,
-                      AufgabengruppeFilterForm,
-                      DateFilterForm,
-                      StatusFilterForm,
-                      forms.Form): 
+
+
+class LeistungFilter(NameFilterForm,
+                     AufgabengruppeFilterForm,
+                     DateFilterForm,
+                     StatusFilterForm,
+                     forms.Form): 
     pass
 
-class LeistungEmailFilter (AufgabengruppeFilterForm,
-                           StatusFilterForm2,
-                           LeistungBenachrichtigtForm):
+
+class LeistungEmailFilter(AufgabengruppeFilterForm,
+                          StatusFilterForm2,
+                          LeistungBenachrichtigtForm):
     pass
 
-class ZuteilungEmailFilter (NameFilterForm,
-                            ZuteilungBenachrichtigungForm,
-                            ):
+
+class ZuteilungEmailFilter(NameFilterForm,
+                           ZuteilungBenachrichtigungForm,
+                           ):
     pass
+
+
+class SaldenFilter(NameFilterForm,
+                   SaldenStatusForm,
+                   forms.Form):
+    pass
+
