@@ -1,0 +1,30 @@
+{% extends "arbeitsplan_tff.html" %}
+{% load staticfiles %}
+
+
+
+{% block prefilter %}
+
+<h3>Zusammenfassung Ihrer Zuteilungen </h3>
+
+Sie sind bisher für insgesamt  {{ zuteilungSummary }} Stunden eingeteilt.
+<p>
+{% if zuteilungSummary < 10 %}
+<div class="alert alert-warning">
+Damit können Sie noch nicht die vorgesehenen 10 Stunden Arbeitsleistung pro Jahr erbringen. Sie sollten
+den Vorstand kontaktieren und sich um weitere Zuteilungen bemühen.
+</div>
+{% else %}
+Wenn Sie alle diese Arbeitsdienste entsprechend erbringen, können Sie damit Ihr vorgesehenes Pensum pro Jahr erfüllen. Bitte kontrollieren Sie aber auch, ob Ihre tatsächlich gemeldeten Arbeitszeiten richtig verbucht werden.
+{% endif %}
+
+
+<ul>
+ 
+</ul>
+
+
+
+{% endblock %} 
+
+

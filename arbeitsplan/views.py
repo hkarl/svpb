@@ -648,7 +648,7 @@ class MeldungVorstandView(isVorstandMixin, MeldungEdit):
 ########################################################################################
 
 
-class ListZuteilungenView (FilteredListView):
+class ListZuteilungenView(FilteredListView):
     title = "Alle Zuteilungen anzeigen"
     filterform_class = forms.PersonAufgabengruppeFilterForm
     tableClass = ZuteilungTable
@@ -676,12 +676,14 @@ class ListZuteilungenView (FilteredListView):
             """
         else:
             qs = models.Zuteilung.objects.filter(ausfuehrer=self.request.user)
+            self.template_name = "arbeitsplan_listzuteilungen.html"
             self.filterform_class = None
             self.filtertitle = ""
             self.intro_text = """
             Welche Zuteilung sind für mich eingetragen?
             """
-
+            
+            self.context['zuteilungSummary'] = sum([z.stunden() for z in qs])
 
         qs = self.apply_filter(qs)
         table = self.get_filtered_table(qs)

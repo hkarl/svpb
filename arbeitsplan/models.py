@@ -169,7 +169,7 @@ class Meldung (models.Model):
 
     bemerkung = models.TextField (blank=True)
     bemerkungVorstand = models.TextField (blank=True)
-    
+
     def __unicode__ (self):
         return (self.melder.__unicode__() + " ; " +
                 self.aufgabe.__unicode__() + " ; " +
@@ -204,6 +204,16 @@ class Zuteilung (models.Model):
         self.ausfuehrer.zuteilungBenachrichtigungNoetig = True
         self.ausfuehrer.save()
         super(Zuteilung, self).delete(*args, **kwargs)
+
+    def stunden(self):
+        """Compute the hours allocated to this zuteilung.
+        Depends on whether a Stundenplan exists for this job.
+        """
+
+        if self.aufgabe.stundenplan_set.count() > 0:
+            return self.stundenzuteilung_set.count()
+        else:
+            return self.aufgabe.stunden
 
     def stundenTuple(self):
         """Produce a list of tuples with the Stunden

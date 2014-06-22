@@ -72,6 +72,16 @@ class KontaktColumn(django_tables2.columns.Column):
     as well as clickable email link.
     """
 
+    def __init__(self, *args, **kwargs):
+        if (('order_by' not in kwargs) and
+            ('accessor' in kwargs)):
+            kwargs['order_by'] = (kwargs['accessor']+'.last_name',
+                                  kwargs['accessor']+'.first_name',
+                                  )
+            ## print kwargs['order_by'], type(kwargs['order_by'])
+            ## print kwargs['accessor'], type(kwargs['accessor'])
+        super(KontaktColumn, self).__init__(*args, **kwargs)
+
     def render(self, value):
         return mark_safe('{1} {2}{0}'.format(
             (' <a href="mailto:{0}">'
@@ -135,10 +145,11 @@ class RequiredAssignedColumn (django_tables2.columns.Column):
 
         return r
 
+    
 class LinkedColumn(django_tables2.columns.Column):
     """
     A column that redners a simple <a href>,
-    assuming a tuple of values 
+    assuming a tuple of values
     """
 
     def render(self, value):
@@ -160,7 +171,7 @@ def TableFactory (name, attrs, l, meta={}):
     """takes
     - a name for the new django_tables2 class
     - a dictoranry with column_name: column_types
-    - a list of data to be used for the table 
+    - a list of data to be used for the table
 
     return klass 
     """
@@ -243,25 +254,25 @@ def StundenplanTableFactory (l):
     return t
 
 
-def StundenplanEditFactory (l):
+def StundenplanEditFactory(l):
     """
-    Produce a table with persons as row, uhrzeiten as columns. Checkboxes in the uhrzeit columns. 
+    Produce a table with persons as row, uhrzeiten as columns.
+    Checkboxes in the uhrzeit columns.
     """
 
     newattrs = {}
 
-    for i in  range(models.Stundenplan.startZeit,
-                         models.Stundenplan.stopZeit+1):
-        ## newattrs['u'+str(i)] = django_tables2.Column (accessor='u'+str(i),
-        ##                                        verbose_name = str(i)+'-'+str(i+1))
-        newattrs['u'+str(i)] = ValuedCheckBoxColumn (accessor='u'+str(i),
-                                                verbose_name = str(i)+'-'+str(i+1))
+    for i in range(models.Stundenplan.startZeit,
+                   models.Stundenplan.stopZeit+1):
+        newattrs['u'+str(i)] = ValuedCheckBoxColumn(accessor='u'+str(i),
+                                                    verbose_name=str(i)+'-'+str(i+1))
 
-    return NameTableFactory ("StundenplanEdit",
-                             newattrs, l,
-                             meta = {'sequence': ('last_name', 'first_name', '...')}
-                             )
-    
+    return NameTableFactory("StundenplanEdit",
+                            newattrs, l,
+                            meta={'sequence': ('last_name',
+                                               'first_name', '...')}
+                            )
+
 ##############################
 
 
@@ -400,7 +411,7 @@ class StundenplanTable (django_tables2.Table):
     u15 = django_tables2.Column (accessor='u15', verbose_name='0-1')
     u16 = django_tables2.Column (accessor='u16', verbose_name='0-1')
     u17 = django_tables2.Column (accessor='u17', verbose_name='0-1')
-                            
+
     class Meta:
         # model = models.Aufgabe
         attrs = {"class": "paleblue"}
@@ -413,9 +424,12 @@ class ZuteilungTable(django_tables2.Table):
     ## verantwortlicher = django_tables2.Column(
     ##     accessor="aufgabe.verantwortlich.last_name",
     ##     verbose_name="Verantwortlicher")
+
     verantwortlicher = KontaktColumn(
         accessor="aufgabe.kontakt",
-        verbose_name="Verantwortlicher")
+        verbose_name="Verantwortlicher",
+        orderable=False,
+        )
 
     datum = django_tables2.Column(accessor="aufgabe.datum",
                                   verbose_name="Datum")
@@ -587,6 +601,7 @@ class MeldungTableVorstand (RadioButtonTable):
 
     melder = KontaktColumn(accessor="melder",
                            verbose_name="Melder",
+                           # order_by=("melder.last_name", "melder.first_name"),
                            )
 
     ## bemerkungVorstand = django_tables2.Column (accessor="bemerkungVorstand",
@@ -646,7 +661,7 @@ def ZuteilungsTableFactory (tuple):
     attrs={}
 
     attrs['zugeteilt'] = django_tables2.Column(verbose_name="Bereits zugeteilt (h)")
-    
+
     for a in aufgabenQs:
         tag = unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore')
         attrs[tag] = ValuedCheckBoxColumn(verbose_name= (u"{}, {}h ({})".format (a.aufgabe,
