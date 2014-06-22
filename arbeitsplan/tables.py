@@ -308,8 +308,10 @@ class AufgabenTable (django_tables2.Table):
 
         fields = ("gruppe", "aufgabe", "datum",
                   "stunden", 
-                  "anzahl", "meldungen", "zuteilungen", 
+                  "anzahl", 
                   "bemerkung")
+
+        exclude = ("meldungen", "zuteilungen", )
 
 
 class AufgabenTableVorstand(django_tables2.Table):

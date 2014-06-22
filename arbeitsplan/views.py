@@ -557,7 +557,8 @@ class CreateMeldungenView (MeldungEdit):
                  'stunden': a.stunden,
                  'aufgabeObjekt': a,
                  'anzahl': a.anzahl,
-                 'meldungen': a.meldung_set.count(),
+                 # 'meldungen': a.meldung_set.count(),
+                 'meldungen': a.numMeldungen(), 
                  ## 'zuteilungen': z,
                  ## 'fehlende_zuteilungen': a.anzahl - z,
                  'zuteilungen': None,
@@ -682,7 +683,6 @@ class ListZuteilungenView(FilteredListView):
             self.intro_text = """
             Welche Zuteilung sind für mich eingetragen?
             """
-            
             self.context['zuteilungSummary'] = sum([z.stunden() for z in qs])
 
         qs = self.apply_filter(qs)
@@ -702,26 +702,30 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
     tableform = {'name': "eintragen",
                  'value': "Zuteilung eintragen/ändern"}
 
-
     filtertitle = "Nach Aufgabengruppen oder Mitgliedern filtern"
     filterform_class = forms.PersonAufgabengruppeFilterForm
-    filterconfigAufgabe = [('aufgabengruppe', 'gruppe__gruppe'),]
+    filterconfigAufgabe = [('aufgabengruppe', 'gruppe__gruppe'), ]
     filterconfigUser = [('first_name', 'first_name__icontains'),
                         ('last_name', 'last_name__icontains'),
                         ]
     # TODO: filter by preferences? show preferences in table?
 
     intro_text = """
-    In der Tabelle werden Boxen für die Meldungen der Mitglieder angezeigt. Wählen Sie die Box an (ankreuzen), wenn Sie ein Mitglied für eine Aufgabe einteilen wollen. Entfernen Sie ein Häkchen, wenn das Mitglied die Aufgabe nicht mehr ausführen soll.
+    In der Tabelle werden Boxen für die Meldungen der Mitglieder
+    angezeigt. Wählen Sie die Box an (ankreuzen), wenn Sie ein Mitglied
+     für eine Aufgabe einteilen wollen. Entfernen Sie ein Häkchen,
+      wenn das Mitglied die Aufgabe nicht mehr ausführen soll.
     <p>
-    Filtern Sie nach Mitgliedsnamen oder Aufgabengruppe  
+    Filtern Sie nach Mitgliedsnamen oder Aufgabengruppe.
     """
 
     todo_text = """
     <li> mit -1 durch den Vorstand bewertete Meldungen ausfiltern!  </li>
     <li> Aufgabe aus der Vergangenheit ausfiltern? </li>
-    <li> Benachrichtigungen senden, wenn Änderung? Oder nur auf explizite Anforderung senden? </li>
-    <li> Weitere Filter einbauen? Nach Mitglieds- oder Vorstandspräferenz?  </li>
+    <li> Benachrichtigungen senden, wenn Änderung?
+    Oder nur auf explizite Anforderung senden? </li>
+    <li> Weitere Filter einbauen? Nach Mitglieds-
+    oder Vorstandspräferenz?  </li>
     """
 
     def get_data(self):
@@ -731,7 +735,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
         return (userQs, aufgabeQs)
 
 
-    def apply_filter (self, qs):
+    def apply_filter(self, qs):
 
         userQs, aufgabeQs = qs
         self.aufgabengruppe = None
@@ -739,14 +743,16 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
         # need to get our hands on the aufgabe as passed by the URL
 
         if 'aufgabe' in self.kwargs:
-            aufgabeQs = models.Aufgabe.objects.filter(id=self.kwargs['aufgabe'])
+            aufgabeQs = (models.Aufgabe.objects.
+                         filter(id=self.kwargs['aufgabe']))
         else:
             self.filterconfig = self.filterconfigAufgabe
-            aufgabeQs = super(ManuelleZuteilungView, self).apply_filter(aufgabeQs)
+            aufgabeQs = super(ManuelleZuteilungView,
+                              self).apply_filter(aufgabeQs)
 
             if self.filterform.is_valid():
-                self.aufgabengruppe = self.filterform.cleaned_data['aufgabengruppe']
-
+                self.aufgabengruppe = (self.filterform.
+                                       cleaned_data['aufgabengruppe'])
 
         self.filterconfig = self.filterconfigUser
         userQs = super(ManuelleZuteilungView, self).apply_filter(userQs)
@@ -897,29 +903,40 @@ class ZuteilungUebersichtView (FilteredListView):
     # TODO: 
     ## filtertitle = "Nach Aufgabengruppe filtern"
     ## filterform_class = forms.AufgabengruppeFilterForm
-    
+
     intro_text = """
-    Die Tabelle fasst pro Aufgabe die benötigten/angeforderten, gemeldeten und bereits zugeteilten Mitglieder zusammen.
+    Die Tabelle fasst pro Aufgabe die benötigten/angeforderten,
+    gemeldeten und bereits zugeteilten Mitglieder zusammen.
     <ul>
-    <li>Aus den Spalten Aufgabe und Zuteilen kann man direkt die Aufgabe aufrufen bzw. Zuteilungen für diese Aufgabe anschauen und verändern. </li>
-    <li> Sind für eine Aufgabe die Anforderungen nach einzelnen Stunden aufgegliedert (typischerweise bei Bewirtung der Fall), werden pro Stunden die angeforderten bzw. bereits zugeteilten Mitglieder in den rechten Spalten angezeigt. </li>
-    <li> Bei solchen Aufgaben kann durch Klick in der Spalte `Stundenplan' direkt die Zuteilung zu einzelnen Stunden verändert werden. </li> 
+    <li>Aus den Spalten Aufgabe und Zuteilen kann man direkt
+    die Aufgabe aufrufen bzw. Zuteilungen für diese Aufgabe
+    anschauen und verändern. </li>
+    <li> Sind für eine Aufgabe die Anforderungen nach einzelnen Stunden
+    aufgegliedert (typischerweise bei Bewirtung der Fall), werden pro
+    Stunden die angeforderten bzw. bereits zugeteilten Mitglieder
+    in den rechten Spalten angezeigt. </li>
+    <li> Bei solchen Aufgaben kann durch Klick in der Spalte `Stundenplan'
+    direkt die Zuteilung zu einzelnen Stunden verändert werden. </li>
     </ul>
     """
-    
+
     todo_text = """
-    <li> Filter einbauen: Nach Aufgabengruppe; nach Aufgaben mit offenen Anforderungen </li>
-    <li> Evtl.: Stundenplan dynamisch einklappen/ausklappen ? (keine Vorstellung, wie das gehen könnte...) 
+    <li> Filter einbauen: Nach Aufgabengruppe; nach Aufgaben
+    mit offenen Anforderungen </li>
+    <li> Teamleader Stundenplanzuteilungen erlauben? Oder auch
+    allgemein Zuteilung von Mitgliedern? </li>
+    <li> Evtl.: Stundenplan dynamisch einklappen/ausklappen ?
+    (keine Vorstellung, wie das gehen könnte...)
     """
-    
+
     def get_queryset(self):
 
         # which Aufgaben have a Stundenplan in the first place?
         aufgabenWithStunden = [x[0]
-                               for x in models.Stundenplan.objects.values_list('aufgabe').distinct()
+                               for x in models.Stundenplan.objects
+                               .values_list('aufgabe').distinct()
                               ]
 
-        # qs = models.Aufgabe.objects.filter(id__in = aufgabenWithStunden).values('id', 'aufgabe', 'gruppe__gruppe')
         qs = models.Aufgabe.objects.all()
 
         data = []
@@ -930,12 +947,14 @@ class ZuteilungUebersichtView (FilteredListView):
                                                         reverse('arbeitsplan-aufgabenEdit',
                                                                 args=(aufgabe.id,))))
 
+            newEntry['required'] = aufgabe.anzahl
             newEntry['gruppe'] = aufgabe.gruppe.gruppe
-            newEntry['gemeldet'] = aufgabe.meldung_set.count()
-            newEntry['editlink'] = mark_safe('<a href="{0}">Zuteilung</a>'.format(reverse
-                                                                                  ('arbeitsplan-manuellezuteilungAufgabe',
-                                                                                  args=(aufgabe.id,), 
-                                                                                    )))
+            newEntry['gemeldet'] = aufgabe.numMeldungen()
+            newEntry['editlink'] = mark_safe(
+                '<a href="{0}">Zuteilung</a>'.format(
+                    reverse('arbeitsplan-manuellezuteilungAufgabe',
+                            args=(aufgabe.id,),
+                            )))
 
 
             if aufgabe.id in aufgabenWithStunden:
@@ -952,16 +971,15 @@ class ZuteilungUebersichtView (FilteredListView):
                         newEntry['u'+str(stdzut.uhrzeit)]['zugeteilt'] += 1
 
 
-                newEntry['zugeteilt'] = None 
+                newEntry['zugeteilt'] = None
                 newEntry['stundenplanlink'] = mark_safe('<a href="{0}">Stundenplan</a>'.format(
                     reverse ('arbeitsplan-stundenplaeneEdit',
                              args=(aufgabe.id,)),
                     ))
             else:
                 # normale Aufgaben, kein Stundenplan
-                newEntry['required'] = aufgabe.anzahl
                 newEntry['zugeteilt'] = aufgabe.zuteilung_set.count()
-                newEntry['stundenplanlink'] = None 
+                newEntry['stundenplanlink'] = None
 
             data.append(newEntry)
 

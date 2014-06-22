@@ -102,6 +102,15 @@ class Aufgabe(models.Model):
         else:
             return self.verantwortlich
 
+    def numMeldungen(self):
+        """How many Meldungen of status better than No!
+        exist for this Aufgabe?
+        """
+        print Meldung.GARNICHT
+        return self.meldung_set.exclude(prefMitglied=
+                                        Meldung.GARNICHT).count()
+
+
     def __unicode__(self):
         return self.aufgabe
 

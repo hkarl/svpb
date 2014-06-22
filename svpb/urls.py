@@ -83,16 +83,16 @@ urlpatterns = patterns('',
          login_required(arbeitsplan.views.ZuteilungUebersichtView.as_view()),
          name="arbeitsplan-zuteilungUebersicht",
          ),
-         
+
     url (r'^arbeitsplan/stundenplaene/(?P<aufgabeid>\d+)/$',
          login_required(arbeitsplan.views.StundenplaeneEdit.as_view()),
          name="arbeitsplan-stundenplaeneEdit",
          ),
-         
+
     url (r'^arbeitsplan/meldung/$',
          login_required(arbeitsplan.views.CreateMeldungenView.as_view()),
          name="arbeitsplan-meldung",),
-         
+
     url (r'^arbeitsplan/leistung/$',
          login_required(arbeitsplan.views.CreateLeistungView.as_view(
              success_url="/home/")),
@@ -101,11 +101,11 @@ urlpatterns = patterns('',
     url (r'^arbeitsplan/leistungenBearbeiten/z=(?P<zustaendig>[a-zA-Z]+)/$',
          login_required(arbeitsplan.views.LeistungBearbeitenView.as_view()),
          name="arbeitsplan-leistungBearbeiten",),
-         
+
     url (r'^arbeitsplan/leistungListe/$',
          login_required(arbeitsplan.views.ListLeistungView.as_view()),
          name="arbeitsplan-leistungListe",),
-         
+
     url (r'^arbeitsplan/salden/$',
          login_required(arbeitsplan.views.Salden.as_view()),
          name="arbeitsplan-salden",),
