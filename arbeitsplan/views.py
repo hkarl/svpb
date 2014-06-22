@@ -758,6 +758,8 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
         userQs, aufgabenQs = qs
 
+        # print "Aufgaben: ", [a.__unicode__() for a in aufgabenQs]
+        
         ztlist = []
         statuslist = {}
         aufgaben = dict([(unicodedata.normalize('NFKD', a.aufgabe).encode('ASCII', 'ignore'),
@@ -771,14 +773,16 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             # print 'user:', u.id 
             tmp.update(aufgaben)
             mQs =  models.Meldung.objects.filter(melder=u)
-            if self.aufgabengruppe <> None:
-                mQs = mQs.filter(aufgabe__gruppe__gruppe =  self.aufgabengruppe)
+            ## if self.aufgabengruppe <> None:
+            ##     mQs = mQs.filter(aufgabe__gruppe__gruppe = self.aufgabengruppe)
+            mQs = mQs.filter(aufgabe__in = aufgabenQs)
 
             # filter out all veto'ed meldungen
-            mQs = mQs.exclude (prefMitglied=models.Meldung.GARNICHT)
+            mQs = mQs.exclude(prefMitglied=models.Meldung.GARNICHT)
 
-            for m in mQs: 
-                tag = unicodedata.normalize('NFKD', m.aufgabe.aufgabe).encode('ASCII', 'ignore')
+            for m in mQs:
+                tag = unicodedata.normalize('NFKD',
+                                            m.aufgabe.aufgabe).encode('ASCII', 'ignore')
                 tmp[tag] = (0,
                             'box_'+  str(u.id)+"_"+str(m.aufgabe.id),
                             ' ({0} / {1})'.format(m.prefMitglied,
@@ -787,8 +791,9 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                 statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
 
             zQs =  models.Zuteilung.objects.filter(ausfuehrer=u)
-            if self.aufgabengruppe <> None:
-                zQs = zQs.filter(aufgabe__gruppe__gruppe =  self.aufgabengruppe)
+            ## if self.aufgabengruppe <> None:
+            ##     zQs = zQs.filter(aufgabe__gruppe__gruppe =  self.aufgabengruppe)
+            zQs = zQs.filter(aufgabe__in=aufgabenQs)
 
             for z in zQs: 
                 tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore')
@@ -801,7 +806,11 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                 statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
 
             # TODO: Add to tmp the amount of already zugeteilt work per user
-            tmp['zugeteilt'] = models.Zuteilung.objects.filter(ausfuehrer = u).aggregate(Sum('aufgabe__stunden'))['aufgabe__stunden__sum']
+            tmp['zugeteilt'] = (models.Zuteilung.objects
+                                .filter(ausfuehrer = u)
+                                .aggregate(Sum('aufgabe__stunden'))
+                                ['aufgabe__stunden__sum']
+                                )
             ztlist.append(tmp)
 
         pp (ztlist)
