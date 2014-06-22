@@ -261,7 +261,7 @@ class PraeferenzFilterForm (CrispyFilterMixin, forms.Form):
 
     praeferenz = forms.MultipleChoiceField(choices=models.Meldung.PRAEFERENZ,
                                            widget=forms.CheckboxSelectMultiple,
-                                           label="Praeferenz Mitglied",
+                                           label="Vorliebe Mitglied",
                                            required=False,
                                            initial=[models.Meldung.PRAEFERENZ[1][0],
                                                     models.Meldung.PRAEFERENZ[2][0],

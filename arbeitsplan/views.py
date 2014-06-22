@@ -550,11 +550,18 @@ class CreateMeldungenView (MeldungEdit):
         aufgabenliste = []
         for a in qsAufgaben:
             # initialize with values from Aufgabe
+            # z = a.zuteilung_set.count()
             d = {'aufgabe': a.aufgabe,
                  'gruppe': a.gruppe,
-                 'datum' : a.datum,
+                 'datum': a.datum,
                  'stunden': a.stunden,
                  'aufgabeObjekt': a,
+                 'anzahl': a.anzahl,
+                 'meldungen': a.meldung_set.count(),
+                 ## 'zuteilungen': z,
+                 ## 'fehlende_zuteilungen': a.anzahl - z,
+                 'zuteilungen': None,
+                 'fehlende_zuteilungen': None,
                 }
             # add what we can find from Meldung:
             m, newcreated = models.Meldung.objects.get_or_create(
@@ -583,7 +590,8 @@ class CreateMeldungenView (MeldungEdit):
         # return redirect ("arbeitsplan-meldung")
         return redirect(self.request.get_full_path())
 
-class MeldungVorstandView (isVorstandMixin, MeldungEdit):
+    
+class MeldungVorstandView(isVorstandMixin, MeldungEdit):
     """Display a (filtered) list of all Meldungen from all Users,
     with all preferences.
     Allow Vorstand to update its fields and store them.
@@ -592,7 +600,8 @@ class MeldungVorstandView (isVorstandMixin, MeldungEdit):
     title = "Meldungen für Aufgaben bewerten"
     # filterform_class = forms.PersonAufgabengruppeFilterForm
     filterform_class = forms.PersonAufgGrpPraefernzFilterForm
-    filtertitle = "Meldungen nach Person, Aufgabengruppen oder Präferenz filtern"
+    filtertitle = "Meldungen nach Person, Aufgabengruppen"
+    " oder Präferenz filtern"
     tabletitle = "Meldungen bewerten"
     # tableform ?
     filterconfig = [('aufgabengruppe', 'aufgabe__gruppe__gruppe'),
@@ -610,14 +619,19 @@ class MeldungVorstandView (isVorstandMixin, MeldungEdit):
     Bewerten Sie die Meldungen der Mitglieder nach Eignung für eine Aufgabe.
     <ul>
     <li> Nutzen Sie die Einstufung in der rechten Spalte </li>
-    <li> Eine `Nein' entspricht einer Ablehnung der Meldung; eine solche Meldung wird später bei den Zuteilungen nicht angezeigt. </li>
+    <li> Eine `Nein' entspricht einer Ablehnung der Meldung;
+    eine solche Meldung wird später bei den Zuteilungen
+    nicht angezeigt. </li>
     <li> Geben Sie ggf. eine zusätzliche Bemerkung ein </li>
-    <li> Sie können die Liste filtern nach Name des Mitglieds, nach Aufgabengruppe, nach den Präferenzen die das Mitglied bei der Meldung angegeben hat (Kombinationen möglich). </li>
+    <li> Sie können die Liste filtern nach Name des Mitglieds,
+    nach Aufgabengruppe, nach den Präferenzen die das Mitglied
+     bei der Meldung angegeben hat (Kombinationen möglich). </li>
     </ul>
     """
 
     todo_text = """
-    <li> Weitere Filter einbauen?Nach Verantwortlicher? Nach Vorstandsvorlieben?  </li>
+    <li> Weitere Filter einbauen?Nach Verantwortlicher?
+    Nach Vorstandsvorlieben?  </li>
     <li> </li>
     """
 

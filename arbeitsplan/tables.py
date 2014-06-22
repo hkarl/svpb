@@ -66,6 +66,24 @@ class RadioButtonTable (django_tables2.Table):
                           """</div>""")
 
 
+class KontaktColumn(django_tables2.columns.Column):
+    """Pass an accessor to a user object,
+    this will be rendered with first and last name
+    as well as clickable email link.
+    """
+
+    def render(self, value):
+        return mark_safe('{1} {2}{0}'.format(
+            (' <a href="mailto:{0}">'
+             '<span class="glyphicon glyphicon-envelope">'
+             '</span></a>'.format(value.email)
+             if value.email
+             else ""),
+            value.first_name,
+            value.last_name,
+            ))
+
+
 class ValuedCheckBoxColumn(django_tables2.columns.Column):
     """A checkbox column where a pair of values is expected:
     name and whether the box is checked or not.
@@ -248,8 +266,8 @@ def StundenplanEditFactory (l):
 
 
 class AufgabenTable (django_tables2.Table):
-    verantwortlicher = django_tables2.Column(
-        accessor="verantwortlich.last_name",
+    verantwortlicher = KontaktColumn(
+        accessor="verantwortlich",
         verbose_name="Verantwortlicher")
 
     meldungen = django_tables2.Column(
@@ -284,8 +302,8 @@ class AufgabenTable (django_tables2.Table):
 
 
 class AufgabenTableVorstand(django_tables2.Table):
-    verantwortlicher = django_tables2.Column(
-        accessor="verantwortlich.last_name",
+    verantwortlicher = KontaktColumn(
+        accessor="verantwortlich",
         verbose_name="Verantwortlicher")
 
     id = django_tables2.LinkColumn(
@@ -346,6 +364,8 @@ class AufgabengruppeTable(django_tables2.Table):
                                    verbose_name="Editieren",
                                    )
 
+    verantwortlich = KontaktColumn()
+
     class Meta:
         model = models.Aufgabengruppe
         attrs = {"class": "paleblue"}
@@ -388,34 +408,52 @@ class StundenplanTable (django_tables2.Table):
 
 ##############################
 
-class ZuteilungTable (django_tables2.Table):
-    verantwortlicher = django_tables2.Column(accessor ="aufgabe.verantwortlich.last_name",
-                                             verbose_name="Verantwortlicher")
-    datum = django_tables2.Column(accessor ="aufgabe.datum",
-                                             verbose_name="Datum")
+
+class ZuteilungTable(django_tables2.Table):
+    ## verantwortlicher = django_tables2.Column(
+    ##     accessor="aufgabe.verantwortlich.last_name",
+    ##     verbose_name="Verantwortlicher")
+    verantwortlicher = KontaktColumn(
+        accessor="aufgabe.kontakt",
+        verbose_name="Verantwortlicher")
+
+    datum = django_tables2.Column(accessor="aufgabe.datum",
+                                  verbose_name="Datum")
+
+    studenString = django_tables2.Column(
+        verbose_name="Zeiten",
+        accessor='stundenString',
+        )
+
     class Meta:
         model = models.Zuteilung
         attrs = {"class": "paleblue"}
 
-        fields = ("aufgabe", 'verantwortlicher', 'datum')
+        fields = ("aufgabe", 'verantwortlicher', 'datum',
+                  # 'stundenString',
+                  )
 
-class ZuteilungTableVorstand (django_tables2.Table):
-    verantwortlicher = django_tables2.Column(accessor ="aufgabe.verantwortlich.last_name",
-                                             verbose_name="Verantwortlicher")
+
+class ZuteilungTableVorstand(django_tables2.Table):
+    verantwortlicher = KontaktColumn(
+        accessor ="aufgabe.verantwortlich",
+        verbose_name="Verantwortlicher")
+
     datum = django_tables2.Column(accessor ="aufgabe.datum",
                                              verbose_name="Datum")
     ausfuehrer_last = django_tables2.Column (accessor="ausfuehrer.last_name",
                                               verbose_name="Ausführer")
-    
+
     class Meta:
         model = models.Zuteilung
         attrs = {"class": "paleblue"}
 
         fields = ("aufgabe", 'verantwortlicher', 'datum', 'ausfuehrer_last')
-        
+
 ##############################
 
-class MeldungTable (RadioButtonTable):
+
+class MeldungTable(RadioButtonTable):
 
     # id = django_tables2.Column ()
 
@@ -443,38 +481,22 @@ class MeldungTable (RadioButtonTable):
     anzahl = django_tables2.Column(
         verbose_name="Benötigte Helfer",
         empty_values=(),
-        orderable=False,)
+        )
 
     meldungen = django_tables2.Column(
         verbose_name="Vorliegende Meldungen",
         empty_values=(),
-        orderable=False,        
         )
 
     zuteilungen = django_tables2.Column(
         verbose_name="Erfolgte Zuteilungen",
         empty_values=(),
-        orderable=False,        
         )
 
     fehlende_zuteilungen = django_tables2.Column(
         verbose_name="Noch offene Zuteilungen",
         empty_values=(),
-        orderable=False,        
         )
-
-    def render_anzahl(self, record):
-        return record['aufgabeObjekt'].anzahl
-
-    def render_meldungen(self, record):
-        return record['aufgabeObjekt'].meldung_set.count()
-
-    def render_zuteilungen(self, record):
-        return record['aufgabeObjekt'].zuteilung_set.count()
-
-    def render_fehlende_zuteilungen(self, record):
-        return (record['aufgabeObjekt'].anzahl
-                - record['aufgabeObjekt'].zuteilung_set.count())
 
     def render_aufgabe(self, value, record):
         aufgabe = record['aufgabeObjekt']
@@ -527,11 +549,11 @@ class MeldungTable (RadioButtonTable):
         fields = ('gruppe', 'aufgabe', 'datum',
                   'stunden',
                   'anzahl',
-                  "meldungen", "zuteilungen",
+                  "meldungen",
                   'bemerkung',
                   'prefMitglied')
 
-        exclude = ("fehlende_zuteilungen",)
+        exclude = ("fehlende_zuteilungen", 'zuteilungen')
 
 
 class MeldungTableVorstand (RadioButtonTable):
@@ -549,18 +571,23 @@ class MeldungTableVorstand (RadioButtonTable):
                                     verbose_name="Umfang (h)")
 
     prefMitglied = django_tables2.Column(accessor="prefMitglied",
-                                         verbose_name="Vorlieben",
+                                         verbose_name="Vorlieben Melder",
                                          empty_values=(), 
                                          )
 
     bemerkung = django_tables2.Column (accessor="bemerkung",
-                                      verbose_name="Bemerkung",
+                                      verbose_name="Bemerkung Melder",
                                       empty_values=(), 
                                      )
-    melder_last = django_tables2.Column (accessor="melder.last_name",
-                                         verbose_name="Melder Nachname")
-    melder_first = django_tables2.Column (accessor="melder.first_name",
-                                         verbose_name="Melder Vorname")
+
+    ## melder_last = django_tables2.Column (accessor="melder.last_name",
+    ##                                      verbose_name="Melder Nachname")
+    ## melder_first = django_tables2.Column (accessor="melder.first_name",
+    ##                                      verbose_name="Melder Vorname")
+
+    melder = KontaktColumn(accessor="melder",
+                           verbose_name="Melder",
+                           )
 
     ## bemerkungVorstand = django_tables2.Column (accessor="bemerkungVorstand",
     ##                                     verbose_name="Bemerkung Vorstand",
@@ -573,7 +600,7 @@ class MeldungTableVorstand (RadioButtonTable):
                                       verbose_name="Vorlieben des Vorstandes",
                                       empty_values=(), 
                                      )
-    
+
     def render_prefVorstand (self, value, record):
 
         return self.render_radio (choices=models.Meldung.PRAEFERENZ,
@@ -588,11 +615,16 @@ class MeldungTableVorstand (RadioButtonTable):
                                 )
         return tmp 
 
-    
-    class Meta (MeldungTable.Meta):
+
+    class Meta(MeldungTable.Meta):
         model = models.Meldung 
-        fields = ('gruppe', 'aufgabe', 'datum', 'stunden', 'melder_last', 'melder_first', 'bemerkung', 'prefMitglied', 'bemerkungVorstand', 'prefVorstand') 
-    
+        fields = ('gruppe', 'aufgabe', 'datum', 'stunden',
+                  # 'melder_last', 'melder_first',
+                  'melder',
+                  'bemerkung', 'prefMitglied',
+                  'bemerkungVorstand', 'prefVorstand')
+        exclude = ('melder_last', 'melder_first',)
+
 ##############################
 
 def SaldenTableFactory (l):
@@ -668,6 +700,7 @@ class LeistungBearbeitenTable (RadioButtonTable):
     bemerkungVorstand = django_tables2.Column (empty_values=(),
                                                verbose_name = "Bemerkungen des Vorstandes")
 
+    melder = KontaktColumn()
 
     class Meta:
         model = models.Leistung
@@ -714,7 +747,12 @@ class LeistungEmailTable(BaseEmailTable):
                                             )
 
     def render_schonbenachrichtigt(value, bound_row):
-        return "Ja" if bound_row._record.veraendert < bound_row._record.benachrichtigt  else "Nein"
+        return ("Ja"
+                if (bound_row._record.veraendert <
+                    bound_row._record.benachrichtigt)
+                else "Nein")
+
+    melder = KontaktColumn()
 
     class Meta:
         model = models.Leistung
@@ -763,7 +801,7 @@ class MitgliederTable(django_tables2.Table):
 
         attrs = {"class": "paleblue"}
         fields = ('first_name',
-                    'last_name',
-                    'mitgliedsnummer',
-                    'id',
-                    )
+                  'last_name',
+                  'mitgliedsnummer',
+                  'id',
+                  )

@@ -96,6 +96,12 @@ class Aufgabe(models.Model):
 
     bemerkung = models.TextField(blank=True)
 
+    def kontakt(self):
+        if self.teamleader:
+            return self.teamleader
+        else:
+            return self.verantwortlich
+
     def __unicode__(self):
         return self.aufgabe
 
