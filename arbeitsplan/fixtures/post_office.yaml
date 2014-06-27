@@ -1,3 +1,132 @@
+- fields: {context: '""', created: !!timestamp '2014-06-27 21:06:50.187258+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
+      21:07:36.873104+00:00', message: "Hallo Captain Hook, \r\n\r\nDein Arbeitseinsatz\
+      \ Ansegln am 28. Juni 2014   um 12 Uhr - 14 Uhr  steht bevor.\r\n\r\nFalls Sie\
+      \ noch Fragen haben, Ansprechpartner ist Peter Pan\_(email: peter.pan@propgen.de).\
+      \ \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand", priority: 1,
+    scheduled_time: null, status: 0, subject: '[SVPB] Ihr Einsatz steht bevor!', template: null,
+    to: captain.hook@propgen.de}
+  model: post_office.email
+  pk: 1
+- fields: {context: '""', created: !!timestamp '2014-06-27 21:06:50.197525+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
+      21:07:37.042593+00:00', message: "Hallo Peter Pan, \r\n\r\nDein Arbeitseinsatz\
+      \ Ansegln am 28. Juni 2014   um 13 Uhr - 16 Uhr  steht bevor.\r\n\r\nFalls Sie\
+      \ noch Fragen haben, Ansprechpartner ist Peter Pan\_(email: peter.pan@propgen.de).\
+      \ \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand", priority: 1,
+    scheduled_time: null, status: 0, subject: '[SVPB] Ihr Einsatz steht bevor!', template: null,
+    to: peter.pan@propgen.de}
+  model: post_office.email
+  pk: 2
+- fields: {context: '""', created: !!timestamp '2014-06-27 21:06:50.204156+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
+      21:07:37.212023+00:00', message: "Hallo Peter Pan! \r\n\r\nDie folgende Arbeitserinnerungen\
+      \ wurden versandt: \r\n\r\n\r\n* Ansegln, 28. Juni 2014: Captain Hook, captain.hook@propgen.de\
+      \ ; 12 Uhr - 14 Uhr  \r\n\r\n* Ansegln, 28. Juni 2014: Peter Pan, peter.pan@propgen.de\
+      \ ; 13 Uhr - 16 Uhr  \r\n\r\n\r\nWir hoffen, dass Sie mit Ihren Helfern viel\
+      \ Spass und Erfolg haben! \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand ",
+    priority: 1, scheduled_time: null, status: 0, subject: '[SVPB]: Verschickte Erinnerungen',
+    template: null, to: peter.pan@propgen.de}
+  model: post_office.email
+  pk: 3
+- fields: {context: '""', created: !!timestamp '2014-06-27 21:07:09.445333+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
+      21:07:37.382642+00:00', message: "Hallo Captain Hook, \r\n\r\nDein Arbeitseinsatz\
+      \ Ansegln am 28. Juni 2014   um 12 Uhr - 14 Uhr  steht bevor.\r\n\r\nFalls Sie\
+      \ noch Fragen haben, Ansprechpartner ist Peter Pan\_(email: peter.pan@propgen.de).\
+      \ \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand", priority: 1,
+    scheduled_time: null, status: 0, subject: '[SVPB] Ihr Einsatz steht bevor!', template: null,
+    to: captain.hook@propgen.de}
+  model: post_office.email
+  pk: 4
+- fields: {context: '""', created: !!timestamp '2014-06-27 21:07:09.456404+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
+      21:07:37.552041+00:00', message: "Hallo Peter Pan, \r\n\r\nDein Arbeitseinsatz\
+      \ Ansegln am 28. Juni 2014   um 13 Uhr - 16 Uhr  steht bevor.\r\n\r\nFalls Sie\
+      \ noch Fragen haben, Ansprechpartner ist Peter Pan\_(email: peter.pan@propgen.de).\
+      \ \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand", priority: 1,
+    scheduled_time: null, status: 0, subject: '[SVPB] Ihr Einsatz steht bevor!', template: null,
+    to: peter.pan@propgen.de}
+  model: post_office.email
+  pk: 5
+- fields: {context: '""', created: !!timestamp '2014-06-27 21:07:09.464539+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
+      21:07:37.723052+00:00', message: "Hallo Peter Pan! \r\n\r\nDie folgende Arbeitserinnerungen\
+      \ wurden versandt: \r\n\r\n\r\n* Ansegln, 28. Juni 2014: Captain Hook, captain.hook@propgen.de\
+      \ ; 12 Uhr - 14 Uhr  \r\n\r\n* Ansegln, 28. Juni 2014: Peter Pan, peter.pan@propgen.de\
+      \ ; 13 Uhr - 16 Uhr  \r\n\r\n\r\nWir hoffen, dass Sie mit Ihren Helfern viel\
+      \ Spass und Erfolg haben! \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand ",
+    priority: 1, scheduled_time: null, status: 0, subject: '[SVPB]: Verschickte Erinnerungen',
+    template: null, to: peter.pan@propgen.de}
+  model: post_office.email
+  pk: 6
+- fields: {context: '""', created: !!timestamp '2014-06-27 21:07:35.737653+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
+      21:07:37.974728+00:00', message: "Hallo Captain Hook, \r\n\r\nDein Arbeitseinsatz\
+      \ Ansegln am 28. Juni 2014   um 12 Uhr - 14 Uhr  steht bevor.\r\n\r\nFalls Sie\
+      \ noch Fragen haben, Ansprechpartner ist Peter Pan\_(email: peter.pan@propgen.de).\
+      \ \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand", priority: 1,
+    scheduled_time: null, status: 0, subject: '[SVPB] Ihr Einsatz steht bevor!', template: null,
+    to: captain.hook@propgen.de}
+  model: post_office.email
+  pk: 7
+- fields: {context: '""', created: !!timestamp '2014-06-27 21:07:35.748664+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
+      21:07:38.152813+00:00', message: "Hallo Peter Pan, \r\n\r\nDein Arbeitseinsatz\
+      \ Ansegln am 28. Juni 2014   um 13 Uhr - 16 Uhr  steht bevor.\r\n\r\nFalls Sie\
+      \ noch Fragen haben, Ansprechpartner ist Peter Pan\_(email: peter.pan@propgen.de).\
+      \ \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand", priority: 1,
+    scheduled_time: null, status: 0, subject: '[SVPB] Ihr Einsatz steht bevor!', template: null,
+    to: peter.pan@propgen.de}
+  model: post_office.email
+  pk: 8
+- fields: {context: '""', created: !!timestamp '2014-06-27 21:07:35.755208+00:00',
+    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
+      21:07:38.328112+00:00', message: "Hallo Peter Pan! \r\n\r\nDie folgende Arbeitserinnerungen\
+      \ wurden versandt: \r\n\r\n\r\n* Ansegln, 28. Juni 2014: Captain Hook, captain.hook@propgen.de\
+      \ ; 12 Uhr - 14 Uhr  \r\n\r\n* Ansegln, 28. Juni 2014: Peter Pan, peter.pan@propgen.de\
+      \ ; 13 Uhr - 16 Uhr  \r\n\r\n\r\nWir hoffen, dass Sie mit Ihren Helfern viel\
+      \ Spass und Erfolg haben! \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand ",
+    priority: 1, scheduled_time: null, status: 0, subject: '[SVPB]: Verschickte Erinnerungen',
+    template: null, to: peter.pan@propgen.de}
+  model: post_office.email
+  pk: 9
+- fields: {date: !!timestamp '2014-06-27 21:07:36.879855+00:00', email: 1, message: Sent,
+    status: 0}
+  model: post_office.log
+  pk: 1
+- fields: {date: !!timestamp '2014-06-27 21:07:37.049764+00:00', email: 2, message: Sent,
+    status: 0}
+  model: post_office.log
+  pk: 2
+- fields: {date: !!timestamp '2014-06-27 21:07:37.218209+00:00', email: 3, message: Sent,
+    status: 0}
+  model: post_office.log
+  pk: 3
+- fields: {date: !!timestamp '2014-06-27 21:07:37.388849+00:00', email: 4, message: Sent,
+    status: 0}
+  model: post_office.log
+  pk: 4
+- fields: {date: !!timestamp '2014-06-27 21:07:37.558312+00:00', email: 5, message: Sent,
+    status: 0}
+  model: post_office.log
+  pk: 5
+- fields: {date: !!timestamp '2014-06-27 21:07:37.729214+00:00', email: 6, message: Sent,
+    status: 0}
+  model: post_office.log
+  pk: 6
+- fields: {date: !!timestamp '2014-06-27 21:07:37.979267+00:00', email: 7, message: Sent,
+    status: 0}
+  model: post_office.log
+  pk: 7
+- fields: {date: !!timestamp '2014-06-27 21:07:38.157217+00:00', email: 8, message: Sent,
+    status: 0}
+  model: post_office.log
+  pk: 8
+- fields: {date: !!timestamp '2014-06-27 21:07:38.332606+00:00', email: 9, message: Sent,
+    status: 0}
+  model: post_office.log
+  pk: 9
 - fields: {content: "Dear {{name}} \r\n\r\nthis has been a test \r\n", created: !!timestamp '2014-05-30
       18:25:40.603262+00:00', description: 'This is only a test ', html_content: '',
     last_updated: !!timestamp '2014-05-30 18:25:40.603315+00:00', name: test, subject: TEst
@@ -35,3 +164,26 @@
       \ hat sich ver\xE4ndert"}
   model: post_office.emailtemplate
   pk: 3
+- fields: {content: "Hallo {{u.first_name}} {{u.last_name}}, \r\n\r\nDein Arbeitseinsatz\
+      \ {{ aufgabe }} am {{ datum }} {% if uhrzeit  %}  um {{ uhrzeit }} {% endif\
+      \ %} steht bevor.\r\n\r\nFalls Sie noch Fragen haben, Ansprechpartner ist {{\
+      \ verantwortlich.first_name }} {{ verantwortlich.last_name }}\_(email: {{\_\
+      verantwortlich.email }}). \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand",
+    created: !!timestamp '2014-06-27 19:49:49.052807+00:00', description: 'Email Template
+      used when sending out emails one day in advances of an actual job ', html_content: '',
+    last_updated: !!timestamp '2014-06-27 20:32:58.449173+00:00', name: upcomingJob,
+    subject: '[SVPB] Ihr Einsatz steht bevor!'}
+  model: post_office.emailtemplate
+  pk: 4
+- fields: {content: "Hallo {{ verantwortlich.first_name }} {{ verantwortlich.last_name\
+      \ }}! \r\n\r\nDie folgende Arbeitserinnerungen wurden versandt: \r\n\r\n{% for\
+      \ z in liste %}\r\n* {{ z.aufgabe }}, {{ z.datum }}: {{ z.u.first_name }} {{\
+      \ z.u.last_name }}, {{ z.u.email }} {% if z.uhrzeit %}; {{ z.uhrzeit }} {% endif\
+      \ %} \r\n{% endfor %}\r\n\r\nWir hoffen, dass Sie mit Ihren Helfern viel Spass\
+      \ und Erfolg haben! \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand ",
+    created: !!timestamp '2014-06-27 20:37:19.753662+00:00', description: "An jeden\
+      \ Kontakt f\xFCr eine Zuteilung: mitteilen, wer erinnert wurde. ", html_content: '',
+    last_updated: !!timestamp '2014-06-27 20:49:14.173585+00:00', name: upcomingJob-Kontakt,
+    subject: '[SVPB]: Verschickte Erinnerungen'}
+  model: post_office.emailtemplate
+  pk: 5
