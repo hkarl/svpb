@@ -361,14 +361,14 @@ class Leistung (models.Model):
         RUECKFRAGE: 'btn-default', # 'btn-mywarning', 
         NEG: 'btn-default', # 'btn-mydanger', 
         }
-    status = models.CharField (max_length=2,
-                               choices = STATUS,
-                               default = OFFEN) 
-    
-    bemerkung = models.TextField (blank=True)
-    bemerkungVorstand = models.TextField (blank=True,
-                                          verbose_name="Bemerkung Vorstand")
-            
+    status = models.CharField(max_length=2,
+                              choices = STATUS,
+                              default = OFFEN) 
+
+    bemerkung = models.TextField(blank=True)
+    bemerkungVorstand = models.TextField(blank=True,
+                                         verbose_name="Bemerkung Vorstand")
+
     class Meta:
         verbose_name_plural = "Leistungen"
         verbose_name = "Leistung"
