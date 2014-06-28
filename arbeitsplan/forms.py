@@ -6,7 +6,7 @@ from django.forms.models import inlineformset_factory
 from django.core.exceptions import ValidationError
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Button, Field, Div
+from crispy_forms.layout import Submit, Layout, Button, Field, Div, HTML
 from crispy_forms.bootstrap import StrictButton, FormActions, InlineCheckboxes, InlineField
 
 
@@ -211,6 +211,7 @@ class CrispyFilterMixin(CrispyFormMixin):
                                          l)
 
         self.helper.layout = Layout (self.helper.layout,
+                                     HTML("<p>"),
                                      FormActions(
                                         Submit ('filter', 'Filter anwenden'),
                                         ),
