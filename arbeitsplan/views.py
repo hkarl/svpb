@@ -36,6 +36,7 @@ import types
 import models
 import forms
 from tables import *  # TODO: change import not to polute name space
+from svpb.settings import JAHRESSTUNDEN
 
 
 #################
@@ -718,12 +719,12 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             # show users that can still accept more work
             qs = [q
                   for q in qs
-                  if q.mitglied.zugeteilteStunden() < settings.JAHRESSTUNDEN]
+                  if q.mitglied.zugeteilteStunden() < JAHRESSTUNDEN]
         elif busy == 'BU':
             # show users that are already busy
             qs = [q
                   for q in qs
-                  if q.mitglied.zugeteilteStunden() >= settings.JAHRESSTUNDEN]
+                  if q.mitglied.zugeteilteStunden() >= JAHRESSTUNDEN]
 
         return qs
 
@@ -984,7 +985,7 @@ class ZuteilungUebersichtView(FilteredListView):
     </ul>
     """
 
-    todo_text = """
+    discuss_text = """
     <li> Teamleader Stundenplanzuteilungen erlauben? Oder auch
     allgemein Zuteilung von Mitgliedern? </li>
     """
@@ -1213,15 +1214,13 @@ class ListLeistungView (FilteredListView):
     tabletitle = "Eingetragene Leistungen"
 
     intro_text = """
-    Es liegen die folgenden Leistungen vor. 
+    Es liegen die folgenden Leistungen vor.
     """
 
-    todo_text="""
-    <li> Die Aufgaben zu links machen  </li>
+    discuss_text="""
     <li> links zum Editieren der Meldung machen - für alle, oder nur offene, rückfrage? akzeptierte oder abgelehnte sollten nicht mehr editiert werden können! </li>
-    <li> </li>
     """
-    
+
     model = models.Leistung
 
     def get_data(self):
@@ -1415,22 +1414,25 @@ class Salden(isVorstandMixin, FilteredListView):
         """Apply a filter based on annotated data. HArd to do in the generic way
         of filterprocessing...
         """
-        filterchoice = self.filterform.cleaned_data['saldenstatus']
+        try:
+            filterchoice = self.filterform.cleaned_data['saldenstatus']
+        except AttributeError:
+            filterchoice = '--'
         # see the Saldenstatus table for definition of these choices!
 
         return {
             '--': lambda u: True,
-            'OK': lambda u: u['AK'][0] >= settings.JAHRESSTUNDEN,
-            'CH': lambda u: ((u['AK'][0] < settings.JAHRESSTUNDEN) and
+            'OK': lambda u: u['AK'][0] >= JAHRESSTUNDEN,
+            'CH': lambda u: ((u['AK'][0] < JAHRESSTUNDEN) and
                              ((u['AK'][0] or 0) +
                               (u['OF'][0] or 0) +
                               u['future'] + u['nodate'] >=
-                             settings.JAHRESSTUNDEN)
+                             JAHRESSTUNDEN)
                              ),
             'PR': lambda u: ((u['AK'][0] or 0) +
                              (u['OF'][0] or 0) +
                              u['future'] + u['nodate'] <
-                             settings.JAHRESSTUNDEN),
+                             JAHRESSTUNDEN),
             }[filterchoice](userdata)
 
     def annotate_data(self, userQs):

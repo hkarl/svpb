@@ -622,12 +622,13 @@ class MeldungTableVorstand (RadioButtonTable):
                                       empty_values=(), 
                                      )
 
-    def render_prefVorstand (self, value, record):
+    def render_prefVorstand(self, value, record):
 
-        return self.render_radio (choices=models.Meldung.PRAEFERENZ,
-                                    buttontexts=models.Meldung.PRAEFERENZButtons,
-                                    fieldname="prefVorstand",
-                                    record=record)
+        return self.render_radio(
+            choices=models.Meldung.PRAEFERENZ,
+            buttontexts=models.Meldung.PRAEFERENZButtons,
+            fieldname="prefVorstand",
+            record=record)
 
     def render_bemerkungVorstand (self, value, record):
         tmp =  format_html (u'<textarea class="textinput textInput" id="id_bemerkungVorstand_{0}" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" rows=6>{1}</textarea>',
