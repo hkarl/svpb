@@ -709,11 +709,29 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
     tableform = {'name': "eintragen",
                  'value': "Zuteilung eintragen/ändern"}
 
+    def MitgliedBusy_Filter(self, qs, busy):
+        """applies a spare capacity available filter to a user Qs"""
+
+        if busy == 'FR':
+            # show users that can still accept more work
+            qs = [q
+                  for q in qs
+                  if q.mitglied.zugeteilteStunden() < 10]
+        elif busy == 'BU':
+            # show users that are already busy
+            qs = [q
+                  for q in qs
+                  if q.mitglied.zugeteilteStunden() >= 10]
+
+        return qs
+
     filtertitle = "Nach Aufgabengruppen oder Mitgliedern filtern"
-    filterform_class = forms.PersonAufgabengruppeFilterForm
+    # filterform_class = forms.PersonAufgabengruppeFilterForm
+    filterform_class = forms.ZuteilungMitglied
     filterconfigAufgabe = [('aufgabengruppe', 'gruppe__gruppe'), ]
     filterconfigUser = [('first_name', 'first_name__icontains'),
                         ('last_name', 'last_name__icontains'),
+                        ('mitglied_ausgelastet', MitgliedBusy_Filter)
                         ]
     # TODO: filter by preferences? show preferences in table?
 
@@ -729,8 +747,6 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
     todo_text = """
     <li> mit -1 durch den Vorstand bewertete Meldungen ausfiltern!  </li>
     <li> Aufgabe aus der Vergangenheit ausfiltern? </li>
-    <li> Benachrichtigungen senden, wenn Änderung?
-    Oder nur auf explizite Anforderung senden? </li>
     <li> Weitere Filter einbauen? Nach Mitglieds-
     oder Vorstandspräferenz?  </li>
     """
@@ -829,7 +845,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             tmp['zugeteilt'] = u.mitglied.zugeteilteStunden()
 
             ztlist.append(tmp)
-    
+
         # pp (ztlist)
         # store the statuslist in the hidden field, to be accessible to POST later on
         self.tableformHidden = [{'name': 'status',
