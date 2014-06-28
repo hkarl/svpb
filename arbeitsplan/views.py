@@ -1531,21 +1531,26 @@ class ErstelleZuteilungView (View):
 ########################
 
 class FilteredEmailCreateView (FilteredListView):
-    
-    tableform =  {'name': "eintragen",
-                 'value': "Benachrichtigungen eintragen"}
-    intro_text = """Versenden von Benachrichtungen: Wählen Sie die zu benachrichtigenden Zeilen durch die
-    Checkbox in der letzten Spalte aus (default: alle). Sie können pro Ziele einen Kommentar eintippen,
-    der an die jeweilige email angefügt wird. Zusätzlich können Sie (in dem Eingabefeld unterhalb der Tabelle)
+
+    tableform = {'name': "eintragen",
+                 'value':
+                 "Benachrichtigungen eintragen"}
+
+    intro_text = """Versenden von Benachrichtungen:
+    Wählen Sie die zu benachrichtigenden Zeilen durch die
+    Checkbox in der letzten Spalte aus (default: alle).
+    Sie können pro Ziele einen Kommentar eintippen,
+    der an die jeweilige email angefügt wird.
+    Zusätzlich können Sie (in dem Eingabefeld unterhalb der Tabelle)
     einen Text eingeben, der an ALLE ausgesendeten emails angefügt wird.
     """
 
-    
-    def get_context_data (self, **kwargs):
-        context = super(FilteredEmailCreateView, self).get_context_data(**kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(FilteredEmailCreateView,
+                        self).get_context_data(**kwargs)
         context['furtherfields'] = forms.EmailAddendumForm()
         return context
-    
+
     def annotate_data(self, qs):
         """ we add a status and a anmerkung field to the queryset
         """
@@ -1759,7 +1764,7 @@ class EmailSendenView(View):
     """Trigger sending emails via the post_office command line managemenet command
     """
 
-    def get (self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
 
         import post_office.models as pom
 
@@ -1771,23 +1776,28 @@ class EmailSendenView(View):
         # count how many newly genereated log entries have relevant status values:
         newEmailLogs = pom.Log.objects.filter(date__gt = now)
 
-        for el in newEmailLogs:
-            print el 
+        ## for el in newEmailLogs:
+        ##     print el
 
-        failed = newEmailLogs.filter(status=pom.STATUS.failed).count()
-        sent = newEmailLogs.filter(status=pom.STATUS.sent).count()
-
-        print sent, failed
-
-        if sent > 0:
+        if newEmailLogs.count() == 0:
             messages.success(request,
-                             "Es wurden {0} Nachrichten versandt"
-                             .format(sent))
-        if failed > 0:
-            messages.error(request,
-                           "Es konnten {0} Nachrichten nicht versendet"
-                           "werden! Sysadmin kontaktieren!".
-                           format(failed))
+                             "Es waren keine emails zu versenden."
+                             )
+        else:
+            failed = newEmailLogs.filter(status=pom.STATUS.failed).count()
+            sent = newEmailLogs.filter(status=pom.STATUS.sent).count()
+
+            print sent, failed
+
+            if sent > 0:
+                messages.success(request,
+                                 "Es wurden {0} Nachrichten versandt"
+                                 .format(sent))
+            if failed > 0:
+                messages.error(request,
+                               "Es konnten {0} Nachrichten nicht versendet"
+                               "werden! Sysadmin kontaktieren!".
+                               format(failed))
 
         return redirect('home')
 
