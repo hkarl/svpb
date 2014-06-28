@@ -83,6 +83,7 @@ class KontaktColumn(django_tables2.columns.Column):
         super(KontaktColumn, self).__init__(*args, **kwargs)
 
     def render(self, value):
+        print value
         return mark_safe('{1} {2}{0}'.format(
             (' <a href="mailto:{0}">'
              '<span class="glyphicon glyphicon-envelope">'
@@ -195,15 +196,24 @@ def TableFactory (name, attrs, l, meta={}):
 
 ##############################
 
-def NameTableFactory (name, attrs, l, meta=None):
+def NameTableFactory (name, attrs, l, meta=None,
+                      kontakt=None):
     """
     A Factory for django_tables2 with dynamic colums.
     Always adds a Nachame, Vorname column to the given attributes 
     """
 
-    nameattrs = {'last_name': django_tables2.Column(verbose_name="Nachname"),
-                'first_name': django_tables2.Column(verbose_name="Vorname"),
-                }
+    if kontakt:
+        nameattrs = {'kontakt': KontaktColumn(
+            accessor=kontakt[0],
+            verbose_name=kontakt[1],
+            empty_values=(),
+            ),
+                    }
+    else:
+        nameattrs = {'last_name': django_tables2.Column(verbose_name="Nachname"),
+                    'first_name': django_tables2.Column(verbose_name="Vorname"),
+                    }
     nameattrs.update(attrs)
 
     return TableFactory(name, nameattrs, l,
@@ -656,12 +666,18 @@ def SaldenTableFactory (l):
         attrs[s[0]] = LinkedColumn(verbose_name=s[1] + ' (h)')
 
     attrs['zugeteilt'] = LinkedColumn(verbose_name="Zugeteilt insgesamt (h)")
-    attrs['past'] = django_tables2.Column(verbose_name="Zuteilungen vergangener Aufgaben (h)")
-    attrs['future'] = django_tables2.Column(verbose_name="Zuteilungen zukünftiger Aufgaben (h)")
-    attrs['nodate'] = django_tables2.Column(verbose_name="Zuteilungen Aufgaben ohne Datum (h)")
+    attrs['past'] = django_tables2.Column(
+        verbose_name="Zuteilungen vergangener Aufgaben (h)")
+    attrs['future'] = django_tables2.Column(
+        verbose_name="Zuteilungen zukünftiger Aufgaben (h)")
+    attrs['nodate'] = django_tables2.Column(
+        verbose_name="Zuteilungen Aufgaben ohne Datum (h)")
+
     t = NameTableFactory("salden", attrs, l,
-                         meta={'sequence': ('last_name',
-                                            'first_name',
+                         kontakt=('user', 'Mitglied'),
+                         meta={'sequence': ('kontakt',
+                             ## 'last_name',
+                             ##                'first_name',
                                             'zugeteilt',
                                             'past',
                                             'future',

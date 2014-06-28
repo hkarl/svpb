@@ -1400,11 +1400,9 @@ class Salden(isVorstandMixin, FilteredListView):
     model = models.User
 
     intro_text = """
-    Ein Überblick über die von den Mitgliedern geleistete Arbeit, basiered auf den vorliegenden Leistungsmeldungen und deren Bewertungen durch Vorstände. Zuteilungen werden separat aufgeführt.
-    """
-
-    todo_text = """
-    <li> User anklickbar machen, dann zu entsprechendem View verzweigen </li>
+    Ein Überblick über die von den Mitgliedern geleistete Arbeit,
+    basiered auf den vorliegenden Leistungsmeldungen und deren
+    Bewertungen durch Vorstände. Zuteilungen werden separat aufgeführt.
     """
 
     # TODO: für einen anklickbaren User braucht es nur:
@@ -1442,8 +1440,7 @@ class Salden(isVorstandMixin, FilteredListView):
 
         for u in userQs:
             tmp = {}
-            tmp['last_name'] = u.last_name
-            tmp['first_name'] = u.first_name
+            tmp['user'] = u
             tmp['box'] = ("box-" + str(u.id), True)
             qs = models.Leistung.objects.filter(melder=u)
             for s in models.Leistung.STATUS:
