@@ -355,8 +355,14 @@ class MitgliedAusgelastetForm(CrispyFilterMixin, forms.Form):
                                                   'Ausgelastete anzeigen'),
                                                  ),
                                              )
+
+    aktive_aufgaben = forms.BooleanField(required=False,
+                                         label="Vergangene Aufgaben ausblenden?",
+                                         initial=False,
+                                         )
     __layout = Layout(
-        'mitglied_ausgelastet'
+        'mitglied_ausgelastet',
+        'aktive_aufgaben',
         )
 
 

@@ -725,10 +725,21 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
         return qs
 
+    def AktiveAufgaben_Filter(self, qs, aktive):
+        """filter out jobs froms the past?"""
+
+        print qs
+
+        if aktive:
+            qs = qs.filter(datum__gte=datetime.date.today())
+
+        return qs
+
     filtertitle = "Nach Aufgabengruppen oder Mitgliedern filtern"
     # filterform_class = forms.PersonAufgabengruppeFilterForm
     filterform_class = forms.ZuteilungMitglied
-    filterconfigAufgabe = [('aufgabengruppe', 'gruppe__gruppe'), ]
+    filterconfigAufgabe = [('aufgabengruppe', 'gruppe__gruppe'),
+                           ('aktive_aufgaben', AktiveAufgaben_Filter)]
     filterconfigUser = [('first_name', 'first_name__icontains'),
                         ('last_name', 'last_name__icontains'),
                         ('mitglied_ausgelastet', MitgliedBusy_Filter)
@@ -746,7 +757,6 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
     todo_text = """
     <li> mit -1 durch den Vorstand bewertete Meldungen ausfiltern!  </li>
-    <li> Aufgabe aus der Vergangenheit ausfiltern? </li>
     <li> Weitere Filter einbauen? Nach Mitglieds-
     oder Vorstandspräferenz?  </li>
     """
@@ -930,7 +940,7 @@ class ZuteilungUebersichtView(FilteredListView):
     tabletitle = "Aufgaben mit benötigten/zugeteilten Personen"
 
     show_stundenplan = False
-    
+
     model = models.Aufgabe
 
     def ungenuegend_zuteilungen_filter(self, qs, restrict):
