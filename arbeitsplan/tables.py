@@ -215,34 +215,33 @@ def NameTableFactory (name, attrs, l, meta=None):
 ##############################
 
 
-def StundenplanTableFactory (l):
+def StundenplanTableFactory (l, showStunden=True):
     """
     A factory to produce a table with aufgaben and uhrzeiten columns. 
     """
 
     newattrs = {}
-    for i in  range(models.Stundenplan.startZeit,
-                         models.Stundenplan.stopZeit+1):
-        ## newattrs['u'+str(i)] = django_tables2.Column (accessor='u'+str(i),
-        ##                                        verbose_name = str(i)+'-'+str(i+1))
-        newattrs['u'+str(i)] = RequiredAssignedColumn (accessor='u'+str(i),
-                                               verbose_name = str(i)+'-'+str(i+1))
-        
-    ## newattrs['id'] = django_tables2.LinkColumn ('arbeitsplan-stundenplaeneEdit',
-    ##                                     args=[A('id'),],
-    ##                                     verbose_name="Zuteilung editieren")
+
+    if showStunden:
+        for i in range(models.Stundenplan.startZeit,
+                       models.Stundenplan.stopZeit+1):
+            newattrs['u'+str(i)] = RequiredAssignedColumn(
+                accessor='u'+str(i),
+                verbose_name = str(i)+'-'+str(i+1))
+
     newattrs['aufgabe'] = django_tables2.Column(accessor='aufgabe')
-    newattrs['gruppe'] = django_tables2.Column(accessor='gruppe', verbose_name="Aufgabengruppe")
+    newattrs['gruppe'] = django_tables2.Column(accessor='gruppe',
+                                               verbose_name="Aufgabengruppe")
 
     newattrs['gemeldet'] = django_tables2.Column(accessor='gemeldet',
-                                                  verbose_name="# Meldungen")
+                                                 verbose_name="# Meldungen")
     newattrs['required'] = django_tables2.Column(accessor='required',
-                                                  verbose_name="# Anforderungen")
+                                                 verbose_name="# Anforderungen")
     newattrs['zugeteilt'] = django_tables2.Column(accessor='zugeteilt',
-                                                   verbose_name ="# Zuteilungen")
+                                                  verbose_name ="# Zuteilungen")
 
     newattrs['editlink'] = django_tables2.Column(accessor="editlink",
-                                                  verbose_name="Zuteilen")
+                                                 verbose_name="Zuteilen")
 
     newattrs['stundenplanlink'] = django_tables2.Column(accessor="stundenplanlink",
                                                         verbose_name="Stundenplan")
@@ -252,7 +251,8 @@ def StundenplanTableFactory (l):
                          meta = {'sequence': ('aufgabe', 'gruppe', # 'id',
                                               'editlink', 'stundenplanlink',  
                                               'required', 'gemeldet', 'zugeteilt', 
-                                              '...', )})
+                                              '...',
+                                              )})
 
     return t
 
@@ -592,13 +592,13 @@ class MeldungTableVorstand (RadioButtonTable):
 
     prefMitglied = django_tables2.Column(accessor="prefMitglied",
                                          verbose_name="Vorlieben Melder",
-                                         empty_values=(), 
+                                         empty_values=(),
                                          )
 
-    bemerkung = django_tables2.Column (accessor="bemerkung",
+    bemerkung = django_tables2.Column(accessor="bemerkung",
                                       verbose_name="Bemerkung Melder",
-                                      empty_values=(), 
-                                     )
+                                      empty_values=(),
+                                      )
 
     ## melder_last = django_tables2.Column (accessor="melder.last_name",
     ##                                      verbose_name="Melder Nachname")

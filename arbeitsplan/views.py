@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.contrib.auth.decorators import user_passes_test
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Count
 from django.contrib.auth import logout
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
@@ -59,7 +59,7 @@ class isVorstandOrTeamleaderMixin(object):
     def dispatch(self, *args, **kwargs):
         return super(isVorstandOrTeamleaderMixin, self).dispatch(*args, **kwargs)
 
-    
+
 ###############
 
 
@@ -334,10 +334,10 @@ class ListAufgabenView (FilteredListView):
     <li> Die Spalte Verantwortlicher benennt den Koordinator der Aufgabe. </li>
     </ul>
     """
-    todo_text = """
-    <li> Spalten klickbar machen: Aufgabe, Verantowrtlicher (direkt email senden?)  </li>
-    <li> Bemerkung als Popover umbauen?  </li>  
-    """
+    ## todo_text = """
+    ## <li> Spalten klickbar machen: Aufgabe, Verantowrtlicher (direkt email senden?)  </li>
+    ## <li> Bemerkung als Popover umbauen?  </li>  
+    ## """
 
 
     def get_filtered_table(self,qs):
@@ -505,12 +505,14 @@ class MeldungEdit  (FilteredListView):
                 if safeit:
                     m.save()
             else:
-                pass # not interested in those keys
+                # not interested in those keys
+                pass
 
 
 class CreateMeldungenView (MeldungEdit):
     """
-    Display a table with all Aufgaben and fields to set preferences and add remarks.
+    Display a table with all Aufgaben and fields
+    to set preferences and add remarks.
     Accept updates and enter them into the Meldung table.
     Intended for the non-Vorstand user.
     """
@@ -530,17 +532,26 @@ class CreateMeldungenView (MeldungEdit):
     tableClass = MeldungTable
 
     intro_text = """
-    Tragen Sie bitte ein, an welchen Aufgaben Sie mitarbeiten möchten. Wählen Sie dazu für die entsprechende Aufgabe eine entsprechende Vorliebe in der letzen Spalte aus (oder lassen Sie die Vorliebe auf `Nein'). Sie können noch zusätlich eine Bemerkung eingeben (z.B., wenn Sie die Aufgaben mit einem Partner zusammenarbeiten erledigen möchten oder nur zu bestimmten Uhrzeiten können). 
+    Tragen Sie bitte ein, an welchen Aufgaben Sie mitarbeiten möchten.
+    Wählen Sie dazu für die entsprechende Aufgabe eine entsprechende
+    Vorliebe in der letzen Spalte aus (oder lassen Sie die Vorliebe
+    auf `Nein'). Sie können noch zusätlich eine Bemerkung eingeben
+    (z.B., wenn Sie die Aufgaben mit einem Partner zusammenarbeiten
+    erledigen möchten oder nur zu bestimmten Uhrzeiten können).
     <p>
-    Sie können die Aufgabenliste eingrenzen, in dem Sie nach Aufgabengruppen filtern. Wählen Sie aus der Liste aus und drücken dann auf `Filter anwenden'.
+    Sie können die Aufgabenliste eingrenzen, in dem Sie nach
+    Aufgabengruppen filtern. Wählen Sie aus der Liste aus und drücken
+    dann auf `Filter anwenden'.
     <p>
-    Zeigen Sie auf den Aufgabennamen um ggf. weitere Information über die Aufgabe zu sehen.
+    Zeigen Sie auf den Aufgabennamen um ggf. weitere Information
+    über die Aufgabe zu sehen.
     """
 
-    todo_text = """
-    <li> Über Button-Farben nachdenken </li>
-    <li> Über das Nutzen von Tooltips nachdenken - zweischneidig </li>
-    """
+    ## todo_text = """
+    ## <li> Über Button-Farben nachdenken </li>
+    ## <li> Über das Nutzen von Tooltips nachdenken - zweischneidig </li>
+    ## """
+
     def get_queryset(self):
 
         qsAufgaben = self.apply_filter ()
@@ -630,13 +641,13 @@ class MeldungVorstandView(isVorstandMixin, MeldungEdit):
     </ul>
     """
 
-    todo_text = """
-    <li> Weitere Filter einbauen?Nach Verantwortlicher?
-    Nach Vorstandsvorlieben?  </li>
-    <li> </li>
-    """
+    ## todo_text = """
+    ## <li> Weitere Filter einbauen?Nach Verantwortlicher?
+    ## Nach Vorstandsvorlieben?  </li>
+    ## <li> </li>
+    ## """
 
-    def post(self,request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         print request.POST
         self.processUpdate(request)
         # return redirect ('arbeitsplan-meldungVorstand')
@@ -660,10 +671,6 @@ class ListZuteilungenView(FilteredListView):
                     ('last_name', 'ausfuehrer__last_name__icontains'),
                     ]
 
-    todo_text = """
-    <li> Darstellung der Tabelle verbessern! </li>
-    """
-
     def get_queryset(self):
         if (("all" in self.request.path) and
             (isVorstand(self.request.user))):
@@ -673,7 +680,7 @@ class ListZuteilungenView(FilteredListView):
             self.intro_text = """
             Welche Zuteilung sind für Nutzer eingetragen?
             <p>
-            Filtern Sie nach Mitgliedernamen oder Aufgabengruppe. 
+            Filtern Sie nach Mitgliedernamen oder Aufgabengruppe.
             """
         else:
             qs = models.Zuteilung.objects.filter(ausfuehrer=self.request.user)
@@ -891,22 +898,47 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                     zz.delete()
 
                 messages.success(request,
-                                 u"Aufgabe {0} wird nicht mehr von  {1} {2} durchgeführt.".format(aufgabeObj.aufgabe,
-                                                                                 ausfuehrerObj.first_name,
-                                                                                 ausfuehrerObj.last_name))
-                
+                                 u"Aufgabe {0} wird nicht mehr"
+                                 u" von  {1} {2} durchgeführt."
+                                 .format(aufgabeObj.aufgabe,
+                                         ausfuehrerObj.first_name,
+                                         ausfuehrerObj.last_name))
+
         # TODO: emails senden?
 
         return redirect(self.request.get_full_path())
 
-class ZuteilungUebersichtView (FilteredListView):
+class ZuteilungUebersichtView(FilteredListView):
     title = "Übersicht der Aufgaben und Zuteilungen"
     tableClassFactory = staticmethod(StundenplanTableFactory)
     tabletitle = "Aufgaben mit benötigten/zugeteilten Personen"
 
-    # TODO: 
-    ## filtertitle = "Nach Aufgabengruppe filtern"
-    ## filterform_class = forms.AufgabengruppeFilterForm
+    show_stundenplan = False
+    
+    model = models.Aufgabe
+
+    def ungenuegend_zuteilungen_filter(self, qs, restrict):
+        print qs, restrict
+        if restrict == 'UN':
+            # qs=qs.filter(anzahl__gt=zuteilung_set.count())
+            qs = (qs.annotate(num_Zuteilung=Count('zuteilung')).
+                  filter(anzahl__gt=F('num_Zuteilung')))
+        elif restrict == 'ZU':
+            qs = (qs.annotate(num_Zuteilung=Count('zuteilung')).
+                  filter(anzahl__lte=F('num_Zuteilung')))
+        return qs
+
+    def stundenplan_anzeigen_filter(self, qs, show):
+        self.show_stundenplan = show
+        return qs
+
+    filtertitle = "Aufgaben filtern"
+    filterform_class = forms.ZuteilungManuellFilter
+    filterconfig = [('aufgabengruppe', 'gruppe__gruppe'),
+                    ('zuteilungen_ausreichend',
+                     ungenuegend_zuteilungen_filter),
+                    ('stundenplan', stundenplan_anzeigen_filter),
+                    ]
 
     intro_text = """
     Die Tabelle fasst pro Aufgabe die benötigten/angeforderten,
@@ -925,25 +957,26 @@ class ZuteilungUebersichtView (FilteredListView):
     """
 
     todo_text = """
-    <li> Filter einbauen: Nach Aufgabengruppe; nach Aufgaben
-    mit offenen Anforderungen </li>
     <li> Teamleader Stundenplanzuteilungen erlauben? Oder auch
     allgemein Zuteilung von Mitgliedern? </li>
-    <li> Evtl.: Stundenplan dynamisch einklappen/ausklappen ?
-    (keine Vorstellung, wie das gehen könnte...)
     """
 
-    def get_queryset(self):
+    def get_filtered_table(self, qs):
+        table = self.tableClassFactory(qs, self.show_stundenplan)
+        django_tables2.RequestConfig(self.request).configure(table)
 
-        qs = models.Aufgabe.objects.all()
+        return table
+
+    def annotate_data(self, qs):
 
         data = []
         for aufgabe in qs:
             newEntry = defaultdict(int)
             newEntry['id'] = aufgabe.id
-            newEntry['aufgabe'] = mark_safe (u'<a href="{1}">{0}</a>'.format(aufgabe.aufgabe,
-                                                        reverse('arbeitsplan-aufgabenEdit',
-                                                                args=(aufgabe.id,))))
+            newEntry['aufgabe'] = mark_safe(
+                u'<a href="{1}">{0}</a>'.format(aufgabe.aufgabe,
+                                                reverse('arbeitsplan-aufgabenEdit',
+                                                        args=(aufgabe.id,))))
 
             newEntry['required'] = aufgabe.anzahl
             newEntry['gruppe'] = aufgabe.gruppe.gruppe
@@ -957,14 +990,16 @@ class ZuteilungUebersichtView (FilteredListView):
 
             if aufgabe.has_Stundenplan():
 
-                # for s in models.Stundenplan.objects.filter (aufgabe__id=q['id']):
                 for s in aufgabe.stundenplan_set.all():
                     # print s
-                    newEntry['u'+str(s.uhrzeit)] = {'required': s.anzahl, 'zugeteilt': 0}
+                    newEntry['u'+str(s.uhrzeit)] = {
+                        'required': s.anzahl,
+                        'zugeteilt': 0
+                        }
 
                 # TODO: Die Schleifen auf aggregate processing umstellen
                 for zs in aufgabe.zuteilung_set.all():
-                    print zs
+                    # print zs
                     for stdzut in zs.stundenzuteilung_set.all():
                         newEntry['u'+str(stdzut.uhrzeit)]['zugeteilt'] += 1
 
@@ -987,12 +1022,10 @@ class ZuteilungUebersichtView (FilteredListView):
 
         # for each remaining Aufgabe in qs, find the already assigned STunden 
 
-        table = self.get_filtered_table(data)
-
-        return table
+        return data
 
 
-class  StundenplaeneEdit (FilteredListView):
+class StundenplaeneEdit(FilteredListView):
 
     title = "Weisen Sie einer Aufgabe Personen"
     " zu den benötigten Zeitpunkten zu"
@@ -1569,7 +1602,7 @@ class LeistungEmailView (FilteredEmailCreateView):
     tableClass = LeistungEmailTable
 
     filterform_class = forms.LeistungEmailFilter
-    
+
     def benachrichtigt_filter (self, qs, includeSchonBenachrichtigt):
         ## print "benachrichtigt filter: ", self, qs, includeSchonBenachrichtigt
         ## for q in qs:
@@ -1581,9 +1614,13 @@ class LeistungEmailView (FilteredEmailCreateView):
         if includeSchonBenachrichtigt:
             pass
         else:
-            # if veraendert <= benachrichtigt, then an instance has alredy been notified
-            # so we leave only those in the queryset where the opposite  is true
-            # (filter keeps those where the attribute is TRUE!!! 
+            # if veraendert <= benachrichtigt,
+            # then an instance has alredy been notified
+            # so we leave only those in the queryset
+            # where the opposite  is true
+            # (filter keeps those where the
+            # attribute is TRUE!!!
+
             qs = qs.filter(veraendert__gt=F('benachrichtigt'))
         return qs
 
