@@ -98,6 +98,7 @@ class FilteredListView(ListView):
     intro_text = ""
     post_text = ""
     todo_text = ""
+    discuss_text = ""
 
     # pass additional context into template, if given.
     # must  be dictionary
@@ -125,6 +126,7 @@ class FilteredListView(ListView):
 
         if isVorstand (self.request.user):
             context['todo_text'] = mark_safe(self.todo_text)
+            context['discuss_text'] = mark_safe(self.discuss_text)
 
         context.update(self.context)
         return context
@@ -716,12 +718,12 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             # show users that can still accept more work
             qs = [q
                   for q in qs
-                  if q.mitglied.zugeteilteStunden() < 10]
+                  if q.mitglied.zugeteilteStunden() < settings.JAHRESSTUNDEN]
         elif busy == 'BU':
             # show users that are already busy
             qs = [q
                   for q in qs
-                  if q.mitglied.zugeteilteStunden() >= 10]
+                  if q.mitglied.zugeteilteStunden() >= settings.JAHRESSTUNDEN]
 
         return qs
 
@@ -755,7 +757,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
     Filtern Sie nach Mitgliedsnamen oder Aufgabengruppe.
     """
 
-    todo_text = """
+    discuss_text = """
     <li> mit -1 durch den Vorstand bewertete Meldungen ausfiltern!  </li>
     <li> Weitere Filter einbauen? Nach Mitglieds-
     oder Vorstandspräferenz?  </li>
@@ -1418,15 +1420,17 @@ class Salden(isVorstandMixin, FilteredListView):
 
         return {
             '--': lambda u: True,
-            'OK': lambda u: u['AK'][0] >= 10,
-            'CH': lambda u: ((u['AK'][0] < 10) and
+            'OK': lambda u: u['AK'][0] >= settings.JAHRESSTUNDEN,
+            'CH': lambda u: ((u['AK'][0] < settings.JAHRESSTUNDEN) and
                              ((u['AK'][0] or 0) +
                               (u['OF'][0] or 0) +
-                              u['future'] + u['nodate'] >= 10)
+                              u['future'] + u['nodate'] >=
+                             settings.JAHRESSTUNDEN)
                              ),
             'PR': lambda u: ((u['AK'][0] or 0) +
                              (u['OF'][0] or 0) +
-                              u['future'] + u['nodate'] < 10),
+                             u['future'] + u['nodate'] <
+                             settings.JAHRESSTUNDEN),
             }[filterchoice](userdata)
 
     def annotate_data(self, userQs):
