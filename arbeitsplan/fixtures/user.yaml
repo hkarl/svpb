@@ -6,7 +6,7 @@
     is_active: true
     is_staff: true
     is_superuser: true
-    last_login: 2014-06-22 12:23:05.703395+00:00
+    last_login: 2014-06-22 12:23:05+00:00
     last_name: Karl
     password: pbkdf2_sha256$12000$EVhJRgxGOARc$8Iif9zNZnIG73to67Uzt7BSFrmUhXZrQQDDd1dfwjYs=
     user_permissions: []
@@ -17,11 +17,11 @@
     date_joined: 2014-05-09 13:48:31+00:00
     email: captain.hook@propgen.de
     first_name: Captain
-    groups: [1]
+    groups: []
     is_active: true
-    is_staff: true
+    is_staff: false
     is_superuser: false
-    last_login: 2014-06-19 14:35:02.115963+00:00
+    last_login: 2014-06-19 14:35:02+00:00
     last_name: Hook
     password: pbkdf2_sha256$12000$lVo10eCHvw3G$ycNMywT4uEJuQTEI4+29l/2BdosrqjCV+LoBOriyKcE=
     user_permissions: [28, 29, 30, 25, 26, 27, 43, 44, 45, 34, 35, 36, 22, 23, 24,
@@ -37,7 +37,7 @@
     is_active: true
     is_staff: false
     is_superuser: false
-    last_login: 2014-06-21 16:41:45.285245+00:00
+    last_login: 2014-06-21 16:41:45+00:00
     last_name: Pan
     password: pbkdf2_sha256$12000$YtBt3CUz83Ni$yUOIke0eJS5/o969yFm0N7ncb3kt5adxbcFRDyBvbME=
     user_permissions: []
@@ -46,16 +46,91 @@
   pk: 3
 - fields:
     date_joined: 2014-05-09 13:50:14+00:00
-    email: dirk.haensgen@propgen.de
+    email: dirk.haensgen@svpb.de
     first_name: Dirk
     groups: [1]
     is_active: true
     is_staff: false
     is_superuser: false
-    last_login: 2014-06-19 14:38:43.692833+00:00
+    last_login: 2014-06-19 14:38:43+00:00
     last_name: Haensgen
     password: pbkdf2_sha256$12000$JIubYixdzwWl$xA8m7OysZsO3DLDVQDpJsJRcvJlrWaGw7VD9bs5Q7SM=
     user_permissions: []
     username: DirkHaensgen
   model: auth.user
   pk: 4
+- fields:
+    date_joined: 2014-06-29 12:55:19+00:00
+    email: friedhelm.ruediger@svpb.de
+    first_name: Friedhelm
+    groups: [1]
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2014-06-29 12:55:19+00:00
+    last_name: "R\xFCdiger"
+    password: pbkdf2_sha256$12000$3AIuAY7orvYU$S1bvlsB03defNWY0+7sP1iyK8oJrEbvaoCl9v3FQjww=
+    user_permissions: []
+    username: FriedhelmRuediger
+  model: auth.user
+  pk: 5
+- fields:
+    date_joined: 2014-06-29 12:57:05+00:00
+    email: jochen.melzian@svpb.de
+    first_name: Jochen
+    groups: [1]
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2014-06-29 12:57:05+00:00
+    last_name: Melzian
+    password: pbkdf2_sha256$12000$5TsrWuh8zfrH$kAHh8Eopp71GDM/tH+nica/pU+bWL1BaHgBEBnQXi/Y=
+    user_permissions: []
+    username: JochenMelzian
+  model: auth.user
+  pk: 6
+- fields:
+    date_joined: 2014-06-29 12:57:41+00:00
+    email: jochen.mueller@svpb.de
+    first_name: Jochen
+    groups: [1]
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2014-06-29 12:57:41+00:00
+    last_name: "M\xFCller"
+    password: pbkdf2_sha256$12000$5JgfgdfnVcqh$z6AucprgCsb/Wx3FNbT4K8F7PgCXfts2AM9FFMNOwHM=
+    user_permissions: []
+    username: JochenMueller
+  model: auth.user
+  pk: 7
+- fields:
+    date_joined: 2014-06-29 12:58:43+00:00
+    email: eddi.jarek@svpb.de
+    first_name: Edgar
+    groups: [1]
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2014-06-29 12:58:43+00:00
+    last_name: Jarek
+    password: pbkdf2_sha256$12000$t5Es82PzHDcj$Enz56pYPEtLcQq/Jd8jq86eH5IiKW3gNKkyUijX1DsQ=
+    user_permissions: []
+    username: EdgarJarek
+  model: auth.user
+  pk: 8
+- fields:
+    date_joined: 2014-06-29 12:59:28+00:00
+    email: christian.luetkefedder@svpb.de
+    first_name: Christian
+    groups: [1]
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2014-06-29 12:59:28+00:00
+    last_name: "L\xFCtkefedder"
+    password: pbkdf2_sha256$12000$1BQyGd93GJNz$ip2Q1zPMGtKLjyyt9Wh87rQ2pga8xaI+7DzoNvnzXxk=
+    user_permissions: []
+    username: ChristianLuetkefedder
+  model: auth.user
+  pk: 9

@@ -1,212 +1,36 @@
-- fields: {mitgliedsnummer: '0', user: 2, zuteilungBenachrichtigungNoetig: false,
-    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 08:02:02.391499+00:00'}
+- fields: {mitgliedsnummer: '1', user: 2, zuteilungBenachrichtigungNoetig: false,
+    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 08:02:02+00:00'}
   model: arbeitsplan.mitglied
   pk: 1
-- fields: {mitgliedsnummer: '0', user: 4, zuteilungBenachrichtigungNoetig: false,
-    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 08:04:24.229192+00:00'}
+- fields: {mitgliedsnummer: '3', user: 4, zuteilungBenachrichtigungNoetig: false,
+    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 08:04:24+00:00'}
   model: arbeitsplan.mitglied
   pk: 2
-- fields: {mitgliedsnummer: '0', user: 3, zuteilungBenachrichtigungNoetig: false,
-    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 16:34:55.157929+00:00'}
+- fields: {mitgliedsnummer: '4', user: 3, zuteilungBenachrichtigungNoetig: false,
+    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 16:34:55+00:00'}
   model: arbeitsplan.mitglied
   pk: 3
-- fields: {mitgliedsnummer: '0', user: 1, zuteilungBenachrichtigungNoetig: false,
-    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 16:53:47.402013+00:00'}
+- fields: {mitgliedsnummer: '5', user: 1, zuteilungBenachrichtigungNoetig: false,
+    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 16:53:47+00:00'}
   model: arbeitsplan.mitglied
   pk: 4
-- fields: {bemerkung: aaaabbccc, gruppe: Revier, verantwortlich: 1}
-  model: arbeitsplan.aufgabengruppe
-  pk: 1
-- fields: {bemerkung: xxx, gruppe: Boote, verantwortlich: 2}
-  model: arbeitsplan.aufgabengruppe
-  pk: 2
-- fields: {bemerkung: '', gruppe: Bewirtung, verantwortlich: 3}
-  model: arbeitsplan.aufgabengruppe
-  pk: 3
-- fields: {anzahl: 5, aufgabe: Boote aus Winterlager, bemerkung: Eine Testbemerkung,
-    datum: 2014-03-29, gruppe: 2, stunden: 0, teamleader: 1, verantwortlich: 1}
-  model: arbeitsplan.aufgabe
-  pk: 1
-- fields: {anzahl: 6, aufgabe: 'Boote einlagern ', bemerkung: '', datum: 2014-10-03,
-    gruppe: 2, stunden: 1, teamleader: null, verantwortlich: 2}
-  model: arbeitsplan.aufgabe
-  pk: 2
-- fields: {anzahl: 0, aufgabe: Ansegln, bemerkung: '', datum: 2014-06-28, gruppe: 3,
-    stunden: 4, teamleader: null, verantwortlich: 3}
-  model: arbeitsplan.aufgabe
-  pk: 3
-- fields: {anzahl: 20, aufgabe: "Rasen m\xE4hen ", bemerkung: '', datum: null, gruppe: 1,
-    stunden: 5, teamleader: null, verantwortlich: 2}
-  model: arbeitsplan.aufgabe
-  pk: 4
-- fields: {anzahl: 5, aufgabe: Absegeln, bemerkung: '', datum: 2014-10-31, gruppe: 3,
-    stunden: 3, teamleader: null, verantwortlich: 1}
-  model: arbeitsplan.aufgabe
+- fields: {mitgliedsnummer: '2', user: 5, zuteilungBenachrichtigungNoetig: true, zuteilungsbenachrichtigung: !!timestamp '1899-12-31
+      23:07:00+00:00'}
+  model: arbeitsplan.mitglied
   pk: 5
-- fields: {anzahl: 2, aufgabe: 3, uhrzeit: 12}
-  model: arbeitsplan.stundenplan
-  pk: 1
-- fields: {anzahl: 3, aufgabe: 3, uhrzeit: 13}
-  model: arbeitsplan.stundenplan
-  pk: 2
-- fields: {anzahl: 3, aufgabe: 3, uhrzeit: 14}
-  model: arbeitsplan.stundenplan
-  pk: 3
-- fields: {anzahl: 4, aufgabe: 3, uhrzeit: 15}
-  model: arbeitsplan.stundenplan
-  pk: 4
-- fields: {anzahl: 2, aufgabe: 5, uhrzeit: 10}
-  model: arbeitsplan.stundenplan
-  pk: 5
-- fields: {anzahl: 2, aufgabe: 5, uhrzeit: 11}
-  model: arbeitsplan.stundenplan
+- fields: {mitgliedsnummer: '6', user: 6, zuteilungBenachrichtigungNoetig: true, zuteilungsbenachrichtigung: !!timestamp '1899-12-31
+      23:07:00+00:00'}
+  model: arbeitsplan.mitglied
   pk: 6
-- fields: {anzahl: 2, aufgabe: 5, uhrzeit: 12}
-  model: arbeitsplan.stundenplan
+- fields: {mitgliedsnummer: '7', user: 7, zuteilungBenachrichtigungNoetig: true, zuteilungsbenachrichtigung: !!timestamp '1899-12-31
+      23:07:00+00:00'}
+  model: arbeitsplan.mitglied
   pk: 7
-- fields: {anzahl: 1, aufgabe: 5, uhrzeit: 13}
-  model: arbeitsplan.stundenplan
+- fields: {mitgliedsnummer: '8', user: 8, zuteilungBenachrichtigungNoetig: true, zuteilungsbenachrichtigung: !!timestamp '1899-12-31
+      23:07:00+00:00'}
+  model: arbeitsplan.mitglied
   pk: 8
-- fields: {anzahl: 2, aufgabe: 3, uhrzeit: 12}
-  model: arbeitsplan.stundenplan
+- fields: {mitgliedsnummer: '9', user: 9, zuteilungBenachrichtigungNoetig: true, zuteilungsbenachrichtigung: !!timestamp '1899-12-31
+      23:07:00+00:00'}
+  model: arbeitsplan.mitglied
   pk: 9
-- fields: {anzahl: 3, aufgabe: 3, uhrzeit: 13}
-  model: arbeitsplan.stundenplan
-  pk: 10
-- fields: {anzahl: 3, aufgabe: 3, uhrzeit: 14}
-  model: arbeitsplan.stundenplan
-  pk: 11
-- fields: {anzahl: 4, aufgabe: 3, uhrzeit: 15}
-  model: arbeitsplan.stundenplan
-  pk: 12
-- fields: {aufgabe: 4, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 1, prefMitglied: 1, prefVorstand: -1, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 3
-- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 3, prefMitglied: 1, prefVorstand: 2, veraendert: 2014-05-15}
-  model: arbeitsplan.meldung
-  pk: 5
-- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 6
-- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 1, prefMitglied: 1, prefVorstand: 2, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 7
-- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 1, prefMitglied: 1, prefVorstand: -1, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 8
-- fields: {aufgabe: 1, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
-    melder: 2, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 9
-- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
-    melder: 2, prefMitglied: 1, prefVorstand: 0, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 10
-- fields: {aufgabe: 4, bemerkung: 'test test ', bemerkungVorstand: '', erstellt: 2014-05-10,
-    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-15}
-  model: arbeitsplan.meldung
-  pk: 11
-- fields: {aufgabe: 5, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
-    melder: 2, prefMitglied: 1, prefVorstand: 2, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 12
-- fields: {aufgabe: 1, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-21,
-    melder: 1, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-21}
-  model: arbeitsplan.meldung
-  pk: 13
-- fields: {aufgabe: 5, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-21,
-    melder: 1, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-21}
-  model: arbeitsplan.meldung
-  pk: 14
-- fields: {aufgabe: 1, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-21,
-    melder: 3, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-21}
-  model: arbeitsplan.meldung
-  pk: 15
-- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-21,
-    melder: 3, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-21}
-  model: arbeitsplan.meldung
-  pk: 16
-- fields: {aufgabe: 4, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-21,
-    melder: 3, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-21}
-  model: arbeitsplan.meldung
-  pk: 17
-- fields: {aufgabe: 5, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-21,
-    melder: 3, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-21}
-  model: arbeitsplan.meldung
-  pk: 18
-- fields: {aufgabe: 1, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-22,
-    melder: 4, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-22}
-  model: arbeitsplan.meldung
-  pk: 19
-- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-22,
-    melder: 4, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-22}
-  model: arbeitsplan.meldung
-  pk: 20
-- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-22,
-    melder: 4, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-22}
-  model: arbeitsplan.meldung
-  pk: 21
-- fields: {aufgabe: 4, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-22,
-    melder: 4, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-22}
-  model: arbeitsplan.meldung
-  pk: 22
-- fields: {aufgabe: 5, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-22,
-    melder: 4, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-22}
-  model: arbeitsplan.meldung
-  pk: 23
-- fields: {aufgabe: 3, ausfuehrer: 2, automatisch: false}
-  model: arbeitsplan.zuteilung
-  pk: 36
-- fields: {aufgabe: 3, ausfuehrer: 3, automatisch: false}
-  model: arbeitsplan.zuteilung
-  pk: 37
-- fields: {aufgabe: 4, ausfuehrer: 1, automatisch: false}
-  model: arbeitsplan.zuteilung
-  pk: 38
-- fields: {aufgabe: 2, ausfuehrer: 2, automatisch: false}
-  model: arbeitsplan.zuteilung
-  pk: 39
-- fields: {aufgabe: 2, ausfuehrer: 1, automatisch: false}
-  model: arbeitsplan.zuteilung
-  pk: 40
-- fields: {aufgabe: 5, ausfuehrer: 2, automatisch: false}
-  model: arbeitsplan.zuteilung
-  pk: 41
-- fields: {uhrzeit: 15, zuteilung: 37}
-  model: arbeitsplan.stundenzuteilung
-  pk: 1
-- fields: {uhrzeit: 14, zuteilung: 37}
-  model: arbeitsplan.stundenzuteilung
-  pk: 2
-- fields: {uhrzeit: 13, zuteilung: 37}
-  model: arbeitsplan.stundenzuteilung
-  pk: 3
-- fields: {uhrzeit: 12, zuteilung: 36}
-  model: arbeitsplan.stundenzuteilung
-  pk: 4
-- fields: {uhrzeit: 13, zuteilung: 36}
-  model: arbeitsplan.stundenzuteilung
-  pk: 5
-- fields: {aufgabe: 1, bemerkung: kjsdfhjdsk, bemerkungVorstand: "von teamleader akzeptier\
-      \ t\r\n", benachrichtigt: !!timestamp '2014-06-12 15:50:27.507013+00:00', erstellt: !!timestamp '2014-04-05
-      23:00:00+00:00', melder: 3, status: OF, veraendert: !!timestamp '2014-06-14
-      15:48:29.411959+00:00', wann: 2014-02-01, zeit: '1'}
-  model: arbeitsplan.leistung
-  pk: 1
-- fields: {aufgabe: 4, bemerkung: "ksdfjlskdjf aaaa\r\n", bemerkungVorstand: '', benachrichtigt: !!timestamp '2014-06-12
-      15:50:27.521349+00:00', erstellt: !!timestamp '2014-04-05 23:00:00+00:00', melder: 3,
-    status: OF, veraendert: !!timestamp '2014-06-10 15:07:11.513092+00:00', wann: 2014-06-01,
-    zeit: '5'}
-  model: arbeitsplan.leistung
-  pk: 2
-- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', benachrichtigt: !!timestamp '2014-06-12
-      15:50:27.536270+00:00', erstellt: !!timestamp '2014-06-05 16:12:26.745247+00:00',
-    melder: 1, status: OF, veraendert: !!timestamp '2014-06-05 16:12:26.744770+00:00',
-    wann: 2014-06-05, zeit: '3'}
-  model: arbeitsplan.leistung
-  pk: 3

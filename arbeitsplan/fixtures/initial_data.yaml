@@ -6,7 +6,7 @@
     is_active: true
     is_staff: true
     is_superuser: true
-    last_login: 2014-06-22 12:23:05.703395+00:00
+    last_login: 2014-06-22 12:23:05+00:00
     last_name: Karl
     password: pbkdf2_sha256$12000$EVhJRgxGOARc$8Iif9zNZnIG73to67Uzt7BSFrmUhXZrQQDDd1dfwjYs=
     user_permissions: []
@@ -17,11 +17,11 @@
     date_joined: 2014-05-09 13:48:31+00:00
     email: captain.hook@propgen.de
     first_name: Captain
-    groups: [1]
+    groups: []
     is_active: true
-    is_staff: true
+    is_staff: false
     is_superuser: false
-    last_login: 2014-06-19 14:35:02.115963+00:00
+    last_login: 2014-06-19 14:35:02+00:00
     last_name: Hook
     password: pbkdf2_sha256$12000$lVo10eCHvw3G$ycNMywT4uEJuQTEI4+29l/2BdosrqjCV+LoBOriyKcE=
     user_permissions: [28, 29, 30, 25, 26, 27, 43, 44, 45, 34, 35, 36, 22, 23, 24,
@@ -37,7 +37,7 @@
     is_active: true
     is_staff: false
     is_superuser: false
-    last_login: 2014-06-21 16:41:45.285245+00:00
+    last_login: 2014-06-21 16:41:45+00:00
     last_name: Pan
     password: pbkdf2_sha256$12000$YtBt3CUz83Ni$yUOIke0eJS5/o969yFm0N7ncb3kt5adxbcFRDyBvbME=
     user_permissions: []
@@ -46,370 +46,134 @@
   pk: 3
 - fields:
     date_joined: 2014-05-09 13:50:14+00:00
-    email: dirk.haensgen@propgen.de
+    email: dirk.haensgen@svpb.de
     first_name: Dirk
     groups: [1]
     is_active: true
     is_staff: false
     is_superuser: false
-    last_login: 2014-06-19 14:38:43.692833+00:00
+    last_login: 2014-06-19 14:38:43+00:00
     last_name: Haensgen
     password: pbkdf2_sha256$12000$JIubYixdzwWl$xA8m7OysZsO3DLDVQDpJsJRcvJlrWaGw7VD9bs5Q7SM=
     user_permissions: []
     username: DirkHaensgen
   model: auth.user
   pk: 4
-- fields: {mitgliedsnummer: '0', user: 2, zuteilungBenachrichtigungNoetig: false,
-    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 08:02:02.391499+00:00'}
-  model: arbeitsplan.mitglied
-  pk: 1
-- fields: {mitgliedsnummer: '0', user: 4, zuteilungBenachrichtigungNoetig: false,
-    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 08:04:24.229192+00:00'}
-  model: arbeitsplan.mitglied
-  pk: 2
-- fields: {mitgliedsnummer: '0', user: 3, zuteilungBenachrichtigungNoetig: false,
-    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 16:34:55.157929+00:00'}
-  model: arbeitsplan.mitglied
-  pk: 3
-- fields: {mitgliedsnummer: '0', user: 1, zuteilungBenachrichtigungNoetig: false,
-    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 16:53:47.402013+00:00'}
-  model: arbeitsplan.mitglied
-  pk: 4
-- fields: {bemerkung: aaaabbccc, gruppe: Revier, verantwortlich: 1}
-  model: arbeitsplan.aufgabengruppe
-  pk: 1
-- fields: {bemerkung: xxx, gruppe: Boote, verantwortlich: 2}
-  model: arbeitsplan.aufgabengruppe
-  pk: 2
-- fields: {bemerkung: '', gruppe: Bewirtung, verantwortlich: 3}
-  model: arbeitsplan.aufgabengruppe
-  pk: 3
-- fields: {anzahl: 5, aufgabe: Boote aus Winterlager, bemerkung: Eine Testbemerkung,
-    datum: 2014-03-29, gruppe: 2, stunden: 0, teamleader: 1, verantwortlich: 1}
-  model: arbeitsplan.aufgabe
-  pk: 1
-- fields: {anzahl: 6, aufgabe: 'Boote einlagern ', bemerkung: '', datum: 2014-10-03,
-    gruppe: 2, stunden: 1, teamleader: null, verantwortlich: 2}
-  model: arbeitsplan.aufgabe
-  pk: 2
-- fields: {anzahl: 0, aufgabe: Ansegln, bemerkung: '', datum: 2014-06-28, gruppe: 3,
-    stunden: 4, teamleader: null, verantwortlich: 3}
-  model: arbeitsplan.aufgabe
-  pk: 3
-- fields: {anzahl: 20, aufgabe: "Rasen m\xE4hen ", bemerkung: '', datum: null, gruppe: 1,
-    stunden: 5, teamleader: null, verantwortlich: 2}
-  model: arbeitsplan.aufgabe
-  pk: 4
-- fields: {anzahl: 5, aufgabe: Absegeln, bemerkung: '', datum: 2014-10-31, gruppe: 3,
-    stunden: 3, teamleader: null, verantwortlich: 1}
-  model: arbeitsplan.aufgabe
+- fields:
+    date_joined: 2014-06-29 12:55:19+00:00
+    email: friedhelm.ruediger@svpb.de
+    first_name: Friedhelm
+    groups: [1]
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2014-06-29 12:55:19+00:00
+    last_name: "R\xFCdiger"
+    password: pbkdf2_sha256$12000$3AIuAY7orvYU$S1bvlsB03defNWY0+7sP1iyK8oJrEbvaoCl9v3FQjww=
+    user_permissions: []
+    username: FriedhelmRuediger
+  model: auth.user
   pk: 5
-- fields: {anzahl: 2, aufgabe: 3, uhrzeit: 12}
-  model: arbeitsplan.stundenplan
-  pk: 1
-- fields: {anzahl: 3, aufgabe: 3, uhrzeit: 13}
-  model: arbeitsplan.stundenplan
-  pk: 2
-- fields: {anzahl: 3, aufgabe: 3, uhrzeit: 14}
-  model: arbeitsplan.stundenplan
-  pk: 3
-- fields: {anzahl: 4, aufgabe: 3, uhrzeit: 15}
-  model: arbeitsplan.stundenplan
-  pk: 4
-- fields: {anzahl: 2, aufgabe: 5, uhrzeit: 10}
-  model: arbeitsplan.stundenplan
-  pk: 5
-- fields: {anzahl: 2, aufgabe: 5, uhrzeit: 11}
-  model: arbeitsplan.stundenplan
+- fields:
+    date_joined: 2014-06-29 12:57:05+00:00
+    email: jochen.melzian@svpb.de
+    first_name: Jochen
+    groups: [1]
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2014-06-29 12:57:05+00:00
+    last_name: Melzian
+    password: pbkdf2_sha256$12000$5TsrWuh8zfrH$kAHh8Eopp71GDM/tH+nica/pU+bWL1BaHgBEBnQXi/Y=
+    user_permissions: []
+    username: JochenMelzian
+  model: auth.user
   pk: 6
-- fields: {anzahl: 2, aufgabe: 5, uhrzeit: 12}
-  model: arbeitsplan.stundenplan
+- fields:
+    date_joined: 2014-06-29 12:57:41+00:00
+    email: jochen.mueller@svpb.de
+    first_name: Jochen
+    groups: [1]
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2014-06-29 12:57:41+00:00
+    last_name: "M\xFCller"
+    password: pbkdf2_sha256$12000$5JgfgdfnVcqh$z6AucprgCsb/Wx3FNbT4K8F7PgCXfts2AM9FFMNOwHM=
+    user_permissions: []
+    username: JochenMueller
+  model: auth.user
   pk: 7
-- fields: {anzahl: 1, aufgabe: 5, uhrzeit: 13}
-  model: arbeitsplan.stundenplan
+- fields:
+    date_joined: 2014-06-29 12:58:43+00:00
+    email: eddi.jarek@svpb.de
+    first_name: Edgar
+    groups: [1]
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2014-06-29 12:58:43+00:00
+    last_name: Jarek
+    password: pbkdf2_sha256$12000$t5Es82PzHDcj$Enz56pYPEtLcQq/Jd8jq86eH5IiKW3gNKkyUijX1DsQ=
+    user_permissions: []
+    username: EdgarJarek
+  model: auth.user
   pk: 8
-- fields: {anzahl: 2, aufgabe: 3, uhrzeit: 12}
-  model: arbeitsplan.stundenplan
+- fields:
+    date_joined: 2014-06-29 12:59:28+00:00
+    email: christian.luetkefedder@svpb.de
+    first_name: Christian
+    groups: [1]
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2014-06-29 12:59:28+00:00
+    last_name: "L\xFCtkefedder"
+    password: pbkdf2_sha256$12000$1BQyGd93GJNz$ip2Q1zPMGtKLjyyt9Wh87rQ2pga8xaI+7DzoNvnzXxk=
+    user_permissions: []
+    username: ChristianLuetkefedder
+  model: auth.user
   pk: 9
-- fields: {anzahl: 3, aufgabe: 3, uhrzeit: 13}
-  model: arbeitsplan.stundenplan
-  pk: 10
-- fields: {anzahl: 3, aufgabe: 3, uhrzeit: 14}
-  model: arbeitsplan.stundenplan
-  pk: 11
-- fields: {anzahl: 4, aufgabe: 3, uhrzeit: 15}
-  model: arbeitsplan.stundenplan
-  pk: 12
-- fields: {aufgabe: 4, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 1, prefMitglied: 1, prefVorstand: -1, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 3
-- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 3, prefMitglied: 1, prefVorstand: 2, veraendert: 2014-05-15}
-  model: arbeitsplan.meldung
-  pk: 5
-- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 6
-- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 1, prefMitglied: 1, prefVorstand: 2, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 7
-- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-03-29,
-    melder: 1, prefMitglied: 1, prefVorstand: -1, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 8
-- fields: {aufgabe: 1, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
-    melder: 2, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 9
-- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
-    melder: 2, prefMitglied: 1, prefVorstand: 0, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 10
-- fields: {aufgabe: 4, bemerkung: 'test test ', bemerkungVorstand: '', erstellt: 2014-05-10,
-    melder: 2, prefMitglied: 1, prefVorstand: 1, veraendert: 2014-05-15}
-  model: arbeitsplan.meldung
-  pk: 11
-- fields: {aufgabe: 5, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-05-10,
-    melder: 2, prefMitglied: 1, prefVorstand: 2, veraendert: 2014-05-10}
-  model: arbeitsplan.meldung
-  pk: 12
-- fields: {aufgabe: 1, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-21,
-    melder: 1, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-21}
-  model: arbeitsplan.meldung
-  pk: 13
-- fields: {aufgabe: 5, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-21,
-    melder: 1, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-21}
-  model: arbeitsplan.meldung
-  pk: 14
-- fields: {aufgabe: 1, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-21,
-    melder: 3, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-21}
-  model: arbeitsplan.meldung
-  pk: 15
-- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-21,
-    melder: 3, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-21}
-  model: arbeitsplan.meldung
-  pk: 16
-- fields: {aufgabe: 4, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-21,
-    melder: 3, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-21}
-  model: arbeitsplan.meldung
-  pk: 17
-- fields: {aufgabe: 5, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-21,
-    melder: 3, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-21}
-  model: arbeitsplan.meldung
-  pk: 18
-- fields: {aufgabe: 1, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-22,
-    melder: 4, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-22}
-  model: arbeitsplan.meldung
-  pk: 19
-- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-22,
-    melder: 4, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-22}
-  model: arbeitsplan.meldung
-  pk: 20
-- fields: {aufgabe: 3, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-22,
-    melder: 4, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-22}
-  model: arbeitsplan.meldung
-  pk: 21
-- fields: {aufgabe: 4, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-22,
-    melder: 4, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-22}
-  model: arbeitsplan.meldung
-  pk: 22
-- fields: {aufgabe: 5, bemerkung: '', bemerkungVorstand: '', erstellt: 2014-06-22,
-    melder: 4, prefMitglied: -1, prefVorstand: 1, veraendert: 2014-06-22}
-  model: arbeitsplan.meldung
-  pk: 23
-- fields: {aufgabe: 3, ausfuehrer: 2, automatisch: false}
-  model: arbeitsplan.zuteilung
-  pk: 36
-- fields: {aufgabe: 3, ausfuehrer: 3, automatisch: false}
-  model: arbeitsplan.zuteilung
-  pk: 37
-- fields: {aufgabe: 4, ausfuehrer: 1, automatisch: false}
-  model: arbeitsplan.zuteilung
-  pk: 38
-- fields: {aufgabe: 2, ausfuehrer: 2, automatisch: false}
-  model: arbeitsplan.zuteilung
-  pk: 39
-- fields: {aufgabe: 2, ausfuehrer: 1, automatisch: false}
-  model: arbeitsplan.zuteilung
-  pk: 40
-- fields: {aufgabe: 5, ausfuehrer: 2, automatisch: false}
-  model: arbeitsplan.zuteilung
-  pk: 41
-- fields: {uhrzeit: 15, zuteilung: 37}
-  model: arbeitsplan.stundenzuteilung
+- fields: {mitgliedsnummer: '1', user: 2, zuteilungBenachrichtigungNoetig: false,
+    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 08:02:02+00:00'}
+  model: arbeitsplan.mitglied
   pk: 1
-- fields: {uhrzeit: 14, zuteilung: 37}
-  model: arbeitsplan.stundenzuteilung
+- fields: {mitgliedsnummer: '3', user: 4, zuteilungBenachrichtigungNoetig: false,
+    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 08:04:24+00:00'}
+  model: arbeitsplan.mitglied
   pk: 2
-- fields: {uhrzeit: 13, zuteilung: 37}
-  model: arbeitsplan.stundenzuteilung
+- fields: {mitgliedsnummer: '4', user: 3, zuteilungBenachrichtigungNoetig: false,
+    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 16:34:55+00:00'}
+  model: arbeitsplan.mitglied
   pk: 3
-- fields: {uhrzeit: 12, zuteilung: 36}
-  model: arbeitsplan.stundenzuteilung
+- fields: {mitgliedsnummer: '5', user: 1, zuteilungBenachrichtigungNoetig: false,
+    zuteilungsbenachrichtigung: !!timestamp '2014-06-14 16:53:47+00:00'}
+  model: arbeitsplan.mitglied
   pk: 4
-- fields: {uhrzeit: 13, zuteilung: 36}
-  model: arbeitsplan.stundenzuteilung
+- fields: {mitgliedsnummer: '2', user: 5, zuteilungBenachrichtigungNoetig: true, zuteilungsbenachrichtigung: !!timestamp '1899-12-31
+      23:07:00+00:00'}
+  model: arbeitsplan.mitglied
   pk: 5
-- fields: {aufgabe: 1, bemerkung: kjsdfhjdsk, bemerkungVorstand: "von teamleader akzeptier\
-      \ t\r\n", benachrichtigt: !!timestamp '2014-06-12 15:50:27.507013+00:00', erstellt: !!timestamp '2014-04-05
-      23:00:00+00:00', melder: 3, status: OF, veraendert: !!timestamp '2014-06-14
-      15:48:29.411959+00:00', wann: 2014-02-01, zeit: '1'}
-  model: arbeitsplan.leistung
-  pk: 1
-- fields: {aufgabe: 4, bemerkung: "ksdfjlskdjf aaaa\r\n", bemerkungVorstand: '', benachrichtigt: !!timestamp '2014-06-12
-      15:50:27.521349+00:00', erstellt: !!timestamp '2014-04-05 23:00:00+00:00', melder: 3,
-    status: OF, veraendert: !!timestamp '2014-06-10 15:07:11.513092+00:00', wann: 2014-06-01,
-    zeit: '5'}
-  model: arbeitsplan.leistung
-  pk: 2
-- fields: {aufgabe: 2, bemerkung: '', bemerkungVorstand: '', benachrichtigt: !!timestamp '2014-06-12
-      15:50:27.536270+00:00', erstellt: !!timestamp '2014-06-05 16:12:26.745247+00:00',
-    melder: 1, status: OF, veraendert: !!timestamp '2014-06-05 16:12:26.744770+00:00',
-    wann: 2014-06-05, zeit: '3'}
-  model: arbeitsplan.leistung
-  pk: 3
+- fields: {mitgliedsnummer: '6', user: 6, zuteilungBenachrichtigungNoetig: true, zuteilungsbenachrichtigung: !!timestamp '1899-12-31
+      23:07:00+00:00'}
+  model: arbeitsplan.mitglied
+  pk: 6
+- fields: {mitgliedsnummer: '7', user: 7, zuteilungBenachrichtigungNoetig: true, zuteilungsbenachrichtigung: !!timestamp '1899-12-31
+      23:07:00+00:00'}
+  model: arbeitsplan.mitglied
+  pk: 7
+- fields: {mitgliedsnummer: '8', user: 8, zuteilungBenachrichtigungNoetig: true, zuteilungsbenachrichtigung: !!timestamp '1899-12-31
+      23:07:00+00:00'}
+  model: arbeitsplan.mitglied
+  pk: 8
+- fields: {mitgliedsnummer: '9', user: 9, zuteilungBenachrichtigungNoetig: true, zuteilungsbenachrichtigung: !!timestamp '1899-12-31
+      23:07:00+00:00'}
+  model: arbeitsplan.mitglied
+  pk: 9
 - fields:
     name: Vorstand
     permissions: []
   model: auth.group
-  pk: 1
-- fields: {context: '""', created: !!timestamp '2014-06-27 21:06:50.187258+00:00',
-    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
-      21:07:36.873104+00:00', message: "Hallo Captain Hook, \r\n\r\nDein Arbeitseinsatz\
-      \ Ansegln am 28. Juni 2014   um 12 Uhr - 14 Uhr  steht bevor.\r\n\r\nFalls Sie\
-      \ noch Fragen haben, Ansprechpartner ist Peter Pan\_(email: peter.pan@propgen.de).\
-      \ \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand", priority: 1,
-    scheduled_time: null, status: 0, subject: '[SVPB] Ihr Einsatz steht bevor!', template: null,
-    to: captain.hook@propgen.de}
-  model: post_office.email
-  pk: 1
-- fields: {context: '""', created: !!timestamp '2014-06-27 21:06:50.197525+00:00',
-    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
-      21:07:37.042593+00:00', message: "Hallo Peter Pan, \r\n\r\nDein Arbeitseinsatz\
-      \ Ansegln am 28. Juni 2014   um 13 Uhr - 16 Uhr  steht bevor.\r\n\r\nFalls Sie\
-      \ noch Fragen haben, Ansprechpartner ist Peter Pan\_(email: peter.pan@propgen.de).\
-      \ \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand", priority: 1,
-    scheduled_time: null, status: 0, subject: '[SVPB] Ihr Einsatz steht bevor!', template: null,
-    to: peter.pan@propgen.de}
-  model: post_office.email
-  pk: 2
-- fields: {context: '""', created: !!timestamp '2014-06-27 21:06:50.204156+00:00',
-    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
-      21:07:37.212023+00:00', message: "Hallo Peter Pan! \r\n\r\nDie folgende Arbeitserinnerungen\
-      \ wurden versandt: \r\n\r\n\r\n* Ansegln, 28. Juni 2014: Captain Hook, captain.hook@propgen.de\
-      \ ; 12 Uhr - 14 Uhr  \r\n\r\n* Ansegln, 28. Juni 2014: Peter Pan, peter.pan@propgen.de\
-      \ ; 13 Uhr - 16 Uhr  \r\n\r\n\r\nWir hoffen, dass Sie mit Ihren Helfern viel\
-      \ Spass und Erfolg haben! \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand ",
-    priority: 1, scheduled_time: null, status: 0, subject: '[SVPB]: Verschickte Erinnerungen',
-    template: null, to: peter.pan@propgen.de}
-  model: post_office.email
-  pk: 3
-- fields: {context: '""', created: !!timestamp '2014-06-27 21:07:09.445333+00:00',
-    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
-      21:07:37.382642+00:00', message: "Hallo Captain Hook, \r\n\r\nDein Arbeitseinsatz\
-      \ Ansegln am 28. Juni 2014   um 12 Uhr - 14 Uhr  steht bevor.\r\n\r\nFalls Sie\
-      \ noch Fragen haben, Ansprechpartner ist Peter Pan\_(email: peter.pan@propgen.de).\
-      \ \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand", priority: 1,
-    scheduled_time: null, status: 0, subject: '[SVPB] Ihr Einsatz steht bevor!', template: null,
-    to: captain.hook@propgen.de}
-  model: post_office.email
-  pk: 4
-- fields: {context: '""', created: !!timestamp '2014-06-27 21:07:09.456404+00:00',
-    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
-      21:07:37.552041+00:00', message: "Hallo Peter Pan, \r\n\r\nDein Arbeitseinsatz\
-      \ Ansegln am 28. Juni 2014   um 13 Uhr - 16 Uhr  steht bevor.\r\n\r\nFalls Sie\
-      \ noch Fragen haben, Ansprechpartner ist Peter Pan\_(email: peter.pan@propgen.de).\
-      \ \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand", priority: 1,
-    scheduled_time: null, status: 0, subject: '[SVPB] Ihr Einsatz steht bevor!', template: null,
-    to: peter.pan@propgen.de}
-  model: post_office.email
-  pk: 5
-- fields: {context: '""', created: !!timestamp '2014-06-27 21:07:09.464539+00:00',
-    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
-      21:07:37.723052+00:00', message: "Hallo Peter Pan! \r\n\r\nDie folgende Arbeitserinnerungen\
-      \ wurden versandt: \r\n\r\n\r\n* Ansegln, 28. Juni 2014: Captain Hook, captain.hook@propgen.de\
-      \ ; 12 Uhr - 14 Uhr  \r\n\r\n* Ansegln, 28. Juni 2014: Peter Pan, peter.pan@propgen.de\
-      \ ; 13 Uhr - 16 Uhr  \r\n\r\n\r\nWir hoffen, dass Sie mit Ihren Helfern viel\
-      \ Spass und Erfolg haben! \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand ",
-    priority: 1, scheduled_time: null, status: 0, subject: '[SVPB]: Verschickte Erinnerungen',
-    template: null, to: peter.pan@propgen.de}
-  model: post_office.email
-  pk: 6
-- fields: {context: '""', created: !!timestamp '2014-06-27 21:07:35.737653+00:00',
-    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
-      21:07:37.974728+00:00', message: "Hallo Captain Hook, \r\n\r\nDein Arbeitseinsatz\
-      \ Ansegln am 28. Juni 2014   um 12 Uhr - 14 Uhr  steht bevor.\r\n\r\nFalls Sie\
-      \ noch Fragen haben, Ansprechpartner ist Peter Pan\_(email: peter.pan@propgen.de).\
-      \ \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand", priority: 1,
-    scheduled_time: null, status: 0, subject: '[SVPB] Ihr Einsatz steht bevor!', template: null,
-    to: captain.hook@propgen.de}
-  model: post_office.email
-  pk: 7
-- fields: {context: '""', created: !!timestamp '2014-06-27 21:07:35.748664+00:00',
-    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
-      21:07:38.152813+00:00', message: "Hallo Peter Pan, \r\n\r\nDein Arbeitseinsatz\
-      \ Ansegln am 28. Juni 2014   um 13 Uhr - 16 Uhr  steht bevor.\r\n\r\nFalls Sie\
-      \ noch Fragen haben, Ansprechpartner ist Peter Pan\_(email: peter.pan@propgen.de).\
-      \ \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand", priority: 1,
-    scheduled_time: null, status: 0, subject: '[SVPB] Ihr Einsatz steht bevor!', template: null,
-    to: peter.pan@propgen.de}
-  model: post_office.email
-  pk: 8
-- fields: {context: '""', created: !!timestamp '2014-06-27 21:07:35.755208+00:00',
-    from_email: experiment@propgen.de, headers: null, html_message: '', last_updated: !!timestamp '2014-06-27
-      21:07:38.328112+00:00', message: "Hallo Peter Pan! \r\n\r\nDie folgende Arbeitserinnerungen\
-      \ wurden versandt: \r\n\r\n\r\n* Ansegln, 28. Juni 2014: Captain Hook, captain.hook@propgen.de\
-      \ ; 12 Uhr - 14 Uhr  \r\n\r\n* Ansegln, 28. Juni 2014: Peter Pan, peter.pan@propgen.de\
-      \ ; 13 Uhr - 16 Uhr  \r\n\r\n\r\nWir hoffen, dass Sie mit Ihren Helfern viel\
-      \ Spass und Erfolg haben! \r\n\r\nMit besten Gr\xFC\xDFen, \r\n\r\nDer SVPB-Vorstand ",
-    priority: 1, scheduled_time: null, status: 0, subject: '[SVPB]: Verschickte Erinnerungen',
-    template: null, to: peter.pan@propgen.de}
-  model: post_office.email
-  pk: 9
-- fields: {date: !!timestamp '2014-06-27 21:07:36.879855+00:00', email: 1, message: Sent,
-    status: 0}
-  model: post_office.log
-  pk: 1
-- fields: {date: !!timestamp '2014-06-27 21:07:37.049764+00:00', email: 2, message: Sent,
-    status: 0}
-  model: post_office.log
-  pk: 2
-- fields: {date: !!timestamp '2014-06-27 21:07:37.218209+00:00', email: 3, message: Sent,
-    status: 0}
-  model: post_office.log
-  pk: 3
-- fields: {date: !!timestamp '2014-06-27 21:07:37.388849+00:00', email: 4, message: Sent,
-    status: 0}
-  model: post_office.log
-  pk: 4
-- fields: {date: !!timestamp '2014-06-27 21:07:37.558312+00:00', email: 5, message: Sent,
-    status: 0}
-  model: post_office.log
-  pk: 5
-- fields: {date: !!timestamp '2014-06-27 21:07:37.729214+00:00', email: 6, message: Sent,
-    status: 0}
-  model: post_office.log
-  pk: 6
-- fields: {date: !!timestamp '2014-06-27 21:07:37.979267+00:00', email: 7, message: Sent,
-    status: 0}
-  model: post_office.log
-  pk: 7
-- fields: {date: !!timestamp '2014-06-27 21:07:38.157217+00:00', email: 8, message: Sent,
-    status: 0}
-  model: post_office.log
-  pk: 8
-- fields: {date: !!timestamp '2014-06-27 21:07:38.332606+00:00', email: 9, message: Sent,
-    status: 0}
-  model: post_office.log
-  pk: 9
-- fields: {content: "Dear {{name}} \r\n\r\nthis has been a test \r\n", created: !!timestamp '2014-05-30
-      18:25:40.603262+00:00', description: 'This is only a test ', html_content: '',
-    last_updated: !!timestamp '2014-05-30 18:25:40.603315+00:00', name: test, subject: TEst
-      template from django post_office}
-  model: post_office.emailtemplate
   pk: 1
 - fields: {content: "Liebe(r) {{first_name}} {{last_name}}, \r\n\r\nIhre Leistungsmeldung\
       \ f\xFCr Aufgabe {{aufgabe}}, ausgef\xFChrt am {{wann}}, wurde von einem Vorstandsmitglied\
