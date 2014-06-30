@@ -13,6 +13,7 @@ SVPB -- Arbeitsverwaltung
 {% endblock %}
 </title>
 {% block extrastyle %}{% endblock %}
+<link rel="stylesheet" href="{% static "font-awesome/css/font-awesome.min.css"%}">
 </head>
 <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.min.css"%}" type="text/css" />
 <link href="{% static "bootstrap/css/starter-template.css"%}" rel="stylesheet">
@@ -36,11 +37,15 @@ SVPB -- Arbeitsverwaltung
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/">Home</a></li>
+            <li><a href="/">
+            <i class="fa fa-home fa-fw"></i>
+            Home</a></li>
           {% if user.is_active %}
             <li class="dropdown">
             <!-- AUFGABEN --> 
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Aufgaben <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-list-ul fa-fw"></i>
+            Aufgaben <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/arbeitsplan/aufgaben/">Anzeigen</a></li>
                 {% for g in  user.groups.all %}
@@ -57,7 +62,9 @@ SVPB -- Arbeitsverwaltung
             </li>
             <!-- MELDUNG --> 
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Meldung <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-hand-o-up fa-fw"></i>
+            Meldung <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/arbeitsplan/meldung/">Melden</a></li>
                 {% for g in  user.groups.all %}
@@ -71,7 +78,9 @@ SVPB -- Arbeitsverwaltung
             </li>
             <!-- ZUTEILUNG --> 
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Zuteilung <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-hand-o-right fa-fw"></i>
+            Zuteilung <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/arbeitsplan/zuteilungAnzeige/me/">Anzeigen</a></li>
                 {% for g in  user.groups.all %}
@@ -89,7 +98,9 @@ SVPB -- Arbeitsverwaltung
             </li>
             <!-- LEISTUNG --> 
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Leistung <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-check fa-fw"></i>
+            Leistung <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/arbeitsplan/leistung/">Eintragen</a></li>
                 <li><a href="/arbeitsplan/leistungListe/">Anzeigen</a></li>
@@ -112,7 +123,9 @@ SVPB -- Arbeitsverwaltung
             {% for g in  user.groups.all %}
               {% if g.name == "Vorstand" %}
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Benachrichtigen <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-envelope-o fa-fw"></i>
+            Benachrichtigen <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li> <a href="/arbeitsplan/benachrichtigen/zuteilung/"> Zuteilungen </a> </li>
                 <li> <a href="/arbeitsplan/benachrichtigen/leistung/"> Leistungen </a> </li>
@@ -131,7 +144,9 @@ SVPB -- Arbeitsverwaltung
           {% if user.is_active %}
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-user"></span> Mein Profil <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"> 
+            <i class="fa fa-user"></i>
+            Mein Profil <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li>
                   <a href="/logout/">{% trans 'Log out' %}</a>
