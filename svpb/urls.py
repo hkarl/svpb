@@ -135,10 +135,11 @@ urlpatterns = patterns('',
          name="bootstrap", 
          ),
 
-    url (r'^about$',
-         TemplateView.as_view (template_name="about.html"),
-         name="about", 
-         ),
+    url(r'^about$',
+        TemplateView.as_view (template_name="about.html"),
+        name="about", 
+        ),
+
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
