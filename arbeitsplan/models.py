@@ -22,31 +22,32 @@ class Mitglied (models.Model):
     # "Wann war die letzte Benachrichtigung zu einer Leistungsmeldung?",
     #                            default=datetime.datetime(1900,1,1))
 
-    zuteilungsbenachrichtigung = models.DateTimeField(help_text=
-                                                      "Wann war die letzte Benachrichtigung zu einer Zuteilung?",
-                                                      default=datetime.datetime(1900,1,1),
-                                                      verbose_name="Letzte Benachrichtigung",
-                                                      )
+    zuteilungsbenachrichtigung = models.DateTimeField(
+        help_text="Wann war die letzte Benachrichtigung"
+        " zu einer Zuteilung?",
+        default=datetime.datetime(1900,1,1),
+        verbose_name="Letzte Benachrichtigung",
+        )
 
-    zuteilungBenachrichtigungNoetig = models.BooleanField(help_text=
-                                                          "Muss an diese Nutzer"
-                                                          " eine Benachrichtigung"
-                                                          " wegen Änderung der "
-                                                          "Zuteilungen gesendet werden?",
-                                                          default=True,
-                                                          verbose_name=
-                                                          "Benachrichtigung zu "
-                                                          "Zuteilungen nötig?",
-                                                           )
+    zuteilungBenachrichtigungNoetig = models.BooleanField(
+        help_text="Muss an diese Nutzer"
+        " eine Benachrichtigung"
+        " wegen Änderung der "
+        "Zuteilungen gesendet werden?",
+        default=True,
+        verbose_name="Benachrichtigung zu Zuteilungen nötig?",
+        )
+
     def __unicode__(self):
         return self.user.__unicode__()
 
     def zugeteilteStunden(self, time=None):
         """How much work has already been assigned to this user?
         Difficult because some aufgaben have easily identified hours,
-        others have to be checked specifically for the stundenplan Zuteilung.
+        others have to be checked specifically for the
+        stundenplan Zuteilung.
 
-        time: -1: Past, +1: Future. 0: Tasks without date? 
+        time: -1: Past, +1: Future. 0: Tasks without date?
         """
 
         qs = self.user.zuteilung_set.all()
