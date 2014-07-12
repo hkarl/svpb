@@ -410,11 +410,11 @@ class AufgabenCreate (SimpleCreateView):
                                        anzahl = anzahl)
             sobj.save()
 
-        # TODO: auf messahes.success umstellen! 
-        return render (self.request,
-                       self.get_success_url(),
-                       {'msg': 'Die Aufgabe wurde erfolgreich angelegt.',
-                        'msgclass': 'success'} )
+        messages.success(self.request,
+                         "Die Aufgabe wurde erfolgreich angelegt."
+                         )
+
+        return super(AufgabenCreate, self).form_valid(form)
 
 
 class AufgabengruppeCreate(isVorstandMixin, SimpleCreateView):
