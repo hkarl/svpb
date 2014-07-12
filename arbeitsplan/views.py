@@ -381,7 +381,7 @@ class AufgabenCreate (SimpleCreateView):
     model = models.Aufgabe
     form_class = forms.AufgabeForm
     template_name = "arbeitsplan_aufgabenCreate.html"
-    success_url = "home.html"
+    success_url = reverse_lazy("home")
     title = "Neue Aufgabe anlegen"
     buttontext = "Aufgabe anlegen"
 
@@ -419,7 +419,7 @@ class AufgabenCreate (SimpleCreateView):
 
 class AufgabengruppeCreate(isVorstandMixin, SimpleCreateView):
     model = models.Aufgabengruppe
-    success_url = "home.html"
+    success_url = reverse_lazy("home")
     title = "Neue Aufgabengruppe anlegen"
     buttontext = "Aufgabengruppe anlegen"
     template_name = "arbeitsplan_aufgabengruppeCreate.html"

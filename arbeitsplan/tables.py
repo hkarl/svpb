@@ -84,10 +84,10 @@ class KontaktColumn(django_tables2.columns.Column):
 
     def render(self, value):
         print value
-        return mark_safe('{1} {2}{0}'.format(
-            (' <a href="mailto:{0}">'
-             '<span class="glyphicon glyphicon-envelope">'
-             '</span></a>'.format(value.email)
+        return mark_safe(u'{1} {2}{0}'.format(
+            (u' <a href="mailto:{0}">'
+             u'<span class="glyphicon glyphicon-envelope">'
+             u'</span></a>'.format(value.email)
              if value.email
              else ""),
             value.first_name,
