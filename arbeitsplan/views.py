@@ -828,7 +828,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                 tmp[tag] = (0,
                             'box_'+  str(u.id)+"_"+str(m.aufgabe.id),
                             ' ({0} / {1})'.format(m.prefMitglied,
-                                                 m.prefVorstand)
+                                                  m.prefVorstand)
                             )
                 statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
 
@@ -843,7 +843,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                 tmp[tag] = (1,
                             'box_'+ str(u.id)+"_"+str(z.aufgabe.id),
                             ' ({0} / {1})'.format(meldung.prefMitglied,
-                                                 meldung.prefVorstand)
+                                                  meldung.prefVorstand)
                             )
                 statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
 
@@ -1012,7 +1012,7 @@ class ZuteilungUebersichtView(FilteredListView):
             newEntry['gemeldet'] = aufgabe.numMeldungen()
             newEntry['zugeteilt'] = aufgabe.zuteilung_set.count()
             newEntry['editlink'] = mark_safe(
-                '<a href="{0}">Zuteilung</a>'.format(
+                u'<a href="{0}">Zuteilung</a>'.format(
                     reverse('arbeitsplan-manuellezuteilungAufgabe',
                             args=(aufgabe.id,),
                             )))
@@ -1034,7 +1034,7 @@ class ZuteilungUebersichtView(FilteredListView):
 
 
                 # newEntry['zugeteilt'] = None
-                newEntry['stundenplanlink'] = mark_safe('<a href="{0}">Stundenplan</a>'.format(
+                newEntry['stundenplanlink'] = mark_safe(u'<a href="{0}">Stundenplan</a>'.format(
                     reverse ('arbeitsplan-stundenplaeneEdit',
                              args=(aufgabe.id,)),
                     ))
@@ -1369,8 +1369,8 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
             if safeit:
                 l.save()
                 messages.success(request,
-                                 "Leistungsmeldung von {0} {1} "
-                                 "für Aufgabe {2} aktualisiert.".format(
+                                 u"Leistungsmeldung von {0} {1} "
+                                 u"für Aufgabe {2} aktualisiert.".format(
                                      l.melder.first_name,
                                      l.melder.last_name,
                                      l.aufgabe)
@@ -1608,16 +1608,16 @@ class FilteredEmailCreateView (FilteredListView):
                 self.saveUpdate(instance, thisuser)
 
                 messages.success(request,
-                                 "Benachrichtigung an "
-                                 "Mitglied {0} {1} eingetragen".format(thisuser.first_name,
-                                                                       thisuser.last_name,))
+                                 u"Benachrichtigung an "
+                                 u"Mitglied {0} {1} eingetragen".format(thisuser.first_name,
+                                                                        thisuser.last_name,))
             else:
                 if not thisuser in users_no_email:
                     messages.error(request,
-                                   "Für Nutzer {0} {1} liegt keine email-Adresse vor,"
-                                   " keine Benachrichtigung gesendet".format(thisuser.first_name,
-                                                                             thisuser.last_name,)
-                                                                             )
+                                   u"Für Nutzer {0} {1} liegt keine email-Adresse vor,"
+                                   u" keine Benachrichtigung gesendet".format(thisuser.first_name,
+                                                                              thisuser.last_name,)
+                                                                              )
                     users_no_email.append(thisuser)
 
         if idlist:

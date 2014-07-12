@@ -61,9 +61,9 @@ class RadioButtonTable (django_tables2.Table):
                 )
                 for (counter, choice) in enumerate(choices)])        
 
-        return mark_safe("""<div class="btn-group-vertical" data-toggle="buttons">""" +
+        return mark_safe(u"""<div class="btn-group-vertical" data-toggle="buttons">""" +
                           tmp +
-                          """</div>""")
+                          u"""</div>""")
 
 
 class KontaktColumn(django_tables2.columns.Column):
@@ -114,39 +114,41 @@ class ValuedCheckBoxColumn(django_tables2.columns.Column):
         else:
             text = ""
 
-        return mark_safe('<input type="checkbox" value="1" name="' +
-                          escape(value[1]) +
-                          '" ' +
-                          ("checked" if value[0]==1 else "") +
-                          '/>' + text 
-                          )
+        return mark_safe(u'<input type="checkbox" value="1" name="' +
+                         escape(value[1]) +
+                         '" ' +
+                         ("checked" if value[0]==1 else "") +
+                         '/>' + text
+                         )
 
 
 class TextareaInputColumn (django_tables2.columns.Column):
 
-    def render (self, value):
+    def render(self, value):
         # print "render: ", value, self.__dict__
-        return mark_safe ('<input class="textinput textInput" id="id_bemerkungVorstand" maxlength="20" name="bemerkungVorstand" placeholder="Bemerkung Vorstand" value="'
+        return mark_safe (u'<input class="textinput textInput" id="id_bemerkungVorstand" maxlength="20" name="bemerkungVorstand" placeholder="Bemerkung Vorstand" value="'
                           +    escape (value) +
-                          '" type="text" />'
+                          u'" type="text" />'
                         )
 
 
 class RequiredAssignedColumn (django_tables2.columns.Column):
     """
-    A column used by the stundenplan survey table. Renders both required and assigned  numbers in one cell.
+    A column used by the stundenplan survey table.
+    Renders both required and assigned numbers in one cell.
     """
 
-    def render (self, value):
+    def render(self, value):
         # print value
-        try: 
-            r = mark_safe (str(value['required']) + " / " + str(value['zugeteilt']))
+        try:
+            r = mark_safe(str(value['required']) +
+                          " / " + str(value['zugeteilt']))
         except TypeError:
             r = ""
 
         return r
 
-    
+
 class LinkedColumn(django_tables2.columns.Column):
     """
     A column that redners a simple <a href>,
@@ -157,7 +159,7 @@ class LinkedColumn(django_tables2.columns.Column):
         text, link = value
 
         if text:
-            return mark_safe("<a href={0}>{1}</a>".format(link, text))
+            return mark_safe(u"<a href={0}>{1}</a>".format(link, text))
         else:
             return "-"
 
@@ -174,7 +176,7 @@ def TableFactory (name, attrs, l, meta={}):
     - a dictoranry with column_name: column_types
     - a list of data to be used for the table
 
-    return klass 
+    return klass
     """
 
     metadict = dict(attrs={"class":"paleblue",
@@ -189,10 +191,10 @@ def TableFactory (name, attrs, l, meta={}):
                          metadict,
                         )
 
-    klass = type (name, (django_tables2.Table,), attrs)
+    klass = type(name, (django_tables2.Table,), attrs)
 
     t = klass(l)
-    return t 
+    return t
 
 ##############################
 
@@ -257,12 +259,12 @@ def StundenplanTableFactory (l, showStunden=True):
                                                         verbose_name="Stundenplan")
 
     t = TableFactory ("Stundenplan",
-                         newattrs, l,
-                         meta = {'sequence': ('aufgabe', 'gruppe', # 'id',
-                                              'editlink', 'stundenplanlink',  
-                                              'required', 'gemeldet', 'zugeteilt', 
-                                              '...',
-                                              )})
+                      newattrs, l,
+                      meta = {'sequence': ('aufgabe', 'gruppe', # 'id',
+                                           'editlink', 'stundenplanlink',
+                                           'required', 'gemeldet', 'zugeteilt',
+                                           '...',
+                                           )})
 
     return t
 
@@ -297,13 +299,13 @@ class AufgabenTable (django_tables2.Table):
     meldungen = django_tables2.Column(
         verbose_name="Vorliegende Meldungen",
         empty_values=(),
-        orderable=False,        
+        orderable=False,
         )
 
     zuteilungen = django_tables2.Column(
         verbose_name="Erfolgte Zuteilungen",
         empty_values=(),
-        orderable=False,        
+        orderable=False,
         )
 
     def render_meldungen(self, record):
@@ -320,8 +322,8 @@ class AufgabenTable (django_tables2.Table):
         # "gruppe", "anzahl", "bemerkung")
 
         fields = ("gruppe", "aufgabe", "datum",
-                  "stunden", 
-                  "anzahl", 
+                  "stunden",
+                  "anzahl",
                   "bemerkung")
 
         exclude = ("meldungen", "zuteilungen", )
@@ -340,19 +342,19 @@ class AufgabenTableVorstand(django_tables2.Table):
     meldungen = django_tables2.Column(
         verbose_name="Vorliegende Meldungen",
         empty_values=(),
-        orderable=False,        
+        orderable=False,
         )
 
     zuteilungen = django_tables2.Column(
         verbose_name="Erfolgte Zuteilungen",
         empty_values=(),
-        orderable=False,        
+        orderable=False,
         )
 
     fehlende_zuteilungen = django_tables2.Column(
         verbose_name="Noch offene Zuteilungen",
         empty_values=(),
-        orderable=False,        
+        orderable=False,
         )
 
     def render_meldungen(self, record):
@@ -372,12 +374,13 @@ class AufgabenTableVorstand(django_tables2.Table):
         # django_tables2.A("verantwortlich.last_name"),
         # "gruppe", "anzahl", "bemerkung")
 
-        fields=("gruppe", "aufgabe", "datum",
-                "stunden",
-                "anzahl",
-                "meldungen", "zuteilungen", "fehlende_zuteilungen", 
-                "bemerkung",
-                'verantwortlicher', 'id')
+        fields = ("gruppe", "aufgabe", "datum",
+                  "stunden",
+                  "anzahl",
+                  "meldungen",
+                  "zuteilungen", "fehlende_zuteilungen",
+                  "bemerkung",
+                  'verantwortlicher', 'id')
 
         # TODO: anzahl muss man wahrscheinlich
         # auf die ANzahl FREIE Plaetze umrechnen!?!?
@@ -465,11 +468,12 @@ class ZuteilungTable(django_tables2.Table):
 
 class ZuteilungTableVorstand(django_tables2.Table):
     verantwortlicher = KontaktColumn(
-        accessor ="aufgabe.verantwortlich",
+        accessor="aufgabe.verantwortlich",
         verbose_name="Verantwortlicher")
 
-    datum = django_tables2.Column(accessor ="aufgabe.datum",
-                                             verbose_name="Datum")
+    datum = django_tables2.Column(
+        accessor="aufgabe.datum",
+        verbose_name="Datum")
 
     ausfuehrer = KontaktColumn(accessor="ausfuehrer",
                                verbose_name="Ausführer")
@@ -492,11 +496,11 @@ class MeldungTable(RadioButtonTable):
     gruppe = django_tables2.Column(accessor="gruppe",
                                    verbose_name="Aufgabengruppe")
 
-    datum = django_tables2.Column (accessor="datum",
-                                   verbose_name="Datum")
+    datum = django_tables2.Column(accessor="datum",
+                                  verbose_name="Datum")
 
-    stunden = django_tables2.Column (accessor="stunden",
-                                     verbose_name="Umfang (h)")
+    stunden = django_tables2.Column(accessor="stunden",
+                                    verbose_name="Umfang (h)")
 
     prefMitglied = django_tables2.Column(accessor="prefMitglied",
                                          verbose_name="Vorlieben",
@@ -533,7 +537,7 @@ class MeldungTable(RadioButtonTable):
         tooltext = mark_safe(u'Verantwortlicher: {0} {1}{2}'.format(
             aufgabe.verantwortlich.first_name,
             aufgabe.verantwortlich.last_name,
-            ', Bemerkung: {0}'.format(
+            u', Bemerkung: {0}'.format(
                 aufgabe.bemerkung) if aufgabe.bemerkung else '',
             ))
         tmp = mark_safe(
@@ -625,12 +629,15 @@ class MeldungTableVorstand (RadioButtonTable):
     ##                                     empty_values=(), 
     ##                                     )
 
-    bemerkungVorstand = django_tables2.Column (empty_values=(),
-                                               verbose_name = "Bemerkungen des Vorstandes")
-    prefVorstand = django_tables2.Column (accessor="prefVorstand",
-                                      verbose_name="Vorlieben des Vorstandes",
-                                      empty_values=(), 
-                                     )
+    bemerkungVorstand = django_tables2.Column(
+        empty_values=(),
+        verbose_name="Bemerkungen des Vorstandes")
+
+    prefVorstand = django_tables2.Column(
+        accessor="prefVorstand",
+        verbose_name="Vorlieben des Vorstandes",
+        empty_values=(),
+        )
 
     def render_prefVorstand(self, value, record):
 
@@ -642,10 +649,10 @@ class MeldungTableVorstand (RadioButtonTable):
 
     def render_bemerkungVorstand (self, value, record):
         tmp =  format_html (u'<textarea class="textinput textInput" id="id_bemerkungVorstand_{0}" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" rows=6>{1}</textarea>',
-                                str(record.id),
-                                record.bemerkungVorstand if record.bemerkungVorstand else ""
-                                )
-        return tmp 
+                            str(record.id),
+                            record.bemerkungVorstand if record.bemerkungVorstand else ""
+                            )
+        return tmp
 
 
     class Meta(MeldungTable.Meta):
@@ -726,12 +733,13 @@ class LeistungTable(django_tables2.Table):
     ## melder_first = django_tables2.Column (accessor="melder.first_name",
     ##                                      verbose_name="Melder Vorname")
 
-    aufgabe = django_tables2.Column (accessor="aufgabe.aufgabe",
-                                     verbose_name="Aufgabe")
+    aufgabe = django_tables2.Column(accessor="aufgabe.aufgabe",
+                                    verbose_name="Aufgabe")
+
     class Meta:
         model = models.Leistung
         attrs = {"class": "paleblue"}
-        fields = (# 'melder_last', 'melder_first',
+        fields = (  # 'melder_last', 'melder_first',
                     'aufgabe', 'wann', 'zeit',
                     'status',
                     'bemerkung', 'bemerkungVorstand')
@@ -743,17 +751,17 @@ class LeistungBearbeitenTable (RadioButtonTable):
                             str(bound_row._record.id),
                             bound_row._record.bemerkungVorstand,
                             )
-        return tmp 
+        return tmp
 
 
     def render_status (self, value, bound_row):
-        return self.render_radio (bound_row=bound_row,
-                                  choices= models.Leistung.STATUS,
-                                  buttontexts=models.Leistung.STATUSButtons,
-                                  fieldname="status")
+        return self.render_radio(bound_row=bound_row,
+                                 choices=models.Leistung.STATUS,
+                                 buttontexts=models.Leistung.STATUSButtons,
+                                 fieldname="status")
 
-    bemerkungVorstand = django_tables2.Column (empty_values=(),
-                                               verbose_name = "Bemerkungen des Vorstandes")
+    bemerkungVorstand = django_tables2.Column(empty_values=(),
+                                              verbose_name = "Bemerkungen des Vorstandes")
 
     melder = KontaktColumn()
 
@@ -827,30 +835,34 @@ class ZuteilungEmailTable(BaseEmailTable):
                                                             )
 
     def render_zuteilungBenachrichtigungNoetig(value, bound_row):
-        return "Ja" if bound_row._record.zuteilungBenachrichtigungNoetig  else "Nein"
-    
+        return ("Ja"
+                if bound_row._record.zuteilungBenachrichtigungNoetig
+                else "Nein")
+
     class Meta:
         model = models.Mitglied
         attrs = {"class": "paleblue"}
         exclude = ('id',)
         sequence = ('user',
-                  'mitgliedsnummer',
-                  'zuteilungsbenachrichtigung',
-                  'zuteilungBenachrichtigungNoetig',
-                  'anmerkung', 'sendit',
-                  )
+                    'mitgliedsnummer',
+                    'zuteilungsbenachrichtigung',
+                    'zuteilungBenachrichtigungNoetig',
+                    'anmerkung', 'sendit',
+                    )
+
 
 class MitgliederTable(django_tables2.Table):
 
     ## first_name = django_tables2.Column (accessor="user.first_name")
     ## last_name = django_tables2.Column (accessor="user.last_name")
 
-    mitgliedsnummer = django_tables2.Column (accessor="mitglied.mitgliedsnummer")
+    mitgliedsnummer = django_tables2.Column(accessor="mitglied.mitgliedsnummer")
 
     id = django_tables2.LinkColumn('impersonate-start',
                                    args=[A('pk')],
                                    verbose_name="Nutzer darstellen",
                                    )
+
     class Meta:
         model = User
 

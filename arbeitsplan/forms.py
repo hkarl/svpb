@@ -17,40 +17,39 @@ class CrispyFormMixin(object):
     def __init__(self, *args, **kwargs):
         """
         Add the necessary attributes for crispy to work,
-        after the superclass constructur has done its work. 
+        after the superclass constructur has done its work.
         Arguments:
         - `*args`:
         - `**kwargs`:
         """
 
-        print "crispy form mixin init" 
+        print "crispy form mixin init"
         super(CrispyFormMixin, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = self.__class__.__name__
         self.helper.form_method = "post"
         # self.helper.field_template = "bootstrap3/layout/inline_field.html"
 
-
-
 ##############################
 ## General input forms
 ##############################
 
-class CreateLeistungForm (CrispyFormMixin, forms.ModelForm):
+
+class CreateLeistungForm(CrispyFormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CreateLeistungForm, self).__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
             'aufgabe',
-            Field('wann', css_class = "datepicker"),
+            Field('wann', css_class="datepicker"),
             'zeit',
-            ## 'auslagen',
-            ## 'km',
+            # 'auslagen',
+            # 'km',
             'bemerkung',
             )
 
-        self.helper.add_input (Submit ('apply', 'Eintragen'))
+        self.helper.add_input(Submit ('apply', 'Eintragen'))
         print self.helper.layout
 
     class Meta:
@@ -69,11 +68,11 @@ class AufgabengruppeForm(CrispyFormMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AufgabengruppeForm, self).__init__(*args, **kwargs)
         self.helper.form_tag = False
-        
+
     class Meta:
         model = models.Aufgabengruppe
 
-class AufgabeForm (forms.ModelForm):
+class AufgabeForm(forms.ModelForm):
     class Meta:
         model = models.Aufgabe
 
@@ -96,31 +95,30 @@ class AufgabeForm (forms.ModelForm):
             'bemerkung',
             )
 
-    def clean (self):
-        ## print "in form clean"
-        ## print self.request 
+    def clean(self):
 
         cleaned_data = super(AufgabeForm, self).clean()
 
         stundenplan = {}
-        for k,v in self.request.POST.iteritems():
-            if 'uhrzeit' == k[:7] and v <> '0':
+        for k, v in self.request.POST.iteritems():
+            if 'uhrzeit' == k[:7] and v != '0':
                 try:
                     v = int(v)
                 except:
-                    v = 0 
-                if v <0:
-                    raise ValidationError ("Keine negativen Personen im Stundenplan",
-                                           code="negativNumber") 
-                    
-                uhrzeit = int(k.split('_')[1])
-                stundenplan[uhrzeit] =  v
+                    v = 0
+                if v < 0:
+                    raise ValidationError("Keine negativen Personen im Stundenplan",
+                                          code="negativNumber")
 
-        print stundenplan
-        print cleaned_data['datum'] 
-        if (len(stundenplan) > 0) and (cleaned_data['datum'] == None):
-            raise ValidationError ("Angaben im Stundenplan erfordern ein Datum.",
-                                   code ="illogic") 
+                uhrzeit = int(k.split('_')[1])
+                stundenplan[uhrzeit] = v
+
+        # print stundenplan
+        # print cleaned_data['datum']
+
+        if (len(stundenplan) > 0) and (cleaned_data['datum'] is None):
+            raise ValidationError("Angaben im Stundenplan erfordern ein Datum.",
+                                  code ="illogic") 
 
         # das kann schon sinnvoll sein: 5 h pro Person...
         # und im Stundenplan dann verteilt
@@ -137,16 +135,14 @@ class EmailAddendumForm (forms.Form):
                                  label="Ergänzender Text",
                                  )
 
-    def __init__ (self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(EmailAddendumForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
 
-
 ##################################
 ## Filter forms
 #################################
-
 
 
 class CrispyFilterMixin(CrispyFormMixin):
@@ -207,27 +203,27 @@ class CrispyFilterMixin(CrispyFormMixin):
 
         self.helper.layout = Layout()
         for l in layoutattributes:
-            self.helper.layout = Layout (self.helper.layout,
-                                         l)
+            self.helper.layout = Layout(self.helper.layout,
+                                        l)
 
-        self.helper.layout = Layout (self.helper.layout,
-                                     HTML("<p>"),
-                                     FormActions(
-                                        Submit ('filter', 'Filter anwenden'),
+        self.helper.layout = Layout(self.helper.layout,
+                                    HTML("<p>"),
+                                    FormActions(
+                                        Submit('filter', 'Filter anwenden'),
                                         ),
-                                     )
+                                    )
 
-        # disabluing test, this seems to work 
+        # disabluing test, this seems to work
         # self.fields['first_name'].widget.attrs['disabled'] = True
 
 ##################################
 
 
 class NameFilterForm (CrispyFilterMixin, forms.Form):
-    last_name = forms.CharField (
-        label = "Nachname",
-        max_length = 20,
-        required = False,
+    last_name = forms.CharField(
+        label="Nachname",
+        max_length=20,
+        required=False,
         )
 
     first_name = forms.CharField (
