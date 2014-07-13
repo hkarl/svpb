@@ -203,7 +203,7 @@ from emailSettings import *
 import smtplib
 
 # let's try a test email
-if False:
+if SEND_TEST_EMAIL:
     from django.core.mail import send_mail
     try:
         print "trying to send test email"
@@ -213,8 +213,8 @@ if False:
                   ['holger.karl@uni-paderborn.de'],
                   fail_silently=False)
         print "test email sent"
-    except smtplib.SMTPException:
-        print "test email FAILED"
+    except smtplib.SMTPException as e:
+        print "test email FAILED: ", e
 
 
 
