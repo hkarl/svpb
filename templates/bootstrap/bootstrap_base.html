@@ -153,7 +153,7 @@ SVPB -- Arbeitsverwaltung
                 </li>
                 {% if user.has_usable_password %}
                 <li>
-                  <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> 
+                  <a href="{% url 'password_change' %}">{% trans 'Change password' %}</a> 
                 </li>
                 {% endif %}
                 {% for g in  user.groups.all %}

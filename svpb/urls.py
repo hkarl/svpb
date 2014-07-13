@@ -150,6 +150,11 @@ urlpatterns = patterns('',
 
     url (r'^logout/', arbeitsplan.views.logout_view),
 
+    url (r'^password/change/$',
+         login_required(arbeitsplan.views.PasswordChange.as_view()),
+         name='password_change',
+         ),
+
     ## Impersonation of other users:
     url(r'^impersonate/', include('impersonate.urls')),
     url(r'^impersonate/liste/$',

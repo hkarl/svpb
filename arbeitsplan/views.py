@@ -1829,7 +1829,7 @@ class ImpersonateListe(isVorstandMixin, FilteredListView):
     Bitte gehen Sie verantwortlich mit dieser Möglichkeit um!
     <p>
     Beachten Sie: Diese Funktion funktioniert nicht bei Mitgliedern
-    mit Sonderstatus (z.B. Adminstratoren dieser Webseite). 
+    mit Sonderstatus (z.B. Adminstratoren dieser Webseite).
     """
 
     def get_data(self):
@@ -1838,3 +1838,25 @@ class ImpersonateListe(isVorstandMixin, FilteredListView):
                 .filter(is_superuser=False)
                 .exclude(id=self.request.user.id))
     pass
+
+
+class PasswordChange(FormView):
+    template_name = "password_change.html"
+    form_class = forms.PasswordChange
+    success_url = reverse_lazy("home")
+
+    def form_valid(self, form):
+        try:
+            u = self.request.user
+            u.set_password(form.cleaned_data['pw1'])
+            u.save()
+            messages.success(self.request,
+                             u'Ihr Passwort wurde erfolgreich geändert'
+                             )
+        except Exception as e:
+            messages.error(self.request,
+                           u'Ihre Passwortänderung ist fehlgeschlagen: ' +
+                           str(e),
+                           )
+        return super(PasswordChange, self).form_valid(form)
+
