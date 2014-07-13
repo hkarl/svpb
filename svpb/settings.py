@@ -201,4 +201,20 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
 
 from emailSettings import *
 
+# let's try a test email
+
+from django.core.mail import send_mail
+try:
+    send_mail('Subject here',
+              'Here is the message.',
+              DEFAULT_FROM_EMAIL,
+              ['holger.karl@uni-paderborn.de'],
+              fail_silently=False)
+    print "test email sent"
+except smtplib.SMTPException:
+    print "test email FAILED"
+
+
+
+
 JAHRESSTUNDEN = 4
