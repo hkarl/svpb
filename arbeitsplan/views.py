@@ -1056,17 +1056,29 @@ class ZuteilungUebersichtView(FilteredListView):
 
 class StundenplaeneEdit(FilteredListView):
 
-    title = "Weisen Sie einer Aufgabe Personen"
-    " zu den benötigten Zeitpunkten zu"
+    title = """Weisen Sie einer Aufgabe Personen
+     zu den benötigten Zeitpunkten zu"""
     tableClassFactory = staticmethod(StundenplanEditFactory)
-    tabletitle = "Zuweisung eintragen"
+    tabletitle_template = u"Zuweisung für Stunden eintragen"
+    tabletitle = u"Zuweisung für Stunden eintragen"
     tableform = {'name': "eintragen",
                  'value': "Stundenzuteilung eintragen/ändern"}
 
     intro_text = """Hinweis: Wenn hier keine Nutzer angezeigt werden,
     müssen Sie zunächst Nutzer dieser Aufgabe zuteilen. Das Zuweisen zu
     einzelnen Stunden ist erst der zweite Schritt.
+
+    In der Tabelle werden Spalten pro Uhrzeit angezeigt. In den Spaltenüberschriften wird
+    in Klammer jeweils (Anzahl benötigte Mitglieder / Anzahl schon zugeteilte Mitglieder) angezeigt. 
     """
+
+    todo_text = """Anzahl noch benötigte Uhrzeiten anders hervorheben? Nur Differenz anzeigen?"""
+
+    def get_filtered_table (self, qs, aufgabe):
+        table = self.tableClassFactory(qs, aufgabe)
+        django_tables2.RequestConfig(self.request).configure(table)
+
+        return table
 
     def get_queryset(self):
 
@@ -1081,6 +1093,8 @@ class StundenplaeneEdit(FilteredListView):
             return None
 
         aufgabe = get_object_or_404 (models.Aufgabe, pk=aufgabeid)
+
+        self.tabletitle = self.tabletitle_template + u" - Aufgabe: " + aufgabe.aufgabe
 
         data = []
 
@@ -1118,7 +1132,7 @@ class StundenplaeneEdit(FilteredListView):
         self.tableformHidden = [{'name': 'checkedboxes',
                                   'value': ','.join(checkedboxes)}]
 
-        table = self.get_filtered_table (data)
+        table = self.get_filtered_table (data, aufgabe)
 
         return table
 

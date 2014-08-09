@@ -54,3 +54,4 @@ docs/_build/
 
 # we do need media to propagate 
 !media
+post_office_attachments

@@ -227,9 +227,9 @@ def NameTableFactory (name, attrs, l, meta=None,
 ##############################
 
 
-def StundenplanTableFactory (l, showStunden=True):
+def StundenplanTableFactory(l, showStunden=True):
     """
-    A factory to produce a table with aufgaben and uhrzeiten columns. 
+    A factory to produce a table with aufgaben and uhrzeiten columns.
     """
 
     newattrs = {}
@@ -239,7 +239,8 @@ def StundenplanTableFactory (l, showStunden=True):
                        models.Stundenplan.stopZeit+1):
             newattrs['u'+str(i)] = RequiredAssignedColumn(
                 accessor='u'+str(i),
-                verbose_name = str(i)+'-'+str(i+1))
+                verbose_name=str(i)+'-'+str(i+1)
+                )
 
     newattrs['aufgabe'] = django_tables2.Column(accessor='aufgabe')
     newattrs['gruppe'] = django_tables2.Column(accessor='gruppe',
@@ -269,18 +270,36 @@ def StundenplanTableFactory (l, showStunden=True):
     return t
 
 
-def StundenplanEditFactory(l):
+def StundenplanEditFactory(l, aufgabe):
     """
     Produce a table with persons as row, uhrzeiten as columns.
     Checkboxes in the uhrzeit columns.
     """
 
+
+
     newattrs = {}
 
     for i in range(models.Stundenplan.startZeit,
                    models.Stundenplan.stopZeit+1):
+        print '----- ', i
+        try: 
+            benoetigt = aufgabe.stundenplan_set.filter(uhrzeit__exact=i)[0].anzahl
+        except:
+            benoetigt = 0
+        print benoetigt
+
+        zugewiesen = aufgabe.zuteilung_set.filter(stundenzuteilung__uhrzeit=i).count()
+        print zugewiesen
+
         newattrs['u'+str(i)] = ValuedCheckBoxColumn(accessor='u'+str(i),
-                                                    verbose_name=str(i)+'-'+str(i+1))
+                                                    # verbose_name=str(i)+'-'+str(i+1),
+                                                    verbose_name=mark_safe('{} - {}'
+                                                    '<span style="font-weight:normal">'
+                                                    '<br> ({} / {})'
+                                                    '</span>'.format(
+                                                        i, i+1, benoetigt, zugewiesen),
+                                                    ))
 
     return NameTableFactory("StundenplanEdit",
                             newattrs, l,
@@ -708,13 +727,23 @@ def ZuteilungsTableFactory (tuple):
         tag = unicodedata.normalize('NFKD',
                                     a.aufgabe).encode('ASCII', 'ignore')
         attrs[tag] = ValuedCheckBoxColumn(
-            verbose_name=mark_safe((u'<a href="{}">{}</a>, {}h ({})'
+            verbose_name=mark_safe((u'<a href="{}">{}</a>, {}h'
+                                    '<span style="font-weight:normal">'
+                                    u'<br>({})'
+                                    u'<br>Benötigt: {}'
+                                    u'<br>Zugeteilt: {}'
+                                    '</span>'
                           .format(reverse('arbeitsplan-aufgabenEdit',
                                           args=(a.id,)),
                                   a.aufgabe,
                                   a.stunden,
-                                  a.gruppe,))),
+                                  a.gruppe,
+                                  a.anzahl,
+                                  a.zuteilung_set.count(),
+                                  ))),
             orderable=False)
+    # TODO: in verbose_name hier noch Anzahl benötigt, anzahl zugeteilt eintragen
+
 
     t = NameTableFactory('ZuteilungsTable', attrs, l)
  

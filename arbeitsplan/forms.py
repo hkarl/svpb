@@ -381,10 +381,10 @@ class MitgliedAusgelastetForm(CrispyFilterMixin, forms.Form):
     mitglied_ausgelastet = forms.ChoiceField(required=False,
                                              label="Mitglied ausgelastet?",
                                              choices=(
-                                                 ('--', '------'),
-                                                 ('FR', 'Freie anzeigen'),
+                                                 ('--', 'Alle Mitglieder'),
+                                                 ('FR', 'Nur freie Mitglieder'),
                                                  ('BU',
-                                                  'Ausgelastete anzeigen'),
+                                                  'Nur ausgelastete Mitglieder'),
                                                  ),
                                              )
 
