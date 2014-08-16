@@ -731,7 +731,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
     def AktiveAufgaben_Filter(self, qs, aktive):
         """filter out jobs froms the past?"""
 
-        print qs
+        # print qs
 
         if aktive:
             qs = qs.filter(datum__gte=datetime.date.today())
@@ -811,6 +811,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
         for u in userQs: 
             tmp = {'last_name': u.last_name,
                     'first_name': u.first_name,
+                    'mitglied': u,
                     }
             # print 'user:', u.id 
             tmp.update(aufgaben)
@@ -876,22 +877,22 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                     request.POST.get('status').split(';')
                   ])
 
-        print "prevState:"
-        print previousStatus
+        # print "prevState:"
+        # print previousStatus
 
         newState = dict([ (item[0][4:], item[1])
                      for item in request.POST.iteritems()
                      if item[0][:4] == "box_"
                     ])
 
-        print "newState"
-        print newState
+        # print "newState"
+        # print newState
 
         # find all items in  newState  that have a zero in prevState
         # add that zuteilung
         for k,v in newState.iteritems():
             if previousStatus[k] == '0':
-                print "add ", k
+                # print "add ", k
                 user, aufgabe = k.split('_')
                 aufgabeObj = models.Aufgabe.objects.get(id=int(aufgabe))
                 ausfuehrerObj = models.User.objects.get(id=int(user))
@@ -1072,7 +1073,7 @@ class StundenplaeneEdit(FilteredListView):
     in Klammer jeweils (Anzahl benötigte Mitglieder / Anzahl schon zugeteilte Mitglieder) angezeigt. 
     """
 
-    todo_text = """Anzahl noch benötigte Uhrzeiten anders hervorheben? Nur Differenz anzeigen?"""
+    todo_text = """Anzahl noch benötigte Uhrzeiten anders hervorheben? Nur Differenz anzeigen? Umstellen auf Kontakte statt Vornamen / Nachnamen """
 
     def get_filtered_table (self, qs, aufgabe):
         table = self.tableClassFactory(qs, aufgabe)

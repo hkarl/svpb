@@ -83,7 +83,7 @@ class KontaktColumn(django_tables2.columns.Column):
         super(KontaktColumn, self).__init__(*args, **kwargs)
 
     def render(self, value):
-        print value
+        # print value
         return mark_safe(u'{1} {2}{0}'.format(
             (u' <a href="mailto:{0}">'
              u'<span class="glyphicon glyphicon-envelope">'
@@ -218,11 +218,20 @@ def NameTableFactory (name, attrs, l, meta=None,
                     }
     nameattrs.update(attrs)
 
+    # we need to construct the meta field to ensure that the names are shown correctly: 
+    if not meta:
+        if kontakt:
+            meta = {'sequence': ('kontakt',
+                                 '...',
+                                 )}
+        else:
+            meta = {'sequence': ('last_name',
+                                 'first_name',
+                                 '...')}
+
     return TableFactory(name, nameattrs, l,
-                        meta=(meta
-                              if meta
-                              else {'sequence': ('last_name',
-                                                 'first_name', '...')}))
+                        meta=meta
+                        )
 
 ##############################
 
@@ -282,15 +291,15 @@ def StundenplanEditFactory(l, aufgabe):
 
     for i in range(models.Stundenplan.startZeit,
                    models.Stundenplan.stopZeit+1):
-        print '----- ', i
+        # print '----- ', i
         try: 
             benoetigt = aufgabe.stundenplan_set.filter(uhrzeit__exact=i)[0].anzahl
         except:
             benoetigt = 0
-        print benoetigt
+        # print benoetigt
 
         zugewiesen = aufgabe.zuteilung_set.filter(stundenzuteilung__uhrzeit=i).count()
-        print zugewiesen
+        # print zugewiesen
 
         newattrs['u'+str(i)] = ValuedCheckBoxColumn(accessor='u'+str(i),
                                                     # verbose_name=str(i)+'-'+str(i+1),
@@ -757,7 +766,8 @@ def ZuteilungsTableFactory (tuple):
     # TODO: in verbose_name hier noch Anzahl benötigt, anzahl zugeteilt eintragen
 
 
-    t = NameTableFactory('ZuteilungsTable', attrs, l)
+    t = NameTableFactory('ZuteilungsTable', attrs, l,
+                         kontakt=('mitglied', 'Mitglied'))
  
     return t 
 
@@ -870,6 +880,8 @@ class LeistungEmailTable(BaseEmailTable):
 
 class ZuteilungEmailTable(BaseEmailTable):
 
+    user = KontaktColumn(verbose_name="Mitglied")
+
     zuteilungBenachrichtigungNoetig = django_tables2.Column(verbose_name="Nötig?",
                                                             orderable=False,
                                                             empty_values=(),
@@ -883,9 +895,10 @@ class ZuteilungEmailTable(BaseEmailTable):
     class Meta:
         model = models.Mitglied
         attrs = {"class": "paleblue"}
-        exclude = ('id',)
+        exclude = ('id',
+                   'mitgliedsnummer',
+                   )
         sequence = ('user',
-                    'mitgliedsnummer',
                     'zuteilungsbenachrichtigung',
                     'zuteilungBenachrichtigungNoetig',
                     'anmerkung', 'sendit',
