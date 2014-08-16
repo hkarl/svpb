@@ -732,15 +732,27 @@ def ZuteilungsTableFactory (tuple):
                                     u'<br>({})'
                                     u'<br>Benötigt: {}'
                                     u'<br>Zugeteilt: {}'
+                                    u'{}'
                                     '</span>'
-                          .format(reverse('arbeitsplan-aufgabenEdit',
-                                          args=(a.id,)),
-                                  a.aufgabe,
-                                  a.stunden,
-                                  a.gruppe,
-                                  a.anzahl,
-                                  a.zuteilung_set.count(),
-                                  ))),
+                                    .format(reverse('arbeitsplan-aufgabenEdit',
+                                                    args=(a.id,)),
+                                            a.aufgabe,
+                                            a.stunden,
+                                            a.gruppe,
+                                            a.anzahl,
+                                            a.zuteilung_set.count(),
+                                            # the following expression is the same as appears in
+                                            # the ZuteilungUebersichtView
+                                            # TODO: perhaps move that to class aufgabe, to produce an edit link
+                                            # to its stundenplan if it exists? 
+                                            ('<br>' + mark_safe(u'<a href="{0}">Stundenplan</a>'
+                                                                .format(reverse ('arbeitsplan-stundenplaeneEdit',
+                                                                                 args=(a.id,)),
+                                                                                 ))
+                                             if a.has_Stundenplan()
+                                             else ''
+                                                )
+                                    ))),
             orderable=False)
     # TODO: in verbose_name hier noch Anzahl benötigt, anzahl zugeteilt eintragen
 
