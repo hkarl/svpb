@@ -147,6 +147,7 @@ INSTALLED_APPS = (
     ## 'django_admin_bootstrapped.bootstrap3',
     ## 'django_admin_bootstrapped',
     'django.contrib.admin',
+    'django_extensions',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'django_tables2',
