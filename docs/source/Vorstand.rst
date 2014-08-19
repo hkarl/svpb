@@ -53,7 +53,7 @@ In einer Tabelle werden alle Gruppen angezeigt. Filterung ist nicht vorgesehen. 
 Aufgabe anlegen
 ---------------
 
-Ein relativ umfangreicher Dialog, organisiert in zwei Spalten, um alle Aspekte einer neuen Aufgabe zu erfassen (siehe Abbildung :ref:`shrt-vorstand-aufgabe-editieren`). Die Felder Aufgabe, Verantworlich, Gruppe, Team-Leader und Bemerkung sollten selbsterklärend sein. Die anderen Felder: 
+Ein relativ umfangreicher Dialog, organisiert in zwei Spalten, um alle Aspekte einer neuen Aufgabe zu erfassen (siehe Abbildung :ref:`shot-vorstand-aufgabe-editieren`). Die Felder Aufgabe, Verantworlich, Gruppe, Team-Leader und Bemerkung sollten selbsterklärend sein. Die anderen Felder: 
 
 * Anzahl benötige Helfer: Planungsgrundlage; wieivele Person werden zur Erfüllung dieser Aufgabe gebraucht? 
 * Stunden: Wieviele Stunden sollen *pro Helfer* veranschlagt werden? Mitglieder sehen diese Zahl und können den Arbeitsaufwand einschötzen. Diese Zahl muss angegeben werden, egal, ob ein Stundenplan angegeben wird oder nicht.  Sollte eine Aufgabe sich über mehrere Tage erstrecken (z.B. bei Revierdienstaufgaben), dann sollte hier die GESAMTZAHL der Stunden eingetragen werden, die ein Mitglied im Lauf einer Saison mit dieser Aufgabe ableisten kann. 
@@ -90,7 +90,7 @@ Die Tabelle zeigt alle Aufgaben an, kann nach Gruppe und Datum der Aufgabe gefil
 Meldung
 =======
 
-Unter "Meldung bewerten" sollten Vorstandsmitglieder die eingegangen Meldungen der Mitglieder bewerten (siehe Abbildung :ref:`vorstand-meldungen-bewerten`). Genauer gesagt gibt hier ein Vorstandsmitglied seine Meinung darüber an, wie gut ein Mitglied für eine Aufgabe geeignet ist, für die sich das Mitglied gemeldet hat. 
+Unter "Meldung bewerten" sollten Vorstandsmitglieder die eingegangen Meldungen der Mitglieder bewerten (siehe Abbildung :ref:`shot-vorstand-meldungen-bewerten`). Genauer gesagt gibt hier ein Vorstandsmitglied seine Meinung darüber an, wie gut ein Mitglied für eine Aufgabe geeignet ist, für die sich das Mitglied gemeldet hat. 
 Dies kann bereits geschehen, sobald einzelne Meldungen vorliegen; es muss nicht gewartet werden, bis ALLE Meldungen vorliegen. 
 
 .. _shot-vorstand-meldungen-bewerten: 
@@ -185,7 +185,7 @@ Die Zuteilung für Aufgaben mit Stundenplan ist also ein zweistufiger Prozess: E
 Manuell zuteilen
 ----------------
 
-Dies ist möglicherweise die wichtigste Tabelle in dieser Anwendung. In ihr wird umfangreiche Information angezeigt und manipuliert. Abbildung :ref:`vorstand-aufgaben-zuteilen` zeigt ein Beispiel dieser Tabelle. 
+Dies ist möglicherweise die wichtigste Tabelle in dieser Anwendung. In ihr wird umfangreiche Information angezeigt und manipuliert. Abbildung :ref:`shot-vorstand-aufgaben-zuteilen` zeigt ein Beispiel dieser Tabelle. 
 
 .. _shot-vorstand-aufgaben-zuteilen:
 

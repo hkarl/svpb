@@ -1,4 +1,21 @@
-EntwicklerDoku
---------------
+************************
+Entwickler-Dokumentation
+************************
 
-Hallo Entwickler 
+Struktur
+========
+
+
+Klassendiagramm
+===============
+
+.. figure:: figures/klassendiagramm.*
+
+
+ToDos
+=====
+
+Generierte Dokumentation
+========================
+
+
