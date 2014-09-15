@@ -4,18 +4,18 @@
 
 Main classes:
 
-* Mitglied : 1on1 with User, provides Vereins unique ID and dates of
+* :class:`Mitglied`: 1on1 with User, provides Vereins unique ID and dates of
   messages sent to User
-* Aufgabe : Describes a single task
-* Aufgabengruppe : Grouping Aufgaben together, with responsible
-  Mitglied
-* Stundenplan : How many people are needed for a given Aufgabe at a
+* :class:`Aufgabe` : Describes a single task
+* :class:`Aufgabengruppe` : Grouping :class:`Aufgabe` together,
+  with responsible Mitglied
+* :class:`Stundenplan` : How many people are needed for a given Aufgabe at a
   given hour?
-* Meldung : Mitglied wants to contribute to a given Aufgabe
-* Zuteilung : a task has been assigned to a particular Mitglied
-* StundenZuteilung: a Zuteilung might pertain only to particular
+* :class:`Meldung` : Mitglied wants to contribute to a given Aufgabe
+* :class:`Zuteilung` : a task has been assigned to a particular Mitglied
+* :class:`StundenZuteilung`: a Zuteilung might pertain only to particular
   times; represented via this class
-* Leistung : Mitglied claims to have performaed a certain amount of
+* :class:`Leistung` : Mitglied claims to have performaed a certain amount of
   work on a particular job
 """
 
@@ -172,7 +172,7 @@ class Aufgabe(models.Model):
     def has_Stundenplan(self):
         """Is there a STundenplan for this Aufgabe?"""
 
-        return self.stundenplan_set.count() > 0 
+        return self.stundenplan_set.count() > 0
 
     def __unicode__(self):
         return self.aufgabe
