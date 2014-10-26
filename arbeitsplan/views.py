@@ -1271,7 +1271,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
     filterform_class = forms.LeistungFilter
     filterconfig = [('first_name', 'melder__first_name__icontains'),
                     ('last_name', 'melder__last_name__icontains'),
-                    ('aufgabengruppe', 'gruppe__gruppe'),
+                    ('aufgabengruppe', 'aufgabe__gruppe__gruppe'),
                     ('von', 'datum__gte'),
                     ('bis', 'datum__lte'),
                     ('status', 'status__in')
@@ -1535,7 +1535,7 @@ class ErstelleZuteilungView (View):
 
         ## for m in models.Meldung.objects.all():
         ##     G.add_edge ('')
-        
+
         messages.error(request,
                         "Diese Funktion ist noch nicht implementiert!")
         return redirect ('home')
