@@ -31,6 +31,7 @@ import django_tables2
 import unicodedata
 
 import types 
+import collections
 
 # Arbeitsplan-Importe: 
 import models
@@ -293,25 +294,17 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
         super(AufgabenUpdate, self).form_valid(form)
 
         # manipulate the stundenplan
-        stundenplan = form.cleaned_data['stundenplan']
-        for sDB in models.Stundenplan.objects.filter(aufgabe=self.object):
-            print sDB
-            if sDB.uhrzeit in stundenplan:
-                if stundenplan[sDB.uhrzeit] != sDB.anzahl:
-                    sDB.anzahl = stundenplan[sDB.uhrzeit]
-                    sDB.save()
-                    del stundenplan[sDB.uhrzeit]
-            else:
-                sDB.delete()
+        stundenplan = collections.defaultdict(int,
+                                              form.cleaned_data['stundenplan'])
+        print "stundenplan: ", stundenplan 
+        for u in range(models.Stundenplan.startZeit,
+                       models.Stundenplan.stopZeit+1):
+            anzahl = stundenplan[u]
+            sobj, created = models.Stundenplan.objects.update_or_create(
+                aufgabe=self.object,
+                uhrzeit=u,
+                defaults={'anzahl': anzahl})
 
-        # all the keys remaining in stundenplan have to be added
-        for uhrzeit, anzahl in stundenplan.iteritems():
-            sobj = models.Stundenplan(aufgabe = self.object,
-                                      uhrzeit = uhrzeit,
-                                      anzahl = anzahl)
-            sobj.save()
-
-        # return redirect ("arbeitsplan-aufgaben")
         return redirect(self.request.get_full_path())
 
 
@@ -385,20 +378,21 @@ class AufgabenCreate (SimpleCreateView):
     title = "Neue Aufgabe anlegen"
     buttontext = "Aufgabe anlegen"
 
-    def get_form_kwargs (self):
+    def get_form_kwargs(self):
         kwargs = super(SimpleCreateView, self).get_form_kwargs()
         kwargs.update({
             'request': self.request
             })
         return kwargs
 
-    def get_context_data (self, **kwargs):
-        context = super (AufgabenCreate, self).get_context_data (**kwargs)
-        context['stundenplan'] = [(u, 0) for u in range(8,24)]
-
+    def get_context_data(self, **kwargs):
+        context = super(AufgabenCreate, self).get_context_data(**kwargs)
+        context['stundenplan'] = [(u, 0)
+                                  for u in range(models.Stundenplan.startZeit,
+                                                 models.Stundenplan.stopZeit+1)]
         return context
 
-    def form_valid (self, form):
+    def form_valid(self, form):
 
         # store the aufgabe
         super (AufgabenCreate, self).form_valid(form)
@@ -1020,7 +1014,7 @@ class ZuteilungUebersichtView(FilteredListView):
 
             if aufgabe.has_Stundenplan():
 
-                for s in aufgabe.stundenplan_set.all():
+                for s in aufgabe.stundenplan_set.filter(anzahl__gt=0):
                     # print s
                     newEntry['u'+str(s.uhrzeit)] = {
                         'required': s.anzahl,
@@ -1099,9 +1093,9 @@ class StundenplaeneEdit(FilteredListView):
 
         data = []
 
-        stundenplaene = aufgabe.stundenplan_set.all()
+        stundenplaene = aufgabe.stundenplan_set.filter(anzahl__gt=0)
 
-        # print "Stundenplan fuer Auzfgabe: ", stundenplaene
+        print "Stundenplan fuer Auzfgabe: ", stundenplaene
 
         checkedboxes = []
         for u in models.User.objects.all():
@@ -1127,7 +1121,9 @@ class StundenplaeneEdit(FilteredListView):
                 data.append(newEntry)
 
             except models.Zuteilung.DoesNotExist:  # keine Zuteilung gefunden 
-                pass 
+                pass
+
+            print "checkedboxes after user: ", u, " : ", checkedboxes
 
         # prepare user id list to be passed into the hidden field, to ease processing later
         self.tableformHidden = [{'name': 'checkedboxes',

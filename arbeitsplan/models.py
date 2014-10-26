@@ -172,7 +172,7 @@ class Aufgabe(models.Model):
     def has_Stundenplan(self):
         """Is there a STundenplan for this Aufgabe?"""
 
-        return self.stundenplan_set.count() > 0
+        return self.stundenplan_set.filter(anzahl__gt=0).count() > 0
 
     def __unicode__(self):
         return self.aufgabe
@@ -282,8 +282,9 @@ class Zuteilung (models.Model):
         Depends on whether a Stundenplan exists for this job.
         """
 
-        if self.aufgabe.stundenplan_set.count() > 0:
-            return self.stundenzuteilung_set.count()
+        tmp = self.aufgabe.stundenplan_set.filter(anzahl__gt=0).count()
+        if tmp > 0:
+            return tmp
         else:
             return self.aufgabe.stunden
 

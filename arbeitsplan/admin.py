@@ -47,7 +47,7 @@ class LeistungAdmin (admin.ModelAdmin):
 
 class StundenplanAdmin(admin.ModelAdmin):
     # date_hierarchy = ('aufgabe__datum',)
-    list_filter = ('aufgabe__datum', )
+    list_filter = ('aufgabe__datum', 'aufgabe__aufgabe')
 
 
 class StundenZuteilungAdmin(admin.ModelAdmin):

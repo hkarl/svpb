@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from django.test import Client
 from arbeitsplan.models import *
 
+from pprint import pprint as pp
+
 class SimpleTest(TestCase):
     fixtures=['arbeitsplan/fixtures/arbeitsplan.json',
               'arbeitsplan/fixtures/groups.json',
@@ -22,15 +24,8 @@ class SimpleTest(TestCase):
         """
         Rewrite the passwords for the testusers
         """
-
         for u in User.objects.all():
             u.set_password(self.plainpassword)
-
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
 
     def login_user(self, user):
         cl = Client()
@@ -108,11 +103,31 @@ class SimpleTest(TestCase):
             else:
                 # dumping the sanitized data
                 from django.core.management import call_command
-                output=open("sanitized.json", "w")
+                output = open("sanitized.json", "w")
                 call_command('dumpdata', 'arbeitsplan', format='json',
-                             indent=3,stdout=output)
+                             indent=3, stdout=output)
                 output.close()
 
         self.assertFalse(False)
 
+    def _test_stundenplaene_duplicates(self):
+        """is there any process by which studneplaene entires become duplicates?
+        Make a change to an Aufgabe Stundenplan
 
+        TODO: not clear how to really do a post here with acceptable overhead
+        for writing the test
+        """
+
+        # the database better be ok before we test this:
+        problem = self.check_stundenplaene_unique()
+        self.assertFalse(problem)
+
+        cl = self.login_user('JochenMelzian')
+        response = cl.get('/arbeitsplan/aufgabeEditieren/7/')
+        self.assertEqual(response.status_code, 200)
+
+        pp(response.context, indent=4)
+
+        ## cl.post('/arbeitsplan/aufgabeEditieren/7/',
+        ##         )
+        self.assertTrue(True)
