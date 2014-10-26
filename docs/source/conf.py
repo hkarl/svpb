@@ -17,7 +17,9 @@ import sphinx_bootstrap_theme
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../..'))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "svpb.settings")
+# print sys.path
 
 # -- General configuration -----------------------------------------------------
 
@@ -95,7 +97,8 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 # html_theme = 'default'
-html_theme = 'bootstrap'
+html_theme = 'sphinxdoc'
+# html_theme = 'bootstrap'
 # html_theme = 'basicstrap'
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -291,3 +294,7 @@ epub_copyright = u'2014, Holger Karl'
 
 # Allow duplicate toc entries.
 #epub_tocdup = True
+
+
+# autodoc configuration
+autodoc_member_order = 'bysource'

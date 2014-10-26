@@ -107,10 +107,24 @@ class AufgabengruppeForm(CrispyFormMixin, forms.ModelForm):
 
     class Meta:
         model = models.Aufgabengruppe
+        fields = ('gruppe',
+                  'verantwortlich',
+                  'bemerkung',
+                  )
 
 class AufgabeForm(forms.ModelForm):
     class Meta:
         model = models.Aufgabe
+        fields = (
+            'aufgabe',
+            'verantwortlich',
+            'gruppe',
+            'anzahl',
+            'stunden',
+            'teamleader',
+            'datum',
+            'bemerkung',
+            )
 
     def __init__(self, request, *args, **kwargs):
         self.request = request

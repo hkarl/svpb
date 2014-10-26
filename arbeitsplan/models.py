@@ -1,33 +1,63 @@
 # -*- coding: utf-8 -*-
 
+"""Django models for the Arbeitsplan at SVPB.
+
+Main classes:
+
+* :class:`Mitglied`: 1on1 with User, provides Vereins unique ID and dates of
+  messages sent to User
+* :class:`Aufgabe` : Describes a single task
+* :class:`Aufgabengruppe` : Grouping :class:`Aufgabe` together,
+  with responsible Mitglied
+* :class:`Stundenplan` : How many people are needed for a given Aufgabe at a
+  given hour?
+* :class:`Meldung` : Mitglied wants to contribute to a given Aufgabe
+* :class:`Zuteilung` : a task has been assigned to a particular Mitglied
+* :class:`StundenZuteilung`: a Zuteilung might pertain only to particular
+  times; represented via this class
+* :class:`Leistung` : Mitglied claims to have performaed a certain amount of
+  work on a particular job
+"""
+
 from django.db import models
 from django.contrib.auth.models import User
-import datetime
 
-# needed for auto_now fields with veto 
 import datetime
+# needed for auto_now fields with veto
 from django.utils.timezone import utc
 
 
-# Create your models here.
-
-
 class Mitglied (models.Model):
+
+    """Provide additional information on a User by a 1:1 relationship:
+    ID, dates of messages
+
+    This class is a one-to-one relationship with user, extending
+    information stored about a particular user. It provides an
+    additional mitgliedsnummer, corresponding to Vereins-Data.  It
+    also stores date when a message has been last sent to a Mitglied
+    and whether it is necessary to sent a message.
+
+    It is not possible to derive necessity of messaging form date of
+    last message - there simply might not have anything happened to
+    this member since its last message.
+    """
+
     user = models.OneToOneField(User)
+    """Couple Mitglied to User via 1:1 field."""
+
     mitgliedsnummer = models.CharField(max_length=10,
                                        help_text="Mitgliedsnummer",
                                        default=0)
-
-    # leistungbenachrichtigung = models.DateTimeField(help_text=
-    # "Wann war die letzte Benachrichtigung zu einer Leistungsmeldung?",
-    #                            default=datetime.datetime(1900,1,1))
+    """ID as assigned by Verein. Unique?! Use this as default login."""
 
     zuteilungsbenachrichtigung = models.DateTimeField(
         help_text="Wann war die letzte Benachrichtigung"
         " zu einer Zuteilung?",
-        default=datetime.datetime(1900,1,1),
+        default=datetime.datetime(1900, 1, 1),
         verbose_name="Letzte Benachrichtigung",
         )
+    """Date and time of most recent message to user"""
 
     zuteilungBenachrichtigungNoetig = models.BooleanField(
         help_text="Muss an diese Nutzer"
@@ -37,17 +67,24 @@ class Mitglied (models.Model):
         default=True,
         verbose_name="Benachrichtigung zu Zuteilungen nötig?",
         )
+    """Does Mitglied need a message?"""
 
     def __unicode__(self):
         return self.user.__unicode__()
 
     def zugeteilteStunden(self, time=None):
-        """How much work has already been assigned to this user?
-        Difficult because some aufgaben have easily identified hours,
+        """Compute hours already assigned to this user.
+
+        This is difficult because some aufgaben have easily identified hours,
         others have to be checked specifically for the
         stundenplan Zuteilung.
 
-        time: -1: Past, +1: Future. 0: Tasks without date?
+        :param time: -1: tasks from past,
+                     +1: tasks from future,
+                     0: Tasks without date (not sure this is useful?), 
+                     None: do not filter assigned tasks any more. 
+        :returns: Hours assigned to user, for the desired time frame.
+        :rtype: int 
         """
 
         qs = self.user.zuteilung_set.all()
@@ -59,9 +96,8 @@ class Mitglied (models.Model):
         if time == 0:
             qs = qs.filter(aufgabe__datum__isnull=True)
 
-
         stundenlist = [z.stunden() for z in qs]
-        print self.__unicode__(), time, stundenlist
+        # print self.__unicode__(), time, stundenlist
         return sum(stundenlist)
 
     class Meta:
@@ -136,7 +172,7 @@ class Aufgabe(models.Model):
     def has_Stundenplan(self):
         """Is there a STundenplan for this Aufgabe?"""
 
-        return self.stundenplan_set.count() > 0 
+        return self.stundenplan_set.count() > 0
 
     def __unicode__(self):
         return self.aufgabe
@@ -382,11 +418,13 @@ class Leistung (models.Model):
         with autonow=False.
 
         Arguments:
+
         - `self`:
-        - `veraendert`: IF true, the veranedert field is updated, similar to an auto_now field;
+        - `veraendert`: IF true, the veranedert field is updated,
+                        similar to an auto_now field;
                         else, no update (veto'ing the auto_now behavior)
-        - `*args`:
-        - `**kwargs`:
+        - `*args`: Passed through to super class
+        - `**kwargs`: Passed through to super class
         """
         if veraendert:
             self.veraendert = (datetime.datetime.

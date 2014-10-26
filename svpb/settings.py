@@ -4,6 +4,9 @@ import os
 ## let's find the root from where the server runs: 
 APPLICATION_DIR = os.path.dirname( globals()[ '__file__' ] )
 
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
