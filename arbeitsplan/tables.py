@@ -402,13 +402,15 @@ class AufgabenTableVorstand(django_tables2.Table):
         # django_tables2.A("verantwortlich.last_name"),
         # "gruppe", "anzahl", "bemerkung")
 
-        fields = ("gruppe", "aufgabe", "datum",
+        fields = ("id",
+                  "gruppe", "aufgabe", "datum",
                   "stunden",
                   "anzahl",
                   "meldungen",
                   "zuteilungen", "fehlende_zuteilungen",
                   "bemerkung",
-                  'verantwortlicher', 'id')
+                  'verantwortlicher',
+                  )
 
         # TODO: anzahl muss man wahrscheinlich
         # auf die ANzahl FREIE Plaetze umrechnen!?!?
