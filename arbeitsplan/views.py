@@ -1063,23 +1063,30 @@ class StundenplaeneEdit(FilteredListView):
     müssen Sie zunächst Nutzer dieser Aufgabe zuteilen. Das Zuweisen zu
     einzelnen Stunden ist erst der zweite Schritt.
 
-    In der Tabelle werden Spalten pro Uhrzeit angezeigt. In den Spaltenüberschriften wird
-    in Klammer jeweils (Anzahl benötigte Mitglieder / Anzahl schon zugeteilte Mitglieder) angezeigt. 
+    In der Tabelle werden Spalten pro Uhrzeit angezeigt.
+    In den Spaltenüberschriften wird
+    in Klammer jeweils (Anzahl benötigte Mitglieder / Anzahl
+    schon zugeteilte Mitglieder) angezeigt.
     """
 
-    todo_text = """Anzahl noch benötigte Uhrzeiten anders hervorheben? Nur Differenz anzeigen? Umstellen auf Kontakte statt Vornamen / Nachnamen """
+    todo_text = """Anzahl noch benötigte Uhrzeiten anders hervorheben?
+    Nur Differenz anzeigen? Umstellen auf Kontakte statt
+    Vornamen / Nachnamen """
 
-    def get_filtered_table (self, qs, aufgabe):
+
+    def get_filtered_table(self, qs, aufgabe):
         table = self.tableClassFactory(qs, aufgabe)
         django_tables2.RequestConfig(self.request).configure(table)
 
         return table
 
     def get_queryset(self):
-
-        # find out which aufgabe we are talking about?
-
-        # print self.request.GET
+        """For a given Aufgabe, find all users with a zuteiulung to that aufgabe.
+        Construct, for each such users, two things:
+        a) checkboxes, showing for each possible Stundenplan timeslot, whether it is currently occupiued or not
+        b) an entry in the data: list of dictionaries with entries first_name, last_name, and the timeslots 0/1 
+        """
+        
 
         try: 
             aufgabeid = self.kwargs['aufgabeid']
@@ -1092,61 +1099,105 @@ class StundenplaeneEdit(FilteredListView):
         self.tabletitle = self.tabletitle_template + u" - Aufgabe: " + aufgabe.aufgabe
 
         data = []
-
-        stundenplaene = aufgabe.stundenplan_set.filter(anzahl__gt=0)
-
-        print "Stundenplan fuer Auzfgabe: ", stundenplaene
-
         checkedboxes = []
-        for u in models.User.objects.all():
+
+        stundenplan = aufgabe.stundenplan_set.filter(anzahl__gt=0)
+
+        zugeteilteUser = [z.ausfuehrer for z in aufgabe.zuteilung_set.all()]
+
+        print "Stundenplan fuer Auzfgabe: ", stundenplan
+        print "zugeteilte User: ",  zugeteilteUser
+
+        # construct the checkboxes string:
+        # userid_uhrzeit, if that user works on that time
+
+        # for each zuteilung, the following gives a separate queryset:
+        stundenzuteilungenQuerysets = [z.stundenzuteilung_set.all()
+                                       for z in aufgabe.zuteilung_set.all()]
+        checkedboxes = [str(sz.zuteilung.ausfuehrer.id) + "_" + str(sz.uhrzeit)
+                        for szQs in stundenzuteilungenQuerysets
+                        for sz in szQs]
+        print checkedboxes
+
+        # construct the list of dicts for users:
+        for u in zugeteilteUser:
             newEntry = {'last_name': u.last_name,
                         'first_name': u.first_name,
                         }
+            zuteilungThisUser = aufgabe.zuteilung_set.filter(ausfuehrer=u)
+            if zuteilungThisUser.count() != 1:
+                messages.error('Error 13: ' + aufgabe.__unicode__()
+                               + ' - ' + u.__unicode__())
 
-            try: 
-                zuteilung = models.Zuteilung.objects.get(ausfuehrer=u,
-                                                         aufgabe=aufgabe)
-                stundenzuteilungen =  zuteilung.stundenzuteilung_set.values_list('uhrzeit',
-                                                                                 flat=True )
+            stundenzuteilung = (zuteilungThisUser[:1].get().
+                                stundenzuteilung_set.values_list('uhrzeit',
+                                                                 flat=True))
+            print zuteilungThisUser
+            for s in stundenplan:
+                newEntry['u'+str(s.uhrzeit)] = ((1 if s.uhrzeit in stundenzuteilung
+                                                 else 0),
+                                                 ('uhrzeit_' +
+                                                  str(u.id) + "_" +
+                                                  str(s.uhrzeit)),
+                                                 )
+            data.append(newEntry)
 
-                # print "Zuteilung fuer User: ", u, stundenzuteilungen 
+        print data
 
-                for s in stundenplaene:
-                    tag = 'uhrzeit_' + str(u.id) + "_" + str(s.uhrzeit)
-                    present = s.uhrzeit in stundenzuteilungen 
-                    newEntry['u'+ str(s.uhrzeit)] = (1 if present else 0, tag)
-                    if present: 
-                        checkedboxes.append(str(u.id) + "_" + str(s.uhrzeit))
+        # print [(sz.zuteilung.ausfuehrer, sz.uhrzeit) for sz in stundenzuteilungen]
 
-                data.append(newEntry)
+        ## # TODO: rewrite that to only iterate over users with zuteilung for this aufgabe
+        ## # should be tremendously more efficient 
+        ## for u in models.User.objects.all():
+        ##     newEntry = {'last_name': u.last_name,
+        ##                 'first_name': u.first_name,
+        ##                 }
 
-            except models.Zuteilung.DoesNotExist:  # keine Zuteilung gefunden 
-                pass
+        ##     try: 
+        ##         zuteilung = models.Zuteilung.objects.get(ausfuehrer=u,
+        ##                                                  aufgabe=aufgabe)
+        ##         stundenzuteilungen =  zuteilung.stundenzuteilung_set.values_list('uhrzeit',
+        ##                                                                          flat=True )
 
-            print "checkedboxes after user: ", u, " : ", checkedboxes
+        ##         # print "Zuteilung fuer User: ", u, stundenzuteilungen 
 
-        # prepare user id list to be passed into the hidden field, to ease processing later
+        ##         for s in stundenplaene:
+        ##             tag = 'uhrzeit_' + str(u.id) + "_" + str(s.uhrzeit)
+        ##             present = s.uhrzeit in stundenzuteilungen 
+        ##             newEntry['u'+ str(s.uhrzeit)] = (1 if present else 0, tag)
+        ##             if present: 
+        ##                 checkedboxes.append(str(u.id) + "_" + str(s.uhrzeit))
+
+        ##         data.append(newEntry)
+
+        ##     except models.Zuteilung.DoesNotExist:  # keine Zuteilung gefunden 
+        ##         pass
+
+        ##     print "checkedboxes after user: ", u, " : ", checkedboxes
+
+        ## # prepare user id list to be passed into the hidden field,
+        ## # to ease processing later
         self.tableformHidden = [{'name': 'checkedboxes',
-                                  'value': ','.join(checkedboxes)}]
+                                 'value': ','.join(checkedboxes)}]
 
-        table = self.get_filtered_table (data, aufgabe)
+        table = self.get_filtered_table(data, aufgabe)
 
         return table
 
-    def post (self, request, aufgabeid, *args, **kwargs):
+    def post(self, request, aufgabeid, *args, **kwargs):
 
         print self.request.POST
 
         if self.request.POST.get('checkedboxes'):
-            tmp = [  x.split('_')
-                    for x in
-                    self.request.POST.get('checkedboxes').split(',')
-                    ]
+            tmp = [x.split('_')
+                   for x in
+                   self.request.POST.get('checkedboxes').split(',')
+                  ]
         else:
             tmp = []
 
-        # pp(tmp) 
-        checkedboxes = [ (int(x[0]), int(x[1])) for x in tmp ]
+        # pp(tmp)
+        checkedboxes = [(int(x[0]), int(x[1])) for x in tmp ]
         print "checkboxes: ", checkedboxes
 
         # any values to add? 
@@ -1174,7 +1225,7 @@ class StundenplaeneEdit(FilteredListView):
 
         # anything still in checkedboxes had been checked before, but was not in QueryDict
         # i.e., it has been uncheked by user and should be removed
-        for uid, uhrzeit  in checkedboxes:
+        for uid, uhrzeit in checkedboxes:
             # print "remove: ", uid, uhrzeit
 
             zuteilung =  models.Zuteilung.objects.get (ausfuehrer__id = uid,

@@ -259,7 +259,7 @@ class Zuteilung (models.Model):
     ausfuehrer = models.ForeignKey(User)
     automatisch = models.BooleanField(default=False)
 
-    def __unicode__ (self):
+    def __unicode__(self):
         # print self.stundenzuteilung_set.all() 
         return (self.aufgabe.__unicode__() + ": " + self.ausfuehrer.__unicode__() 
                 + (" @ " + ','.join([s.__unicode__() for s in self.stundenzuteilung_set.all()] ))
