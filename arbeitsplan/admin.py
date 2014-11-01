@@ -51,17 +51,17 @@ class StundenplanAdmin(admin.ModelAdmin):
 
 
 class StundenZuteilungAdmin(admin.ModelAdmin):
-    # date_hierarchy = ('aufgabe__datum',)
-    # list_filter = ('aufgabe__datum', )
-    pass
+    list_display = ['zuteilung', 'uhrzeit']
+    list_filter = ('zuteilung__aufgabe', 'zuteilung__ausfuehrer')
+
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
 admin.site.register(Zuteilung, ZuteilungAdmin)
-admin.site.register(StundenZuteilung, StundenZuteilungAdmin)
 admin.site.register(Aufgabengruppe)
 admin.site.register(Aufgabe, AufgabeAdmin)
 admin.site.register(Meldung, MeldungAdmin)
 admin.site.register(Leistung, LeistungAdmin)
 admin.site.register(Stundenplan, StundenplanAdmin)
+admin.site.register(StundenZuteilung, StundenZuteilungAdmin)
