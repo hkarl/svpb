@@ -5,13 +5,26 @@ from django.core.urlresolvers import reverse
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth import REDIRECT_FIELD_NAME
 
-import arbeitsplan.views
+import arbeitsplan.views, svpb.views
 import arbeitsplan.models 
 
 
 admin.autodiscover()
+
+def active_and_login_required(function=None,
+                              redirect_field_name=REDIRECT_FIELD_NAME,
+                              login_url=None):
+    actual_decorator = user_passes_test(
+        lambda u: u.is_authenticated() and u.is_active,
+        login_url=login_url,
+        redirect_field_name=redirect_field_name
+    )
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
 
 
 urlpatterns = patterns('',
@@ -35,17 +48,17 @@ urlpatterns = patterns('',
          ),
 
     url (r'^arbeitsplan/benachrichtigen/leistung/$',
-         arbeitsplan.views.LeistungEmailView.as_view(),
+         active_and_login_required(arbeitsplan.views.LeistungEmailView.as_view()),
          name="arbeitsplan-benachrichtigen-leistung",
          ),
 
     url (r'^arbeitsplan/benachrichtigen/zuteilung/$',
-         arbeitsplan.views.ZuteilungEmailView.as_view(),
+         active_and_login_required(arbeitsplan.views.ZuteilungEmailView.as_view()),
          name="arbeitsplan-benachrichtigen-leistung",
          ),
 
     url (r'^arbeitsplan/benachrichtigen/senden/$',
-         arbeitsplan.views.EmailSendenView.as_view(),
+         active_and_login_required(arbeitsplan.views.EmailSendenView.as_view()),
          name="arbeitsplan-benachrichtigen-senden",
          ),
 
@@ -55,79 +68,79 @@ urlpatterns = patterns('',
          ),
 
     url (r'^arbeitsplan/zuteilungAnzeige/(?P<wer>[a-zA-Z]+)/$',
-         login_required(arbeitsplan.views.ListZuteilungenView.as_view()),
+         active_and_login_required(arbeitsplan.views.ListZuteilungenView.as_view()),
          name="arbeitsplan-zuteilunglist",
          ),
 
     url (r'^arbeitsplan/meldungVorstand/$',
-         login_required(arbeitsplan.views.MeldungVorstandView.as_view()),
+         active_and_login_required(arbeitsplan.views.MeldungVorstandView.as_view()),
          name="arbeitsplan-meldungVorstand",
          ),
 
     url (r'^arbeitsplan/erstelleZuteilung/$',
-         login_required(arbeitsplan.views.ErstelleZuteilungView.as_view()),
+         active_and_login_required(arbeitsplan.views.ErstelleZuteilungView.as_view()),
          name="arbeitsplan-erstellezuteilung",
          ),
 
     url (r'^arbeitsplan/manuelleZuteilung/$',
-         login_required(arbeitsplan.views.ManuelleZuteilungView.as_view()),
+         active_and_login_required(arbeitsplan.views.ManuelleZuteilungView.as_view()),
          name="arbeitsplan-manuellezuteilung",
          ),
 
     url (r'^arbeitsplan/manuelleZuteilung/(?P<aufgabe>\d+)/$',
-         login_required(arbeitsplan.views.ManuelleZuteilungView.as_view()),
+         active_and_login_required(arbeitsplan.views.ManuelleZuteilungView.as_view()),
          name="arbeitsplan-manuellezuteilungAufgabe",
          ),
 
     url (r'^arbeitsplan/zuteilungUebersicht/$',
-         login_required(arbeitsplan.views.ZuteilungUebersichtView.as_view()),
+         active_and_login_required(arbeitsplan.views.ZuteilungUebersichtView.as_view()),
          name="arbeitsplan-zuteilungUebersicht",
          ),
 
     url (r'^arbeitsplan/stundenplaene/(?P<aufgabeid>\d+)/$',
-         login_required(arbeitsplan.views.StundenplaeneEdit.as_view()),
+         active_and_login_required(arbeitsplan.views.StundenplaeneEdit.as_view()),
          name="arbeitsplan-stundenplaeneEdit",
          ),
 
     url (r'^arbeitsplan/meldung/$',
-         login_required(arbeitsplan.views.CreateMeldungenView.as_view()),
+         active_and_login_required(arbeitsplan.views.CreateMeldungenView.as_view()),
          name="arbeitsplan-meldung",),
 
     url (r'^arbeitsplan/leistung/$',
-         login_required(arbeitsplan.views.CreateLeistungView.as_view(
+         active_and_login_required(arbeitsplan.views.CreateLeistungView.as_view(
              success_url="/home/")),
          name="arbeitsplan-leistung",),
 
     url (r'^arbeitsplan/leistungenBearbeiten/z=(?P<zustaendig>[a-zA-Z]+)/$',
-         login_required(arbeitsplan.views.LeistungBearbeitenView.as_view()),
+         active_and_login_required(arbeitsplan.views.LeistungBearbeitenView.as_view()),
          name="arbeitsplan-leistungBearbeiten",),
 
     url (r'^arbeitsplan/leistungListe/$',
-         login_required(arbeitsplan.views.ListLeistungView.as_view()),
+         active_and_login_required(arbeitsplan.views.ListLeistungView.as_view()),
          name="arbeitsplan-leistungListe",),
 
     url (r'^arbeitsplan/salden/$',
-         login_required(arbeitsplan.views.Salden.as_view()),
+         active_and_login_required(arbeitsplan.views.Salden.as_view()),
          name="arbeitsplan-salden",),
 
     url (r'^arbeitsplan/aufgabeErzeugen/$',
-         login_required(arbeitsplan.views.AufgabenCreate.as_view()),
+         active_and_login_required(arbeitsplan.views.AufgabenCreate.as_view()),
          name="arbeitsplan-aufgabenErzeugen",),
 
     url (r'^arbeitsplan/aufgabeEditieren/(?P<pk>\d+)/$',
-         login_required(arbeitsplan.views.AufgabenUpdate.as_view()),
+         active_and_login_required(arbeitsplan.views.AufgabenUpdate.as_view()),
          name="arbeitsplan-aufgabenEdit",),
 
     url(r'^arbeitsplan/aufgabengruppeErzeugen/$',
-         login_required(arbeitsplan.views.AufgabengruppeCreate.as_view()),
+         active_and_login_required(arbeitsplan.views.AufgabengruppeCreate.as_view()),
          name="arbeitsplan-aufgabengruppeCreate",),
 
     url(r'^arbeitsplan/aufgabengruppen/$',
-         login_required(arbeitsplan.views.AufgabengruppeList.as_view()),
+         active_and_login_required(arbeitsplan.views.AufgabengruppeList.as_view()),
          name="arbeitsplan-aufgabengruppeList",),
 
     url (r'^arbeitsplan/aufgabengruppeEditieren/(?P<pk>\d+)/$',
-         login_required(arbeitsplan.views.AufgabengruppeUpdate.as_view()),
+         active_and_login_required(arbeitsplan.views.AufgabengruppeUpdate.as_view()),
          name="arbeitsplan-aufgabengruppeEdit",),
 
     url (r'^bootstrap$',
@@ -146,19 +159,26 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
-    url (r'^accounts/login/', login),
+    # url (r'^accounts/login/', login),
+    url (r'^accounts/login/',
+         svpb.views.SvpbLogin.as_view(),
+         name="login"),
+
+    url (r'^accounts/activate/',
+         login_required(svpb.views.ActivateView.as_view()),
+         name="activate"),
 
     url (r'^logout/', arbeitsplan.views.logout_view),
 
     url (r'^password/change/$',
-         login_required(arbeitsplan.views.PasswordChange.as_view()),
+         active_and_login_required(arbeitsplan.views.PasswordChange.as_view()),
          name='password_change',
          ),
 
     ## Impersonation of other users:
     url(r'^impersonate/', include('impersonate.urls')),
     url(r'^impersonate/liste/$',
-         login_required(arbeitsplan.views.ImpersonateListe.as_view()),
+         active_and_login_required(arbeitsplan.views.ImpersonateListe.as_view()),
          name="arbeitsplan-impersonateListe",),
 
 )

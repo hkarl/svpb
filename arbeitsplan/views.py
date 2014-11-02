@@ -1551,11 +1551,11 @@ class Salden(isVorstandMixin, FilteredListView):
 ########################################################################################
 ### EXPERIMENTELL 
 ########################################################################################
-    
 
-class ErstelleZuteilungView (View):
+
+class ErstelleZuteilungView(View):
     """Automatisches Berechnen von Zuteilungen"""
-    
+
     def get (self,request, *args, **kwargs):
         # Vorgehen:
         # - alle automatisch erstellten Zuordnungen loecshen
