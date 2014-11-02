@@ -11,6 +11,7 @@ class LoginForm(forms.Form):
                                help_text="In der Regel: Ihre Mitgliedsnummer")
     password = forms.CharField(widget=forms.PasswordInput,
                                label="Passwort",
+                               required=True,
                                )
 
     def __init__(self, *args, **kwargs):
@@ -42,6 +43,7 @@ class LoginForm(forms.Form):
             error = True
 
         if error:
+            print "raising validation"
             raise ValidationError('Der Nutzer konnte nicht angemeldet werden.')
 
         return self.cleaned_data
@@ -88,10 +90,10 @@ class ActivateForm(forms.Form):
         try:
             pw1 = self.cleaned_data['pw1']
             pw2 = self.cleaned_data['pw2']
-
-            if pw1 != pw2:
-                raise ValidationError('Die beiden Passwörter müssen übereinstimmen')
         except:
-            raise ValidationError('Beide Passwörter müssen angegebn werden')
+            raise ValidationError('Beide Passwörter müssen angegeben werden')
+
+        if pw1 != pw2:
+            raise ValidationError('Die beiden Passwörter müssen übereinstimmen')
 
         return self.cleaned_data

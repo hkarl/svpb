@@ -21,12 +21,11 @@ class SvpbLogin(FormView):
     success_url = "/"
 
     def get_context_data(self, **kwargs):
-        context = super(SvpbLogin, self).get_context_data()
+        context = super(SvpbLogin, self).get_context_data(**kwargs)
         context['title'] = "Anmeldung"
         context['intro_text'] = ""
         context['post_text'] = ""
         context['todo_text'] = ""
-        context['form'] = self.form_class()
 
         return context
 
@@ -56,7 +55,7 @@ class ActivateView(FormView):
     def get_context_data(self, **kwargs):
         from django.utils.html import format_html, mark_safe
 
-        context = super(ActivateView, self).get_context_data()
+        context = super(ActivateView, self).get_context_data(**kwargs)
         context['title'] = "Aktivieren Sie Ihre SVPB-Konto"
         context['intro_text'] = format_html("""<b>Willkommen bei der ersten Nutzung Ihres SVPB-Kontos</b>
         <p>
@@ -74,7 +73,6 @@ class ActivateView(FormView):
         """)
         context['post_text'] = ""
         context['todo_text'] = ""
-        context['form'] = self.form_class()
 
         return context
 
