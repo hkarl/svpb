@@ -33,7 +33,7 @@ class Mitglied (models.Model):
     ID, dates of messages
 
     This class is a one-to-one relationship with user, extending
-    information stored about a particular user. It provides an
+8    information stored about a particular user. It provides an
     additional mitgliedsnummer, corresponding to Vereins-Data.  It
     also stores date when a message has been last sent to a Mitglied
     and whether it is necessary to sent a message.
@@ -68,6 +68,13 @@ class Mitglied (models.Model):
         verbose_name="Benachrichtigung zu Zuteilungen nötig?",
         )
     """Does Mitglied need a message?"""
+
+    zustimmungsDatum = models.DateTimeField(
+        help_text="Wann hat der Nutzer Zustimmung erteilt?",
+        default=datetime.datetime(1900, 1, 1),
+        verbose_name="Datum der Zustimmung",
+        )
+    """At what date did the member agree to the use of this system?"""
 
     def __unicode__(self):
         return self.user.__unicode__()
