@@ -132,7 +132,7 @@ class Aufgabengruppe (models.Model):
 
 
 class Aufgabe(models.Model):
-    aufgabe = models.CharField(max_length=30)
+    aufgabe = models.CharField(max_length=50)
     verantwortlich = models.ForeignKey(User,
                                        help_text="Verantwortliches "
                                        "Vorstandsmitglied")
