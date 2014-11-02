@@ -63,7 +63,10 @@
     </div>
   </div>
 </div>
-<input type="submit" class="btn btn-primary" value="{{buttontext}}">
+<input type="submit" class="btn btn-primary" value="{{buttontext}}" name="_edit"">
+{% if loeschknopf %}
+<input type="submit" class="btn btn-danger" value="Aufgabe löschen" name="_delete">
+{% endif%}
 </form>
 
 {% endblock %}

@@ -5,7 +5,8 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.views.generic import View, ListView, CreateView, FormView, UpdateView 
+from django.views.generic import View, ListView, CreateView
+from django.views.generic import FormView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
@@ -279,6 +280,8 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
 
         context['stundenplan'] = stundenplan.items()
 
+        context['loeschknopf'] = self.object.verantwortlich ==  self.request.user
+
         return context
 
     def get_form_kwargs(self):
@@ -289,6 +292,11 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
         return kwargs
 
     def form_valid(self, form):
+
+        if '_delete' in self.request.POST:
+            print "redirecting to delete", self.object.id
+            return redirect('arbeitsplan-aufgabenDelete',
+                            pk=self.object.id)
 
         # store the aufgabe
         super(AufgabenUpdate, self).form_valid(form)
@@ -306,6 +314,31 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
                 defaults={'anzahl': anzahl})
 
         return redirect(self.request.get_full_path())
+
+
+class AufgabeLoeschen(DeleteView):
+    model = models.Aufgabe
+    success_url = reverse_lazy('arbeitsplan-aufgaben')
+    template_name = "aufgabe_confirm_delete.html"
+
+    def get_object(self, queryset=None):
+        obj = super(AufgabeLoeschen, self).get_object()
+        if not obj.verantwortlich == self.request.user:
+            from django.http import Http404
+            # TODO: nicer error message
+            messages.error(self.request,
+                           "Sie dürfen diese Aufgabe nicht löschen! Nur der verantworliche Vorstand darf das!")
+            raise Http404
+        return obj
+
+    def get(self, request, *args, **kwargs):
+        try:
+            r = super(AufgabeLoeschen, self).get(request, *args, **kwargs)
+            messages.success(self.request,
+                             "Die Aufgabe wurde erfolgreich gelöscht.")
+            return r
+        except:
+            return redirect('arbeitsplan-aufgaben')
 
 
 ###############################
@@ -1636,7 +1669,7 @@ class FilteredEmailCreateView (FilteredListView):
 
         users_no_email = []
 
-        ## extarct all the ids that are to be sent out
+        # extarct all the ids that are to be sent out
         idlist = []
         for k in request.POST.keys():
             if k.startswith('sendit_'):
@@ -1645,8 +1678,8 @@ class FilteredEmailCreateView (FilteredListView):
 
         ergaenzung = request.POST['ergaenzung']
 
-        ## do the actual sending:
-        ## pull out the leistungs object and send it out
+        # do the actual sending:
+        # pull out the leistungs object and send it out
         for i in idlist:
             instance = self.model.objects.get(pk=i)
             thisuser = self.getUser (instance)

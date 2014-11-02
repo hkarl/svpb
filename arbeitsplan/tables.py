@@ -365,7 +365,7 @@ class AufgabenTableVorstand(django_tables2.Table):
     id = django_tables2.LinkColumn(
         'arbeitsplan-aufgabenEdit',
         args=[A('pk')],
-        verbose_name="Editieren")
+        verbose_name="Editieren/ Löschen")
 
     meldungen = django_tables2.Column(
         verbose_name="Vorliegende Meldungen",

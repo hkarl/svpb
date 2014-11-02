@@ -131,6 +131,10 @@ urlpatterns = patterns('',
          active_and_login_required(arbeitsplan.views.AufgabenUpdate.as_view()),
          name="arbeitsplan-aufgabenEdit",),
 
+    url (r'^arbeitsplan/aufgabeLoeschen/(?P<pk>\d+)/$',
+         active_and_login_required(arbeitsplan.views.AufgabeLoeschen.as_view()),
+         name="arbeitsplan-aufgabenDelete",),
+        
     url(r'^arbeitsplan/aufgabengruppeErzeugen/$',
          active_and_login_required(arbeitsplan.views.AufgabengruppeCreate.as_view()),
          name="arbeitsplan-aufgabengruppeCreate",),
