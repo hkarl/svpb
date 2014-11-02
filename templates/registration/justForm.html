@@ -1,0 +1,52 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+
+
+{% if intro_text %}
+<div class="alert alert-info">
+{{ intro_text }}
+  </div>
+<hr>
+{% endif %}
+
+
+
+
+{% crispy form %}
+
+
+{% if post_text %}
+<hr>
+{{ post_text }}
+{% endif %}
+
+{% if todo_text %}
+<hr>
+<div class="alert alert-danger">
+<b> TODO </b>
+<ul>
+{{ todo_text }}
+</ul>
+</div>
+{% endif %}
+
+{% if discuss_text %}
+<hr>
+<div class="alert alert-warning">
+<b> DISCUSS </b>
+<ul>
+{{ discuss_text }}
+</ul>
+</div>
+{% endif %}
+
+  
+{% endblock %}
+
