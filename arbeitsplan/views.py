@@ -443,6 +443,36 @@ class AufgabenCreate (SimpleCreateView):
 
         return super(AufgabenCreate, self).form_valid(form)
 
+    def form_invalid(self, form):
+        """When the form is invalid, the normal processing scheme forgets
+        the stunden added to the stundenplan. They ARE in the querydict,
+        but we have to put them back into the context
+        explcitily, as the normal get_context_data simply writes an empty list.
+        TODO: check whether the pulling in from the querydict
+        shouldn't be more elegantly done in the get_context_data; that's
+        where it really belongs. 
+        """
+        # print "Aufgabe Create, form invalid"
+
+        # add the uhrzeiten from querydict back into the context !?
+        context = self.get_context_data(form=form)
+        stundenplandict = dict(context['stundenplan'])
+        # print 'std before: ', stundenplandict
+        for k, v in self.request.POST.iteritems():
+            print k, v
+            try:
+                u, uu = k.split('_')
+                stundenplandict[int(uu)] = int(v)
+            except Exception as e:
+                # print "problem: ", e
+                pass
+
+        context['stundenplan'] = [(k, v)
+                                  for k, v
+                                  in stundenplandict.iteritems()]
+
+        return self.render_to_response(context)
+        # return super(AufgabenCreate, self).form_invalid(form)
 
 class AufgabengruppeCreate(isVorstandMixin, SimpleCreateView):
     model = models.Aufgabengruppe

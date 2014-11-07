@@ -163,8 +163,9 @@ class AufgabeForm(forms.ModelForm):
                 uhrzeit = int(k.split('_')[1])
                 stundenplan[uhrzeit] = v
 
+        cleaned_data['stundenplan'] = stundenplan
+
         # print stundenplan
-        # print cleaned_data['datum']
 
         if (len(stundenplan) > 0) and (cleaned_data['datum'] is None):
             raise ValidationError("Angaben im Stundenplan erfordern ein Datum.",
@@ -176,7 +177,6 @@ class AufgabeForm(forms.ModelForm):
         ##     raise ValidationError ("Entweder Stundenplan oder Anzahl Personen angeben, nicht beides!",
         ##                            code="illogic")
 
-        cleaned_data['stundenplan'] = stundenplan
         return cleaned_data
 
 
