@@ -76,6 +76,12 @@ class Mitglied (models.Model):
         )
     """At what date did the member agree to the use of this system?"""
 
+    geburtsdatum = models.DateField(
+        help_text="Geburtsdatum des Mitglieds",
+        default=datetime.datetime(1900, 1, 1),
+        verbose_name="Geburtstag",
+        )
+
     def __unicode__(self):
         return self.user.__unicode__()
 
