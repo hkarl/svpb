@@ -336,11 +336,32 @@ class AufgabenTable (django_tables2.Table):
         orderable=False,
         )
 
+    quickmeldung = django_tables2.Column(
+        verbose_name="Quickmeldung",
+        empty_values=(),
+        orderable=False,
+        )
+
     def render_meldungen(self, record):
         return record.meldung_set.count()
 
     def render_zuteilungen(self, record):
         return record.zuteilung_set.count()
+
+    def render_quickmeldung(self, record):
+        user = self.context["request"].user
+
+        try: 
+            meldung = record.meldung_set.get(melder=user)
+            meldung_exists = (meldung.bemerkung !=  models.Meldung.MODELDEFAULTS['bemerkung'] or
+                              meldung.prefMitglied != models.Meldung.MODELDEFAULTS['prefMitglied'])
+        except:
+            meldung_exists = False
+
+        return mark_safe('<a href="{}"> <i class="fa fa-hand-o-up fa-fw"></i></a> {}'.format(
+            reverse('arbeitsplan-quickmeldung', args=[record.id]),
+            '<i class="fa fa-check fa-fw"></i>' if meldung_exists else "",
+            ))
 
     class Meta:
         model = models.Aufgabe
@@ -352,7 +373,10 @@ class AufgabenTable (django_tables2.Table):
         fields = ("gruppe", "aufgabe", "datum",
                   "stunden",
                   "anzahl",
-                  "bemerkung")
+                  "bemerkung",
+                  "verantwortlicher",
+                  "quickmeldung",
+                  )
 
         exclude = ("meldungen", "zuteilungen", )
 

@@ -106,6 +106,11 @@ urlpatterns = patterns('',
          active_and_login_required(arbeitsplan.views.CreateMeldungenView.as_view()),
          name="arbeitsplan-meldung",),
 
+    url(r'^arbeitsplan/meldung/quick/(?P<aufgabeid>\d+)/$',
+        active_and_login_required(arbeitsplan.views.QuickMeldung.as_view()),
+        name="arbeitsplan-quickmeldung",
+        ),
+
     url (r'^arbeitsplan/leistung/$',
          active_and_login_required(arbeitsplan.views.CreateLeistungView.as_view(
              success_url="/home/")),

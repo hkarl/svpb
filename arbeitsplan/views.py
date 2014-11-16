@@ -361,6 +361,7 @@ class ListAufgabenView (FilteredListView):
     <li> Aufgaben ohne Datum sind an flexiblen Terminen zu erledigen. </li>
     <li> Bei Aufgaben mit Datum  erfolgt die Zeitabsprachen individuell oder nach Einteilung. </li> 
     <li> Die Spalte Verantwortlicher benennt den Koordinator der Aufgabe. </li>
+    <li> Die Spalte Quickmeldung erlaubt eine vereinfachte Meldung für eine Aufgabe. Klicken Sie auf das Handsymbol; ein Haken in der Zeile markiert Aufgaben, für die Sie sich gemeldet haben.</li>
     </ul>
     """
     ## todo_text = """
@@ -509,7 +510,7 @@ class AufgabengruppeUpdate(isVorstandMixin, SimpleUpdateView):
 #########   MELDUNG 
 ########################################################################################
 
-class MeldungEdit  (FilteredListView):
+class MeldungEdit (FilteredListView):
 
     def processUpdate (self, request):
         for k, value in request.POST.iteritems():
@@ -662,7 +663,7 @@ class CreateMeldungenView (MeldungEdit):
         # return redirect ("arbeitsplan-meldung")
         return redirect(self.request.get_full_path())
 
-    
+
 class MeldungVorstandView(isVorstandMixin, MeldungEdit):
     """Display a (filtered) list of all Meldungen from all Users,
     with all preferences.
@@ -714,6 +715,40 @@ class MeldungVorstandView(isVorstandMixin, MeldungEdit):
         return redirect(self.request.get_full_path())
 
 
+class QuickMeldung(View):
+    """From the AufgabenTable, call a quickmeldung to
+    have a default entry for meldungen. No means to edit.
+
+    This is not really nice since a get request results in changes
+    to the database :-/ 
+    """
+
+    def get(self, request, aufgabeid, *args, **kwargs):
+        print aufgabeid
+
+        try:
+            aufgabe = models.Aufgabe.objects.get(pk=int(aufgabeid))
+            meldung, created = models.Meldung.objects.get_or_create(aufgabe=aufgabe,
+                                                                    melder=self.request.user)
+
+            if created | (meldung.bemerkung == ""):
+                meldung.prefMitglied = models.Meldung.GERNE
+                meldung.bemerkung = "QUICKMELDUNG"
+                meldung.save()
+
+                messages.success(self.request,
+                                 "Sie haben sich für Aufgabe " +
+                                 str(aufgabeid) + " gemeldet.")
+            else:
+                messages.warning(self.request,
+                                 "Ihre Schnellmeldung wurde nicht eingetragen; vermutlich existiert bereits eine Meldung von Ihnen.")
+
+        except models.Aufgabe.DoesNotExist:
+            messages.error(self.request,
+                           "Die genannate Aufgabe " + str(aufgabeid) + " existiert nicht!")
+
+
+        return redirect('arbeitsplan-aufgaben')
 
 ########################################################################################
 #########   ZUTEILUNG 
@@ -1146,12 +1181,13 @@ class StundenplaeneEdit(FilteredListView):
     def get_queryset(self):
         """For a given Aufgabe, find all users with a zuteiulung to that aufgabe.
         Construct, for each such users, two things:
-        a) checkboxes, showing for each possible Stundenplan timeslot, whether it is currently occupiued or not
-        b) an entry in the data: list of dictionaries with entries first_name, last_name, and the timeslots 0/1 
+        a) checkboxes, showing for each possible Stundenplan timeslot,
+           whether it is currently occupiued or not
+        b) an entry in the data: list of dictionaries with entries first_name,
+           last_name, and the timeslots 0/1
         """
-        
 
-        try: 
+        try:
             aufgabeid = self.kwargs['aufgabeid']
         except KeyError:
             messages.error (self.request, "Die angegebene URL bezeichnet keine Aufgabe")
