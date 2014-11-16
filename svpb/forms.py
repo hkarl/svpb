@@ -8,7 +8,7 @@ from crispy_forms.layout import Submit, Layout, Button, Field, Div, HTML
 
 class LoginForm(forms.Form):
     username = forms.CharField(label="Nutzername",
-                               help_text="In der Regel: Ihre Mitgliedsnummer")
+                               help_text="In der Regel: Ihre Mitgliedsnummer, mit führenden 0 auf 5 Stellen  aufgefüllt")
     password = forms.CharField(widget=forms.PasswordInput,
                                label="Passwort",
                                required=True,
@@ -48,6 +48,25 @@ class LoginForm(forms.Form):
 
         return self.cleaned_data
 
+class AccountEdit(forms.Form):
+    email = forms.EmailField(required=True,
+                             help_text="Bitte aktualisieren Sie Ihre email-Adreese.")
+
+    def __init__(self, *args, **kwargs):
+        print "creating an Activate Form"
+
+        self.helper = FormHelper()
+        super(AccountEdit, self).__init__(*args, **kwargs)
+        self.helper.form_id = self.__class__.__name__
+        self.helper.form_method = "post"
+
+        self.helper.layout = Layout('email',
+                                     HTML("<p>"),
+                                    )
+        self.helper.add_input(Submit('apply', 'Aktualisieren'))
+
+
+        
 class ActivateForm(forms.Form):
     email = forms.EmailField(required=True,
                              help_text="Bitte bestätigen Sie Ihre email-Adreese.")

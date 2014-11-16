@@ -11,8 +11,11 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import FormView
 from django.shortcuts import render_to_response, redirect
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 
-from svpb.forms import LoginForm, ActivateForm
+
+from svpb.forms import LoginForm, ActivateForm, AccountEdit
 
 class SvpbLogin(FormView):
 
@@ -47,13 +50,39 @@ class SvpbLogin(FormView):
             print "do the invalid thing"
 
 
+class AccountEdit(SuccessMessageMixin, FormView):
+    template_name = "registration/justForm.html"
+    form_class = AccountEdit
+    success_url = "/"
+
+    def get_context_data(self, **kwargs):
+        context = super(AccountEdit, self).get_context_data(**kwargs)
+        context['title'] = "Aktualisieren Sie Ihr SVPB-Konto"
+        return context
+
+    def get_initial(self):
+        initial = super(AccountEdit, self).get_initial()
+        initial['email'] = self.request.user.email
+        return initial
+
+    def form_valid(self, form):
+        self.request.user.email = form.cleaned_data['email']
+        self.request.user.save()
+
+        messages.success(self.request,
+                         "Ihr Profil wurde erfolgreich aktualisiert."
+                         )
+
+        return super(AccountEdit, self).form_valid(form)
+
+
 class ActivateView(FormView):
     template_name = "registration/justForm.html"
     form_class = ActivateForm
     success_url = "/"
 
     def get_context_data(self, **kwargs):
-        from django.utils.html import format_html, mark_safe
+        from django.utils.html import format_html
 
         context = super(ActivateView, self).get_context_data(**kwargs)
         context['title'] = "Aktivieren Sie Ihre SVPB-Konto"
@@ -64,7 +93,8 @@ class ActivateView(FormView):
         <li>Bitte überprüfen Sie Ihre email-Adresse und korrigieren Sie diese
         gegebenenfalls </li>
         <li>Bitte stimmen Sie der Nutzung der Webseite zu </li>
-        <li>Bitte stimmen Sie zu, dass der SVPB Ihnen emails im Zusammenhang mit dem
+        <li>Bitte stimmen Sie zu, dass der SVPB Ihnen emails
+         im Zusammenhang mit dem
         Arbeitsplan schicken darf. </li>
         <li>Bitte vergeben Sie ein neues Passwort! (Die beiden Eingaben
         müssen übereinstimmen) </li>

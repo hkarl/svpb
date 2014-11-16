@@ -179,6 +179,10 @@ urlpatterns = patterns('',
          name='password_change',
          ),
 
+    url(r'^accounts/edit/',
+        active_and_login_required(svpb.views.AccountEdit.as_view()),
+        name="accountEdit"),
+
     ## Impersonation of other users:
     url(r'^impersonate/', include('impersonate.urls')),
     url(r'^impersonate/liste/$',
