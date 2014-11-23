@@ -1,0 +1,5 @@
+Setup for django, uwsgi, and NGinX 
+
+Following tutorial from here: http://uwsgi-docs.readthedocs.org/en/latest/tutorials/Django_and_nginx.html
+
+ 
