@@ -127,7 +127,7 @@ class FilteredListView(ListView):
         context['intro_text'] = mark_safe(self.intro_text)
         context['post_text'] = mark_safe(self.post_text)
 
-        if isVorstand (self.request.user):
+        if isVorstand(self.request.user):
             context['todo_text'] = mark_safe(self.todo_text)
             context['discuss_text'] = mark_safe(self.discuss_text)
 
@@ -369,10 +369,9 @@ class ListAufgabenView (FilteredListView):
     ## <li> Bemerkung als Popover umbauen?  </li>  
     ## """
 
+    def get_filtered_table(self, qs):
 
-    def get_filtered_table(self,qs):
-
-        if isVorstand (self.request.user):
+        if isVorstand(self.request.user):
             self.tableClass = AufgabenTableVorstand
         else:
             self.tableClass = AufgabenTable
@@ -387,8 +386,8 @@ class ListAufgabenView (FilteredListView):
 
 class SimpleCreateView(CreateView):
 
-    def get_context_data (self, **kwargs):
-        context = super (SimpleCreateView, self).get_context_data (**kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(SimpleCreateView, self).get_context_data(**kwargs)
         context['title'] = self.title
         context['buttontext'] = self.buttontext
 
@@ -396,15 +395,17 @@ class SimpleCreateView(CreateView):
 
 class SimpleUpdateView(UpdateView):
 
-    def get_context_data (self, **kwargs):
-        context = super (SimpleUpdateView, self).get_context_data (**kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(SimpleUpdateView, self).get_context_data (**kwargs)
         context['title'] = self.title
         context['buttontext'] = self.buttontext
 
         return context
 
 
-class AufgabenCreate (SimpleCreateView):
+################################################
+
+class AufgabenCreate (isVorstandMixin, SimpleCreateView):
     model = models.Aufgabe
     form_class = forms.AufgabeForm
     template_name = "arbeitsplan_aufgabenCreate.html"
@@ -422,14 +423,15 @@ class AufgabenCreate (SimpleCreateView):
     def get_context_data(self, **kwargs):
         context = super(AufgabenCreate, self).get_context_data(**kwargs)
         context['stundenplan'] = [(u, 0)
-                                  for u in range(models.Stundenplan.startZeit,
-                                                 models.Stundenplan.stopZeit+1)]
+                                  for u in range(
+                                      models.Stundenplan.startZeit,
+                                      models.Stundenplan.stopZeit+1)]
         return context
 
     def form_valid(self, form):
 
         # store the aufgabe
-        super (AufgabenCreate, self).form_valid(form)
+        super(AufgabenCreate, self).form_valid(form)
 
         # and now store the STundenplan entries
         for uhrzeit, anzahl  in form.cleaned_data['stundenplan'].iteritems():
@@ -1030,7 +1032,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
         return redirect(self.request.get_full_path())
 
-class ZuteilungUebersichtView(FilteredListView):
+class ZuteilungUebersichtView(isVorstandMixin, FilteredListView):
     title = "Übersicht der Aufgaben und Zuteilungen"
     tableClassFactory = staticmethod(StundenplanTableFactory)
     tabletitle = "Aufgaben mit benötigten/zugeteilten Personen"
@@ -1640,7 +1642,7 @@ class Salden(isVorstandMixin, FilteredListView):
             if self.check_filter(tmp):
                 res.append(tmp)
 
-            pp (tmp)
+            # pp (tmp)
             # print reverse(ListLeistungView,args=("all",))
 
         return res
@@ -1789,7 +1791,7 @@ class FilteredEmailCreateView (FilteredListView):
         return redirect(request.get_full_path())
 
 
-class LeistungEmailView (FilteredEmailCreateView):
+class LeistungEmailView (isVorstandMixin, FilteredEmailCreateView):
 
     title = "Benachrichtigungen für bearbeitete Leistungen"
     model = models.Leistung
@@ -1855,7 +1857,7 @@ class LeistungEmailView (FilteredEmailCreateView):
         return d
 
 
-class ZuteilungEmailView(FilteredEmailCreateView):
+class ZuteilungEmailView(isVorstandMixin, FilteredEmailCreateView):
     """Display a list of all users where the zuteilung has changed since last
     notification. Send them out.
     """
@@ -1921,7 +1923,7 @@ class ZuteilungEmailView(FilteredEmailCreateView):
         return d 
 
 
-class EmailSendenView(View):
+class EmailSendenView(isVorstandMixin, View):
     """Trigger sending emails via the post_office command line managemenet command
     """
 
