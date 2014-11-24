@@ -63,7 +63,7 @@ urlpatterns = patterns('',
          ),
 
     url (r'^arbeitsplan/aufgaben/$',
-         arbeitsplan.views.ListAufgabenView.as_view(),
+         active_and_login_required(arbeitsplan.views.ListAufgabenView.as_view()),
          name="arbeitsplan-aufgaben",
          ),
 
