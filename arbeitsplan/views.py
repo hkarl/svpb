@@ -39,7 +39,7 @@ import os
 import models
 import forms
 from tables import *  # TODO: change import not to polute name space
-from svpb.settings import JAHRESSTUNDEN, STATIC_ROOT
+from svpb.settings import JAHRESSTUNDEN, STATIC_ROOT, SENDFILE_ROOT
 
 from sendfile import sendfile
 
@@ -2036,6 +2036,8 @@ class MediaChecks(View):
         """
 
         basepath = SENDFILE_ROOT
+	
+	print "in Meia checks: ", basepath
 
         if request.user.is_staff:
             filename = "SVPB-entwickler.pdf"
