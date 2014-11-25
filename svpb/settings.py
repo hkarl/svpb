@@ -224,10 +224,11 @@ if SEND_TEST_EMAIL:
 
 #####
 # XSendfilte interface
+# this will only work with nginx, not in development setup - but that's not too important to test there
 
-SENDFILE_BACKEND = "sendfile.backends.development"
-SENDFILE_ROOT = os.path.join(STATIC_ROOT, "media")
-SENDFILE_URL = "/manual"
+SENDFILE_BACKEND = "sendfile.backends.nginx"
+SENDFILE_ROOT = os.path.join(STATIC_ROOT, "media/doc")
+SENDFILE_URL = "/media/doc"
 
 
 JAHRESSTUNDEN = 10
