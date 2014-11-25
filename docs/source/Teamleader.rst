@@ -1,3 +1,5 @@
+.. meta::
+   :scope: entwickler vorstand teamleader
 
 ********************************
 Team-Leiter-Funktionen im Detail

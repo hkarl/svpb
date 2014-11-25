@@ -188,6 +188,11 @@ urlpatterns = patterns('',
         active_and_login_required(svpb.views.AccountEdit.as_view()),
         name="accountEdit"),
 
+    # media for manual intergration:
+    url(r'^manual/',
+        active_and_login_required(arbeitsplan.views.MediaChecks.as_view()),
+        name="MediaCheck"),
+
     ## Impersonation of other users:
     url(r'^impersonate/', include('impersonate.urls')),
     url(r'^impersonate/liste/$',

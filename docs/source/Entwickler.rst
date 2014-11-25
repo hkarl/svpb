@@ -1,3 +1,6 @@
+.. meta::
+   :scope: entwickler
+
 ************************
 Entwickler-Dokumentation
 ************************

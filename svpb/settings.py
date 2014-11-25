@@ -158,11 +158,12 @@ INSTALLED_APPS = (
     'impersonate',
     'arbeitsplan',
     'post_office',
+    'sendfile',
 )
 
 CRISPY_TEMPLATE_PACK = "bootstrap3"
 
-    
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
@@ -221,6 +222,13 @@ if SEND_TEST_EMAIL:
         print "test email FAILED: ", e
 
 
+#####
+# XSendfilte interface
+
+SENDFILE_BACKEND = "sendfile.backends.development"
+SENDFILE_ROOT = os.path.join(STATIC_ROOT, "media")
+SENDFILE_URL = "/manual"
 
 
-JAHRESSTUNDEN = 4
+JAHRESSTUNDEN = 10
+

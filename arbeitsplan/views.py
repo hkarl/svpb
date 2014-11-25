@@ -33,13 +33,15 @@ import unicodedata
 
 import types 
 import collections
+import os
 
 # Arbeitsplan-Importe: 
 import models
 import forms
 from tables import *  # TODO: change import not to polute name space
-from svpb.settings import JAHRESSTUNDEN
+from svpb.settings import JAHRESSTUNDEN, STATIC_ROOT
 
+from sendfile import sendfile
 
 #################
 
@@ -2023,3 +2025,26 @@ class PasswordChange(FormView):
                            )
         return super(PasswordChange, self).form_valid(form)
 
+##############
+
+
+class MediaChecks(View):
+    def get(self, request):
+        """Figure out:
+        active user with raw access: Entwickler
+        vorstand, teamleader, ordinary member
+        """
+
+        basepath = SENDFILE_ROOT
+
+        if request.user.is_staff:
+            filename = "SVPB-entwickler.pdf"
+        elif isVorstand(request.user):
+            filename = "SVPB-vorstand.pdf"
+        elif isTeamlead(request.user):
+            filename = "SVPB-teamleader.pdf"
+        else:
+            filename = "SVPB.pdf"
+
+        return sendfile(request,
+                        os.path.join(basepath, filename))

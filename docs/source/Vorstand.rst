@@ -1,3 +1,6 @@
+.. meta::
+   :scope: entwickler vorstand
+
 *****************************
 Vorstandsfunktionen im Detail
 *****************************
