@@ -82,6 +82,28 @@ class Mitglied (models.Model):
         verbose_name="Geburtstag",
         )
 
+    strasse = models.CharField(max_length=50,
+                               verbose_name="Strasse und Hausnummer",
+                               default="")
+
+    plz = models.DecimalField(max_digits=5,
+                              verbose_name="PLZ",
+                              decimal_places=0,
+                              default=0)
+
+    gender = models.CharField(max_length=1,
+                              verbose_name="Geschlecht",
+                              default="M")
+
+    ort = models.CharField(max_length=50,
+                           verbose_name="Ort",
+                           default="")
+
+    erstbenachrichtigt = models.BooleanField(
+        verbose_name="Erstbenachrichtigung",
+        help_text="Wurde die Erstbenachrichtigung mit Password bereits generiert?",
+        default=False)
+
     def __unicode__(self):
         return self.user.__unicode__()
 

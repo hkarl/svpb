@@ -63,11 +63,18 @@ class AccountEdit(SuccessMessageMixin, FormView):
     def get_initial(self):
         initial = super(AccountEdit, self).get_initial()
         initial['email'] = self.request.user.email
+        initial['strasse'] = self.request.user.mitglied.strasse
+        initial['plz'] = self.request.user.mitglied.plz
+        initial['ort'] = self.request.user.mitglied.ort
         return initial
 
     def form_valid(self, form):
         self.request.user.email = form.cleaned_data['email']
+        self.request.user.mitglied.strasse = form.cleaned_data['strasse']
+        self.request.user.mitglied.plz = form.cleaned_data['plz']
+        self.request.user.mitglied.ort = form.cleaned_data['ort']
         self.request.user.save()
+        self.request.user.mitglied.save()
 
         messages.success(self.request,
                          "Ihr Profil wurde erfolgreich aktualisiert."

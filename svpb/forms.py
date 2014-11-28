@@ -48,9 +48,19 @@ class LoginForm(forms.Form):
 
         return self.cleaned_data
 
+
 class AccountEdit(forms.Form):
-    email = forms.EmailField(required=True,
-                             help_text="Bitte aktualisieren Sie Ihre email-Adreese.")
+    email = forms.EmailField(
+        required=True,
+        help_text="Bitte aktualisieren Sie Ihre email-Adreese.")
+    strasse = forms.CharField(
+        required=False,
+        help_text="Bitte aktualisieren Sie Ihre Strasse und Hausnummer.")
+    ort = forms.CharField(
+        required=False,
+        help_text="Bitte aktualisieren Sie Ihren Wohnort.")
+    plz = forms.DecimalField(required=False,
+                             help_text="Bitte aktualisieren Sie Ihre PLZ.")
 
     def __init__(self, *args, **kwargs):
         print "creating an Activate Form"
@@ -61,12 +71,15 @@ class AccountEdit(forms.Form):
         self.helper.form_method = "post"
 
         self.helper.layout = Layout('email',
-                                     HTML("<p>"),
+                                    HTML("<p>"),
+                                    'strasse',
+                                    HTML("<p>"),
+                                    'plz', 'ort',
+                                    HTML("<p>"),
                                     )
         self.helper.add_input(Submit('apply', 'Aktualisieren'))
 
 
-        
 class ActivateForm(forms.Form):
     email = forms.EmailField(required=True,
                              help_text="Bitte bestätigen Sie Ihre email-Adreese.")
