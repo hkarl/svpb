@@ -923,6 +923,13 @@ class ZuteilungEmailTable(BaseEmailTable):
         attrs = {"class": "paleblue"}
         exclude = ('id',
                    'mitgliedsnummer',
+                   'zustimmungsDatum',
+                   'geburtsdatum',
+                   'strasse',
+                   'plz',
+                   'gender',
+                   'ort',
+                   'erstbenachrichtigt',
                    )
         sequence = ('user',
                     'zuteilungsbenachrichtigung',
