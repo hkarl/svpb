@@ -999,7 +999,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
                 z, created = models.Zuteilung.objects.get_or_create (aufgabe=aufgabeObj,
                                                                      ausfuehrer=ausfuehrerObj)
-                if created:
+                if not created:
                     messages.debug (request,
                                     u"warnung: Aufgabe {0} war bereits an {1} {2} zugeteilt".format(aufgabeObj.aufgabe,
                                                                                  ausfuehrerObj.first_name,
@@ -1009,11 +1009,15 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                                                                                  ausfuehrerObj.first_name,
                                                                                  ausfuehrerObj.last_name))
 
+                print "setting (cause of add)  zuteilung benachrichtigung noetig for ", ausfuehrerObj
+                ausfuehrerObj.mitglied.zuteilungBenachrichtigungNoetig = True
+                ausfuehrerObj.mitglied.save()
+
         # find all items in prevState with a 1 there that do no appear in newState
         # remove that zuteilung
         for k,v in previousStatus.iteritems():
             if v=='1' and k not in newState:
-                print "delete ", k
+                # print "delete ", k
                 user, aufgabe = k.split('_')
                 aufgabeObj = models.Aufgabe.objects.get(id=int(aufgabe))
                 ausfuehrerObj = models.User.objects.get(id=int(user))
@@ -1029,6 +1033,11 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                                  .format(aufgabeObj.aufgabe,
                                          ausfuehrerObj.first_name,
                                          ausfuehrerObj.last_name))
+
+                print "setting (cause of delete) zuteilung benachrichtigung noetig for ", ausfuehrerObj
+                ausfuehrerObj.mitglied.zuteilungBenachrichtigungNoetig = True
+                ausfuehrerObj.mitglied.save()
+
 
         # TODO: emails senden?
 
