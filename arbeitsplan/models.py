@@ -64,7 +64,7 @@ class Mitglied (models.Model):
         " eine Benachrichtigung"
         " wegen Änderung der "
         "Zuteilungen gesendet werden?",
-        default=True,
+        default=False,
         verbose_name="Benachrichtigung zu Zuteilungen nötig?",
         )
     """Does Mitglied need a message?"""
