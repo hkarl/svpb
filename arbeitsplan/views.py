@@ -1930,7 +1930,7 @@ class ZuteilungEmailView(isVorstandMixin, FilteredEmailCreateView):
              'zuteilungen': models.Zuteilung.objects.filter(ausfuehrer=instance.user)
             }
 
-        print d 
+        # print d 
         return d 
 
 
@@ -2046,7 +2046,7 @@ class MediaChecks(View):
 
         basepath = SENDFILE_ROOT
 	
-	print "in Meia checks: ", basepath
+	# print "in Meia checks: ", basepath
 
         if request.user.is_staff:
             filename = "SVPB-entwickler.pdf"
