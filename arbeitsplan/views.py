@@ -541,23 +541,45 @@ class MeldungEdit (FilteredListView):
                         safeit = True
                         messages.success(request,
                                          u"Bei Aufgabe {0} wurde die Bemerkung aktualisiert".
-                                         format(str(id)))
+                                         format(m.aufgabe.aufgabe))
 
-                if key == 'bemerkungVorstand' and isVorstand(self.request.user):
-                    if m.bemerkungVorstand <> value: 
+                if (key == 'bemerkungVorstand'
+                    and isVorstand(self.request.user)):
+
+                    if m.bemerkungVorstand != value: 
                         m.bemerkungVorstand = value
                         safeit = True
                         messages.success(request,
                                          u"Bei Aufgabe {0} wurde die Bemerkung des Vorstandes aktualisiert".
-                                         format(str(id)))
+                                         format(m.aufgabe.aufgabe))
 
                 if key == 'prefMitglied':
-                    if m.prefMitglied <> value:
-                        m.prefMitglied  = value
+                    print value, m.prefMitglied, models.Meldung.MODELDEFAULTS['prefMitglied']
+                    print type(value), type(m.prefMitglied), type(models.Meldung.MODELDEFAULTS['prefMitglied'])
+
+                    if m.prefMitglied != value:
+                        if (m.prefMitglied ==
+                            models.Meldung.MODELDEFAULTS['prefMitglied']):
+                            messages.success(request,
+                                             u"Sie haben sich für  Aufgabe {0} gemeldet. "
+                                             u"Der Vorstand wird dies  "
+                                             u"prüfen und ggf. einen Termin zusagen.".
+                                             format(m.aufgabe.aufgabe))
+                        elif (int(value) ==
+                              models.Meldung.MODELDEFAULTS['prefMitglied']):
+                            print "zurückgezogen"
+                            # TODO: das muss man am besten direkt verbieten, wenn es schon eine Zuteilung gibt!
+                            messages.success(request,
+                                             u"Sie haben die Meldung für  Aufgabe {0} zurückgezogen. "
+                                             u"Bitte beachten: Dadurch wird eine schon erfolgte ZUTEILUNG der Aufgabe nicht hinfällig! Bitte kontaktieren Sie dazu den Vorstand!".
+                                             format(m.aufgabe.aufgabe))
+                        else:
+                            messages.success(request,
+                                             u"Bei Aufgabe {0} wurde die Präferenz aktualisiert".
+                                             format(m.aufgabe.aufgabe))
+
+                        m.prefMitglied = value
                         safeit = True
-                        messages.success(request,
-                                         u"Bei Aufgabe {0} wurde die Präferenz aktualisiert".
-                                         format(str(id)))
 
                 if key == 'prefVorstand' and isVorstand(self.request.user):
                     if m.prefVorstand <> value:
@@ -565,7 +587,7 @@ class MeldungEdit (FilteredListView):
                         safeit = True
                         messages.success(request,
                                          u"Bei Aufgabe {0} wurde die Präferenz des Vorstandes aktualisiert".
-                                         format(str(id)))
+                                         format(m.aufgabe.aufgabe))
 
                 if safeit:
                     m.save()
@@ -741,15 +763,15 @@ class QuickMeldung(View):
                 meldung.save()
 
                 messages.success(self.request,
-                                 "Sie haben sich für Aufgabe " +
-                                 str(aufgabeid) + " gemeldet.")
+                                 u"Danke! Sie haben sich für Aufgabe " +
+                                 aufgabe.aufgabe + u" gemeldet. Der Vorstand wird dies prüfen und ggf. einen Termin zusagen.")
             else:
                 messages.warning(self.request,
-                                 "Ihre Schnellmeldung wurde nicht eingetragen; vermutlich existiert bereits eine Meldung von Ihnen.")
+                                 u"Ihre Schnellmeldung wurde nicht eingetragen; vermutlich existiert bereits eine Meldung von Ihnen.")
 
         except models.Aufgabe.DoesNotExist:
             messages.error(self.request,
-                           "Die genannate Aufgabe " + str(aufgabeid) + " existiert nicht!")
+                           u"Die genannate Aufgabe " + str(aufgabeid) + u" existiert nicht!")
 
 
         return redirect('arbeitsplan-aufgaben')
@@ -997,17 +1019,24 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                 ##                      )
                 ## z.save()
 
-                z, created = models.Zuteilung.objects.get_or_create (aufgabe=aufgabeObj,
-                                                                     ausfuehrer=ausfuehrerObj)
+                z, created = models.Zuteilung.objects.get_or_create(
+                    aufgabe=aufgabeObj,
+                    ausfuehrer=ausfuehrerObj)
+
                 if not created:
-                    messages.debug (request,
-                                    u"warnung: Aufgabe {0} war bereits an {1} {2} zugeteilt".format(aufgabeObj.aufgabe,
-                                                                                 ausfuehrerObj.first_name,
-                                                                                 ausfuehrerObj.last_name))
+                    messages.debug(request,
+                                   u"warnung: Aufgabe {0} war bereits an {1} {2} zugeteilt"
+                                   .format(
+                                       aufgabeObj.aufgabe,
+                                       ausfuehrerObj.first_name,
+                                       ausfuehrerObj.last_name))
+
                 messages.success(request,
-                                 u"Aufgabe {0} wurde an {1} {2} zugeteilt".format(aufgabeObj.aufgabe,
-                                                                                 ausfuehrerObj.first_name,
-                                                                                 ausfuehrerObj.last_name))
+                                 u"Aufgabe {0} wurde an {1} {2} zugeteilt"
+                                 .format(
+                                     aufgabeObj.aufgabe,
+                                     ausfuehrerObj.first_name,
+                                     ausfuehrerObj.last_name))
 
                 print "setting (cause of add)  zuteilung benachrichtigung noetig for ", ausfuehrerObj
                 ausfuehrerObj.mitglied.zuteilungBenachrichtigungNoetig = True
@@ -1238,8 +1267,8 @@ class StundenplaeneEdit(FilteredListView):
                         }
             zuteilungThisUser = aufgabe.zuteilung_set.filter(ausfuehrer=u)
             if zuteilungThisUser.count() != 1:
-                messages.error('Error 13: ' + aufgabe.__unicode__()
-                               + ' - ' + u.__unicode__())
+                messages.error(u'Error 13: ' + aufgabe.__unicode__()
+                               + u' - ' + u.__unicode__())
 
             stundenzuteilung = (zuteilungThisUser[:1].get().
                                 stundenzuteilung_set.values_list('uhrzeit',
@@ -1480,7 +1509,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
             leadingTheseTasks = self.request.user.teamleader_set.all()
         else:
             messages.error(request,
-                           "Sie dürfen diese Funktion nicht benutzen!"
+                           u"Sie dürfen diese Funktion nicht benutzen!"
                            )
 
             redirect("home")
@@ -1527,8 +1556,8 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
             if checkNeeded:
                 if l.aufgabe not in leadingTheseTasks:
                     messages.error(request,
-                                   "Sie dürfen Leistungsmeldungen"
-                                   " für diese Aufgabe nicht bearbeiten!")
+                                   u"Sie dürfen Leistungsmeldungen"
+                                   u" für diese Aufgabe nicht bearbeiten!")
                     continue
 
             safeit = False
@@ -1547,7 +1576,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
                                  u"für Aufgabe {2} aktualisiert.".format(
                                      l.melder.first_name,
                                      l.melder.last_name,
-                                     l.aufgabe)
+                                     l.aufgabe.aufgabe)
                                      )
             # print l
 
@@ -1796,7 +1825,7 @@ class FilteredEmailCreateView (FilteredListView):
 
         if idlist:
             messages.warning(request,
-                             "Vergessen Sie nicht, die Benachrichtigungen explizit abzuschicken!")
+                             u"Vergessen Sie nicht, die Benachrichtigungen explizit abzuschicken!")
 
         ## TODO: better redirect home 
         return redirect(request.get_full_path())
