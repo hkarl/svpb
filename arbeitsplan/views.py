@@ -659,8 +659,8 @@ class CreateMeldungenView (MeldungEdit):
 
 
     def post(self, request, *args, **kwargs):
-        print "post in CreateMeldungenView"
-        print request.POST
+        # print "post in CreateMeldungenView"
+        # print request.POST
 
         self.processUpdate(request)
 

@@ -200,7 +200,7 @@ class Aufgabe(models.Model):
         """How many Meldungen of status better than No!
         exist for this Aufgabe?
         """
-        print Meldung.GARNICHT
+        # print Meldung.GARNICHT
         return self.meldung_set.exclude(prefMitglied=
                                         Meldung.GARNICHT).count()
 
