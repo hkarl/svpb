@@ -830,7 +830,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
         # print qs
 
         if aktive:
-            qs = qs.filter(datum__gte=datetime.date.today())
+            qs = qs.exclude(datum__ltee=datetime.date.today())
 
         return qs
 
