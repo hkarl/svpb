@@ -343,7 +343,8 @@ class AufgabenTable (django_tables2.Table):
         )
 
     def render_meldungen(self, record):
-        return record.meldung_set.count()
+        # return record.meldung_set.count()
+        return record.numMeldungen()
 
     def render_zuteilungen(self, record):
         return record.zuteilung_set.count()
@@ -410,7 +411,8 @@ class AufgabenTableVorstand(django_tables2.Table):
         )
 
     def render_meldungen(self, record):
-        return record.meldung_set.count()
+        # return record.meldung_set.count()
+        return record.numMeldungen()
 
     def render_zuteilungen(self, record):
         return record.zuteilung_set.count()
