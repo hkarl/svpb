@@ -99,6 +99,10 @@ class Mitglied (models.Model):
                            verbose_name="Ort",
                            default="")
 
+    status = models.CharField(max_length=20,
+                              verbose_name="Mitgliedsstatus",
+                              default="")
+
     erstbenachrichtigt = models.BooleanField(
         verbose_name="Erstbenachrichtigung",
         help_text="Wurde die Erstbenachrichtigung mit Password bereits generiert?",
