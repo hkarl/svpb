@@ -27,10 +27,8 @@ import datetime
 from django.utils.timezone import utc
 
 
-### path the display of a user:
+### patch the display of a user:
 
-def user_unicode_patch(self):
-    return 
 User.__unicode__ = lambda s: "%s %s (Nr.: %s)" % (s.first_name,
                                                   s.last_name,
                                                   s.mitglied.mitgliedsnummer)
