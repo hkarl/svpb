@@ -371,6 +371,19 @@ class ListAufgabenView (FilteredListView):
     ## <li> Bemerkung als Popover umbauen?  </li>  
     ## """
 
+    def apply_filter(self, qs=None):
+        """
+        Filter out, in addition to the standard filters, all Aufgaben
+        that are already satisfied. 
+        """
+
+        qs = super(ListAufgabenView, self).apply_filter()
+
+        if not isVorstand(self.request.user):
+            qs = [q for q in qs if not q.is_open()]
+
+        return qs
+
     def get_filtered_table(self, qs):
 
         if isVorstand(self.request.user):

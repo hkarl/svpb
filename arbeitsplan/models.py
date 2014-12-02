@@ -220,6 +220,11 @@ class Aufgabe(models.Model):
 
         return self.stundenplan_set.filter(anzahl__gt=0).count() > 0
 
+    def is_open(self):
+        """Do enough Zuteilungen already exist for this Aufgabe?"""
+
+        return self.zuteilung_set.count() >= self.anzahl
+
     def __unicode__(self):
         return self.aufgabe
 
