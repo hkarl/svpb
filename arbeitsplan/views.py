@@ -296,7 +296,7 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
 
         if '_delete' in self.request.POST:
-            print "redirecting to delete", self.object.id
+            # print "redirecting to delete", self.object.id
             return redirect('arbeitsplan-aufgabenDelete',
                             pk=self.object.id)
 
@@ -306,7 +306,7 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
         # manipulate the stundenplan
         stundenplan = collections.defaultdict(int,
                                               form.cleaned_data['stundenplan'])
-        print "stundenplan: ", stundenplan 
+        # print "stundenplan: ", stundenplan 
         for u in range(models.Stundenplan.startZeit,
                        models.Stundenplan.stopZeit+1):
             anzahl = stundenplan[u]
