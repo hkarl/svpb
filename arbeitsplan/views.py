@@ -266,6 +266,20 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
         # print "succesS_msg: ", msg
         return msg
 
+    def get_initial(self):
+        """fill in the schnellzuweisung field if zuteilung exists"""
+
+        initial = super(AufgabenUpdate, self).get_initial()
+
+        initial = initial.copy()
+
+        if self.object.zuteilung_set.count() > 0:
+            initial['schnellzuweisung'] = [z.ausfuehrer for
+                                           z in self.object.zuteilung_set.all()]
+
+        # pp(initial)
+        return initial
+
     def get_context_data(self, **kwargs):
         context = super(AufgabenUpdate, self).get_context_data(**kwargs)
         context['title'] = self.title
@@ -314,6 +328,28 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
                 aufgabe=self.object,
                 uhrzeit=u,
                 defaults={'anzahl': anzahl})
+
+        # check whether there are fast assignments
+        if form.cleaned_data['schnellzuweisung']:
+            try:
+                mm = form.cleaned_data['schnellzuweisung']
+                # pp(mm)
+                for m in mm: 
+                    z, zcreated = models.Zuteilung.objects.get_or_create(
+                        aufgabe=self.object,
+                        ausfuehrer=m)
+                    if created: 
+                        messages.success(self.request,
+                                         u"Die Aufgabe wurde direkt an Mitglied {} zugeteilt!".format(
+                                            m.__unicode__()))
+                    else:
+                        messages.success(self.request,
+                                         u"Die Aufgabe war bereits an Mitglied {} zugeteilt.".format(
+                                             m.__unicode__()))
+            except Exception as e:
+                print e, form.cleaned_data['schnellzuweisung'], self.object 
+                messages.error(self.request,
+                               u"Die Aufgabe konnte nicht unmittelbar an ein Mitglied zugeteilt werden")
 
         return redirect(self.request.get_full_path())
 

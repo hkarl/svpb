@@ -4,6 +4,7 @@ from django import forms
 import models
 from django.forms.models import inlineformset_factory
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Button, Field, Div, HTML
@@ -113,6 +114,13 @@ class AufgabengruppeForm(CrispyFormMixin, forms.ModelForm):
                   )
 
 class AufgabeForm(forms.ModelForm):
+
+    schnellzuweisung = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),
+        label="Direkt ausführendes Mitglied auswählen",
+        help_text="Direktes Zuteilen eines Mitglieds zu dieser Aufgabe; Melden und Zuteilen dann nicht mehr nötig. ACHTUNG: Löschen ist hier NICHT möglich!",
+        required=False)
+
     class Meta:
         model = models.Aufgabe
         fields = (
@@ -143,6 +151,7 @@ class AufgabeForm(forms.ModelForm):
             'teamleader',
             Field('datum', css_class="datepicker"),
             'bemerkung',
+            'schnellzuweisung',
             )
 
     def clean(self):
