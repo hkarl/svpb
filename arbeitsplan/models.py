@@ -27,6 +27,15 @@ import datetime
 from django.utils.timezone import utc
 
 
+### path the display of a user:
+
+def user_unicode_patch(self):
+    return 
+User.__unicode__ = lambda s: "%s %s (Nr.: %s)" % (s.first_name,
+                                                  s.last_name,
+                                                  s.mitglied.mitgliedsnummer)
+
+
 class Mitglied (models.Model):
 
     """Provide additional information on a User by a 1:1 relationship:
@@ -170,7 +179,7 @@ class Aufgabe(models.Model):
                                        "Vorstandsmitglied")
     teamleader = models.ForeignKey(User,
                                    related_name="teamleader_set",
-                                   help_text="Ein optinaler Teamleader für "
+                                   help_text="Ein optionaler Teamleader für "
                                    "die Aufgabe (nicht notwendig Vorstand)",
                                    verbose_name="Team-Leader",
                                    blank=True, null=True,
