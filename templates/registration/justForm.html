@@ -28,6 +28,12 @@
 {{ post_text }}
 {% endif %}
 
+  <p>
+  Sie haben Ihr Passwort vergessen? Sie können es <a href="{% url "password_reset_recover" %}">
+  hier zurücksetzen</a>.
+  <p>
+  
+  
 {% if todo_text %}
 <hr>
 <div class="alert alert-danger">

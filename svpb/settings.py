@@ -159,6 +159,7 @@ INSTALLED_APPS = (
     'arbeitsplan',
     'post_office',
     'sendfile',
+    'password_reset',
 )
 
 CRISPY_TEMPLATE_PACK = "bootstrap3"

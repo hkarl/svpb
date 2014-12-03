@@ -199,4 +199,6 @@ urlpatterns = patterns('',
          active_and_login_required(arbeitsplan.views.ImpersonateListe.as_view()),
          name="arbeitsplan-impersonateListe",),
 
+    # password reset; compare http://django-password-reset.readthedocs.org/en/latest/quickstart.html 
+    url(r'^reset/', include('password_reset.urls')),
 )
