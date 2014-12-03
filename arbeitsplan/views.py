@@ -342,10 +342,16 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
                         messages.success(self.request,
                                          u"Die Aufgabe wurde direkt an Mitglied {} zugeteilt!".format(
                                             m.__unicode__()))
+                        m.mitglied.zuteilungBenachrichtigungNoetig = True
+                        m.mitglied.save()
                     else:
                         messages.success(self.request,
                                          u"Die Aufgabe war bereits an Mitglied {} zugeteilt.".format(
                                              m.__unicode__()))
+                        
+                        # TODO: das abschalten, nur für Testzwekce! 
+                        m.mitglied.zuteilungBenachrichtigungNoetig = True
+                        m.mitglied.save()
             except Exception as e:
                 print e, form.cleaned_data['schnellzuweisung'], self.object 
                 messages.error(self.request,
@@ -1087,7 +1093,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                                      ausfuehrerObj.first_name,
                                      ausfuehrerObj.last_name))
 
-                print "setting (cause of add)  zuteilung benachrichtigung noetig for ", ausfuehrerObj
+                # print "setting (cause of add)  zuteilung benachrichtigung noetig for ", ausfuehrerObj
                 ausfuehrerObj.mitglied.zuteilungBenachrichtigungNoetig = True
                 ausfuehrerObj.mitglied.save()
 
@@ -1112,7 +1118,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                                          ausfuehrerObj.first_name,
                                          ausfuehrerObj.last_name))
 
-                print "setting (cause of delete) zuteilung benachrichtigung noetig for ", ausfuehrerObj
+                # print "setting (cause of delete) zuteilung benachrichtigung noetig for ", ausfuehrerObj
                 ausfuehrerObj.mitglied.zuteilungBenachrichtigungNoetig = True
                 ausfuehrerObj.mitglied.save()
 
