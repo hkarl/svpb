@@ -160,6 +160,7 @@ INSTALLED_APPS = (
     'post_office',
     'sendfile',
     'password_reset',
+    'django_select2',
 )
 
 CRISPY_TEMPLATE_PACK = "bootstrap3"
@@ -234,3 +235,4 @@ SENDFILE_URL = "/media/doc"
 
 JAHRESSTUNDEN = 10
 
+SELECT2_BOOTSTRAP = False

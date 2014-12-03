@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load django_select2_tags %}
 {% load i18n %}
 
 {% load render_table from django_tables2 %}
@@ -7,6 +8,17 @@
 
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html> <head>
+    <!-- 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    -->
+<script src="{% static "jquery/jquery-1.11.0.min.js"%}"></script>
+<script src="{% static "bootstrap/js/bootstrap.min.js"%}"></script>
+<script src="{% static "bootstrap/js/docs.min.js"%}"></script>
+<script src="{% static "datepicker/js/bootstrap-datepicker.js"%}"></script>
+<script src="{% static "datepicker/js/locales/bootstrap-datepicker.de.js"%}" charset="UTF-8"></script>
+
+{% import_django_select2_js %}
+
 <title>
 {% block title %}
 SVPB -- Arbeitsverwaltung
@@ -20,6 +32,7 @@ SVPB -- Arbeitsverwaltung
 <link href="{% static "admin/css/screen.css"%}" rel="stylesheet">
 <link rel="stylesheet" href="{% static "bootstrap/css/mybuttons.css"%}" type="text/css" />
 <link id="bsdp-css" href="{% static "datepicker/css/datepicker3.css"%}" rel="stylesheet">
+<link id="select2-bootstrap-css" href="{% static "bootstrap/css/select2-bootstrap.css"%}" rel="stylesheet">
 {# <link href="{% static "test.css"%}" rel="stylesheet"> #}
 
 <body role="document">
@@ -266,15 +279,6 @@ SVPB -- Arbeitsverwaltung
     </div><!-- /.container -->
 
     
-    <!--
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    -->
-<script src="{% static "jquery/jquery-1.11.0.min.js"%}"></script>
-<script src="{% static "bootstrap/js/bootstrap.min.js"%}"></script>
-<script src="{% static "bootstrap/js/docs.min.js"%}"></script>
-<script src="{% static "datepicker/js/bootstrap-datepicker.js"%}"></script>
-<script src="{% static "datepicker/js/locales/bootstrap-datepicker.de.js"%}" charset="UTF-8"></script>
-
 <script>
 $(".datepicker").datepicker({
 todayBtn: "linked",

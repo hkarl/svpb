@@ -10,6 +10,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Button, Field, Div, HTML
 from crispy_forms.bootstrap import StrictButton, FormActions, InlineCheckboxes, InlineField
 
+import django_select2
 
 class PasswordChange(forms.Form):
 
@@ -113,9 +114,20 @@ class AufgabengruppeForm(CrispyFormMixin, forms.ModelForm):
                   'bemerkung',
                   )
 
+class Select2UserField(django_select2.fields.AutoModelSelect2MultipleField):
+    queryset = User.objects
+    search_fields = ['username__icontains', ]
+
+    ## def get_model_field_values(self, value):
+    ##     print "get_model_field_vlaues"
+    ##     print self
+    ##     print value
+    ##     return {'username': value}
+
 class AufgabeForm(forms.ModelForm):
 
-    schnellzuweisung = forms.ModelMultipleChoiceField(
+    schnellzuweisung = django_select2.fields.ModelSelect2MultipleField(
+    # schnellzuweisung = Select2UserField(
         queryset=User.objects.all(),
         label="Direkt ausführendes Mitglied auswählen",
         help_text="Direktes Zuteilen eines Mitglieds zu dieser Aufgabe; Melden und Zuteilen dann nicht mehr nötig. ACHTUNG: Löschen ist hier NICHT möglich!",
@@ -133,6 +145,10 @@ class AufgabeForm(forms.ModelForm):
             'datum',
             'bemerkung',
             )
+        widgets = {
+            'verantwortlich': django_select2.Select2Widget,
+            'teamleader': django_select2.Select2Widget,
+            }
 
     def __init__(self, request, *args, **kwargs):
         self.request = request
