@@ -30,7 +30,7 @@
 .select2-container .select2-choice,
 .select2-container .select2-choices {
   background: none;
-  padding: 0;
+  padding: 0 0 30 0;
   border-color: #cccccc;
   border-radius: 4px;
   color: #555555;
