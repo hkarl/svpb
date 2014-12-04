@@ -66,6 +66,7 @@ class AccountEdit(SuccessMessageMixin, FormView):
         initial['strasse'] = self.request.user.mitglied.strasse
         initial['plz'] = self.request.user.mitglied.plz
         initial['ort'] = self.request.user.mitglied.ort
+        initial['geburtsdatum'] = self.request.user.mitglied.geburtsdatum
         return initial
 
     def form_valid(self, form):

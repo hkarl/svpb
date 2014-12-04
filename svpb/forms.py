@@ -62,6 +62,9 @@ class AccountEdit(forms.Form):
     plz = forms.DecimalField(required=False,
                              help_text="Bitte aktualisieren Sie Ihre PLZ.")
 
+    geburtsdatum = forms.DateField(required=False,
+                                   help_text="Bitte aktualisieren Sie Ihr Geburtsdatum.")
+
     def __init__(self, *args, **kwargs):
         print "creating an Activate Form"
 
@@ -75,6 +78,8 @@ class AccountEdit(forms.Form):
                                     'strasse',
                                     HTML("<p>"),
                                     'plz', 'ort',
+                                    HTML("<p>"),
+                                    Field('geburtsdatum', css_class="datepicker"),
                                     HTML("<p>"),
                                     )
         self.helper.add_input(Submit('apply', 'Aktualisieren'))
