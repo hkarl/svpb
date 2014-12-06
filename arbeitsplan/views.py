@@ -387,6 +387,25 @@ class AufgabeLoeschen(DeleteView):
 
 ###############################
 
+class ListAufgabenVorstandView (isVorstandMixin, FilteredListView):
+    filterform_class = forms.AufgabenDatumFilter
+    title = "Alle Aufgaben anzeigen"
+    filtertitle = "Filter nach Aufgabengruppe oder Zeitintervall"
+    tabletitle = "Aufgabenliste"
+    filterconfig = [('aufgabengruppe', 'gruppe__gruppe'),
+                    ('von', 'datum__gte'),
+                    ('bis', 'datum__lte'),
+                    ]
+    model = models.Aufgabe
+    tableClass = AufgabenTableVorstand
+
+    intro_text = """
+    Die Tabelle zeigt die existierenden Aufgaben an.
+    Diese Vorstandssicht zeigt mehr Informationen
+    als die Sicht der normalen Mitglieder.
+    """
+
+
 class ListAufgabenView (FilteredListView):
 
     # filterform_class = forms.AufgabengruppeFilterForm
@@ -394,6 +413,8 @@ class ListAufgabenView (FilteredListView):
     title = "Alle Aufgaben anzeigen"
     filtertitle = "Filter nach Aufgabengruppe oder Zeitintervall"
     tabletitle = "Aufgabenliste"
+    tableClass = AufgabenTable
+    
     filterconfig = [('aufgabengruppe', 'gruppe__gruppe'),
                     ('von', 'datum__gte'),
                     ('bis', 'datum__lte'),
@@ -426,17 +447,6 @@ class ListAufgabenView (FilteredListView):
 
         return qs
 
-    def get_filtered_table(self, qs):
-
-        if isVorstand(self.request.user):
-            self.tableClass = AufgabenTableVorstand
-        else:
-            self.tableClass = AufgabenTable
-
-        table = super(ListAufgabenView, self).get_filtered_table(qs)
-
-        # return self.get_filtered_table (self.model.objects.all())
-        return table 
 
 #####################
 
