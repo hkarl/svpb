@@ -40,9 +40,18 @@ Die Detailseite zu Aufgaben gibt in Tabellenform eine Übersicht aller vorhanden
 * Aufgaben die *ab* einem bestimmten Tag anfallen (das Feld "von")
 * Aufgaben die *vor* einem bestimmten Tag anfallen (das Feld "bis")
 
-Die Tabellenspalten sollten selbsterklärend sein. 
+Die Tabellenspalten sollten größtenteils selbsterklärend sein. Erwähnenswert ist:
 
-Eintragungen sind auf dieser Seite nicht möglich. 
+* Datum: Falls eine Aufgabe an einem bestimmten Tag erledigt werden muss, ist hier das Datum angegeben.
+* Stunden: Der *voraussichtliche* Arbeitsaufwand (in Stunden) *pro Ausführer*. Werden mehrere Helfer benötigt (folgende Spalte), so ist der Gesamtaufwand das Produkt aus Stundenzahl * Anzahl Helfer.
+* Verantworlicher: Das für diese Aufgabe verantwortliche Vorstandsmitglied oder ggf. ein Team-Leiter für diese Aufgabe. Das Briefsymbol öffnet direkt eine email an diese Person.
+* Quickmeldung: Durch anklicken des Hand-Symbols kann für diese Aufgabe eine direkte Meldung abgebenen werden. (Details sind nur unter "Meldung" möglich; siehe unten.) 
+
+.. figure:: shots/aufgabe-mitglied.png
+
+   Die Liste der existierenden Aufgaben (Ausschnitt).             
+
+Eintragungen sind auf dieser Seite nur als "Quickmeldung" möglich. 
 
 
 .. _mitglieder-meldungen: 
@@ -53,6 +62,7 @@ Meldungen
 
 .. image:: figures/fa-hand-o-up.*
 
+Falls man seine Meldungen genauer beschreiben möchte als dies lediglich durch eine Quickmeldung möglich ist, ist diese Rubrik dienlich.
 
 Beschreibung einer Meldung
 --------------------------
@@ -68,12 +78,17 @@ Eine Meldung besteht aus:
   * *Ok* 
   * *Gerne*
 
-* Bemerkungen des Mitglieds an den Vorstand (dies ist beispielsweise für die Angabe präferierter Zeiten geeignet) 
+* Bemerkungen des Mitglieds an den Vorstand (dies ist beispielsweise für die Angabe präferierter Zeiten geeignet). Bemerkungen sind natürlich nur für Aufgaben sinnvoll, die Sie nicht mit *Nein* bewerten.   
 
 Natürlich wird der Vorstand bestrebt sein, Aufgaben möglichst hoher Präferenz zuzuteilen und die Bemerkungen zu berücksichtigen. 
 
 Detailseite zu Meldungen
 ------------------------
+
+
+.. figure:: shots/meldung-mitglied.* 
+
+   Eingeben von Meldungen für Aufgaben. 
 
 Filter
 ^^^^^^
@@ -83,7 +98,9 @@ Hier kann nach Aufgaben gefiltert werden; die Filtereinstellungen entsprechen de
 Eintragungen
 ^^^^^^^^^^^^
 
-Auf dieser Seite erfolgen die Eintragungen für Aufgaben. Typischerweise werden Sie zunächst alle Aufgaben mit Präferenz "Nein" vorfinden. Setzen Sie nun einige Aufgaben auf eine höhere Präferenz, indem Sie in der Spalte "Präferenz" die entsprechende Stufe für die interessante Aufgabe anwählen. Geben Sie in der Spalte "Bemerkung" ggf. weitere Informationen ein, die der Vorstand bei der Zuteilungsentscheidung berücksichtigen sollte. 
+Auf dieser Seite erfolgen die Eintragungen für Aufgaben. Typischerweise werden Sie zunächst alle Aufgaben mit Präferenz "Nein" vorfinden (Aufgaben, für die Sie eine Quickmeldung abgegeben haben, sind hier mit "Ok" eingetragen). Setzen Sie nun einige Aufgaben auf eine höhere Präferenz, indem Sie in der Spalte "Präferenz" die entsprechende Stufe für die interessante Aufgabe anwählen. Geben Sie in der Spalte "Bemerkung" ggf. weitere Informationen ein, die der Vorstand bei der Zuteilungsentscheidung berücksichtigen sollte. 
+
+In den Spalte "Benötigte Helfer" wird (zur Erinnerung) die Anzahl benötigter Helfer angezeit. In der Spalte "Vorliegende Meldungen" die Anzahl bisher vorliegenden *Meldungen* -- das heißt nicht, dass auch schon entsprechend viele Zuteilungen existieren. Wir ermunten ausdrücklich dazu, auch bei Aufgaben mit bereits zahlreichen Meldungen sich noch selbst zu melden, wenn es Ihren Interessen entspricht (die anderen Meldungen könnten durchaus Meldungen mit niedriger Präferenz sein!). Viele Meldungen für viele Aufgaben ermöglichen es dem Vorstand, gute Zuordnungen zu treffen. 
 
 
 .. ATTENTION::
@@ -171,11 +188,11 @@ Mein Profil
 
 Neben den vier Grundfunktionen untersützt die SVPB Webanwendung natürlich auch das Verwalten von Nutzerdaten. Diese Funktionen sind unter "Mein Profil" gruppiert. Derzeit existieren hier nur folgende Funktionen: 
 
-* Abmelden 
+* Abmelden
+* Profildaten editieren 
 * Passwort ändern 
 
-Dies sollte weitgehend selbsterklärend sein. Geplant sind Funktionen für vergessene Passwörter oder Ändern anderer Nutzerdaten (email, Nutzername). 
-
+Dies sollte weitgehend selbsterklärend sein. 
 
 
 

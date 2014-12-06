@@ -153,11 +153,15 @@ doctest:
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
 allversions:
+	make clean
 	make latexpdf 
-	cp build/latex/SVPB.pdf ../template/media/SVPB.pdf
+	cp build/latex/SVPB.pdf ../templates/media/SVPB.pdf
+	make clean
 	make latexpdf SPHINXOPTS="-t teamleader"
-	cp build/latex/SVPB.pdf ../template/media/SVPB-teamleader.pdf
+	cp build/latex/SVPB.pdf ../templates/media/SVPB-teamleader.pdf
+	make clean
 	make latexpdf SPHINXOPTS="-t vorstand"
-	cp build/latex/SVPB.pdf ../template/media/SVPB-vorstand.pdf
+	cp build/latex/SVPB.pdf ../templates/media/SVPB-vorstand.pdf
+	make clean
 	make latexpdf SPHINXOPTS="-t entwickler"
-	cp build/latex/SVPB.pdf ../template/media/SVPB-entwickler.pdf
+	cp build/latex/SVPB.pdf ../templates/media/SVPB-entwickler.pdf

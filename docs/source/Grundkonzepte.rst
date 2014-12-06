@@ -33,7 +33,7 @@ Aufgaben
 Die Arbeit des Vereins wird hier in **Aufgaben** verwaltet (Details: :ref:`mitglieder-aufgaben`). Meist zum Ende eines Jahres erstellt der Vorstand eine Liste von Aufgaben, die im Verlauf des kommenden Jahres abgearbeitet werden müssen. 
 
 * Aufgaben gehören meist zu einer **Aufgabengruppe**. Beispiele für Gruppen sind Bewirtung, Revierarbeit oder Bootspflege. 
-* Alle Aufgaben haben ein verantwortliches Vorstandsmitglied, manche haben einen weiteren Ansprechpartner (einen *Team-Leiter*) der bei der Durchführung hilft. Beide helfen bei der Durchführung. 
+* Alle Aufgaben haben ein verantwortliches Vorstandsmitglied, manche haben einen weiteren Ansprechpartner (einen *Team-Leiter*). Beide helfen bei der Durchführung. 
 * Datum von Aufgaben 
 
   * Viele Aufgaben haben ein Datum, an dem die Aufgabe erledigt werden muss. 
@@ -52,11 +52,12 @@ Meldungen
 
 .. image:: figures/fa-hand-o-up.*
 
-Nachdem die Aufgabenliste feststeht, werden Mitglieder eingeladen, sich für Aufgaben zu **melden**. Sinnvollerweise gibt ein Mitglied mehrere Meldungen ab, um eine gewisse Flexibilität bei der Planung zu erlauben. 
+Nachdem die Aufgabenliste feststeht, werden Mitglieder eingeladen, sich für Aufgaben zu **melden**. Sinnvollerweise gibt ein Mitglied mehrere Meldungen ab, um eine gewisse Flexibilität bei der Planung zu erlauben. Aus der Liste der Aufgane heraus ist eine "Schnellmeldung" ohne weitere Angaben möglich; es gibt auch eine separate Funktion für detailiertere Meldungen. 
 
-Bei einer Meldung kann man Präferenzen angeben. Zunächst sind alle Aufgaben mit Präferenz "Nein" markiert; erst durch das Eintragen einer höheren Präferenz kommt eine Meldung zustande. 
 
-Zusätzlich kann man bei einer Meldung noch einen Kommentar eintragen -- z.B., wenn man eine Bewirtungsaufgabe gerne mit mehreren Personen erledigen möchte. Der Vorstand wird bemüht sein, solche Wünsche zu berücksichtigen. 
+Bei einer detailierten  Meldung kann man Präferenzen angeben. Zunächst sind alle Aufgaben mit Präferenz "Nein" markiert; erst durch das Auswählen einer höheren Präferenz kommt eine Meldung zustande. 
+
+Zusätzlich kann man bei einer detailierten Meldung noch einen Kommentar eintragen -- z.B., wenn man eine Bewirtungsaufgabe gerne mit mehreren Personen erledigen möchte. Der Vorstand wird bemüht sein, solche Wünsche zu berücksichtigen. 
 
 
 Zuteilungen
@@ -92,7 +93,37 @@ Das Bedienkonzept der SVPB-Webanwendung ähnelt dem vieler anderer Webseiten. Im
 Die Anmeldeseite 
 -----------------
 
-(TODO) 
+Von einer Willkommensseite aus gelangt man zur Anmeldeseite.
+
+
+.. figure:: shots/welcome.*
+
+   Die Willkommensseite.
+
+Auf der Anmeldeseite wird nach Nutzernamen und Passwort gefragt. Beides wird einem Mitglied per Brief mitgeteilt. Der Nutzername ist in der Regel mit Mitgliedsnummer, mit führenden Nullen auf fünf Stellen aufgeführt (die führenden Nullen sind wichitg). Beispiel: Mitgliedsnummer 43 würde zum Nutzernamen 00042 werden.
+
+.. figure:: shots/login.*
+
+   Die Anmeldeseite
+
+Zusätzlich kann man von  der Anmeldeseite ein neues Passwort anfordern (dazu muss eine gültige email-Adresse eingetragen sein). 
+
+Die Kontoaktivierung
+--------------------
+
+Nach erstmaliger Anmeldung ist es notwendig, das Konto zu aktivieren. Wir benötigen hier zwei Zustimmungen:
+
+#. Zustimmung zur Nutzung der Webseite
+#. Zustimmung, dass der SVPB Ihnen emails senden darf.
+
+Zusätzlich sollte die email-Adresse überprüft und ggf. aktualisiert werden und das Passwort muss geändert werden.
+
+.. figure:: shots/activate.*
+
+   Die Aktivierung des SVPB-Kontos 
+
+Wenn Sie einem dieser beiden Punkte nicht zustimmen wollen, können Sie diese Web-Anwendung nicht nutzen. Dies wird die Teilnahme am Vereinsleben erheblich erschweren! Bitte kontaktieren Sie umgehend den Vorstand. 
+
 
 Die Übersichtsseite
 -------------------
@@ -115,7 +146,7 @@ Die Navigationsleiste entspricht der Menüzeile einer herkömmlichen Anwendungen
 
 #. Links kann über SVPB und "Home" stets wieder auf die Übersichtsseite zurückgekehrt werden
 #. In der Mitte besteht Zugriff auf die einzelnen Bereiche, ggf. durch ausklappende Untermenüs 
-#. Rechts kann auf Nutzerdaten zugegriffen werden, beispielsweise um das Nutzerpasswort zu ändern oder um sich abzumelden. 
+#. Rechts kann auf Nutzerdaten zugegriffen werden, beispielsweise um das Nutzerpasswort zu ändern. Das Nutzerhandbuch (dieses Dokument) kann geladen werden. Abmeldung von der Webanwendung. 
 
 .. DANGER::
    Melden Sie sich stets ab, wenn Sie diese Webanwendung an einem öffentlichen Rechner nutzen! Auch wenn es der Rechner im Vereinshaus ist! Wenn der Browser eines öffentlichen Rechners fragt, ob das Passwort gespeichert werden soll: Lehnen Sie ab! 

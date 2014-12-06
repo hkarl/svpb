@@ -21,7 +21,7 @@ Dazu ist es nützlich, einige grundlegende Konzepte zu verstehen, die in der Web
 
    Grundkonzepte
    Mitglieder
-   Teamleader
+   Teamleader 
    Vorstand
    Entwickler
 
