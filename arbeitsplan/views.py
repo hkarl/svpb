@@ -1022,7 +1022,11 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
             for z in zQs: 
                 tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore')
-                meldung = z.aufgabe.meldung_set.get(melder=u)
+                meldung, meldungCreated = z.aufgabe.meldung_set.get_or_create(
+                    melder=u,
+                    aufgabe=z.aufgabe,
+                    defaults= models.Meldung.MODELDEFAULTS,
+                    )
                 tmp[tag] = (1,
                             'box_'+ str(u.id)+"_"+str(z.aufgabe.id),
                             ' ({0} / {1})'.format(meldung.prefMitglied,
