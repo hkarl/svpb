@@ -424,7 +424,7 @@ class ListAufgabenView (FilteredListView):
     Die Tabelle zeigt die anstehenden Aufgaben an.
     <ul>
     <li> Aufgaben ohne Datum sind an flexiblen Terminen zu erledigen. </li>
-    <li> Bei Aufgaben mit Datum  erfolgt die Zeitabsprachen individuell oder nach Einteilung. </li> 
+    <li> Bei Aufgaben mit Datum erfolgt die Zeitabsprachen individuell oder nach Einteilung. </li> 
     <li> Die Spalte Verantwortlicher benennt den Koordinator der Aufgabe. </li>
     <li> Die Spalte Quickmeldung erlaubt eine vereinfachte Meldung für eine Aufgabe. Klicken Sie auf das Handsymbol; ein Haken in der Zeile markiert Aufgaben, für die Sie sich gemeldet haben.</li>
     </ul>
@@ -442,8 +442,7 @@ class ListAufgabenView (FilteredListView):
 
         qs = super(ListAufgabenView, self).apply_filter()
 
-        if not isVorstand(self.request.user):
-            qs = [q for q in qs if not q.is_open()]
+        qs = [q for q in qs if not q.is_open()]
 
         return qs
 
