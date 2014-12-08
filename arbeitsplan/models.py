@@ -115,6 +115,12 @@ class Mitglied (models.Model):
         help_text="Wurde die Erstbenachrichtigung mit Password bereits generiert?",
         default=False)
 
+    arbeitslast = models.IntegerField(
+        verbose_name="Arbeitslast (h/Jahr)",
+        help_text="Wieviele Stunden pro Jahr muss dieses Mitglied arbeiten?",
+        default=10,
+        )
+
     def __unicode__(self):
         return self.user.__unicode__()
 
