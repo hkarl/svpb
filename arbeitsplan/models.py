@@ -40,7 +40,7 @@ class Mitglied (models.Model):
     ID, dates of messages
 
     This class is a one-to-one relationship with user, extending
-8    information stored about a particular user. It provides an
+    information stored about a particular user. It provides an
     additional mitgliedsnummer, corresponding to Vereins-Data.  It
     also stores date when a message has been last sent to a Mitglied
     and whether it is necessary to sent a message.
