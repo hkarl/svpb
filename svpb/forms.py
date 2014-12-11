@@ -31,7 +31,7 @@ class LoginForm(forms.Form):
             username = self.cleaned_data['username']
             password = self.cleaned_data['password']
 
-            print username, password
+            # print username, password
             user = authenticate(username=username,
                                 password=password)
 
@@ -43,7 +43,7 @@ class LoginForm(forms.Form):
             error = True
 
         if error:
-            print "raising validation"
+            print "raising validation in Login", username
             raise ValidationError('Der Nutzer konnte nicht angemeldet werden.')
 
         return self.cleaned_data
@@ -66,7 +66,7 @@ class AccountEdit(forms.Form):
                                    help_text="Bitte aktualisieren Sie Ihr Geburtsdatum.")
 
     def __init__(self, *args, **kwargs):
-        print "creating an Activate Form"
+        print "creating an Account Edit Form", self.request.user
 
         self.helper = FormHelper()
         super(AccountEdit, self).__init__(*args, **kwargs)
@@ -109,7 +109,8 @@ class ActivateForm(forms.Form):
                           )
 
     def __init__(self, *args, **kwargs):
-        print "creating an Activate Form"
+
+        print "creating an Activate Form", self.request.user
 
         self.helper = FormHelper()
         super(ActivateForm, self).__init__(*args, **kwargs)
