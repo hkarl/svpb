@@ -66,7 +66,7 @@ class AccountEdit(forms.Form):
                                    help_text="Bitte aktualisieren Sie Ihr Geburtsdatum.")
 
     def __init__(self, *args, **kwargs):
-        print "creating an Account Edit Form", self.request.user
+        print "creating an Account Edit Form"
 
         self.helper = FormHelper()
         super(AccountEdit, self).__init__(*args, **kwargs)
@@ -110,7 +110,7 @@ class ActivateForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
 
-        print "creating an Activate Form", self.request.user
+        print "creating an Activate Form"
 
         self.helper = FormHelper()
         super(ActivateForm, self).__init__(*args, **kwargs)
