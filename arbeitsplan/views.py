@@ -2105,6 +2105,7 @@ class ImpersonateListe(isVorstandMixin, FilteredListView):
 
     def get_data(self):
         return (self.model.objects
+                .filter(is_active=True)
                 .filter(is_staff=False)
                 .filter(is_superuser=False)
                 .exclude(id=self.request.user.id))
