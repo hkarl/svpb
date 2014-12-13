@@ -150,11 +150,24 @@ SVPB -- Arbeitsverwaltung
             </li> 
               {% endif %}
             {% endfor %}
-            <!-- Rohdaten Admin -->
-            {% if user.is_staff %}
-            <li> <a href="/admin/"> Rodaten </a>
+            <!-- MITGLIEDER -->
+            {% for g in  user.groups.all %}
+              {% if g.name == "Vorstand" %}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-users fa-fw"></i>
+              Mitglieder <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li> <a href="/accounts/add/"> Neu </a> </li>
+                <li> <a href="/accounts/list/"> Liste </a> </li>
+                <!-- Rohdaten Admin -->
+                {% if user.is_staff %}
+                <li> <a href="/admin/"> <i class="fa fa-database fa-lg fa-fw"></i>&nbsp; Rodaten </a> </li>
+                {% endif %}
+              </ul>
             </li>
             {% endif %}
+            {% endfor %}
             {% endif %}
           </ul>
           {% if user.is_active %}
