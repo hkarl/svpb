@@ -6,19 +6,74 @@ Views for the entire adminstration of SVPB
 
 """
 
-from django.contrib.auth import authenticate, login
+import os
+
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic import FormView
-from django.shortcuts import render_to_response, redirect
+from django.views.generic import View, FormView, CreateView, ListView, DeleteView
+from django.shortcuts import (render_to_response,
+                              redirect, get_object_or_404,
+                              )
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import user_passes_test
+from django.utils.html import format_html
+
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from pwgen import pwgen
 
 
-from svpb.forms import LoginForm, ActivateForm, AccountEdit
+@receiver(post_save, sender=User)
+def create_mitglied(sender, instance, created, **kwargs):
+    # print "creating : ", sender, created
+    if created:
+        Mitglied.objects.create(user=instance)
+
+
+###############
+
+def isVorstand(user):
+    return user.groups.filter(name='Vorstand')
+
+
+def isTeamlead(user):
+    return user.teamleader_set.count() > 0
+
+
+def isVorstandOrTeamleader(user):
+    return isVorstand(user) or isTeamlead(user)
+
+
+class isVorstandMixin(object):
+    @method_decorator(user_passes_test(isVorstand, login_url="/keinVorstand/"))
+    def dispatch(self, *args, **kwargs):
+        return super(isVorstandMixin, self).dispatch(*args, **kwargs)
+
+
+class isVorstandOrTeamleaderMixin(object):
+    @method_decorator(user_passes_test(isVorstandOrTeamleader, login_url="/keinVorstand/"))
+    def dispatch(self, *args, **kwargs):
+        return super(isVorstandOrTeamleaderMixin, self).dispatch(*args, **kwargs)
+
+
+###############
+
+from svpb.forms import (LoginForm, ActivateForm, AccountEdit, AccountOtherEdit,
+                        MitgliederAddForm, MitgliederInactiveResetForm,
+                        )
+from svpb.settings import SENDFILE_ROOT, STATIC_ROOT
+from arbeitsplan.models import Mitglied
+from post_office.models import EmailTemplate
+
+from sendfile import sendfile
+
 
 class SvpbLogin(FormView):
-
     template_name = "registration/justForm.html"
     form_class = LoginForm
     success_url = "/"
@@ -53,35 +108,92 @@ class SvpbLogin(FormView):
 class AccountEdit(SuccessMessageMixin, FormView):
     template_name = "registration/justForm.html"
     form_class = AccountEdit
-    success_url = "/"
+    success_url = "/accounts/list/"
+    post_text = format_html("""
+    <p> 
+    Sie haben Ihr Passwort vergessen? Sie können es <a href="{{% url "password_reset_recover" %}}">
+    hier zurücksetzen</a>.
+    <p>
+    """)
 
     def get_context_data(self, **kwargs):
         context = super(AccountEdit, self).get_context_data(**kwargs)
         context['title'] = "Aktualisieren Sie Ihr SVPB-Konto"
+        context['post_text'] = self.post_text
         return context
+
+    def fillinUser(self, user):
+        initial = {}
+        initial['email'] = user.email
+        initial['strasse'] = user.mitglied.strasse
+        initial['plz'] = user.mitglied.plz
+        initial['ort'] = user.mitglied.ort
+        initial['geburtsdatum'] = user.mitglied.geburtsdatum
+
+        return initial
 
     def get_initial(self):
         initial = super(AccountEdit, self).get_initial()
-        initial['email'] = self.request.user.email
-        initial['strasse'] = self.request.user.mitglied.strasse
-        initial['plz'] = self.request.user.mitglied.plz
-        initial['ort'] = self.request.user.mitglied.ort
-        initial['geburtsdatum'] = self.request.user.mitglied.geburtsdatum
+        initial.update(self.fillinUser(self.get_user()))
         return initial
 
+    def storeUser (self, form, user):
+        user.email = form.cleaned_data['email']
+        user.mitglied.strasse = form.cleaned_data['strasse']
+        user.mitglied.plz = form.cleaned_data['plz']
+        user.mitglied.ort = form.cleaned_data['ort']
+
+    def get_user(self):
+        return self.request.user
+
     def form_valid(self, form):
-        self.request.user.email = form.cleaned_data['email']
-        self.request.user.mitglied.strasse = form.cleaned_data['strasse']
-        self.request.user.mitglied.plz = form.cleaned_data['plz']
-        self.request.user.mitglied.ort = form.cleaned_data['ort']
-        self.request.user.save()
-        self.request.user.mitglied.save()
+
+        user = self.get_user()
+        self.storeUser(form, user)
+
+        user.save()
+        user.mitglied.save()
 
         messages.success(self.request,
-                         "Ihr Profil wurde erfolgreich aktualisiert."
-                         )
+                         format_html(
+                             u"Das Profil {} {} ({}) wurde erfolgreich aktualisiert.",
+                             user.first_name, user.last_name,
+                             user.mitglied.mitgliedsnummer))
 
         return super(AccountEdit, self).form_valid(form)
+
+
+class AccountOtherEdit(isVorstandMixin, AccountEdit):
+    form_class = AccountOtherEdit
+    post_text = ""
+
+    def get_context_data(self, **kwargs):
+        context = super(AccountOtherEdit, self).get_context_data(**kwargs)
+        context['title'] = "Bearbeiten Sie das  SVPB-Konto eines Mitgliedes"
+        return context
+
+    def fillinUser(self, user):
+        initial = super(AccountOtherEdit, self).fillinUser(user)
+        initial['vorname'] = user.first_name
+        initial['nachname'] = user.last_name
+        initial['arbeitslast'] = user.mitglied.arbeitslast
+        initial['status'] = user.mitglied.status
+        initial['aktiv'] = user.is_active
+
+        return initial
+
+    def storeUser(self, form, user):
+        super(AccountOtherEdit, self).storeUser(form, user)
+        user.first_name = form.cleaned_data['vorname']
+        user.last_name = form.cleaned_data['nachname']
+        user.is_active = form.cleaned_data['aktiv']
+        user.mitglied.arbietslast = form.cleaned_data['arbeitslast']
+        user.mitglied.status = form.cleaned_data['status']
+
+    def get_user(self):
+        userid = self.kwargs['id']
+        user = get_object_or_404(User, pk=int(userid))
+        return user
 
 
 class ActivateView(FormView):
@@ -90,7 +202,6 @@ class ActivateView(FormView):
     success_url = "/"
 
     def get_context_data(self, **kwargs):
-        from django.utils.html import format_html
 
         context = super(ActivateView, self).get_context_data(**kwargs)
         context['title'] = "Aktivieren Sie Ihre SVPB-Konto"
@@ -130,3 +241,202 @@ class ActivateView(FormView):
         self.request.user.mitglied.save()
 
         return super(ActivateView, self).form_valid(form)
+
+
+
+
+def preparePassword(accountList=None):
+    """For the given accounts, prepare the passwords and the PDFs for the letters
+    
+    Arguments:
+    - `accountList`: List of User objects
+    Returns:
+    - List of tuples: (user object, PDF file)
+    """
+
+    from jinja2 import Template
+    import codecs, subprocess
+        
+    r = []
+
+    print "preparing passwords for: ", accountList
+        
+    for u in accountList:
+        pw = pwgen(6,no_symbols=True,no_ambiguous=True)
+        u.set_password(pw)
+        u.save()
+
+        r.append({'user': u,
+                  'mitglied': u.mitglied, 
+                  'password': pw,
+                  'status': u.mitglied.get_status_display(),
+                  'geburtsdatum': u.mitglied.geburtsdatum.strftime('%d.%m.%Y'),
+                  })
+
+    # generate the PDF
+    # assume the template is in templates
+
+    templateText = EmailTemplate.objects.get(name='newUserLaTeX')
+    print templateText.content
+
+    rendered = Template(templateText.content).render(dicts=r)
+    print rendered
+
+    # and now process this via latex:
+    f = codecs.open('letters.tex', 'w', 'utf-8')
+    f.write(rendered)
+    f.close()
+
+    # TODO: use better file names, protect against race conditions
+    
+    retval = subprocess.call (["xelatex",
+                                '-interaction=batchmode',
+                                "letters.tex"]) 
+    ## retval = subprocess.call (["xelatex",
+    ##                                '-interaction=batchmode',
+    ##                                "letters.tex"]) 
+    
+    # move this file into a directory where only Vorstand has access!
+    import shutil, os
+    try:
+        os.remove (os.path.join (SENDFILE_ROOT, 'letters.pdf'))
+    except:
+        pass
+    
+    shutil.move("letters.pdf", SENDFILE_ROOT)
+    
+    return r
+
+class AccountAdd(SuccessMessageMixin, isVorstandMixin, CreateView):
+    model = Mitglied
+    title = "Mitglied hinzufügen"
+    template_name = "mitglied_form.html"
+    form_class = MitgliederAddForm
+    success_url = "/"
+    
+    def get_context_data(self, **kwargs):
+        context = super(AccountAdd, self).get_context_data(**kwargs)
+
+        context['title'] = self.title
+
+        return context
+
+    def form_valid(self, form):
+        # create User and Mitglied based on cleaned data
+
+        # first, make some sanity checks to provide warnings
+        u = User(first_name=form.cleaned_data['firstname'],
+                 last_name=form.cleaned_data['lastname'],
+                 is_active=False,
+                 username=form.cleaned_data['mitgliedsnummer'],
+                 email=form.cleaned_data['email'],
+                 )
+
+        u.set_password('test')
+        u.save()
+
+        m = u.mitglied
+
+        m.user = u
+
+        m.geburtsdatum = form.cleaned_data['geburtsdatum']
+        m.mitgliedsnummer = form.cleaned_data['mitgliedsnummer']
+        m.ort = form.cleaned_data['ort']
+        m.plz = form.cleaned_data['plz']
+        m.strasse = form.cleaned_data['strasse']
+        m.gender = form.cleaned_data['gender']
+        m.status = form.cleaned_data['status']
+        m.arbeitlast = form.cleaned_data['arbeitslast']
+
+        m.save()
+        u.save()
+
+        messages.success(self.request,
+                         format_html(
+                             "Nutzer {} {} (Nummer: {}, Account: {}) "
+                             "wurde erfolgreich angelegt",
+                             u.first_name,
+                             u.last_name, m.mitgliedsnummer,
+                             u.username
+                             ))
+
+        try:
+            r = preparePassword([u])
+            print "PAssword erzeugt: ", r
+
+            # copy the produced PDF to the SENDFILE_ROOT directory
+
+            messages.success(self.request,
+                             format_html(
+                                 'Das Anschreiben mit Password kann '
+                                 '<a href="{}">hier</a>'
+                                 ' heruntergeladen werden.',
+                                 'accounts/letters.pdf'
+                                 ))
+
+        except Exception as e:
+            print "Fehler bei password: ", e
+            messages.error(self.request,
+                           "Das Password für den Nutzer konnte nicht gesetzt werden "
+                           "oder das Anschreiben nicht erzeugt werden. Bitten Sie das "
+                           "neue Mitglied, sich über die Webseite selbst ein Password zu "
+                           "generieren.")
+
+        return redirect(self.success_url)
+
+
+class AccountInactiveReset(FormView):
+    """Für allen nicht-aktiven Accounts neue Passwörter erzeugen und PDF anlegen.
+    """
+
+    template_name = "inactive_reset.html"
+    form_class = MitgliederInactiveResetForm
+    success_url = "/"
+
+    def form_valid(self, form):
+
+        if 'reset' in self.request.POST:
+            userQs = User.objects.filter(is_active=False)
+
+            try:
+                r = preparePassword(userQs)
+                print "PAssword erzeugt: ", r
+
+                # copy the produced PDF to the SENDFILE_ROOT directory
+
+                messages.success(self.request,
+                                 format_html(
+                                     'Das Anschreiben mit Password kann '
+                                     '<a href="{}">hier</a>'
+                                     ' heruntergeladen werden.',
+                                     'accounts/letters.pdf'
+                                     ))
+
+            except Exception as e:
+                print "Fehler bei password: ", e
+                messages.error(self.request,
+                               "Ein Password konnte nicht gesetzt werden "
+                               "oder das Anschreiben nicht erzeugt werden. "
+                               "Bitte benachrichtigen Sie den Administrator.")
+
+        return redirect('/')
+
+
+class AccountLetters(isVorstandMixin, View):
+    """Check whether this user is allowed to download a letters.pdf file
+    """
+
+    def get(self, request):
+        return sendfile(request,
+                        os.path.join(SENDFILE_ROOT, 
+                                "letters.pdf"))
+
+    
+class AccountDelete(SuccessMessageMixin, isVorstandMixin, DeleteView):
+    model = User
+    success_url = reverse_lazy("accountList")
+    # success_url = "/accounts/list"
+    template_name = "user_confirm_delete.html"
+    # success_message = "%(first_name) %(last_name) wurde gelöscht!"
+    success_message = "Mitglied wurde gelöscht!"
+

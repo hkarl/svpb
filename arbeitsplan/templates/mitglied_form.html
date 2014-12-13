@@ -1,0 +1,15 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+{{ title }}
+{% endblock %}
+
+
+{% block content %}
+
+{% crispy form %}
+
+{% endblock %}

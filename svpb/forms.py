@@ -6,6 +6,9 @@ from django.contrib import messages
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Button, Field, Div, HTML
 
+from arbeitsplan import models
+from django.contrib.auth.models import User
+
 class LoginForm(forms.Form):
     username = forms.CharField(label="Nutzername",
                                help_text="In der Regel: Ihre Mitgliedsnummer, mit führenden 0 auf 5 Stellen  aufgefüllt")
@@ -61,19 +64,12 @@ class AccountEdit(forms.Form):
         help_text="Bitte aktualisieren Sie Ihren Wohnort.")
     plz = forms.DecimalField(required=False,
                              help_text="Bitte aktualisieren Sie Ihre PLZ.")
-
+    
     geburtsdatum = forms.DateField(required=False,
                                    help_text="Bitte aktualisieren Sie Ihr Geburtsdatum.")
 
-    def __init__(self, *args, **kwargs):
-        print "creating an Account Edit Form"
-
-        self.helper = FormHelper()
-        super(AccountEdit, self).__init__(*args, **kwargs)
-        self.helper.form_id = self.__class__.__name__
-        self.helper.form_method = "post"
-
-        self.helper.layout = Layout('email',
+    def computeLayout(self):
+        return  Layout('email',
                                     HTML("<p>"),
                                     'strasse',
                                     HTML("<p>"),
@@ -82,9 +78,50 @@ class AccountEdit(forms.Form):
                                     Field('geburtsdatum', css_class="datepicker"),
                                     HTML("<p>"),
                                     )
+        
+    def __init__(self, *args, **kwargs):
+        # print "creating an Account Edit Form"
+
+        self.helper = FormHelper()
+        super(AccountEdit, self).__init__(*args, **kwargs)
+        self.helper.form_id = self.__class__.__name__
+        self.helper.form_method = "post"
+
+        self.helper.layout = self.computeLayout()
+        
         self.helper.add_input(Submit('apply', 'Aktualisieren'))
 
 
+class AccountOtherEdit(AccountEdit):
+    vorname = forms.CharField(label="Vorname")
+    nachname = forms.CharField(label="Nachname")
+    
+    arbeitslast = forms.IntegerField(required=False,
+                                     help_text="Zu erbringende Arbeitsstunden pro Jahr",
+                                     label="Arbeitsstunden")
+
+    status = forms.ChoiceField(required=False,
+                               label="Mitgliedsstatus",
+                               choices=models.Mitglied.STATUSDEFAULTS,
+                               )
+    aktiv = forms.BooleanField(required=False,
+                               label="Aktiver Nutzer",
+                               help_text="Setzen Sie den Nutzer auf inaktiv, "
+                               "um ein neues Passwort verschicken zu können."
+                               )
+
+    def computeLayout(self):
+        l = super(AccountOtherEdit, self).computeLayout()
+        
+        return Layout ('vorname',
+                       'nachname',
+                       HTML("<p>"),
+                       l,
+                       'arbeitslast',
+                       'status',
+                       'aktiv')
+    
+           
 class ActivateForm(forms.Form):
     email = forms.EmailField(required=True,
                              help_text="Bitte bestätigen Sie Ihre email-Adreese.")
@@ -110,7 +147,7 @@ class ActivateForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
 
-        print "creating an Activate Form"
+        # print "creating an Activate Form"
 
         self.helper = FormHelper()
         super(ActivateForm, self).__init__(*args, **kwargs)
@@ -135,3 +172,79 @@ class ActivateForm(forms.Form):
             raise ValidationError('Die beiden Passwörter müssen übereinstimmen')
 
         return self.cleaned_data
+
+
+class MitgliederInactiveResetForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(MitgliederInactiveResetForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+
+        self.helper.add_input(Submit('reset', 'Passwörter zurücksetzen'))
+        self.helper.add_input(Submit('nono', 'Lieber nicht!'))
+
+        
+class MitgliederAddForm(forms.ModelForm):
+
+    firstname = forms.CharField(max_length=20,
+                                label="Vorname",)
+    lastname = forms.CharField(max_length=20,
+                                label="Nachname",)
+    email = forms.EmailField(label="email")
+
+    def __init__(self, *args, **kwargs):
+        super(MitgliederAddForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout('firstname', 'lastname',
+                                    HTML("<p>"),
+                                    'email',
+                                    HTML("<p>"),
+                                    'mitgliedsnummer',
+
+                                    HTML("<p>"),
+                                    'geburtsdatum',
+                                    'gender',
+                                    'strasse', 'plz', 'ort',
+                                    'status', 'arbeitslast',
+                                    HTML("<p>"),
+                                    )
+
+        self.helper.add_input(Submit('apply', 'Mitglied anlegen'))
+
+    def clean(self):
+        # try to see if we already have such a user with that mitgliedsnummer:
+        # first, strip it off to make sure we did not get messy data
+
+        try:
+            mnrnum = int(self.cleaned_data['mitgliedsnummer'])
+        except:
+            raise ValidationError(
+                u"Die Mitgliedsnummer muss eine Zahl sein (führende Nullen sind ok.",
+                code='invalid')
+
+        # turn it back, search for such a user:
+        mnr = '%05d' % mnrnum
+
+        try:
+            u = User.objects.get(username=mnr)
+            raise ValidationError(
+                u"Ein Nutzer mit dieser Mitgliedsnummer existiert bereits! ({} {}) Bitte wählen Sie eine andere Nummer.".format(
+                    u.first_name, u.last_name
+                ),
+                code="invalid"
+            )
+        except User.DoesNotExist:
+            pass
+
+        self.cleaned_data['mitgliedsnummer'] = mnr
+
+        return self.cleaned_data
+
+    class Meta:
+        model = models.Mitglied
+
+        fields = ['mitgliedsnummer', 'geburtsdatum', 'gender',
+                  'strasse', 'plz',  'ort',
+                  'status', 'arbeitslast']

@@ -1,0 +1,26 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Mitglied löschen 
+{% endblock %}
+
+
+{% block content %}
+
+Wollen Sie dieses Mitglied wirklich löschen? 
+
+<p>
+
+{{ object }}
+<p>
+
+
+<form action="" method="post">{% csrf_token %}
+<input type="submit" class="btn btn-danger"  value="Löschen!"/>
+<input type="button" class="btn btn-default"  value="Nein, zurück ..." onclick="window.history.go(-1);"/>
+</form>
+
+{% endblock %}

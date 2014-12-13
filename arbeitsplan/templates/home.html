@@ -212,21 +212,24 @@ Es ist uns eine besondere Ehre, unseren Vorstandsmitgliedern erweiterte Funktion
       </div>
     </div>
   </div>
-  {% if user.is_staff %}
   <div class="col-md-6">
     <div class="panel panel-danger">
     <div class="panel-heading">
       <div class="panel-title">
-        <a href="/admin/">
-        <i class="fa fa-database fa-lg fa-fw"></i>&nbsp;
-        Rohdaten verwalten </a>
+        Mitgliederdaten verwalten
       </div>
     </div>
     <div class="panel-body">
-      Verwalten Sie alle Daten durch direkten Zugriff auf die Datenbank. 
+       <ul class="list-group">
+          <li class="list-group-item"> <a href="/accounts/add/"> Mitglied hinzufügen </a> </li>
+          <li class="list-group-item"> <a href="/accounts/list/"> Mitgliederliste (TODO!) </a> </li>
+          <li class="list-group-item"> <a href="/accounts/inaktiveReset/"> Inaktive Mitglieder mit neuen Passwörtern versehen</a> </li>
+          {% if user.is_staff %}
+          <li class="list-group-item"> <a href="/admin/"> <i class="fa fa-database fa-lg fa-fw"></i>&nbsp; Rohdaten verwalten </a> Achtung, direkter Datenbankzugriff! Gefährlich!</li>
+          {% endif %}
+       </ul>
     </div>
   </div>
-  {% endif %}    
   </div>
 </div>
 
@@ -262,7 +265,7 @@ Bist Du ein Mitglied, so <a href="/accounts/login/?next=/home/"> melde Dich bitt
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Sat Dec  6 20:23:56 CET 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sat Dec 13 11:52:58 CET 2014 <!-- hhmts end -->
 </body> </html>
 
       

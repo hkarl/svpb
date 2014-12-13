@@ -8,9 +8,8 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import View, ListView, CreateView
 from django.views.generic import FormView, UpdateView, DeleteView
 from django.contrib.auth.models import User
-from django.utils.decorators import method_decorator
+
 from django.utils.http import urlencode
-from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Sum, F, Count
 from django.contrib.auth import logout
 from django.forms.models import modelformset_factory
@@ -43,29 +42,11 @@ from svpb.settings import JAHRESSTUNDEN, STATIC_ROOT, SENDFILE_ROOT
 
 from sendfile import sendfile
 
+
+from svpb.views import isTeamlead, isVorstand, isVorstandMixin, isVorstandOrTeamleader, isVorstandOrTeamleaderMixin
 #################
 
-def isVorstand(user):
-    return user.groups.filter(name='Vorstand')
 
-def isTeamlead(user):
-    return user.teamleader_set.count() > 0 
-
-def isVorstandOrTeamleader(user):
-    return isVorstand(user) or isTeamlead(user)
-
-class isVorstandMixin(object):
-    @method_decorator(user_passes_test(isVorstand, login_url="/keinVorstand/"))
-    def dispatch(self, *args, **kwargs):
-        return super(isVorstandMixin, self).dispatch(*args, **kwargs)
-
-class isVorstandOrTeamleaderMixin(object):
-    @method_decorator(user_passes_test(isVorstandOrTeamleader, login_url="/keinVorstand/"))
-    def dispatch(self, *args, **kwargs):
-        return super(isVorstandOrTeamleaderMixin, self).dispatch(*args, **kwargs)
-
-
-###############
 
 
 def logout_view(request):
@@ -2083,7 +2064,7 @@ class ImpersonateListe(isVorstandMixin, FilteredListView):
     to impersonate/user-id
     """
     title = "Darzustellenden Nutzer auswählen"
-    tableClass = MitgliederTable
+    tableClass = ImpersonateTable
     tabletitle = "Mitglieder"
     model = User
 
@@ -2157,3 +2138,24 @@ class MediaChecks(View):
 
         return sendfile(request,
                         os.path.join(basepath, filename))
+
+##############
+
+
+# TODO: This really should go into the svpb.views, but that would
+# create cricular imports because of the FilteredListView :-(
+# this will need serious code refactoring some time
+
+class AccountList(SuccessMessageMixin, isVorstandMixin, FilteredListView):
+    model = User
+    title = "Mitglieder bearbeiten"
+
+    filterform_class = forms.NameFilterForm
+    filtertile = "Mitglieder nach Vor- oder Nachnamen filtern"
+
+    tabletitle = "Alle Mitglieder"
+    tableClass = MitgliederTable
+    
+    filterconfig = [('first_name', 'first_name__icontains'),
+                    ('last_name', 'last_name__icontains'),
+                    ]

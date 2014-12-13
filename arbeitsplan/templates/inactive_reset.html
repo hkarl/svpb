@@ -1,0 +1,22 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Passwörter aller inaktiven Mitglieder zurücksetzen
+{% endblock %}
+
+
+{% block content %}
+
+Hiermit können Sie für alle inaktiven Mitglieder (=haben sich noch nicht angemeldet) neue
+Passwörter erzeugen und ein PDF mit einem Anschreiben an diese Mitglieder erzeugen.
+<p>
+Bitte nutzen Sie diese Funktion mit Vorsicht da wiederholt neue Passwort-Mitteilungen für Verwirrung sorgen können. 
+
+<p>
+
+{% crispy form %}
+
+{% endblock %}

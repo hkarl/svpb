@@ -940,7 +940,7 @@ class ZuteilungEmailTable(BaseEmailTable):
                     )
 
 
-class MitgliederTable(django_tables2.Table):
+class ImpersonateTable(django_tables2.Table):
 
     ## first_name = django_tables2.Column (accessor="user.first_name")
     ## last_name = django_tables2.Column (accessor="user.last_name")
@@ -960,4 +960,33 @@ class MitgliederTable(django_tables2.Table):
                   'last_name',
                   'mitgliedsnummer',
                   'id',
+                  )
+
+class MitgliederTable(django_tables2.Table):
+
+    mitgliedsnummer = django_tables2.Column(accessor="mitglied.mitgliedsnummer")
+
+    edit = django_tables2.TemplateColumn(
+        "<a href=\"{% url 'accountOtherEdit' record.pk %}\"> Editieren </a></i>",
+        verbose_name=u"Editieren",
+        orderable=False,
+        empty_values=(),
+        )
+
+    delete = django_tables2.TemplateColumn(
+        "<a href=\"{% url 'accountDelete' record.pk %}\"> Löschen </a></i>",
+        verbose_name=u"Löschen",
+        orderable=False,
+        empty_values=(),
+        )
+
+    class Meta:
+        model = User
+
+        attrs = {"class": "paleblue"}
+        fields = ('first_name',
+                  'last_name',
+                  'mitgliedsnummer',
+                  'edit',
+                  'delete',
                   )

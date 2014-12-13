@@ -189,10 +189,40 @@ urlpatterns = patterns('',
          name='password_change',
          ),
 
+    # to edit my own account: 
     url(r'^accounts/edit/',
         active_and_login_required(svpb.views.AccountEdit.as_view()),
         name="accountEdit"),
 
+    # to edit other people: 
+    url(r'^accounts/editOther/(?P<id>\d+)/',
+        active_and_login_required(svpb.views.AccountOtherEdit.as_view()),
+        name="accountOtherEdit"),
+
+    url(r'^accounts/delete/(?P<pk>\d+)/',
+        active_and_login_required(svpb.views.AccountDelete.as_view()),
+        name="accountDelete"),
+        
+    url(r'^accounts/add/',
+        active_and_login_required(svpb.views.AccountAdd.as_view()),
+        name="accountAdd"
+        ),
+
+    url(r'^accounts/list/',
+        active_and_login_required(arbeitsplan.views.AccountList.as_view()),
+        name="accountList"
+        ),
+
+    url(r'^accounts/inaktiveReset/',
+        active_and_login_required(svpb.views.AccountInactiveReset.as_view()),
+        name="accountInactiveReset"
+        ),
+        
+    url(r'^accounts/letters.pdf',
+        active_and_login_required(svpb.views.AccountLetters.as_view()),
+        name="accountLetters"
+        ),
+        
     # media for manual intergration:
     url(r'^manual/',
         active_and_login_required(arbeitsplan.views.MediaChecks.as_view()),
@@ -204,7 +234,7 @@ urlpatterns = patterns('',
          active_and_login_required(arbeitsplan.views.ImpersonateListe.as_view()),
          name="arbeitsplan-impersonateListe",),
 
-    # password reset; compare http://django-password-reset.readthedocs.org/en/latest/quickstart.html 
+    # password reset; compare http://django-password-reset.readthedocs.org/en/latest/quickstart.html
     url(r'^reset/', include('password_reset.urls')),
 
     # django select2, see: https://github.com/applegrew/django-select2

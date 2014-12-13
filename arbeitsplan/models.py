@@ -100,15 +100,41 @@ class Mitglied (models.Model):
 
     gender = models.CharField(max_length=1,
                               verbose_name="Geschlecht",
-                              default="M")
+                              default="M",
+                              choices=(('M', 'M'), ('W', 'W')))
 
     ort = models.CharField(max_length=50,
                            verbose_name="Ort",
                            default="")
 
+    STATUS_Erwachsene = "Er"
+    STATUS_Jugendliche = "Ju"
+    STATUS_Schueler = "Ss"
+    STATUS_Kind = "Ki"
+    STATUS_KindBeitragsfrei = "Kf"
+    STATUS_PassivMitglied = "PM"
+    STATUS_Nichtmitglied = "Nm"
+    STATUS_Beitragsfrei = "Bf"
+    STATUS_PartnerAktiv = "Pa"
+    STATUS_PartnerPassiv = "Pp"
+
+    STATUSDEFAULTS = (
+        (STATUS_Erwachsene, "Erwachsene"),
+        (STATUS_Jugendliche, "Jugendliche"),
+        (STATUS_Schueler, u"Schüler, Studenten, BW, Zivi"),
+        (STATUS_Kind, "Kind in Familie"),
+        (STATUS_KindBeitragsfrei, "Kind in Familie, beitragsfrei"),
+        (STATUS_PassivMitglied, "Passives Mitglied"),
+        (STATUS_Nichtmitglied, "Nichtmitglied"),
+        (STATUS_Beitragsfrei, "Beitragsfreies Mitglied"),
+        (STATUS_PartnerAktiv, "Partner aktives Mitglied"),
+        (STATUS_PartnerPassiv, "Partner passives Mitglied"),
+    )
+
     status = models.CharField(max_length=20,
                               verbose_name="Mitgliedsstatus",
-                              default="")
+                              default=STATUS_Erwachsene,
+                              choices=STATUSDEFAULTS)
 
     erstbenachrichtigt = models.BooleanField(
         verbose_name="Erstbenachrichtigung",
