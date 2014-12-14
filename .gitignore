@@ -56,3 +56,12 @@ docs/_build/
 !media
 post_office_attachments
 arbeitsplan/fixtures
+bla.py
+letters.aux
+letters.tex
+sanitized.json
+static
+notes
+backup
+svpb.sq
+emailSettings.py
