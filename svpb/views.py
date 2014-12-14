@@ -259,7 +259,7 @@ def preparePassword(accountList=None):
         
     r = []
 
-    print "preparing passwords for: ", accountList
+    # print "preparing passwords for: ", accountList
         
     for u in accountList:
         pw = pwgen(6,no_symbols=True,no_ambiguous=True)
@@ -277,10 +277,10 @@ def preparePassword(accountList=None):
     # assume the template is in templates
 
     templateText = EmailTemplate.objects.get(name='newUserLaTeX')
-    print templateText.content
+    # print templateText.content
 
     rendered = Template(templateText.content).render(dicts=r)
-    print rendered
+    # print rendered
 
     # and now process this via latex:
     f = codecs.open('letters.tex', 'w', 'utf-8')
@@ -362,7 +362,7 @@ class AccountAdd(SuccessMessageMixin, isVorstandMixin, CreateView):
 
         try:
             r = preparePassword([u])
-            print "PAssword erzeugt: ", r
+            # print u"PAssword erzeugt: ", r
 
             # copy the produced PDF to the SENDFILE_ROOT directory
 
@@ -400,7 +400,7 @@ class AccountInactiveReset(FormView):
 
             try:
                 r = preparePassword(userQs)
-                print "PAssword erzeugt: ", r
+                # print "PAssword erzeugt: ", r
 
                 # copy the produced PDF to the SENDFILE_ROOT directory
 
