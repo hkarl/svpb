@@ -50,6 +50,8 @@ for d in dicts:
 
         print "this user already exsits, no further steps taken"
 
+        
+
     except ObjectDoesNotExist:
         tocreate = True
 
