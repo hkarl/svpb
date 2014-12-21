@@ -423,7 +423,7 @@ class ListAufgabenView (FilteredListView):
 
         qs = super(ListAufgabenView, self).apply_filter()
 
-        qs = [q for q in qs if not q.is_open()]
+        qs = [q for q in qs if q.is_open()]
 
         return qs
 
@@ -684,6 +684,19 @@ class CreateMeldungenView (MeldungEdit):
     ## <li> Über das Nutzen von Tooltips nachdenken - zweischneidig </li>
     ## """
 
+
+    def apply_filter(self, qs=None):
+        """
+        Filter out, in addition to the standard filters, all Aufgaben
+        that are already satisfied. 
+        """
+
+        qs = super(CreateMeldungenView, self).apply_filter()
+
+        qs = [q for q in qs if q.is_open()]
+
+        return qs
+    
     def get_queryset(self):
 
         qsAufgaben = self.apply_filter ()

@@ -255,10 +255,10 @@ class Aufgabe(models.Model):
     def is_open(self):
         """Do enough Zuteilungen already exist for this Aufgabe?"""
 
-        return self.zuteilung_set.count() >= self.anzahl
+        return self.zuteilung_set.count() < self.anzahl
 
     def __unicode__(self):
-        return self.aufgabe
+        return u"{} ({})".format(self.aufgabe, self.id)
 
     class Meta:
         verbose_name_plural = "Aufgaben"
