@@ -6,6 +6,7 @@ APPLICATION_DIR = os.path.dirname( globals()[ '__file__' ] )
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
+OFFLINE = False
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -107,6 +108,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth', 
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
+    'svpb.context_processors.global_settings', 
     ) 
 
 MIDDLEWARE_CLASSES = (
