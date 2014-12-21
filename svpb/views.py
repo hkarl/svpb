@@ -74,7 +74,8 @@ from sendfile import sendfile
 
 
 class SvpbLogin(FormView):
-    template_name = "registration/justForm.html"
+    # template_name = "registration/justForm.html"
+    template_name = "home.html"
     form_class = LoginForm
     success_url = "/"
 
@@ -93,7 +94,7 @@ class SvpbLogin(FormView):
         necessarily active"""
 
         user = form.cleaned_data['user']
-        print user
+        # print user
         if user is not None:
             succ = login(self.request, user)
             if user.is_active:
