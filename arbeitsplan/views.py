@@ -721,11 +721,26 @@ class CreateMeldungenView (MeldungEdit):
                  'fehlende_zuteilungen': None,
                 }
             # add what we can find from Meldung:
+            try: 
             m, newcreated = models.Meldung.objects.get_or_create(
                 aufgabe=a,
                 melder=self.request.user,
                 defaults = models.Meldung.MODELDEFAULTS, 
                 )
+            except models.Meldung.MultipleObjectsReturned:
+                messages.error(self.request,
+                               format_html(
+                                   u"Ein Datenbankfehler trat auf! "
+                                   u'Bitte schicken Sie '
+                                   u'<a href="mailto:hkarl@ieee.org?subject=SVPB: QAWX&body=A: {}, U: {}">'
+                                   u'diese email</a> ab. Es wäre schön wenn Sie schildern '
+                                   u'könnten, welche Handlungen Sie kurz zuvor durchführten.'
+                                   ,
+                                   a.id,
+                                   self.request.user.id,
+                                   ))
+                return self.get_filtered_table([])
+                
             d['id'] = m.id 
             d['prefMitglied'] = m.prefMitglied
             d['bemerkung'] = m.bemerkung
