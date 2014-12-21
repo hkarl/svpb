@@ -10,6 +10,7 @@ from django.views.generic import FormView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 
 from django.utils.http import urlencode
+from django.utils.html import format_html
 from django.db.models import Sum, F, Count
 from django.contrib.auth import logout
 from django.forms.models import modelformset_factory
@@ -722,7 +723,7 @@ class CreateMeldungenView (MeldungEdit):
                 }
             # add what we can find from Meldung:
             try: 
-            m, newcreated = models.Meldung.objects.get_or_create(
+                m, newcreateFlag = models.Meldung.objects.get_or_create(
                 aufgabe=a,
                 melder=self.request.user,
                 defaults = models.Meldung.MODELDEFAULTS, 
