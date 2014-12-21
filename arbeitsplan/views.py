@@ -223,12 +223,12 @@ class FilteredListView(ListView):
 #######################################################################
 
 
-class AufgabenUpdate (SuccessMessageMixin, UpdateView):
+class AufgabenUpdate (SuccessMessageMixin, isVorstandMixin, UpdateView):
     model = models.Aufgabe
     form_class = forms.AufgabeForm
     template_name = "arbeitsplan_aufgabenCreate.html"
     # success_url = "home.html"
-    success_url = reverse_lazy("arbeitsplan-aufgaben")
+    success_url = reverse_lazy("arbeitsplan-aufgabenVorstand")
     success_message = 'Die  <a href="%(url)s">Aufgabe %(id)s</a> wurde erfolgreich verändert.'
     title = "Aufgabe ändern"
     buttontext = "Änderung eintragen"
@@ -341,9 +341,9 @@ class AufgabenUpdate (SuccessMessageMixin, UpdateView):
         return redirect(self.request.get_full_path())
 
 
-class AufgabeLoeschen(DeleteView):
+class AufgabeLoeschen(isVorstandMixin, DeleteView):
     model = models.Aufgabe
-    success_url = reverse_lazy('arbeitsplan-aufgaben')
+    success_url = reverse_lazy('arbeitsplan-aufgabenVorstand')
     template_name = "aufgabe_confirm_delete.html"
 
     def get_object(self, queryset=None):
@@ -363,7 +363,7 @@ class AufgabeLoeschen(DeleteView):
                              "Die Aufgabe wurde erfolgreich gelöscht.")
             return r
         except:
-            return redirect('arbeitsplan-aufgaben')
+            return redirect('arbeitsplan-aufgabenVorstand')
 
 
 ###############################
@@ -1238,7 +1238,7 @@ class ZuteilungUebersichtView(isVorstandMixin, FilteredListView):
         return data
 
 
-class StundenplaeneEdit(FilteredListView):
+class StundenplaeneEdit(isVorstandMixin, FilteredListView):
 
     title = """Weisen Sie einer Aufgabe Personen
      zu den benötigten Zeitpunkten zu"""
@@ -1444,12 +1444,12 @@ class CreateLeistungView (CreateView):
     template_name = "arbeitsplan_createLeistung.html"
 
     def form_valid(self, form):
-        print "in Create Leistung View form_valid"
+        # print "in Create Leistung View form_valid"
         leistung = form.save(commit=False)
         leistung.melder = self.request.user
         leistung.save()
 
-        print "saved leistung"
+        # print "saved leistung"
 
         return HttpResponseRedirect(self.success_url)
 
@@ -1782,7 +1782,7 @@ class ErstelleZuteilungView(View):
 ## BENACHRICHTIGUNGEN
 ########################
 
-class FilteredEmailCreateView (FilteredListView):
+class FilteredEmailCreateView (isVorstandOrTeamleaderMixin, FilteredListView):
 
     tableform = {'name': "eintragen",
                  'value':
