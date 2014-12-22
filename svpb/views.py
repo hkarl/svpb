@@ -240,13 +240,14 @@ class ActivateView(FormView):
         # set user active, store its email, rememmber date
         self.request.user.email = form.cleaned_data['email']
         self.request.user.is_active = True
+        self.request.user.set_password(form.cleaned_data['pw1'])
+
         self.request.user.mitglied.zustimmungsDatum = timezone.now()
+
         self.request.user.save()
         self.request.user.mitglied.save()
 
         return super(ActivateView, self).form_valid(form)
-
-
 
 
 def preparePassword(accountList=None):
