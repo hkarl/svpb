@@ -82,7 +82,8 @@ SVPB -- Arbeitsverwaltung
             <i class="fa fa-hand-o-up fa-fw"></i>
             Meldung <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/arbeitsplan/meldung/">Melden</a></li>
+                <li><a href="/arbeitsplan/meldung/liste">Übersicht</a></li>
+                <li><a href="/arbeitsplan/meldung/">Meldung bearbeiten</a></li>
                 {% for g in  user.groups.all %}
                   {% if g.name == "Vorstand" %}
                 <li class="divider"></li>
