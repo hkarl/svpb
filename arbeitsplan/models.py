@@ -317,6 +317,7 @@ class Meldung (models.Model):
                     }
     prefMitglied = models.IntegerField (choices = PRAEFERENZ,
                                         default = NORMAL,
+                                        verbose_name = "Präferenz", 
                                         help_text="Haben Sie Vorlieben für diese Aufgabe?",)
     prefVorstand = models.IntegerField (choices = PRAEFERENZ,
                                         default = NORMAL,

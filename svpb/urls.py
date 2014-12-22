@@ -110,6 +110,10 @@ urlpatterns = patterns('',
     url (r'^arbeitsplan/meldung/$',
          active_and_login_required(arbeitsplan.views.CreateMeldungenView.as_view()),
          name="arbeitsplan-meldung",),
+         
+    url (r'^arbeitsplan/meldung/liste/$',
+         active_and_login_required(arbeitsplan.views.MeldungenListeView.as_view()),
+         name="arbeitsplan-meldungListe",),
 
     url(r'^arbeitsplan/meldung/quick/(?P<aufgabeid>\d+)/$',
         active_and_login_required(arbeitsplan.views.QuickMeldung.as_view()),

@@ -642,6 +642,25 @@ class MeldungEdit (FilteredListView):
                 pass
 
 
+class MeldungenListeView (FilteredListView):
+    title = "Alle Meldungen anzeigen"
+    tableClass = MeldungListeTable
+    tabletitle = "Meine Meldungen"
+
+    # TODO: understand how to use reverse / reverse_lazy here
+    # This is odd, why does reverse_lazy only return the object?
+    
+    intro_text = format_html(("Ein Übersicht über alle von Ihnen eingegeben Meldungen. "
+                              'Editieren Sie bitte über die Funktion <a href="/arbeitsplan/meldung/">Melden</a> im Menü Meldung.'))
+
+    def get_data(self):
+        qs = (models.Meldung.objects.
+              filter(melder=self.request.user).
+              exclude(prefMitglied=models.Meldung.GARNICHT))
+        return qs
+            
+
+
 class CreateMeldungenView (MeldungEdit):
     """
     Display a table with all Aufgaben and fields

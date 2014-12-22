@@ -543,8 +543,35 @@ class ZuteilungTableVorstand(django_tables2.Table):
 ##############################
 
 
-class MeldungTable(RadioButtonTable):
+class MeldungListeTable(django_tables2.Table):
+    """A table to only display all Meldungen of a user.
+    """
 
+    aufgabenGruppe = django_tables2.Column(accessor="aufgabe.gruppe.gruppe",
+                                           verbose_name="Aufgabengruppe")
+    aufgabeName = django_tables2.Column(accessor="aufgabe.aufgabe",
+                                        verbose_name="Aufgabe")
+    aufgabenDatum = django_tables2.Column(accessor="aufgabe.datum",
+                                          verbose_name="Datum")
+
+    class Meta:
+        model = models.Meldung
+        attrs = {"class": "paleblue"}
+
+        fields = ("aufgabenGruppe",
+                  "aufgabeName",
+                  "aufgabenDatum",
+                  "prefMitglied",
+                  "bemerkung",
+                  )
+        exclude = ("id", "erstellt", "veraendert",
+                   "prefVorstand", "bemerkungVorstand",
+                   )
+
+
+class MeldungTable(RadioButtonTable):
+    """A table to edit Meldungen.
+    """
     # id = django_tables2.Column ()
 
     aufgabe = django_tables2.Column(accessor="aufgabe",
