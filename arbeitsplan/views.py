@@ -410,6 +410,8 @@ class ListAufgabenView (FilteredListView):
     <li> Die Spalte Verantwortlicher benennt den Koordinator der Aufgabe. </li>
     <li> Die Spalte Quickmeldung erlaubt eine vereinfachte Meldung für eine Aufgabe. Klicken Sie auf das Handsymbol; ein Haken in der Zeile markiert Aufgaben, für die Sie sich gemeldet haben.</li>
     </ul>
+    <p>
+    Sie können die angezeigten Aufgaben nach Aufgabengruppe filtern (--- entfernt den Filter). Zusätzlich können Sie nach dem Datum der Aufgabe filtern. Wählen Sie die Filter aus und klicken auf "Filter anwenden". 
     """
     ## todo_text = """
     ## <li> Spalten klickbar machen: Aufgabe, Verantowrtlicher (direkt email senden?)  </li>
@@ -671,14 +673,43 @@ class CreateMeldungenView (MeldungEdit):
 
     title = "Meldungen für Aufgaben eintragen oder ändern"
     # filterform_class = forms.AufgabengruppeFilterForm
-    filterform_class = forms.AufgabenDatumFilter
+    filterform_class = forms.GemeldeteFilter
     filtertitle = "Meldungen nach Aufgabengruppen filtern"
     tabletitle = "Meldungen für Aufgaben eintragen oder ändern"
     tableform = {'name': "eintragen",
                  'value': "Meldungen eintragen/ändern"}
+
+
+    def gemeldeteAufgaben(self, qs, gemeldet):
+        """
+        Filter out Aufgaben for which the user has created a Meldung,
+        or not, all all Aufgaben.
+
+        See forms.GemeldeteAufgabenFilterForm for the definition of the tags
+        """
+
+        if gemeldet == "GA" or gemeldet == "NG":
+            # first, find out the Meldung this user has made:
+            meld = models.Meldung.objects.filter(melder=self.request.user)
+
+            if gemeldet == "GA":
+              meld = meld.exclude(prefMitglied=models.Meldung.GARNICHT)
+            else:
+                meld = meld.filter(prefMitglied=models.Meldung.GARNICHT)
+              
+            # turn this into aufgaben IDs
+            aufIDs = [m.aufgabe.id for m in meld]
+            # and get an Aufgaben queryset out of these ids
+            aufgQs = models.Aufgabe.objects.filter(id__in=aufIDs)
+            # interset this with what we already have as queryset:
+            qs = qs & aufgQs
+
+        return qs
+    
     filterconfig = [('aufgabengruppe', 'gruppe__gruppe'),
                     ('von', 'datum__gte'),
                     ('bis', 'datum__lte'),
+                    ('gemeldet', gemeldeteAufgaben),
                     ]
     model = models.Aufgabe
     tableClass = MeldungTable
@@ -692,7 +723,15 @@ class CreateMeldungenView (MeldungEdit):
     erledigen möchten oder nur zu bestimmten Uhrzeiten können).
     <p>
     Sie können die Aufgabenliste eingrenzen, in dem Sie nach
-    Aufgabengruppen filtern. Wählen Sie aus der Liste aus und drücken
+    Aufgabengruppen filtern (--- entfernt den Filter).
+    Zusätzlich können Sie (mit dem zweiten Filter)
+    die Liste der Aufgaben weiter einschränken auf Aufgaben,
+    für die Sie bereits eine Meldung abgegeben haben
+    (nützlich, um Quickmeldungen zu verfeinern)
+    oder keine Meldung (nützlich, um sich für weitere Aufgaben zu melden).
+    Die dritte und vierte Filtermöglichkeit grenzt das Datum der Aufgaben ein.
+    <p>
+    Wählen Sie aus der jeweiligen  Liste aus und drücken
     dann auf `Filter anwenden'.
     <p>
     Zeigen Sie auf den Aufgabennamen um ggf. weitere Information

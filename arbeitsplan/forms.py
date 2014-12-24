@@ -477,19 +477,45 @@ class SaldenStatusForm(CrispyFilterMixin, forms.Form):
         )
 
 
-# Stich Forms together into Filters 
+class GemeldeteAufgabenFilterForm(CrispyFilterMixin, forms.Form):
+    gemeldet = forms.ChoiceField(required=False,
+                                 initial=False,
+                                 label="Gemeldet",
+                                 choices=(
+                                     ('--', 'Alle Aufgaben'),
+                                     ('GA', 'Nur Aufgaben, für die ich gemeldet habe'),
+                                     ('NG', 'Nur Aufgaben, für die ich NICHT gemeldet habe'),
+                                     ),
+                                 )
+    __layout = Layout(
+        'gemeldet',
+        )
+
+
+###################################
+# Stich Forms together into Filters
+
 
 class AufgabenDatumFilter(AufgabengruppeFilterForm,
                           DateFilterForm,
                           forms.Form):
-    pass 
+    pass
+
+
+class GemeldeteFilter(
+        AufgabengruppeFilterForm,
+        GemeldeteAufgabenFilterForm,
+        DateFilterForm,
+        forms.Form,
+        ):
+    pass
 
 
 class LeistungFilter(NameFilterForm,
                      AufgabengruppeFilterForm,
                      DateFilterForm,
                      StatusFilterForm,
-                     forms.Form): 
+                     forms.Form):
     pass
 
 
