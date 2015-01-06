@@ -86,7 +86,7 @@ class SvpbLogin(FormView):
         context = super(SvpbLogin, self).get_context_data(**kwargs)
         context['title'] = "Anmeldung"
         context['intro_text'] = ""
-        context['post_text'] = ""
+        context['post_text'] = format_html('Passwort vergessen? <a href="/reset/recover/"> Hier zurücksetzen.<a/>')
         context['todo_text'] = ""
 
         return context
