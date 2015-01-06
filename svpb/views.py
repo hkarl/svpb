@@ -146,6 +146,7 @@ class AccountEdit(SuccessMessageMixin, FormView):
         user.mitglied.strasse = form.cleaned_data['strasse']
         user.mitglied.plz = form.cleaned_data['plz']
         user.mitglied.ort = form.cleaned_data['ort']
+        user.mitglied.geburtsdatum = form.cleaned_data['geburtsdatum']
 
     def get_user(self):
         return self.request.user
@@ -191,7 +192,7 @@ class AccountOtherEdit(isVorstandMixin, AccountEdit):
         user.first_name = form.cleaned_data['vorname']
         user.last_name = form.cleaned_data['nachname']
         user.is_active = form.cleaned_data['aktiv']
-        user.mitglied.arbietslast = form.cleaned_data['arbeitslast']
+        user.mitglied.arbeitslast = form.cleaned_data['arbeitslast']
         user.mitglied.status = form.cleaned_data['status']
 
     def get_user(self):
