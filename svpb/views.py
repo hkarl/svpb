@@ -32,7 +32,7 @@ from pwgen import pwgen
 def create_mitglied(sender, instance, created, **kwargs):
     # print "creating : ", sender, created
     if created:
-        Mitglied.objects.create(user=instance)
+        Mitglied.objects.get_or_create(user=instance)
 
 
 ###############
@@ -359,8 +359,8 @@ class AccountAdd(SuccessMessageMixin, isVorstandMixin, CreateView):
 
         messages.success(self.request,
                          format_html(
-                             "Nutzer {} {} (Nummer: {}, Account: {}) "
-                             "wurde erfolgreich angelegt",
+                             u"Nutzer {} {} (Nummer: {}, Account: {}) "
+                             u"wurde erfolgreich angelegt",
                              u.first_name,
                              u.last_name, m.mitgliedsnummer,
                              u.username
@@ -374,19 +374,19 @@ class AccountAdd(SuccessMessageMixin, isVorstandMixin, CreateView):
 
             messages.success(self.request,
                              format_html(
-                                 'Das Anschreiben mit Password kann '
-                                 '<a href="{}">hier</a>'
-                                 ' heruntergeladen werden.',
-                                 'accounts/letters.pdf'
+                                 u'Das Anschreiben mit Password kann '
+                                 u'<a href="{}">hier</a>'
+                                 u' heruntergeladen werden.',
+                                 u'accounts/letters.pdf'
                                  ))
 
         except Exception as e:
             print "Fehler bei password: ", e
             messages.error(self.request,
-                           "Das Password für den Nutzer konnte nicht gesetzt werden "
-                           "oder das Anschreiben nicht erzeugt werden. Bitten Sie das "
-                           "neue Mitglied, sich über die Webseite selbst ein Password zu "
-                           "generieren.")
+                           u"Das Password für den Nutzer konnte nicht gesetzt werden "
+                           u"oder das Anschreiben nicht erzeugt werden. Bitten Sie das "
+                           u"neue Mitglied, sich über die Webseite selbst ein Password zu "
+                           u"generieren.")
 
         return redirect(self.success_url)
 
@@ -421,9 +421,9 @@ class AccountInactiveReset(FormView):
             except Exception as e:
                 print "Fehler bei password: ", e
                 messages.error(self.request,
-                               "Ein Password konnte nicht gesetzt werden "
-                               "oder das Anschreiben nicht erzeugt werden. "
-                               "Bitte benachrichtigen Sie den Administrator.")
+                               u"Ein Password konnte nicht gesetzt werden "
+                               u"oder das Anschreiben nicht erzeugt werden. "
+                               u"Bitte benachrichtigen Sie den Administrator.")
 
         return redirect('/')
 
