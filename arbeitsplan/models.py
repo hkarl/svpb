@@ -30,8 +30,8 @@ from django.utils.timezone import utc
 ### patch the display of a user:
 
 User.__unicode__ = lambda s: "%s %s (Nr.: %s)" % (s.first_name,
-                                                  s.last_name,
-                                                  s.mitglied.mitgliedsnummer)
+                                                   s.last_name,
+                                                   s.mitglied.mitgliedsnummer)
 
 
 class Mitglied (models.Model):
@@ -50,6 +50,24 @@ class Mitglied (models.Model):
     this member since its last message.
     """
 
+    excelFields = [
+        ('Vorname', 'user__first_name'),
+        ('Nachname', 'user__last_name'),
+        ('M/W', 'gender'), 
+        ('email', 'user__email'), 
+        ('ID', 'mitgliedsnummer'),
+        ('Strasse', 'strasse'), 
+        ('PLZ', 'plz'), 
+        ('Ort', 'ort'), 
+        ('Status', 'status'), 
+        ('Arbeitslast', 'arbeitslast'), 
+        ('# Meldungen', 'gemeldeteAnzahlAufgaben'), 
+        ('Stunden Meldungen ', 'gemeldeteStunden'), 
+        ('# Zuteilungen', 'zugeteilteAufgaben'), 
+        ('Stunden Zuteilungen', 'zugeteilteStunden'),
+        ('', ''), 
+    ]
+    
     user = models.OneToOneField(User)
     """Couple Mitglied to User via 1:1 field."""
 
@@ -150,6 +168,29 @@ class Mitglied (models.Model):
     def __unicode__(self):
         return self.user.__unicode__()
 
+    def gemeldeteAnzahlAufgaben(self):
+        return (Meldung.objects
+                .filter(melder=self)
+                .exclude(prefMitglied=Meldung.GARNICHT)
+                .count())
+        
+    def gemeldeteStunden(self):
+        """Compute hours for which the Mitglied has entered
+        a Meldung. 
+        """
+
+        echteMeldungen = (Meldung.objects
+                          .filter(melder=self)
+                          .exclude(prefMitglied=Meldung.GARNICHT))
+
+        return sum([m.aufgabe.stunden for m in echteMeldungen])
+
+    def zugeteilteAufgaben(self):
+
+        z = self.user.zuteilung_set.all()
+
+        return z.count()
+    
     def zugeteilteStunden(self, time=None):
         """Compute hours already assigned to this user.
 
@@ -200,7 +241,7 @@ class Aufgabengruppe (models.Model):
     class Meta:
         verbose_name_plural = "Aufgabengruppen"
         verbose_name = "Aufgabengruppe"
-
+        ordering = ['gruppe']
 
 class Aufgabe(models.Model):
     aufgabe = models.CharField(max_length=50)
@@ -263,6 +304,7 @@ class Aufgabe(models.Model):
     class Meta:
         verbose_name_plural = "Aufgaben"
         verbose_name = "Aufgabe"
+        ordering = ['aufgabe']
 
 
 class Stundenplan (models.Model):
@@ -524,3 +566,21 @@ class Leistung (models.Model):
                  if self.veraendert else "--") 
                 )
 
+
+
+## this is just debug code for the meldung issue - trying to figure out why there are double instances
+from django.db.models.signals import pre_save, pre_init, post_save
+from django.dispatch import receiver 
+
+## @receiver(pre_init, sender=Meldung)
+## def meldungDebugPreInit (sender, args, **kwargs):
+##     print "Meldung Pre Init : ", args, kwargs
+
+## @receiver(pre_save, sender=Meldung)
+## def meldungDebugPreSave (sender, **kwargs):
+##     print "Meldung PreSave: ", kwargs
+    
+## @receiver(post_save, sender=Meldung)
+## def meldungDebugPostSave (sender, **kwargs):
+##     print "Meldung PostSave: ", kwargs
+    
