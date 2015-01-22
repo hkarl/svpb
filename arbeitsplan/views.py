@@ -230,7 +230,7 @@ class AufgabenUpdate (SuccessMessageMixin, isVorstandMixin, UpdateView):
     template_name = "arbeitsplan_aufgabenCreate.html"
     # success_url = "home.html"
     success_url = reverse_lazy("arbeitsplan-aufgabenVorstand")
-    success_message = 'Die  <a href="%(url)s">Aufgabe %(id)s</a> wurde erfolgreich verändert.'
+    success_message = u'Die  <a href="%(url)s">Aufgabe %(id)s</a> wurde erfolgreich verändert.'
     title = "Aufgabe ändern"
     buttontext = "Änderung eintragen"
 
@@ -562,9 +562,10 @@ class AufgabengruppeUpdate(isVorstandMixin, SimpleUpdateView):
 #########   MELDUNG 
 ########################################################################################
 
+
 class MeldungEdit (FilteredListView):
 
-    def processUpdate (self, request):
+    def processUpdate(self, request):
         for k, value in request.POST.iteritems():
             if (k.startswith('bemerkung') or
                 k.startswith('prefMitglied') or
@@ -755,10 +756,10 @@ class CreateMeldungenView (MeldungEdit):
         qs = [q for q in qs if q.is_open()]
 
         return qs
-    
+
     def get_queryset(self):
 
-        qsAufgaben = self.apply_filter ()
+        qsAufgaben = self.apply_filter()
 
         # fill the table with all aufgaben
         # overwrite preferences and bemerkung if for them, a value exists
@@ -780,11 +781,11 @@ class CreateMeldungenView (MeldungEdit):
                  'fehlende_zuteilungen': None,
                 }
             # add what we can find from Meldung:
-            try: 
+            try:
                 m, newcreateFlag = models.Meldung.objects.get_or_create(
-                aufgabe=a,
-                melder=self.request.user,
-                defaults = models.Meldung.MODELDEFAULTS, 
+                    aufgabe=a,
+                    melder=self.request.user,
+                    defaults = models.Meldung.MODELDEFAULTS,
                 )
             except models.Meldung.MultipleObjectsReturned:
                 messages.error(self.request,

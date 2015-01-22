@@ -29,9 +29,10 @@ from django.utils.timezone import utc
 
 ### patch the display of a user:
 
-User.__unicode__ = lambda s: "%s %s (Nr.: %s)" % (s.first_name,
+User.__unicode__ = lambda s: u"%s %s (Nr.: %s)" % (s.first_name,
                                                    s.last_name,
                                                    s.mitglied.mitgliedsnummer)
+
 
 
 class Mitglied (models.Model):
