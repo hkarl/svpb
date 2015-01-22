@@ -226,7 +226,13 @@ urlpatterns = patterns('',
         active_and_login_required(svpb.views.AccountLetters.as_view()),
         name="accountLetters"
         ),
-        
+
+    # sammlung aller Mitglieder
+    url(r'^accounts/mitgliederexcel.xlsx',
+        active_and_login_required(svpb.views.MitgliederExcel.as_view()),
+        name="mitgliedExcel"
+        ),
+    
     # media for manual intergration:
     url(r'^manual/',
         active_and_login_required(arbeitsplan.views.MediaChecks.as_view()),

@@ -20,6 +20,7 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.html import format_html
+from django.core.management import call_command
 
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -147,7 +148,7 @@ class AccountEdit(SuccessMessageMixin, FormView):
         user.mitglied.plz = form.cleaned_data['plz']
         user.mitglied.ort = form.cleaned_data['ort']
         user.mitglied.geburtsdatum = form.cleaned_data['geburtsdatum']
-
+        
     def get_user(self):
         return self.request.user
 
@@ -253,7 +254,7 @@ class ActivateView(FormView):
 
 def preparePassword(accountList=None):
     """For the given accounts, prepare the passwords and the PDFs for the letters
-    
+
     Arguments:
     - `accountList`: List of User objects
     Returns:
@@ -262,18 +263,18 @@ def preparePassword(accountList=None):
 
     from jinja2 import Template
     import codecs, subprocess
-        
+
     r = []
 
     # print "preparing passwords for: ", accountList
-        
+
     for u in accountList:
-        pw = pwgen(6,no_symbols=True,no_ambiguous=True)
+        pw = pwgen(6, no_symbols=True, no_ambiguous=True)
         u.set_password(pw)
         u.save()
 
         r.append({'user': u,
-                  'mitglied': u.mitglied, 
+                  'mitglied': u.mitglied,
                   'password': pw,
                   'status': u.mitglied.get_status_display(),
                   'geburtsdatum': u.mitglied.geburtsdatum.strftime('%d.%m.%Y'),
@@ -301,16 +302,16 @@ def preparePassword(accountList=None):
     ## retval = subprocess.call (["xelatex",
     ##                                '-interaction=batchmode',
     ##                                "letters.tex"]) 
-    
+
     # move this file into a directory where only Vorstand has access!
     import shutil, os
     try:
         os.remove (os.path.join (SENDFILE_ROOT, 'letters.pdf'))
     except:
         pass
-    
+
     shutil.move("letters.pdf", SENDFILE_ROOT)
-    
+
     return r
 
 class AccountAdd(SuccessMessageMixin, isVorstandMixin, CreateView):
@@ -434,10 +435,10 @@ class AccountLetters(isVorstandMixin, View):
 
     def get(self, request):
         return sendfile(request,
-                        os.path.join(SENDFILE_ROOT, 
+                        os.path.join(SENDFILE_ROOT,
                                 "letters.pdf"))
 
-    
+
 class AccountDelete(SuccessMessageMixin, isVorstandMixin, DeleteView):
     model = User
     success_url = reverse_lazy("accountList")
@@ -446,3 +447,26 @@ class AccountDelete(SuccessMessageMixin, isVorstandMixin, DeleteView):
     # success_message = "%(first_name) %(last_name) wurde gelöscht!"
     success_message = "Mitglied wurde gelöscht!"
 
+##############
+
+
+class MitgliederExcel(View):
+    """For Vorstand, send back an Excel file with all
+    the Mitlgieders in various filtering combinations"""
+    
+    @method_decorator(user_passes_test(isVorstand, login_url="/keinVorstand/"))
+    def get(self, request):
+
+        if isVorstand(request.user):
+            # call the command to prepare the excel file
+
+            # repeated name; TODO: move this from here and mitgliedExcel.py into settings 
+            filename = "mitglieder.xlsx"
+            basepath = SENDFILE_ROOT
+
+            call_command('mitgliedExcel')
+
+            return sendfile(request,
+                            os.path.join(basepath, filename))
+        else:
+            return redirect ("keinVorstand")
