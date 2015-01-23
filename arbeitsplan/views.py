@@ -1145,16 +1145,16 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                     request.POST.get('status').split(';')
                   ])
 
-        print "prevState:"
-        print previousStatus
+        # print "prevState:"
+        # print previousStatus
 
         newState = dict([ (item[0][4:], item[1])
                      for item in request.POST.iteritems()
                      if item[0][:4] == "box_"
                     ])
 
-        print "newState"
-        print newState
+        # print "newState"
+        # print newState
 
         # find all items in  newState  that have a zero in prevState
         # add that zuteilung
