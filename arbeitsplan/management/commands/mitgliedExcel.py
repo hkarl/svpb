@@ -16,7 +16,7 @@ import arbeitsplan.models as ap_models
 
 import datetime
 import pprint
-
+import os 
 
 import xlsxwriter
 from xlsxcursor import XlsxCursor
@@ -81,11 +81,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # set the locale right, to get the dates represented correctly
+
         translation.activate(settings.LANGUAGE_CODE)
 
         # take all the Mitglieder, first
 
-        workbook = xlsxwriter.Workbook('mitglieder.xlsx')
+        workbook = xlsxwriter.Workbook(os.path.join(
+            settings.SENDFILE_ROOT,
+            'mitglieder.xlsx'))
 
         self.createSheet(workbook,
                          'Alle Mitglieder',
