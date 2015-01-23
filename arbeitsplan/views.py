@@ -966,12 +966,25 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
     def MitgliedBusy_Filter(self, qs, busy):
         """applies a spare capacity available filter to a user Qs"""
 
-        if busy == 'FR':
+        if ("AM" in busy) and self.aufgabengruppe:
+            """Only keep those users who have a meldung for an aufagebn in this gruppe"""
+            ## for q in qs:
+            ##     print (q.meldung_set
+            ##            .exclude(prefMitglied=models.Meldung.GARNICHT)
+            ##            .filter(aufgabe__gruppe__gruppe=self.aufgabengruppe)
+            ##            .count())
+            qs = [q for q in qs
+                  if q.meldung_set
+                       .exclude(prefMitglied=models.Meldung.GARNICHT)
+                       .filter(aufgabe__gruppe__gruppe=self.aufgabengruppe)
+                       .count()]
+                
+        if "FR" in busy:
             # show users that can still accept more work
             qs = [q
                   for q in qs
                   if q.mitglied.zugeteilteStunden() < JAHRESSTUNDEN]
-        elif busy == 'BU':
+        elif "BU" in busy:
             # show users that are already busy
             qs = [q
                   for q in qs
@@ -1006,7 +1019,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
      für eine Aufgabe einteilen wollen. Entfernen Sie ein Häkchen,
       wenn das Mitglied die Aufgabe nicht mehr ausführen soll.
     <p>
-    Filtern Sie nach Mitgliedsnamen oder Aufgabengruppe.
+    Filtern Sie nach Mitgliedsnamen oder Aufgabengruppe. Zusätzlich können Sie nach Auslastung und Meldung der Mitglieder filtern: nur solche mit Meldungen für diese Aufgabengruppe (genauer: für irgendeine Aufgabe in der gewählten Gruppe), Mitglieder mit noch freier Arbeitskapazität, oder ausgelastete Mitglieder. 
     """
 
     discuss_text = """
@@ -1132,16 +1145,16 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                     request.POST.get('status').split(';')
                   ])
 
-        # print "prevState:"
-        # print previousStatus
+        print "prevState:"
+        print previousStatus
 
         newState = dict([ (item[0][4:], item[1])
                      for item in request.POST.iteritems()
                      if item[0][:4] == "box_"
                     ])
 
-        # print "newState"
-        # print newState
+        print "newState"
+        print newState
 
         # find all items in  newState  that have a zero in prevState
         # add that zuteilung
