@@ -455,8 +455,9 @@ class Zuteilung (models.Model):
                         currentTuple = (now, now+1)
 
                 outlist.append(currentTuple)
-        except Exception as e:
-            print e 
+        except Exception:
+            # print e
+            pass
 
         ## print "outlist: ", outlist 
         return outlist

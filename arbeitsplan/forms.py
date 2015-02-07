@@ -88,7 +88,7 @@ class CreateLeistungForm(CrispyFormMixin, forms.ModelForm):
             )
 
         self.helper.add_input(Submit ('apply', 'Eintragen'))
-        print self.helper.layout
+        # print self.helper.layout
 
     class Meta:
         model = models.Leistung

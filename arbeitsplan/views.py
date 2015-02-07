@@ -171,7 +171,7 @@ class FilteredListView(ListView):
                                            self.filterform.cleaned_data[fieldname])
                         else:
                             print "warning: filterxpression not recognized"
-                            print filterexp
+                            # print filterexp
             else:
                 print "filterform not valid"
 
@@ -335,7 +335,7 @@ class AufgabenUpdate (SuccessMessageMixin, isVorstandMixin, UpdateView):
                         m.mitglied.zuteilungBenachrichtigungNoetig = True
                         m.mitglied.save()
             except Exception as e:
-                print e, form.cleaned_data['schnellzuweisung'], self.object 
+                # print e, form.cleaned_data['schnellzuweisung'], self.object 
                 messages.error(self.request,
                                u"Die Aufgabe konnte nicht unmittelbar an ein Mitglied zugeteilt werden")
 
@@ -512,7 +512,7 @@ class AufgabenCreate (isVorstandMixin, SimpleCreateView):
         stundenplandict = dict(context['stundenplan'])
         # print 'std before: ', stundenplandict
         for k, v in self.request.POST.iteritems():
-            print k, v
+            # print k, v
             try:
                 u, uu = k.split('_')
                 stundenplandict[int(uu)] = int(v)
@@ -580,7 +580,7 @@ class MeldungEdit (FilteredListView):
                 try:
                     m = models.Meldung.objects.get(id=id)
                 except models.Meldung.DoesNotExist:
-                    print "consistency of dsatabase destryoed"
+                    print "consistency of database destroyed"
                     # TODO: display error 
                     continue 
 
@@ -603,8 +603,8 @@ class MeldungEdit (FilteredListView):
                                          format(m.aufgabe.aufgabe))
 
                 if key == 'prefMitglied':
-                    print value, m.prefMitglied, models.Meldung.MODELDEFAULTS['prefMitglied']
-                    print type(value), type(m.prefMitglied), type(models.Meldung.MODELDEFAULTS['prefMitglied'])
+                    # print value, m.prefMitglied, models.Meldung.MODELDEFAULTS['prefMitglied']
+                    # print type(value), type(m.prefMitglied), type(models.Meldung.MODELDEFAULTS['prefMitglied'])
 
                     if m.prefMitglied != value:
                         if (m.prefMitglied ==
@@ -616,7 +616,8 @@ class MeldungEdit (FilteredListView):
                                              format(m.aufgabe.aufgabe))
                         elif (int(value) ==
                               models.Meldung.MODELDEFAULTS['prefMitglied']):
-                            print "zurückgezogen"
+                            # print "zurueckgezogen"
+                            # TODO: CHECK 
                             # TODO: das muss man am besten direkt verbieten, wenn es schon eine Zuteilung gibt!
                             messages.success(request,
                                              u"Sie haben die Meldung für  Aufgabe {0} zurückgezogen. "
@@ -868,7 +869,7 @@ class MeldungVorstandView(isVorstandMixin, MeldungEdit):
     ## """
 
     def post(self, request, *args, **kwargs):
-        print request.POST
+        # print request.POST
         self.processUpdate(request)
         # return redirect ('arbeitsplan-meldungVorstand')
         return redirect(self.request.get_full_path())
@@ -883,7 +884,7 @@ class QuickMeldung(View):
     """
 
     def get(self, request, aufgabeid, *args, **kwargs):
-        print aufgabeid
+        # print aufgabeid
 
         try:
             aufgabe = models.Aufgabe.objects.get(pk=int(aufgabeid))
@@ -948,7 +949,7 @@ class ListZuteilungenView(FilteredListView):
 
         qs = self.apply_filter(qs)
         table = self.get_filtered_table(qs)
-        print table 
+        # print table 
         return table
 
 
@@ -970,18 +971,18 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
         if ("AM" in busy):
             if self.aufgabengruppe:
-            """Only keep those users who have a meldung for an aufagebn in this gruppe"""
-            ## for q in qs:
-            ##     print (q.meldung_set
-            ##            .exclude(prefMitglied=models.Meldung.GARNICHT)
-            ##            .filter(aufgabe__gruppe__gruppe=self.aufgabengruppe)
-            ##            .count())
-            qs = [q for q in qs
-                  if q.meldung_set
-                       .exclude(prefMitglied=models.Meldung.GARNICHT)
-                       .filter(aufgabe__gruppe__gruppe=self.aufgabengruppe)
-                       .count()]
-                
+                """Only keep those users who have a meldung for an aufagebn in this gruppe"""
+                ## for q in qs:
+                ##     print (q.meldung_set
+                ##            .exclude(prefMitglied=models.Meldung.GARNICHT)
+                ##            .filter(aufgabe__gruppe__gruppe=self.aufgabengruppe)
+                ##            .count())
+                qs = [q for q in qs
+                      if q.meldung_set
+                           .exclude(prefMitglied=models.Meldung.GARNICHT)
+                           .filter(aufgabe__gruppe__gruppe=self.aufgabengruppe)
+                           .count()]
+
             # are we looking at a SINGLE Aufgabe?
             # then filter down further to only those users
             # who have a meldung for this Aufgabe
@@ -1085,9 +1086,9 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
         self.filterconfig = self.filterconfigUser
         userQs = super(ManuelleZuteilungView, self).apply_filter(userQs)
 
-        print "apply filter done"
-        print userQs
-        print aufgabeQs
+        # print "apply filter done"
+        # print userQs
+        # print aufgabeQs
         return (userQs, aufgabeQs)
 
 
@@ -1263,7 +1264,7 @@ class ZuteilungUebersichtView(isVorstandMixin, FilteredListView):
     model = models.Aufgabe
 
     def ungenuegend_zuteilungen_filter(self, qs, restrict):
-        print qs, restrict
+        # print qs, restrict
         if restrict == 'UN':
             # qs=qs.filter(anzahl__gt=zuteilung_set.count())
             qs = (qs.annotate(num_Zuteilung=Count('zuteilung')).
@@ -1427,8 +1428,8 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
 
         zugeteilteUser = [z.ausfuehrer for z in aufgabe.zuteilung_set.all()]
 
-        print "Stundenplan fuer Auzfgabe: ", stundenplan
-        print "zugeteilte User: ",  zugeteilteUser
+        # print "Stundenplan fuer Auzfgabe: ", stundenplan
+        # print "zugeteilte User: ",  zugeteilteUser
 
         # construct the checkboxes string:
         # userid_uhrzeit, if that user works on that time
@@ -1439,7 +1440,7 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
         checkedboxes = [str(sz.zuteilung.ausfuehrer.id) + "_" + str(sz.uhrzeit)
                         for szQs in stundenzuteilungenQuerysets
                         for sz in szQs]
-        print checkedboxes
+        # print checkedboxes
 
         # construct the list of dicts for users:
         for u in zugeteilteUser:
@@ -1454,7 +1455,7 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
             stundenzuteilung = (zuteilungThisUser[:1].get().
                                 stundenzuteilung_set.values_list('uhrzeit',
                                                                  flat=True))
-            print zuteilungThisUser
+            # print zuteilungThisUser
             for s in stundenplan:
                 newEntry['u'+str(s.uhrzeit)] = ((1 if s.uhrzeit in stundenzuteilung
                                                  else 0),
@@ -1464,7 +1465,7 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
                                                  )
             data.append(newEntry)
 
-        print data
+        # print data
 
         # print [(sz.zuteilung.ausfuehrer, sz.uhrzeit) for sz in stundenzuteilungen]
 
@@ -1508,7 +1509,7 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
 
     def post(self, request, aufgabeid, *args, **kwargs):
 
-        print self.request.POST
+        # print self.request.POST
 
         if self.request.POST.get('checkedboxes'):
             tmp = [x.split('_')
@@ -1520,7 +1521,7 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
 
         # pp(tmp)
         checkedboxes = [(int(x[0]), int(x[1])) for x in tmp ]
-        print "checkboxes: ", checkedboxes
+        # print "checkboxes: ", checkedboxes
 
         # any values to add? 
         for v in self.request.POST:
@@ -2171,7 +2172,7 @@ class EmailSendenView(isVorstandMixin, View):
             failed = newEmailLogs.filter(status=pom.STATUS.failed).count()
             sent = newEmailLogs.filter(status=pom.STATUS.sent).count()
 
-            print sent, failed
+            # print sent, failed
 
             if sent > 0:
                 messages.success(request,
