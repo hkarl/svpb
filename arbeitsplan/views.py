@@ -1320,19 +1320,21 @@ class ZuteilungUebersichtView(isVorstandMixin, FilteredListView):
             newEntry = defaultdict(int)
             newEntry['id'] = aufgabe.id
             newEntry['aufgabe'] = mark_safe(
-                u'<a href="{1}">{0}</a>'.format(aufgabe.aufgabe,
-                                                reverse('arbeitsplan-aufgabenEdit',
-                                                        args=(aufgabe.id,))))
+                u'<a href="{1}">{0}</a>'
+                .format(aufgabe.aufgabe,
+                        reverse('arbeitsplan-aufgabenEdit',
+                                args=(aufgabe.id,))))
 
             newEntry['required'] = aufgabe.anzahl
             newEntry['gruppe'] = aufgabe.gruppe.gruppe
             newEntry['gemeldet'] = aufgabe.numMeldungen()
             newEntry['zugeteilt'] = aufgabe.zuteilung_set.count()
             newEntry['editlink'] = mark_safe(
-                u'<a href="{0}">Zuteilung</a>'.format(
+                u'<a href="{0}?mitglied_ausgelastet=AM&filter=Filter+anwenden">'
+                'Zuteilung</a>'.format(
                     reverse('arbeitsplan-manuellezuteilungAufgabe',
                             args=(aufgabe.id,),
-                            )))
+                        )))
 
             if aufgabe.has_Stundenplan():
 
