@@ -440,6 +440,17 @@ class MitgliedAusgelastetForm(CrispyFilterMixin, forms.Form):
         'aktive_aufgaben',
         )
 
+    def __init__(self, *args, **kwargs):
+        "Let's make sure that AM is the default field value"
+
+        super(MitgliedAusgelastetForm, self).__init__(*args, **kwargs)
+
+        # this works, but does not apply the filter setting :-(
+        # besides, it makes zero sense to use this as a default, since
+        # intially, there is typically no Aufgabengruppe selected.
+        # no obvious way to make this work 
+        # self.initial['mitglied_ausgelastet'] = 'AM'
+
 
 class ZuteilungStatusForm(CrispyFilterMixin, forms.Form):
     """Possible status:
