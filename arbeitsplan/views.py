@@ -183,7 +183,7 @@ class FilteredListView(ListView):
             table = f(qs)
         else:
             table = self.tableClass(qs)
-        django_tables2.RequestConfig(self.request).configure(table)
+        django_tables2.RequestConfig(self.request, paginate=False).configure(table)
 
         return table
 
@@ -1020,6 +1020,11 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
       wenn das Mitglied die Aufgabe nicht mehr ausführen soll.
     <p>
     Filtern Sie nach Mitgliedsnamen oder Aufgabengruppe. Zusätzlich können Sie nach Auslastung und Meldung der Mitglieder filtern: nur solche mit Meldungen für diese Aufgabengruppe (genauer: für irgendeine Aufgabe in der gewählten Gruppe), Mitglieder mit noch freier Arbeitskapazität, oder ausgelastete Mitglieder. 
+    <p>
+    Hinweise: 
+    <ul>
+    <li> In den Feldern der Tabelle wird (neben dem Auswahlkreuzchen) in Klammern die Präferenz bzw. des Vorstands für diese Aufgabe angezeigt. </li> 
+    </ul>
     """
 
     discuss_text = """
@@ -1277,7 +1282,7 @@ class ZuteilungUebersichtView(isVorstandMixin, FilteredListView):
 
     def get_filtered_table(self, qs):
         table = self.tableClassFactory(qs, self.show_stundenplan)
-        django_tables2.RequestConfig(self.request).configure(table)
+        django_tables2.RequestConfig(self.request, paginate=False).configure(table)
 
         return table
 
@@ -1366,7 +1371,7 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
 
     def get_filtered_table(self, qs, aufgabe):
         table = self.tableClassFactory(qs, aufgabe)
-        django_tables2.RequestConfig(self.request).configure(table)
+        django_tables2.RequestConfig(self.request, paginate=False).configure(table)
 
         return table
 
