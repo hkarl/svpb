@@ -244,8 +244,22 @@ class Aufgabengruppe (models.Model):
         verbose_name = "Aufgabengruppe"
         ordering = ['gruppe']
 
+
+###############
+# work around the django_tables2 issue:  
+from django.core.exceptions import ValidationError
+
+
+def validate_notDot(value):
+    if '.' in value:
+        raise ValidationError(u"Leider dürfen Aufgabennamen keinen . "
+                              "enthalten! "
+                              "Bitte umformulieren, danke.")
+
+
 class Aufgabe(models.Model):
-    aufgabe = models.CharField(max_length=50)
+    aufgabe = models.CharField(max_length=50,
+                               validators=[validate_notDot])
     verantwortlich = models.ForeignKey(User,
                                        help_text="Verantwortliches "
                                        "Vorstandsmitglied")
