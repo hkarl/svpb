@@ -421,13 +421,13 @@ class MitgliedAusgelastetForm(CrispyFilterMixin, forms.Form):
                                              label="Mitglied ausgelastet?",
                                              choices=(
                                                  ('--', 'Alle Mitglieder'),
-                                                 ('AM', 'Mitglieder mit Meldung für Aufgabengruppe'),
+                                                 ('AM', 'Mitglieder mit Meldung für Aufgabe/Aufgabengruppe'),
                                                  ('FR', 'Nur freie Mitglieder'),
-                                                 ('FRAM', 'Nur freie Mitglieder, mit Meldung für Aufgabengruppe'),
+                                                 ('FRAM', 'Nur freie Mitglieder, mit Meldung für Aufgabe/Aufgabengruppe'),
                                                  ('BU',
                                                   'Nur ausgelastete Mitglieder'),
                                                  ('BUAM',
-                                                  'Nur ausgelastete Mitglieder, mit Meldung für Aufgabengruppe'),
+                                                  'Nur ausgelastete Mitglieder, mit Meldung für Aufgabe/Aufgabengruppe'),
                                                  ),
                                              )
 

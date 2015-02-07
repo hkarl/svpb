@@ -966,7 +966,10 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
     def MitgliedBusy_Filter(self, qs, busy):
         """applies a spare capacity available filter to a user Qs"""
 
-        if ("AM" in busy) and self.aufgabengruppe:
+        # print self, self.aufgabeQs
+
+        if ("AM" in busy):
+            if self.aufgabengruppe:
             """Only keep those users who have a meldung for an aufagebn in this gruppe"""
             ## for q in qs:
             ##     print (q.meldung_set
@@ -979,6 +982,24 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                        .filter(aufgabe__gruppe__gruppe=self.aufgabengruppe)
                        .count()]
                 
+            # are we looking at a SINGLE Aufgabe?
+            # then filter down further to only those users
+            # who have a meldung for this Aufgabe
+
+            try: 
+                if self.aufgabeQs.count() == 1:
+                    # print "just a single one"
+                    aufgabe = self.aufgabeQs[0]
+                    # print aufgabe
+
+                    qs = [q for q in qs
+                          if q.meldung_set
+                               .exclude(prefMitglied=models.Meldung.GARNICHT)
+                               .filter(aufgabe=aufgabe)
+                               .count()]
+            except:
+                pass
+
         if "FR" in busy:
             # show users that can still accept more work
             qs = [q
@@ -1059,9 +1080,14 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                 self.aufgabengruppe = (self.filterform.
                                        cleaned_data['aufgabengruppe'])
 
+        # we need that in the user filter: 
+        self.aufgabeQs = aufgabeQs
         self.filterconfig = self.filterconfigUser
         userQs = super(ManuelleZuteilungView, self).apply_filter(userQs)
 
+        print "apply filter done"
+        print userQs
+        print aufgabeQs
         return (userQs, aufgabeQs)
 
 
