@@ -93,7 +93,7 @@ class Command(BaseCommand):
         self.createSheet(workbook,
                          'Alle Mitglieder',
                          ap_models.Mitglied.objects.all())
-        
+
         self.createSheet(workbook,
                          'Aktive Mitglieder',
                          ap_models.Mitglied.objects.filter(user__is_active=True)
@@ -138,7 +138,7 @@ class Command(BaseCommand):
                               m.arbeitslast > 0)], 
                          ap_models.Mitglied                          
                          )
-                            
+
         workbook.close()
         
         # send_mail(subject,

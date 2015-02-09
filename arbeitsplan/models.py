@@ -155,6 +155,7 @@ class Mitglied (models.Model):
                               default=STATUS_Erwachsene,
                               choices=STATUSDEFAULTS)
 
+
     erstbenachrichtigt = models.BooleanField(
         verbose_name="Erstbenachrichtigung",
         help_text="Wurde die Erstbenachrichtigung mit Password bereits generiert?",
@@ -170,18 +171,15 @@ class Mitglied (models.Model):
         return self.user.__unicode__()
 
     def gemeldeteAnzahlAufgaben(self):
-        return (Meldung.objects
-                .filter(melder=self)
-                .exclude(prefMitglied=Meldung.GARNICHT)
-                .count())
-        
+
+        return self.user.meldung_set.exclude(prefMitglied=Meldung.GARNICHT).count()
+
     def gemeldeteStunden(self):
         """Compute hours for which the Mitglied has entered
         a Meldung. 
         """
 
-        echteMeldungen = (Meldung.objects
-                          .filter(melder=self)
+        echteMeldungen = (self.user.meldung_set
                           .exclude(prefMitglied=Meldung.GARNICHT))
 
         return sum([m.aufgabe.stunden for m in echteMeldungen])
@@ -191,7 +189,7 @@ class Mitglied (models.Model):
         z = self.user.zuteilung_set.all()
 
         return z.count()
-    
+
     def zugeteilteStunden(self, time=None):
         """Compute hours already assigned to this user.
 
