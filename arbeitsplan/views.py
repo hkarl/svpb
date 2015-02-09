@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import View, ListView, CreateView
-from django.views.generic import FormView, UpdateView, DeleteView
+from django.views.generic import FormView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.models import User
 
 from django.utils.http import urlencode
@@ -2313,4 +2313,17 @@ class AccountList(SuccessMessageMixin, isVorstandMixin, FilteredListView):
 ##########
 
 # A siomple home-view to provide aufgabengruppe to the template
-# seems heavy-handed, but no 
+# seems heavy-handed, but no other option seems handy to push data into a TemplateView
+
+class HomeView(TemplateView):
+
+    def get_context_data(self, *args, **kwargs):
+        c = super(HomeView, self).get_context_data()
+        c.update({'aufgabengruppen': [
+            {'name': a.gruppe,
+             'id': a.id}
+            for a in models.Aufgabengruppe.objects.all()],
+                  'bla': 'blub', })
+        return c
+        
+        
