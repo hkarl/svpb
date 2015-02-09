@@ -34,16 +34,17 @@ class MeldungAdmin(admin.ModelAdmin):
     date_hierachy = 'erstellt'
     list_display = 'melder', 'aufgabe', 'prefMitglied', 'prefVorstand'
     # list_filter = ('melder', 'aufgabe')
+    list_filter = ('aufgabe__gruppe__gruppe', )
     search_fields = ('melder__last_name', 'melder__first_name', 'aufgabe__aufgabe')
 
 
 class LeistungAdmin (admin.ModelAdmin):
     date_hierarchy = 'erstellt'
     list_display = ('melder', 'aufgabe', 'wann',  'status')
-    list_filter = ('aufgabe__verantwortlich',
-                   'status', 'aufgabe', 'wann',)
+    list_filter = ('status', 'aufgabe__gruppe__gruppe', 'wann',)
     radio_fields = {'status': admin.HORIZONTAL}
-    search_fields = ('melder__username',)
+    search_fields = ('melder__last_name', 'melder__first_name', 'aufgabe__aufgabe')
+
 
 
 class StundenplanAdmin(admin.ModelAdmin):
