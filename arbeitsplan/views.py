@@ -1024,10 +1024,23 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
         return qs
 
+    def ungenuegend_zuteilungen_filter(self, qs, restrict):
+        # print qs, restrict
+        if restrict == 'UN':
+            # qs=qs.filter(anzahl__gt=zuteilung_set.count())
+            qs = (qs.annotate(num_Zuteilung=Count('zuteilung')).
+                  filter(anzahl__gt=F('num_Zuteilung')))
+        elif restrict == 'ZU':
+            qs = (qs.annotate(num_Zuteilung=Count('zuteilung')).
+                  filter(anzahl__lte=F('num_Zuteilung')))
+        return qs
+
     filtertitle = "Nach Aufgabengruppen oder Mitgliedern filtern"
     # filterform_class = forms.PersonAufgabengruppeFilterForm
     filterform_class = forms.ZuteilungMitglied
     filterconfigAufgabe = [('aufgabengruppe', 'gruppe__gruppe'),
+                           ('zuteilungen_ausreichend',
+                            ungenuegend_zuteilungen_filter),
                            ('aktive_aufgaben', AktiveAufgaben_Filter)]
     filterconfigUser = [('first_name', 'first_name__icontains'),
                         ('last_name', 'last_name__icontains'),
@@ -2296,3 +2309,8 @@ class AccountList(SuccessMessageMixin, isVorstandMixin, FilteredListView):
     filterconfig = [('first_name', 'first_name__icontains'),
                     ('last_name', 'last_name__icontains'),
                     ]
+
+##########
+
+# A siomple home-view to provide aufgabengruppe to the template
+# seems heavy-handed, but no 

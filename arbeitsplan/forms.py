@@ -460,20 +460,24 @@ class ZuteilungStatusForm(CrispyFilterMixin, forms.Form):
     """
 
     zuteilungen_ausreichend = forms.ChoiceField(required=False,
-                                                label="Zuteilugnen ausreichend?",
+                                                label="Zuteilungen ausreichend?",
                                                 choices = (
                                                      ('--', 'Alle anzeigen'),
                                                      ('UN', 'Aufgaben mit unzureichenden Zuteilungen'),
                                                      ('ZU', 'Aufgaben mit zureichenden Zuteilungen'),
                                                      ),
                                                  )
+    __layout = Layout(
+        'zuteilungen_ausreichend',
+        )
 
+class StundenplanForm(CrispyFilterMixin, forms.Form):
+    
     stundenplan = forms.BooleanField(required=False,
                                      initial=False,
                                      label="Stundenplan anzeigen?")
 
     __layout = Layout(
-        'zuteilungen_ausreichend',
         'stundenplan',
         )
 
@@ -542,12 +546,14 @@ class LeistungEmailFilter(AufgabengruppeFilterForm,
 
 class ZuteilungManuellFilter(AufgabengruppeFilterForm,
                              ZuteilungStatusForm,
+                             StundenplanForm,
                              forms.Form,
                              ):
     pass
 
 
 class ZuteilungMitglied(PersonAufgabengruppeFilterForm,
+                        ZuteilungStatusForm,
                         MitgliedAusgelastetForm,
                         forms.Form):
     pass
