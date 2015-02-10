@@ -26,6 +26,7 @@ import datetime
 # needed for auto_now fields with veto
 from django.utils.timezone import utc
 
+from phonenumber_field.modelfields import PhoneNumberField
 
 ### patch the display of a user:
 
@@ -126,6 +127,14 @@ class Mitglied (models.Model):
                            verbose_name="Ort",
                            default="")
 
+    festnetz = PhoneNumberField(blank=True,
+                                verbose_name="Festnetznummer",
+                                default="")
+    
+    mobil = PhoneNumberField(blank=True,
+                             verbose_name="Mobilnummer",
+                             default="")
+    
     STATUS_Erwachsene = "Er"
     STATUS_Jugendliche = "Ju"
     STATUS_Schueler = "Ss"
