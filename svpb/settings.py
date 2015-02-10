@@ -230,8 +230,8 @@ if SEND_TEST_EMAIL:
 # XSendfilte interface
 # this will only work with nginx, not in development setup - but that's not too important to test there
 
-SENDFILE_BACKEND = "sendfile.backends.nginx"
-SENDFILE_ROOT = os.path.join(STATIC_ROOT, "media/doc")
+SENDFILE_BACKEND = "sendfile.backends.development"
+SENDFILE_ROOT = os.path.join(STATIC_ROOT, "static/media/doc")
 SENDFILE_URL = "/media/doc"
 
 
@@ -240,3 +240,7 @@ JAHRESSTUNDEN = 10
 # for select2: 
 SELECT2_BOOTSTRAP = False
 AUTO_RENDER_SELECT2_STATICS = False
+
+
+# for phonenumbers:
+PHONENUMBER_DEFAULT_REGION = "DE"

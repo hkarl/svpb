@@ -9,6 +9,8 @@ from crispy_forms.layout import Submit, Layout, Button, Field, Div, HTML
 from arbeitsplan import models
 from django.contrib.auth.models import User
 
+from phonenumber_field.formfields import PhoneNumberField
+
 class LoginForm(forms.Form):
     username = forms.CharField(label="Nutzername",
                                help_text="In der Regel: Ihre Mitgliedsnummer, mit führenden 0 auf 5 Stellen  aufgefüllt")
@@ -68,16 +70,24 @@ class AccountEdit(forms.Form):
     geburtsdatum = forms.DateField(required=False,
                                    help_text="Bitte aktualisieren Sie Ihr Geburtsdatum.")
 
+    festnetz = PhoneNumberField(required=False,
+                                help_text="Ihre Festnetznummer.")
+
+    mobil = PhoneNumberField(required=False,
+                             help_text="Ihre Mobilfunknummer.")
+    
     def computeLayout(self):
         return  Layout('email',
-                                    HTML("<p>"),
-                                    'strasse',
-                                    HTML("<p>"),
-                                    'plz', 'ort',
-                                    HTML("<p>"),
-                                    Field('geburtsdatum', css_class="datepicker"),
-                                    HTML("<p>"),
-                                    )
+                       HTML("<p>"),
+                       'strasse',
+                       HTML("<p>"),
+                       'plz', 'ort',
+                       HTML("<p>"),
+                       Field('geburtsdatum', css_class="datepicker"),
+                       HTML("<p>"),
+                       'festnetz',
+                       'mobil',
+        )
         
     def __init__(self, *args, **kwargs):
         # print "creating an Account Edit Form"

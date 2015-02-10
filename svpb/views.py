@@ -102,6 +102,15 @@ class SvpbLogin(FormView):
         if user is not None:
             succ = login(self.request, user)
             if user.is_active:
+                tmp = user.mitglied.profileIncomplete()
+                if tmp:
+                    messages.warning(self.request,
+                                     format_html(
+                                         u"Ihre Profilangaben sind unvollständig.<br>"
+                                         u"Es fehlen {}.<br>"
+                                         u'Bitte ergänzen Sie <a href="/accounts/edit/">Ihr Profil.</a>',
+                                         tmp
+                                     ))
                 return super(SvpbLogin, self).form_valid(form)
             else:
                 return redirect('/accounts/activate/')
@@ -134,7 +143,9 @@ class AccountEdit(SuccessMessageMixin, FormView):
         initial['plz'] = user.mitglied.plz
         initial['ort'] = user.mitglied.ort
         initial['geburtsdatum'] = user.mitglied.geburtsdatum
-
+        initial['festnetz'] = user.mitglied.festnetz
+        initial['mobil'] = user.mitglied.mobil
+        
         return initial
 
     def get_initial(self):
@@ -148,6 +159,8 @@ class AccountEdit(SuccessMessageMixin, FormView):
         user.mitglied.plz = form.cleaned_data['plz']
         user.mitglied.ort = form.cleaned_data['ort']
         user.mitglied.geburtsdatum = form.cleaned_data['geburtsdatum']
+        user.mitglied.festnetz = form.cleaned_data['festnetz']
+        user.mitglied.mobil = form.cleaned_data['mobil']
         
     def get_user(self):
         return self.request.user

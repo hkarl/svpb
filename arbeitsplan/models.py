@@ -227,6 +227,14 @@ class Mitglied (models.Model):
         # print self.__unicode__(), time, stundenlist
         return sum(stundenlist)
 
+    def profileIncomplete(self):
+        r = []
+        if not self.user.email:
+            r.append('email')
+        if not self.festnetz and not self.mobil:
+            r.append('Telefonummer (Festnetznummer oder Mobil)')
+        return ', '.join(r)
+                
     class Meta:
         verbose_name_plural = "Mitglieder"
         verbose_name = "Mitglied"
