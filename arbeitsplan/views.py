@@ -676,7 +676,7 @@ class CreateMeldungenView (MeldungEdit):
     title = "Meldungen für Aufgaben eintragen oder ändern"
     # filterform_class = forms.AufgabengruppeFilterForm
     filterform_class = forms.GemeldeteFilter
-    filtertitle = "Meldungen nach Aufgabengruppen filtern"
+    filtertitle = "Meldungen filtern"
     tabletitle = "Meldungen für Aufgaben eintragen oder ändern"
     tableform = {'name': "eintragen",
                  'value': "Meldungen eintragen/ändern"}

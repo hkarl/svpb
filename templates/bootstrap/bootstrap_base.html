@@ -84,6 +84,7 @@ SVPB -- Arbeitsverwaltung
               <ul class="dropdown-menu">
                 <li><a href="/arbeitsplan/meldung/liste">Übersicht</a></li>
                 <li><a href="/arbeitsplan/meldung/">Meldung bearbeiten</a></li>
+                <li><a href="/arbeitsplan/meldung/?gemeldet=GA&filter=Filter+anwenden">Meldung löschen</a></li>
                 {% for g in  user.groups.all %}
                   {% if g.name == "Vorstand" %}
                 <li class="divider"></li>
