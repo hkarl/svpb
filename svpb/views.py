@@ -28,6 +28,7 @@ from django.dispatch import receiver
 
 from pwgen import pwgen
 
+from post_office import mail
 
 @receiver(post_save, sender=User)
 def create_mitglied(sender, instance, created, **kwargs):
@@ -167,18 +168,34 @@ class AccountEdit(SuccessMessageMixin, FormView):
 
     def form_valid(self, form):
 
-        user = self.get_user()
-        self.storeUser(form, user)
+        if form.has_changed():
+            user = self.get_user()
+            self.storeUser(form, user)
 
-        user.save()
-        user.mitglied.save()
+            user.save()
+            user.mitglied.save()
 
-        messages.success(self.request,
-                         format_html(
-                             u"Das Profil {} {} ({}) wurde erfolgreich aktualisiert.",
-                             user.first_name, user.last_name,
-                             user.mitglied.mitgliedsnummer))
+            print ({'user': user.__dict__,
+                    'mitglied': user.mitglied.__dict__})
+            # inform the relevant Vorstand in charge of memeberhsip
+            mail.send(['mein@svpb.de'],
+                      template="updatedProfile",
+                      context={'user': user.__dict__,
+                               'mitglied': user.mitglied.__dict__,
+                               'changed': form.changed_data},
+                      priority='now',
+                      )
 
+            messages.success(self.request,
+                             format_html(
+                                 u"Das Profil {} {} ({}) wurde erfolgreich aktualisiert.",
+                                 user.first_name, user.last_name,
+                                 user.mitglied.mitgliedsnummer))
+        else: 
+            messages.success(self.request,
+                             "Sie haben keine Änderungen vorgenommen."
+                             )
+            
         return super(AccountEdit, self).form_valid(form)
 
 
