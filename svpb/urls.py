@@ -62,6 +62,11 @@ urlpatterns = patterns('',
          name="arbeitsplan-benachrichtigen-senden",
          ),
 
+    url (r'^arbeitsplan/benachrichtigen/templateListe/$',
+         active_and_login_required(arbeitsplan.views.ListEmailTemplate.as_view()),
+         name="arbeitsplan-benachrichtigen-liste",
+         ),
+                       
     url(r'^arbeitsplan/aufgaben/$',
         active_and_login_required(arbeitsplan.views.ListAufgabenView.as_view()),
         name="arbeitsplan-aufgaben",

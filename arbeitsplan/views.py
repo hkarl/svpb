@@ -1930,6 +1930,11 @@ class ErstelleZuteilungView(View):
 ## BENACHRICHTIGUNGEN
 ########################
 
+class ListEmailTemplate(isVorstandMixin, ListView):
+    from post_office.models import EmailTemplate
+    model = EmailTemplate
+    template_name = "listEmail.html"
+
 class FilteredEmailCreateView (isVorstandOrTeamleaderMixin, FilteredListView):
 
     tableform = {'name': "eintragen",

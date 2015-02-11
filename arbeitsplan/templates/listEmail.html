@@ -1,0 +1,40 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+
+{% block branding %}
+Liste aller Email-Templates 
+{% endblock %}
+
+
+{% block content %}
+
+Diese Seite gibt einen Überblick über die existierenden
+Email-Templates. Das ist relativ technisch, sollte aber einen Eindruck
+vermitteln, welche emails wie an wen geschickt werden.
+
+
+{% for o in object_list %}
+<h3> {{ o }} </h3>
+
+<h4> Email </h4> 
+{{ o.subject }}
+<p>
+<pre>
+{{ o.content }}
+</pre>
+
+<h4>  Beschreibung </h4>
+
+<pre>
+{{ o.description }}
+</pre>
+
+
+{% endfor %}
+ 
+{% endblock %} 
+
+<!-- hhmts start -->Last modified: Wed Feb 11 11:16:20 CET 2015 <!-- hhmts end -->
+
