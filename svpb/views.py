@@ -178,7 +178,7 @@ class AccountEdit(SuccessMessageMixin, FormView):
             print ({'user': user.__dict__,
                     'mitglied': user.mitglied.__dict__})
             # inform the relevant Vorstand in charge of memeberhsip
-            mail.send(['mein@svpb.de'],
+            mail.send(['mail@svpb.de'],
                       template="updatedProfile",
                       context={'user': user.__dict__,
                                'mitglied': user.mitglied.__dict__,
