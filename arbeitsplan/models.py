@@ -274,7 +274,8 @@ def validate_notDot(value):
 
 class Aufgabe(models.Model):
     aufgabe = models.CharField(max_length=50,
-                               validators=[validate_notDot])
+                               validators=[validate_notDot],
+                               unique=True)
     verantwortlich = models.ForeignKey(User,
                                        help_text="Verantwortliches "
                                        "Vorstandsmitglied")
