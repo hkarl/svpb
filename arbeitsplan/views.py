@@ -1944,7 +1944,7 @@ class FilteredEmailCreateView (isVorstandOrTeamleaderMixin, FilteredListView):
     intro_text = """Versenden von Benachrichtungen:
     Wählen Sie die zu benachrichtigenden Zeilen durch die
     Checkbox in der letzten Spalte aus (default: alle).
-    Sie können pro Ziele einen Kommentar eintippen,
+    Sie können pro Zeile einen Kommentar eintippen,
     der an die jeweilige email angefügt wird.
     Zusätzlich können Sie (in dem Eingabefeld unterhalb der Tabelle)
     einen Text eingeben, der an ALLE ausgesendeten emails angefügt wird.
@@ -2098,6 +2098,46 @@ class LeistungEmailView (isVorstandMixin, FilteredEmailCreateView):
              }
         return d
 
+class MeldungNoetigEmailView(isVorstandMixin, FilteredEmailCreateView):
+    """Display a list of all users where not enough Zuteilungen have happened so far. 
+    """
+
+    title = "Benachrichtigung für Mitglieder mit ungenügenden Meldungen/Zuteilungen"
+
+    model = models.Mitglied
+
+    tableClass = MeldungsAufforderungsEmailTable
+    filterform_class = None
+    filterconfig = []
+    emailTemplate = "meldungsAufforderung"
+
+    def getUser(self, instance):
+        return instance.user
+
+    def annotate_data(self, qs):
+        qs = super(MeldungNoetigEmailView, self).annotate_data(qs)
+        qs = [q for q in qs if q.zugeteilteStunden() < q.arbeitslast]
+
+        for q in qs:
+            q.sendit = True
+            
+        return qs
+
+    def constructTemplateDict(self, instance):
+        """this view operates on models.User, so instance is a user object.
+        We have to find all zuteilungen for this user and stuff this data into
+        the construct Tempalte Dict for the email to render
+        """
+
+        d = {'u': instance.user,
+             'numZuteilungen': instance.zugeteilteAufgaben(),
+             'stundenZuteilungen': instance.zugeteilteStunden(),
+             'numMeldungen': instance.gemeldeteAnzahlAufgaben(),
+            }
+
+        # print d 
+        return d 
+        
 
 class ZuteilungEmailView(isVorstandMixin, FilteredEmailCreateView):
     """Display a list of all users where the zuteilung has changed since last
@@ -2332,3 +2372,4 @@ class HomeView(TemplateView):
         return c
         
         
+
