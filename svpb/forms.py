@@ -217,6 +217,10 @@ class MitgliederAddForm(forms.ModelForm):
                                     'geburtsdatum',
                                     'gender',
                                     'strasse', 'plz', 'ort',
+                                    HTML("<p>"),
+                                    'festnetz',
+                                    'mobil',
+                                    HTML("<p>"),                                    
                                     'status', 'arbeitslast',
                                     HTML("<p>"),
                                     )
@@ -257,4 +261,5 @@ class MitgliederAddForm(forms.ModelForm):
 
         fields = ['mitgliedsnummer', 'geburtsdatum', 'gender',
                   'strasse', 'plz',  'ort',
+                  'festnetz', 'mobil',
                   'status', 'arbeitslast']
