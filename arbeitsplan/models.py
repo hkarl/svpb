@@ -439,7 +439,8 @@ class Zuteilung (models.Model):
         Depends on whether a Stundenplan exists for this job.
         """
 
-        tmp = self.aufgabe.stundenplan_set.filter(anzahl__gt=0).count()
+        # tmp = self.aufgabe.stundenplan_set.filter(anzahl__gt=0).count()
+        tmp = self.stundenzuteilung_set.count()
         if tmp > 0:
             return tmp
         else:
