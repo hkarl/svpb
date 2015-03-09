@@ -386,7 +386,7 @@ class AccountAdd(SuccessMessageMixin, isVorstandMixin, CreateView):
         m.arbeitlast = form.cleaned_data['arbeitslast']
         m.festnetz = form.cleaned_data['festnetz']
         m.mobil = form.cleaned_data['mobil']
-
+        
         m.save()
         u.save()
 
