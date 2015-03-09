@@ -84,6 +84,7 @@ class Command(BaseCommand):
                     template="upcomingJob-Kontakt",
                     context={'liste': liste,
                              'verantwortlich': kontakt,
+                             'aufgabe': z.aufgabe,
                              },
                     )
 
