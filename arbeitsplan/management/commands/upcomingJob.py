@@ -60,6 +60,7 @@ class Command(BaseCommand):
             context = {'datum': z.aufgabe.datum,
                        'u': z.ausfuehrer,
                        'aufgabe': z.aufgabe.__unicode__(),
+                       'a': z.aufgabe,
                        'uhrzeit': z.stundenString(),
                        'verantwortlich': kontakt,
                        }
