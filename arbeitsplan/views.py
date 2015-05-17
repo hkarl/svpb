@@ -1400,9 +1400,9 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
     müssen Sie zunächst Nutzer dieser Aufgabe zuteilen. Das Zuweisen zu
     einzelnen Stunden ist erst der zweite Schritt.
 
-    In der Tabelle werden Spalten pro Uhrzeit angezeigt.
-    In den Spaltenüberschriften wird
-    in Klammer jeweils (Anzahl benötigte Mitglieder / Anzahl
+    In der Tabelle werden Spalten pro Uhrzeit angezeigt.<br>
+    In den Spaltenüberschriften wird<br>
+    in Klammer wird jeweils (Anzahl benötigte Mitglieder / Anzahl
     schon zugeteilte Mitglieder) angezeigt.
     """
 
@@ -1434,7 +1434,9 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
 
         aufgabe = get_object_or_404 (models.Aufgabe, pk=aufgabeid)
 
-        self.tabletitle = self.tabletitle_template + u" - Aufgabe: " + aufgabe.aufgabe
+        self.tabletitle = (self.tabletitle_template
+                           + u" - Aufgabe: " + aufgabe.aufgabe
+                           + " " + aufgabe.datum.isoformat())
 
         data = []
         checkedboxes = []
@@ -2138,7 +2140,7 @@ class MeldungNoetigEmailView(isVorstandMixin, FilteredEmailCreateView):
         # print d 
         return d 
         
-
+    
 class ZuteilungEmailView(isVorstandMixin, FilteredEmailCreateView):
     """Display a list of all users where the zuteilung has changed since last
     notification. Send them out.

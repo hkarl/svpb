@@ -121,6 +121,22 @@ class ValuedCheckBoxColumn(django_tables2.columns.Column):
                          '/>' + text
                          )
 
+class IntegerEditColumn(django_tables2.columns.Column):
+    """A Column type to allow editing of a single integer value
+
+    value should be a tuple: first entry the value to display/edit, 
+    second entry the id/name of the inputbox 
+    """
+
+    def render(self, value):
+
+        print "rendinger Integeer Edit Column"
+        print value, type(value)
+        return format_html('<input type="" value="{}" name="{}" />',
+                           value[0],
+                           value[1],
+                           )
+    
 
 class TextareaInputColumn (django_tables2.columns.Column):
 
@@ -285,20 +301,26 @@ def StundenplanEditFactory(l, aufgabe):
     Checkboxes in the uhrzeit columns.
     """
 
-
-
     newattrs = {}
 
+    # valus obtained from views/StundenplaeneEdit: 
+    newattrs['anzahl'] = IntegerEditColumn(accessor='anzahl',
+                                           verbose_name="Anzahl",
+                                           empty_values=(),)
+    
     for i in range(models.Stundenplan.startZeit,
                    models.Stundenplan.stopZeit+1):
         # print '----- ', i
         try: 
-            benoetigt = aufgabe.stundenplan_set.filter(uhrzeit__exact=i)[0].anzahl
-        except:
+            # benoetigt = aufgabe.stundenplan_set.filter(uhrzeit__exact=i)[0].anzahl
+            benoetigt = aufgabe.benoetigte_Anzahl(i)
+        except Exception as e:
+            print "eX: ", e
             benoetigt = 0
         # print benoetigt
 
-        zugewiesen = aufgabe.zuteilung_set.filter(stundenzuteilung__uhrzeit=i).count()
+        # zugewiesen = aufgabe.zuteilung_set.filter(stundenzuteilung__uhrzeit=i).count()
+        zugewiesen = aufgabe.zugeteilte_Anzahl(i)
         # print zugewiesen
 
         newattrs['u'+str(i)] = ValuedCheckBoxColumn(accessor='u'+str(i),
@@ -313,7 +335,9 @@ def StundenplanEditFactory(l, aufgabe):
     return NameTableFactory("StundenplanEdit",
                             newattrs, l,
                             meta={'sequence': ('last_name',
-                                               'first_name', '...')}
+                                               'first_name',
+                                               'anzahl',
+                                               '...')}
                             )
 
 ##############################
@@ -788,8 +812,9 @@ def ZuteilungsTableFactory (tuple):
                                                "Bereits zugeteilt (h)")
 
     for a in aufgabenQs:
-        tag = unicodedata.normalize('NFKD',
+        tag = (unicodedata.normalize('NFKD',
                                     a.aufgabe).encode('ASCII', 'ignore')
+               )
         attrs[tag] = ValuedCheckBoxColumn(
             verbose_name=mark_safe((u'<a href="{}">{}</a>, {}h'
                                     '<span style="font-weight:normal">'
@@ -823,7 +848,7 @@ def ZuteilungsTableFactory (tuple):
 
     t = NameTableFactory('ZuteilungsTable', attrs, l,
                          kontakt=('mitglied', 'Mitglied'))
- 
+
     return t 
 
 ##############################
