@@ -20,6 +20,17 @@ class SimpleTest(TestCase):
               ]
 
     plainpassword = "abc"
+
+    def meldungOnlyOne(self):
+        """
+        Ensure integrity of Meldung:
+        for any user/aufgabe combination, there must
+        be AT MOST one meldung
+        """
+
+        for u in User.objects.all():
+            for a in Aufgabe.objects.all():
+        
     def setUp(self):
         """
         Rewrite the passwords for the testusers
@@ -40,10 +51,10 @@ class SimpleTest(TestCase):
                         response.status_code == 302)
         return cl
 
-    def _test_login_works(self):
+    def test_login_works(self):
         self.login_user('hkarl')
 
-    def _test_leistung_bearbeiten(self):
+    def test_leistung_bearbeiten(self):
         """
         According to github report #14, lesitung bearbeiten fails. 
         """
@@ -56,10 +67,10 @@ class SimpleTest(TestCase):
         response = cl.get('/arbeitsplan/leistungenBearbeiten/z=me/?last_name=&first_name=&aufgabengruppe=3&von=&bis=&status=OF&status=RU&filter=Filter+anwenden')
         self.assertEqual(response.status_code, 200)
 
-    def _test_changes_in_stundenplan(self):
+    def test_changes_in_stundenplan(self):
         cl = self.login_user('JochenMelzian')
         response = cl.get('/arbeitsplan/stundenplaene/6/')
-        print response
+        # print response
         self.assertEqual(response.status_code, 200)
 
 
@@ -92,9 +103,9 @@ class SimpleTest(TestCase):
                     c = s.count()
                     if c > 1:
                         tmp = [x for x in s]
-                        print c
+                        # print c
                         for d in tmp[:-1]:
-                            print d
+                            # print d
                             d.delete()
 
             problem2 = self.check_stundenplaene_unique()
@@ -112,7 +123,7 @@ class SimpleTest(TestCase):
 
         self.assertFalse(False)
 
-    def _test_stundenplaene_duplicates(self):
+    def test_stundenplaene_duplicates(self):
         """is there any process by which studneplaene entires become duplicates?
         Make a change to an Aufgabe Stundenplan
 
