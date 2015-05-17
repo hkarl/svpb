@@ -2194,6 +2194,8 @@ class ZuteilungEmailView(isVorstandMixin, FilteredEmailCreateView):
         """this view operates on models.User, so instance is a user object.
         We have to find all zuteilungen for this user and stuff this data into
         the construct Tempalte Dict for the email to render
+
+        TODO: perhgaps filter here for zuteilung in the future? 
         """
 
         d = {'first_name': instance.user.first_name,
