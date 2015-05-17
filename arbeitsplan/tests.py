@@ -13,10 +13,10 @@ from arbeitsplan.models import *
 from pprint import pprint as pp
 
 class SimpleTest(TestCase):
-    fixtures=['arbeitsplan/fixtures/arbeitsplan.json',
-              'arbeitsplan/fixtures/groups.json',
-              'arbeitsplan/fixtures/user.json',
-              'arbeitsplan/fixtures/post_office.json',
+    fixtures=['arbeitsplan/fixtures/testdata/arbeitsplan.json',
+              'arbeitsplan/fixtures/testdata/groups.json',
+              'arbeitsplan/fixtures/testdata/user.json',
+              'arbeitsplan/fixtures/testdata/post_office.json',
               ]
 
     plainpassword = "abc"
@@ -24,16 +24,18 @@ class SimpleTest(TestCase):
         """
         Rewrite the passwords for the testusers
         """
-        for u in User.objects.all():
-            u.set_password(self.plainpassword)
+        # for u in User.objects.all():
+        #     u.set_password(self.plainpassword)
 
     def login_user(self, user):
+
         cl = Client()
         response = cl.post(
             '/accounts/login/',
             {'username': user,
              'password': self.plainpassword}
             )
+
         self.assertTrue(response.status_code == 200 or
                         response.status_code == 302)
         return cl
@@ -76,7 +78,7 @@ class SimpleTest(TestCase):
 
         return problem
 
-    def test_stundenplaene_unique(self):
+    def _test_stundenplaene_unique(self):
         """for all comubinations of Aufgabe and uzhrzeit,
         there must be at most ONE entry in stundenplaene"""
 
@@ -131,3 +133,34 @@ class SimpleTest(TestCase):
         ## cl.post('/arbeitsplan/aufgabeEditieren/7/',
         ##         )
         self.assertTrue(True)
+
+
+    def _test_zuteilung_email(self):
+        """do the zuutliung emails look right?"""
+
+        # make sure there is at least a single user with a zuteilung_noetig true
+
+        u = User.objects.first()
+        u.mitglied.zuteilungBenachrichtigungNoetig = True
+        u.mitglied.save()
+
+        cl = self.login_user("hkarl")
+        response = cl.get("/arbeitsplan/benachrichtigen/zuteilung/")
+        self.assertEqual(response.status_code, 200)
+        
+        # the user's email must appear in the response page:
+        self.assertContains(response, u.email, html=False)
+
+        # do we have the dicts available?
+        print "REQUEST"
+        print response.request
+        print "---------------------"
+        print response.context
+        
+        # let's generate the email
+        response = cl.post("/arbeitsplan/benachrichtigen/zuteilung/",
+                           {'eintragen': 'Benachrichtigungen eintragen',
+                            'sendit_4': 'on'})
+
+        # print response
+        self.assertEqual(response.status_code, 302)
