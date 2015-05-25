@@ -55,6 +55,33 @@ def logout_view(request):
     logout(request)
     return render(request, "registration/logged_out.html", {})
 
+
+
+def notifyVorstand(meldung, mailcomment):
+    """IF a meldung has been created or updated by the Mitglied,
+    then send an email to the corresponding Vorstand.
+    """
+    # sanity check: does the verantwortlicher of the aufgabe of the meldung have an email=
+    try: 
+        em = meldung.aufgabe.verantwortlich.email
+    except:
+        # try to inform some other way? 
+        return
+
+    mail.send(em,
+              template="meldungNotify",
+              context={'comment': ', '.join(mailcomment),
+                       'meldung': meldung,
+                       'melder': meldung.melder,
+                   }
+
+    )
+    # and finally send out all queued mails:
+    # call_command('send_queued_mail')
+    # do that as a cronjob? 
+
+    pass
+
 ###############
 
 
@@ -565,17 +592,19 @@ class AufgabengruppeUpdate(isVorstandMixin, SimpleUpdateView):
 
 class MeldungEdit (FilteredListView):
 
+
     def processUpdate(self, request):
         for k, value in request.POST.iteritems():
             if (k.startswith('bemerkung') or
                 k.startswith('prefMitglied') or
-                k.startswith('prefVorstand') 
-                ):
+                k.startswith('prefVorstand')):
+                
                 key, id = k.split('_', 1)
 
                 id = int(id)
 
                 safeit = False
+                mailcomment = []
 
                 try:
                     m = models.Meldung.objects.get(id=id)
@@ -588,6 +617,7 @@ class MeldungEdit (FilteredListView):
                     if m.bemerkung <> value: 
                         m.bemerkung = value
                         safeit = True
+                        mailcomment.append("Neue Bemerkung")
                         messages.success(request,
                                          u"Bei Aufgabe {0} wurde die Bemerkung aktualisiert".
                                          format(m.aufgabe.aufgabe))
@@ -609,6 +639,7 @@ class MeldungEdit (FilteredListView):
                     if m.prefMitglied != value:
                         if (m.prefMitglied ==
                             models.Meldung.MODELDEFAULTS['prefMitglied']):
+                            mailcomment.append("Neue Meldung")
                             messages.success(request,
                                              u"Sie haben sich für  Aufgabe {0} gemeldet. "
                                              u"Der Vorstand wird dies  "
@@ -619,11 +650,13 @@ class MeldungEdit (FilteredListView):
                             # print "zurueckgezogen"
                             # TODO: CHECK 
                             # TODO: das muss man am besten direkt verbieten, wenn es schon eine Zuteilung gibt!
+                            mailcomment.append("Meldung zurueckgezogen")
                             messages.success(request,
                                              u"Sie haben die Meldung für  Aufgabe {0} zurückgezogen. "
                                              u"Bitte beachten: Dadurch wird eine schon erfolgte ZUTEILUNG der Aufgabe nicht hinfällig! Bitte kontaktieren Sie dazu den Vorstand!".
                                              format(m.aufgabe.aufgabe))
                         else:
+                            mailcomment.append("Praeferenz aktualisiert.")
                             messages.success(request,
                                              u"Bei Aufgabe {0} wurde die Präferenz aktualisiert".
                                              format(m.aufgabe.aufgabe))
@@ -641,6 +674,10 @@ class MeldungEdit (FilteredListView):
 
                 if safeit:
                     m.save()
+
+                if mailcomment:
+                    notifyVorstand (m, mailcomment)
+
             else:
                 # not interested in those keys
                 pass
@@ -899,6 +936,7 @@ class QuickMeldung(View):
                 messages.success(self.request,
                                  u"Danke! Sie haben sich für Aufgabe " +
                                  aufgabe.aufgabe + u" gemeldet. Der Vorstand wird dies prüfen und ggf. einen Termin zusagen.")
+                notifyVorstand(meldung, ["QUICKMELDUNG"])
             else:
                 messages.warning(self.request,
                                  u"Ihre Schnellmeldung wurde nicht eingetragen; vermutlich existiert bereits eine Meldung von Ihnen.")
