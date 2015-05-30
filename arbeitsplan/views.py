@@ -637,6 +637,8 @@ class MeldungEdit (FilteredListView):
                     # print type(value), type(m.prefMitglied), type(models.Meldung.MODELDEFAULTS['prefMitglied'])
 
                     if m.prefMitglied != value:
+                        safeit = True
+
                         if (m.prefMitglied ==
                             models.Meldung.MODELDEFAULTS['prefMitglied']):
                             mailcomment.append("Neue Meldung")
@@ -650,11 +652,26 @@ class MeldungEdit (FilteredListView):
                             # print "zurueckgezogen"
                             # TODO: CHECK 
                             # TODO: das muss man am besten direkt verbieten, wenn es schon eine Zuteilung gibt!
-                            mailcomment.append("Meldung zurueckgezogen")
-                            messages.success(request,
-                                             u"Sie haben die Meldung für  Aufgabe {0} zurückgezogen. "
-                                             u"Bitte beachten: Dadurch wird eine schon erfolgte ZUTEILUNG der Aufgabe nicht hinfällig! Bitte kontaktieren Sie dazu den Vorstand!".
-                                             format(m.aufgabe.aufgabe))
+                            # first: check whether such a Zuteilung already exsts
+                            try: 
+                                zu = models.Zuteilung.objects.get(aufgabe=m.aufgabe,
+                                                                  ausfuehrer=m.melder)
+
+                                # it exists! we have to recheck this and inform user
+                                mailcomment.append(u"Versuch eine Meldung zurückzuziehen, für die schon Zuteilung bestand. Versuch abgewiesen.")
+                                safeit = False # this is important! Reason to initialize safeit up front 
+                                messages.error(request,
+                                               u"Sie haben versucht, die Meldung für Aufgabe {0} zurückzuziehen."
+                                               u"Allerdings wurde diese Aufgaben Ihnen bereits zugeteilt. "
+                                               u"Leider können Sie daher die Meldung nicht mehr zurückziehen."
+                                               u"Setzen Sie sich bitte mit dem Aufgabenverantwortlichen in Verbindung.".format(m.aufgabe.aufgabe)
+                                )
+                            except models.Zuteilung.DoesNotExist:
+                                mailcomment.append("Meldung zurueckgezogen")
+                                messages.success(request,
+                                                 u"Sie haben die Meldung für  Aufgabe {0} zurückgezogen. ".
+                                                 format(m.aufgabe.aufgabe))
+                                safeit = True
                         else:
                             mailcomment.append("Praeferenz aktualisiert.")
                             messages.success(request,
@@ -662,7 +679,6 @@ class MeldungEdit (FilteredListView):
                                              format(m.aufgabe.aufgabe))
 
                         m.prefMitglied = value
-                        safeit = True
 
                 if key == 'prefVorstand' and isVorstand(self.request.user):
                     if m.prefVorstand <> value:
