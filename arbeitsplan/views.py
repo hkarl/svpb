@@ -2397,6 +2397,12 @@ class AccountList(SuccessMessageMixin, isVorstandMixin, FilteredListView):
                     ('last_name', 'last_name__icontains'),
                     ]
 
+    intro_text = mark_safe("""Diese Seite zeigt eine Liste aller Mitglieder an. 
+    Sie dient vor allem dazu, einzelne Mitglieder-Konten zu finden und zu editieren. 
+    Eine Übersicht über gemeldete, zugeteilte, erbrachte und akzeptieren 
+    Arbeitsstunden findet sich separat in der <a href="/arbeitsplan/salden/">Saldenübersicht</a>. 
+    """)
+    
 ##########
 
 # A siomple home-view to provide aufgabengruppe to the template
