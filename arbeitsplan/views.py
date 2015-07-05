@@ -893,7 +893,8 @@ class MeldungVorstandView(isVorstandMixin, MeldungEdit):
     filterconfig = [('aufgabengruppe', 'aufgabe__gruppe__gruppe'),
                     ('first_name', 'melder__first_name__icontains'),
                     ('last_name', 'melder__last_name__icontains'),
-                    ('praeferenz', 'prefMitglied__in')
+                    ('praeferenz', 'prefMitglied__in'),
+                    ('praeferenzVorstand', 'prefVorstand__in'),
                     ]
     tableClass = MeldungTableVorstand
     model = models.Meldung
