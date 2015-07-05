@@ -130,12 +130,17 @@ class IntegerEditColumn(django_tables2.columns.Column):
 
     def render(self, value):
 
-        print "rendinger Integeer Edit Column"
-        print value, type(value)
-        return format_html('<input type="" value="{}" name="{}" />',
+        try:
+            res = format_html('<input type="" value="{}" name="{}" />',
                            value[0],
                            value[1],
                            )
+        except Exception as e:
+            # sometimes, we get a None as value; not sure why and when :-/ ? 
+            # print "Exc: ", e
+            res = ""
+            
+        return res
     
 
 class TextareaInputColumn (django_tables2.columns.Column):
