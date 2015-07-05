@@ -312,15 +312,15 @@ def StundenplanEditFactory(l, aufgabe):
                    models.Stundenplan.stopZeit+1):
         # print '----- ', i
         try: 
-            # benoetigt = aufgabe.stundenplan_set.filter(uhrzeit__exact=i)[0].anzahl
-            benoetigt = aufgabe.benoetigte_Anzahl(i)
+            benoetigt = aufgabe.stundenplan_set.filter(uhrzeit__exact=i)[0].anzahl
+            # benoetigt = aufgabe.benoetigte_Anzahl(i)
         except Exception as e:
             print "eX: ", e
             benoetigt = 0
         # print benoetigt
 
-        # zugewiesen = aufgabe.zuteilung_set.filter(stundenzuteilung__uhrzeit=i).count()
-        zugewiesen = aufgabe.zugeteilte_Anzahl(i)
+        zugewiesen = aufgabe.zuteilung_set.filter(stundenzuteilung__uhrzeit=i).count()
+        # zugewiesen = aufgabe.zugeteilte_Anzahl(i)
         # print zugewiesen
 
         newattrs['u'+str(i)] = ValuedCheckBoxColumn(accessor='u'+str(i),
