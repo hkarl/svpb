@@ -77,6 +77,11 @@ urlpatterns = patterns('',
         name="arbeitsplan-aufgaben",
         ),
 
+    url(r'^arbeitsplan/aufgabenTeamleader/$',
+        active_and_login_required(arbeitsplan.views.ListAufgabenTeamleader.as_view()),
+        name="arbeitsplan-aufgabenTeamleader",
+        ),
+                       
     url(r'^arbeitsplan/aufgabenVorstand/$',
         active_and_login_required(arbeitsplan.views.ListAufgabenVorstandView.as_view()),
         name="arbeitsplan-aufgabenVorstand",

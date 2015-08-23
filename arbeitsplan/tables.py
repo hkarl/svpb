@@ -411,6 +411,47 @@ class AufgabenTable (django_tables2.Table):
         exclude = ("meldungen", "zuteilungen", )
 
 
+class AufgabenTableTeamlead (django_tables2.Table):
+    verantwortlicher = KontaktColumn(
+        accessor="verantwortlich",
+        verbose_name="Verantwortlicher")
+
+    meldungen = django_tables2.Column(
+        verbose_name="Vorliegende Meldungen",
+        empty_values=(),
+        orderable=False,
+        )
+
+    zuteilungen = django_tables2.Column(
+        verbose_name="Erfolgte Zuteilungen",
+        empty_values=(),
+        orderable=False,
+        )
+
+    def render_meldungen(self, record):
+        # return record.meldung_set.count()
+        return record.numMeldungen()
+
+    def render_zuteilungen(self, record):
+        return record.zuteilung_set.count()
+
+    class Meta:
+        model = models.Aufgabe
+        attrs = {"class": "paleblue"}
+        # fields=("aufgabe", "datum",
+        # django_tables2.A("verantwortlich.last_name"),
+        # "gruppe", "anzahl", "bemerkung")
+
+        fields = ("gruppe", "aufgabe", "datum",
+                  "stunden",
+                  "anzahl",
+                  "bemerkung",
+                  "verantwortlicher",
+                  )
+
+        exclude = ("meldungen", "zuteilungen", )
+
+        
 class AufgabenTableVorstand(django_tables2.Table):
     verantwortlicher = KontaktColumn(
         accessor="verantwortlich",

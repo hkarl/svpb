@@ -585,6 +585,21 @@ class AufgabengruppeUpdate(isVorstandMixin, SimpleUpdateView):
         return super(AufgabengruppeUpdate, self).form_valid(form)
 
 
+class ListAufgabenTeamleader(FilteredListView):
+    title = "Aufgaben, für die ich Team-Leiter bin"
+    tabletitle = 'Aufgabenliste'
+    model = models.Aufgabe
+    tableClass = AufgabenTableTeamlead
+
+    intro_text = """
+    Diese Tabelle zeigt alle Aufgaben an, für die Sie Team-Leiter sind.
+    """
+
+    def get_data(self):
+        qs = self.request.user.teamleader_set.all()
+        return qs
+        
+    
 ########################################################################################
 #########   MELDUNG 
 ########################################################################################
