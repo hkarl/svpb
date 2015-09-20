@@ -34,9 +34,9 @@ class Command(BaseCommand):
         newmitglieder = models.Mitglied.objects.filter(
             user__date_joined__gte=midyear)
 
-        # for m in newmitglieder:
-        #     m.arbeitlast = settings.JAHRESSTUNDEN
-        #     m.save()
+        for m in newmitglieder:
+            m.arbeitlast = settings.JAHRESSTUNDEN
+            m.save()
 
         # Mail:
         subject = u"Arbeitsstunden neuer Mitglieder auf Jahressoll angepasst"
