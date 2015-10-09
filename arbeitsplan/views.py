@@ -2419,7 +2419,8 @@ class AccountList(SuccessMessageMixin, isVorstandMixin, FilteredListView):
     model = User
     title = "Mitglieder bearbeiten"
 
-    filterform_class = forms.NameFilterForm
+    # filterform_class = forms.NameFilterForm
+    filterform_class = forms.PersonMitgliedsnummer
     filtertile = "Mitglieder nach Vor- oder Nachnamen filtern"
 
     tabletitle = "Alle Mitglieder"
@@ -2427,6 +2428,7 @@ class AccountList(SuccessMessageMixin, isVorstandMixin, FilteredListView):
     
     filterconfig = [('first_name', 'first_name__icontains'),
                     ('last_name', 'last_name__icontains'),
+                    ('mitgliedsnummer', 'mitglied__mitgliedsnummer__icontains'),
                     ]
 
     intro_text = mark_safe("""Diese Seite zeigt eine Liste aller Mitglieder an. 

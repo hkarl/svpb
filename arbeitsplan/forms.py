@@ -531,6 +531,15 @@ class GemeldeteAufgabenFilterForm(CrispyFilterMixin, forms.Form):
         'gemeldet',
         )
 
+class MitgliedsnummerFilterForm(CrispyFilterMixin, forms.Form):
+    mitgliedsnummer = forms.CharField(required=False,
+                                      label="Mitgliedsnummer",
+                                      max_length=10,
+                                      )
+
+    __layout = Layout(
+        'mitgliedsnummer',
+        )
 
 ###################################
 # Stich Forms together into Filters
@@ -591,3 +600,8 @@ class SaldenFilter(NameFilterForm,
                    forms.Form):
     pass
 
+
+class PersonMitgliedsnummer(NameFilterForm,
+                            MitgliedsnummerFilterForm,
+                            ):
+    pass
