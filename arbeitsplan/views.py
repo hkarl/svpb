@@ -2166,7 +2166,9 @@ class LeistungEmailView (isVorstandMixin, FilteredEmailCreateView):
              'bemerkung': instance.bemerkung,
              'bemerkungVorstand': instance.bemerkungVorstand,
              'status': instance.get_status_display(),
-             'schonbenachrichtigt': instance.veraendert < instance.benachrichtigt,             
+             'schonbenachrichtigt': instance.veraendert < instance.benachrichtigt,
+             'vorstand': instance.aufgabe.verantwortlich,
+             'teamleader': instance.aufgabe.teamleader,
              }
         return d
 
