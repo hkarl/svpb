@@ -68,7 +68,7 @@ class isVorstandOrTeamleaderMixin(object):
 from svpb.forms import (LoginForm, ActivateForm, AccountEdit, AccountOtherEdit,
                         MitgliederAddForm, MitgliederInactiveResetForm,
                         )
-from svpb.settings import SENDFILE_ROOT, STATIC_ROOT, OFFLINE 
+from svpb.settings import SENDFILE_ROOT, STATIC_ROOT, OFFLINE
 from arbeitsplan.models import Mitglied
 from post_office.models import EmailTemplate
 
@@ -80,7 +80,7 @@ class SvpbLogin(FormView):
         template_name = "home.html"
     else:
         template_name = "registration/justForm.html"
-        
+
     form_class = LoginForm
     success_url = "/"
 
@@ -125,7 +125,7 @@ class AccountEdit(SuccessMessageMixin, FormView):
     form_class = AccountEdit
     success_url = "/accounts/list/"
     post_text = format_html("""
-    <p> 
+    <p>
     Sie haben Ihr Passwort vergessen? Sie können es <a href="{{% url "password_reset_recover" %}}">
     hier zurücksetzen</a>.
     <p>
@@ -146,7 +146,7 @@ class AccountEdit(SuccessMessageMixin, FormView):
         initial['geburtsdatum'] = user.mitglied.geburtsdatum
         initial['festnetz'] = user.mitglied.festnetz
         initial['mobil'] = user.mitglied.mobil
-        
+
         return initial
 
     def get_initial(self):
@@ -162,7 +162,7 @@ class AccountEdit(SuccessMessageMixin, FormView):
         user.mitglied.geburtsdatum = form.cleaned_data['geburtsdatum']
         user.mitglied.festnetz = form.cleaned_data['festnetz']
         user.mitglied.mobil = form.cleaned_data['mobil']
-        
+
     def get_user(self):
         return self.request.user
 
@@ -175,13 +175,17 @@ class AccountEdit(SuccessMessageMixin, FormView):
             user.save()
             user.mitglied.save()
 
-            print ({'user': user.__dict__,
-                    'mitglied': user.mitglied.__dict__})
+            # print ({'user': user.__dict__,
+            #         'mitglied': user.mitglied.__dict__})
+            # print type(user)
+            # print user.last_name
+            # print type(user.mitglied)
+
             # inform the relevant Vorstand in charge of memeberhsip
             mail.send(['mail@svpb.de'],
                       template="updatedProfile",
-                      context={'user': user.__dict__,
-                               'mitglied': user.mitglied.__dict__,
+                      context={'user': user,
+                               'mitglied': user.mitglied,
                                'changed': form.changed_data},
                       priority='now',
                       )
@@ -191,11 +195,11 @@ class AccountEdit(SuccessMessageMixin, FormView):
                                  u"Das Profil {} {} ({}) wurde erfolgreich aktualisiert.",
                                  user.first_name, user.last_name,
                                  user.mitglied.mitgliedsnummer))
-        else: 
+        else:
             messages.success(self.request,
                              "Sie haben keine Änderungen vorgenommen."
                              )
-            
+
         return super(AccountEdit, self).form_valid(form)
 
 
@@ -325,13 +329,13 @@ def preparePassword(accountList=None):
     f.close()
 
     # TODO: use better file names, protect against race conditions
-    
+
     retval = subprocess.call (["xelatex",
                                 '-interaction=batchmode',
-                                "letters.tex"]) 
+                                "letters.tex"])
     ## retval = subprocess.call (["xelatex",
     ##                                '-interaction=batchmode',
-    ##                                "letters.tex"]) 
+    ##                                "letters.tex"])
 
     # move this file into a directory where only Vorstand has access!
     import shutil, os
@@ -350,7 +354,7 @@ class AccountAdd(SuccessMessageMixin, isVorstandMixin, CreateView):
     template_name = "mitglied_form.html"
     form_class = MitgliederAddForm
     success_url = "/"
-    
+
     def get_context_data(self, **kwargs):
         context = super(AccountAdd, self).get_context_data(**kwargs)
 
@@ -386,7 +390,7 @@ class AccountAdd(SuccessMessageMixin, isVorstandMixin, CreateView):
         m.arbeitlast = form.cleaned_data['arbeitslast']
         m.festnetz = form.cleaned_data['festnetz']
         m.mobil = form.cleaned_data['mobil']
-        
+
         m.save()
         u.save()
 
@@ -485,14 +489,14 @@ class AccountDelete(SuccessMessageMixin, isVorstandMixin, DeleteView):
 class MitgliederExcel(View):
     """For Vorstand, send back an Excel file with all
     the Mitlgieders in various filtering combinations"""
-    
+
     @method_decorator(user_passes_test(isVorstand, login_url="/keinVorstand/"))
     def get(self, request):
 
         if isVorstand(request.user):
             # call the command to prepare the excel file
 
-            # repeated name; TODO: move this from here and mitgliedExcel.py into settings 
+            # repeated name; TODO: move this from here and mitgliedExcel.py into settings
             filename = "mitglieder.xlsx"
             basepath = SENDFILE_ROOT
 
