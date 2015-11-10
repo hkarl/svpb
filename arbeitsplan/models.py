@@ -67,7 +67,11 @@ class Mitglied (models.Model):
         ('Stunden Meldungen ', 'gemeldeteStunden'), 
         ('# Zuteilungen', 'zugeteilteAufgaben'), 
         ('Stunden Zuteilungen', 'zugeteilteStunden'),
-        ('', ''), 
+        ('Behauptete Leistungen (h) insges.', 'behaupteteStunden'), 
+        ('Unbearbeitete Leistungen (h)', 'offeneStunden'), 
+        ('Abgelehnte Leistungen (h)', 'abgelehnteStunden'), 
+        ('Akzeptierte Leistungen (h)', 'akzeptierteStunden'), 
+        # ('', ''), 
     ]
     
     user = models.OneToOneField(User)
@@ -226,6 +230,22 @@ class Mitglied (models.Model):
         stundenlist = [z.stunden() for z in qs]
         # print self.__unicode__(), time, stundenlist
         return sum(stundenlist)
+
+    def behaupteteStunden(self):
+        leistungen = self.user.leistung_set.all()
+        return sum([l.zeit for l in leistungen])
+
+    def akzeptierteStunden(self):
+        leistungen = self.user.leistung_set.filter(status=Leistung.ACK)
+        return sum([l.zeit for l in leistungen])
+    
+    def offeneStunden(self):
+        leistungen = self.user.leistung_set.filter(status=Leistung.OFFEN)
+        return sum([l.zeit for l in leistungen])
+    
+    def abgelehnteStunden(self):
+        leistungen = self.user.leistung_set.filter(status=Leistung.NEG)
+        return sum([l.zeit for l in leistungen])
 
     def profileIncomplete(self):
         r = []

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Define a command that should be run from a crontab.
 This one should check consistency of Meldungen:
@@ -58,16 +60,21 @@ class Command(BaseCommand):
 
         for (fieldname, fieldkey) in mod.excelFields:
             cursor(fieldname)
+
+        cursor("Noch zu leistende Stunden")
         cursor.cr()
 
+        row = 2
         for r in qs:
             for  (fieldname, fieldkey) in mod.excelFields:
                 a = get_attribute(r, fieldkey)
                 if hasattr(a, '__call__'):
                     a = a()
                 cursor(a)
+            cursor("=MAX(0,J{}-R{})".format(row, row))
             cursor.cr()
-                        
+            row += 1 
+            
         return None
 
     def createSheet (self, workbook, name, qs, mod=None):
@@ -79,6 +86,53 @@ class Command(BaseCommand):
                          mod)
 
 
+    def uebersichtsblatt(self, workbook):
+        # Uebersichtsblatt
+        uebersicht = workbook.add_worksheet('Uebersicht')
+        uebersicht.set_column(0, 0, 30)
+        uebersicht.set_column(1, 3, 60)
+        cursor = XlsxCursor(workbook, uebersicht)
+        cursor(u"Übersicht der einzelnen Kategorien")
+        cursor.cr()
+        cursor.cr()
+        cursor("Alle Mitglieder")
+        cursor("Kein Filter")
+        cursor.cr()
+        cursor("Aktive Mitglieder")
+        cursor("Mitglieder, die sich mind. 1x angemeldet haben")
+        cursor.cr()
+        
+        cursor("Inaktive Mitglieder")        
+        cursor("Mitglieder, die sich noch nicht angemeldet haben")
+        cursor.cr()
+        
+        cursor("Aktive, ohne Meldung")        
+        cursor("Angemeldet, aber keine Meldung abgegeben")        
+        cursor(u"Nicht unbedingt eine Problem; z.B. für Mitglieder die direkt eingeteilt wurden")        
+        cursor.cr()
+        
+        cursor("Aktive, ohne Zuteilung")        
+        cursor("Angmeldet, aber keine Aufgabe wurde zugeteilt")        
+        cursor("Bedenklich (selbst Schnellzuweisung erstellt Zuweisung). Sollte zugeteilt werden!")        
+        cursor.cr()
+        
+        cursor("Aktive, weder Meldung,Zuteilung")        
+        cursor("Angemeldet, aber weder Meldung abgeben noch Zuteilung erfolgt.")        
+        cursor(u"Sehr bedenklich. Braucht Rücksprache, falls Arbeitslast.")        
+        cursor.cr()
+        
+        cursor("Ruecksprache")        
+        cursor(u"Mitglieder mit Arbeitslast (egal ob aktiv oder nicht), ohne Meldung, ohne Zuteilung. ")
+        cursor(u"Problemfälle! Die müssen was tun, haben es gibt keine Aufgabe. Brauchen Rücksprache und Ermunterung!")
+        cursor.cr()
+
+        cursor("Abkassieren")
+        cursor(u"Mitglieder, deren Arbeitslast größer ist als die akzeptierten geleisteten Stunden")
+        cursor("Am Jahresende sind das die Mitglieder, von denen Geld abgebucht werden muss.")
+        cursor.cr()
+        
+        return
+        
     def handle(self, *args, **options):
         # set the locale right, to get the dates represented correctly
 
@@ -90,6 +144,9 @@ class Command(BaseCommand):
             settings.SENDFILE_ROOT,
             'mitglieder.xlsx'))
 
+        self.uebersichtsblatt(workbook)
+        
+        # die einzelnen Inahlte: 
         self.createSheet(workbook,
                          'Alle Mitglieder',
                          ap_models.Mitglied.objects.all())
@@ -100,7 +157,7 @@ class Command(BaseCommand):
                          )
 
         self.createSheet(workbook,
-                         'Inaktive',
+                         'Inaktive Mitglieder',
                          ap_models.Mitglied.objects.filter(user__is_active=False),
                          )
 
@@ -130,12 +187,20 @@ class Command(BaseCommand):
                          )
 
         self.createSheet(workbook,
-                         'Mahnen',
+                         'Ruecksprache',
                          [m
                           for m in ap_models.Mitglied.objects.all()
                           if (m.gemeldeteAnzahlAufgaben() == 0 and
                               m.zugeteilteAufgaben() == 0 and
                               m.arbeitslast > 0)], 
+                         ap_models.Mitglied                          
+                         )
+
+        self.createSheet(workbook,
+                         'Abkassieren',
+                         [m
+                          for m in ap_models.Mitglied.objects.all()
+                          if (m.arbeitslast > m.akzeptierteStunden())], 
                          ap_models.Mitglied                          
                          )
 
