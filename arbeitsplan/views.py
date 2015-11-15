@@ -31,11 +31,11 @@ from pprint import pprint as pp
 import django_tables2
 import unicodedata
 
-import types 
+import types
 import collections
 import os
 
-# Arbeitsplan-Importe: 
+# Arbeitsplan-Importe:
 import models
 import forms
 from tables import *  # TODO: change import not to polute name space
@@ -62,10 +62,10 @@ def notifyVorstand(meldung, mailcomment):
     then send an email to the corresponding Vorstand.
     """
     # sanity check: does the verantwortlicher of the aufgabe of the meldung have an email=
-    try: 
+    try:
         em = meldung.aufgabe.verantwortlich.email
     except:
-        # try to inform some other way? 
+        # try to inform some other way?
         return
 
     mail.send(em,
@@ -78,7 +78,7 @@ def notifyVorstand(meldung, mailcomment):
     )
     # and finally send out all queued mails:
     # call_command('send_queued_mail')
-    # do that as a cronjob? 
+    # do that as a cronjob?
 
     pass
 
@@ -122,7 +122,7 @@ class FilteredListView(ListView):
     model = None
 
     # Only as variable needed:
-    filterform = None  # yes, this should be an instance variable, to pass around 
+    filterform = None  # yes, this should be an instance variable, to pass around
 
     def get_context_data(self, **kwargs):
         context = super(FilteredListView, self).get_context_data()
@@ -158,7 +158,7 @@ class FilteredListView(ListView):
             qs = self.model.objects.all()
 
         if 'filter' not in self.request.GET:
-            if self.filterform_class: 
+            if self.filterform_class:
                 self.filterform = self.filterform_class()
                 filterconfig = []
                 fieldsWithInitials = [k
@@ -267,7 +267,7 @@ class AufgabenUpdate (SuccessMessageMixin, isVorstandMixin, UpdateView):
         """
         msg = mark_safe(self.success_message % dict(cleaned_data,
                                                     url = reverse('arbeitsplan-aufgabenEdit',
-                                                                  args=(self.object.id,)), 
+                                                                  args=(self.object.id,)),
                                                       id=self.object.id))
 
         # messages.warning(self.request, "aber komisch ist die schon")
@@ -329,7 +329,7 @@ class AufgabenUpdate (SuccessMessageMixin, isVorstandMixin, UpdateView):
         # manipulate the stundenplan
         stundenplan = collections.defaultdict(int,
                                               form.cleaned_data['stundenplan'])
-        # print "stundenplan: ", stundenplan 
+        # print "stundenplan: ", stundenplan
         for u in range(models.Stundenplan.startZeit,
                        models.Stundenplan.stopZeit+1):
             anzahl = stundenplan[u]
@@ -343,11 +343,11 @@ class AufgabenUpdate (SuccessMessageMixin, isVorstandMixin, UpdateView):
             try:
                 mm = form.cleaned_data['schnellzuweisung']
                 # pp(mm)
-                for m in mm: 
+                for m in mm:
                     z, zcreated = models.Zuteilung.objects.get_or_create(
                         aufgabe=self.object,
                         ausfuehrer=m)
-                    if created: 
+                    if created:
                         messages.success(self.request,
                                          u"Die Aufgabe wurde direkt an Mitglied {} zugeteilt!".format(
                                             m.__unicode__()))
@@ -357,12 +357,12 @@ class AufgabenUpdate (SuccessMessageMixin, isVorstandMixin, UpdateView):
                         messages.success(self.request,
                                          u"Die Aufgabe war bereits an Mitglied {} zugeteilt.".format(
                                              m.__unicode__()))
-                        
-                        # TODO: das abschalten, nur für Testzwekce! 
+
+                        # TODO: das abschalten, nur für Testzwekce!
                         m.mitglied.zuteilungBenachrichtigungNoetig = True
                         m.mitglied.save()
             except Exception as e:
-                # print e, form.cleaned_data['schnellzuweisung'], self.object 
+                # print e, form.cleaned_data['schnellzuweisung'], self.object
                 messages.error(self.request,
                                u"Die Aufgabe konnte nicht unmittelbar an ein Mitglied zugeteilt werden")
 
@@ -423,7 +423,7 @@ class ListAufgabenView (FilteredListView):
     filtertitle = "Filter nach Aufgabengruppe oder Zeitintervall"
     tabletitle = "Aufgabenliste"
     tableClass = AufgabenTable
-    
+
     filterconfig = [('aufgabengruppe', 'gruppe__gruppe'),
                     ('von', 'datum__gte'),
                     ('bis', 'datum__lte'),
@@ -433,22 +433,22 @@ class ListAufgabenView (FilteredListView):
     Die Tabelle zeigt die anstehenden Aufgaben an.
     <ul>
     <li> Aufgaben ohne Datum sind an flexiblen Terminen zu erledigen. </li>
-    <li> Bei Aufgaben mit Datum erfolgt die Zeitabsprachen individuell oder nach Einteilung. </li> 
+    <li> Bei Aufgaben mit Datum erfolgt die Zeitabsprachen individuell oder nach Einteilung. </li>
     <li> Die Spalte Verantwortlicher benennt den Koordinator der Aufgabe. </li>
     <li> Die Spalte Quickmeldung erlaubt eine vereinfachte Meldung für eine Aufgabe. Klicken Sie auf das Handsymbol; ein Haken in der Zeile markiert Aufgaben, für die Sie sich gemeldet haben.</li>
     </ul>
     <p>
-    Sie können die angezeigten Aufgaben nach Aufgabengruppe filtern (--- entfernt den Filter). Zusätzlich können Sie nach dem Datum der Aufgabe filtern. Wählen Sie die Filter aus und klicken auf "Filter anwenden". 
+    Sie können die angezeigten Aufgaben nach Aufgabengruppe filtern (--- entfernt den Filter). Zusätzlich können Sie nach dem Datum der Aufgabe filtern. Wählen Sie die Filter aus und klicken auf "Filter anwenden".
     """
     ## todo_text = """
     ## <li> Spalten klickbar machen: Aufgabe, Verantowrtlicher (direkt email senden?)  </li>
-    ## <li> Bemerkung als Popover umbauen?  </li>  
+    ## <li> Bemerkung als Popover umbauen?  </li>
     ## """
 
     def apply_filter(self, qs=None):
         """
         Filter out, in addition to the standard filters, all Aufgaben
-        that are already satisfied. 
+        that are already satisfied.
         """
 
         qs = super(ListAufgabenView, self).apply_filter()
@@ -530,7 +530,7 @@ class AufgabenCreate (isVorstandMixin, SimpleCreateView):
         explcitily, as the normal get_context_data simply writes an empty list.
         TODO: check whether the pulling in from the querydict
         shouldn't be more elegantly done in the get_context_data; that's
-        where it really belongs. 
+        where it really belongs.
         """
         # print "Aufgabe Create, form invalid"
 
@@ -598,10 +598,10 @@ class ListAufgabenTeamleader(FilteredListView):
     def get_data(self):
         qs = self.request.user.teamleader_set.all()
         return qs
-        
-    
+
+
 ########################################################################################
-#########   MELDUNG 
+#########   MELDUNG
 ########################################################################################
 
 
@@ -613,7 +613,7 @@ class MeldungEdit (FilteredListView):
             if (k.startswith('bemerkung') or
                 k.startswith('prefMitglied') or
                 k.startswith('prefVorstand')):
-                
+
                 key, id = k.split('_', 1)
 
                 id = int(id)
@@ -625,11 +625,11 @@ class MeldungEdit (FilteredListView):
                     m = models.Meldung.objects.get(id=id)
                 except models.Meldung.DoesNotExist:
                     print "consistency of database destroyed"
-                    # TODO: display error 
-                    continue 
+                    # TODO: display error
+                    continue
 
                 if key == 'bemerkung':
-                    if m.bemerkung <> value: 
+                    if m.bemerkung <> value:
                         m.bemerkung = value
                         safeit = True
                         mailcomment.append("Neue Bemerkung")
@@ -640,7 +640,7 @@ class MeldungEdit (FilteredListView):
                 if (key == 'bemerkungVorstand'
                     and isVorstand(self.request.user)):
 
-                    if m.bemerkungVorstand != value: 
+                    if m.bemerkungVorstand != value:
                         m.bemerkungVorstand = value
                         safeit = True
                         messages.success(request,
@@ -665,16 +665,16 @@ class MeldungEdit (FilteredListView):
                         elif (int(value) ==
                               models.Meldung.MODELDEFAULTS['prefMitglied']):
                             # print "zurueckgezogen"
-                            # TODO: CHECK 
+                            # TODO: CHECK
                             # TODO: das muss man am besten direkt verbieten, wenn es schon eine Zuteilung gibt!
                             # first: check whether such a Zuteilung already exsts
-                            try: 
+                            try:
                                 zu = models.Zuteilung.objects.get(aufgabe=m.aufgabe,
                                                                   ausfuehrer=m.melder)
 
                                 # it exists! we have to recheck this and inform user
                                 mailcomment.append(u"Versuch eine Meldung zurückzuziehen, für die schon Zuteilung bestand. Versuch abgewiesen.")
-                                safeit = False # this is important! Reason to initialize safeit up front 
+                                safeit = False # this is important! Reason to initialize safeit up front
                                 messages.error(request,
                                                u"Sie haben versucht, die Meldung für Aufgabe {0} zurückzuziehen."
                                                u"Allerdings wurde diese Aufgaben Ihnen bereits zugeteilt. "
@@ -721,7 +721,7 @@ class MeldungenListeView (FilteredListView):
 
     # TODO: understand how to use reverse / reverse_lazy here
     # This is odd, why does reverse_lazy only return the object?
-    
+
     intro_text = format_html(("Ein Übersicht über alle von Ihnen eingegeben Meldungen. "
                               'Editieren Sie bitte über die Funktion <a href="/arbeitsplan/meldung/">Melden</a> im Menü Meldung.'))
 
@@ -730,7 +730,7 @@ class MeldungenListeView (FilteredListView):
               filter(melder=self.request.user).
               exclude(prefMitglied=models.Meldung.GARNICHT))
         return qs
-            
+
 
 
 class CreateMeldungenView (MeldungEdit):
@@ -766,7 +766,7 @@ class CreateMeldungenView (MeldungEdit):
               meld = meld.exclude(prefMitglied=models.Meldung.GARNICHT)
             else:
                 meld = meld.filter(prefMitglied=models.Meldung.GARNICHT)
-              
+
             # turn this into aufgaben IDs
             aufIDs = [m.aufgabe.id for m in meld]
             # and get an Aufgaben queryset out of these ids
@@ -775,7 +775,7 @@ class CreateMeldungenView (MeldungEdit):
             qs = qs & aufgQs
 
         return qs
-    
+
     filterconfig = [('aufgabengruppe', 'gruppe__gruppe'),
                     ('von', 'datum__gte'),
                     ('bis', 'datum__lte'),
@@ -817,7 +817,7 @@ class CreateMeldungenView (MeldungEdit):
     def apply_filter(self, qs=None):
         """
         Filter out, in addition to the standard filters, all Aufgaben
-        that are already satisfied. 
+        that are already satisfied.
         """
 
         qs = super(CreateMeldungenView, self).apply_filter()
@@ -843,7 +843,7 @@ class CreateMeldungenView (MeldungEdit):
                  'aufgabeObjekt': a,
                  'anzahl': a.anzahl,
                  # 'meldungen': a.meldung_set.count(),
-                 'meldungen': a.numMeldungen(), 
+                 'meldungen': a.numMeldungen(),
                  ## 'zuteilungen': z,
                  ## 'fehlende_zuteilungen': a.anzahl - z,
                  'zuteilungen': None,
@@ -869,8 +869,8 @@ class CreateMeldungenView (MeldungEdit):
                                    self.request.user.id,
                                    ))
                 return self.get_filtered_table([])
-                
-            d['id'] = m.id 
+
+            d['id'] = m.id
             d['prefMitglied'] = m.prefMitglied
             d['bemerkung'] = m.bemerkung
 
@@ -949,7 +949,7 @@ class QuickMeldung(View):
     have a default entry for meldungen. No means to edit.
 
     This is not really nice since a get request results in changes
-    to the database :-/ 
+    to the database :-/
     """
 
     def get(self, request, aufgabeid, *args, **kwargs):
@@ -981,7 +981,7 @@ class QuickMeldung(View):
         return redirect('arbeitsplan-aufgaben')
 
 ########################################################################################
-#########   ZUTEILUNG 
+#########   ZUTEILUNG
 ########################################################################################
 
 
@@ -1019,7 +1019,7 @@ class ListZuteilungenView(FilteredListView):
 
         qs = self.apply_filter(qs)
         table = self.get_filtered_table(qs)
-        # print table 
+        # print table
         return table
 
 
@@ -1057,7 +1057,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             # then filter down further to only those users
             # who have a meldung for this Aufgabe
 
-            try: 
+            try:
                 if self.aufgabeQs.count() == 1:
                     # print "just a single one"
                     aufgabe = self.aufgabeQs[0]
@@ -1124,11 +1124,11 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
      für eine Aufgabe einteilen wollen. Entfernen Sie ein Häkchen,
       wenn das Mitglied die Aufgabe nicht mehr ausführen soll.
     <p>
-    Filtern Sie nach Mitgliedsnamen oder Aufgabengruppe. Zusätzlich können Sie nach Auslastung und Meldung der Mitglieder filtern: nur solche mit Meldungen für diese Aufgabengruppe (genauer: für irgendeine Aufgabe in der gewählten Gruppe), Mitglieder mit noch freier Arbeitskapazität, oder ausgelastete Mitglieder. 
+    Filtern Sie nach Mitgliedsnamen oder Aufgabengruppe. Zusätzlich können Sie nach Auslastung und Meldung der Mitglieder filtern: nur solche mit Meldungen für diese Aufgabengruppe (genauer: für irgendeine Aufgabe in der gewählten Gruppe), Mitglieder mit noch freier Arbeitskapazität, oder ausgelastete Mitglieder.
     <p>
-    Hinweise: 
+    Hinweise:
     <ul>
-    <li> In den Feldern der Tabelle wird (neben dem Auswahlkreuzchen) in Klammern die Präferenz bzw. des Vorstands für diese Aufgabe angezeigt. </li> 
+    <li> In den Feldern der Tabelle wird (neben dem Auswahlkreuzchen) in Klammern die Präferenz bzw. des Vorstands für diese Aufgabe angezeigt. </li>
     </ul>
     """
 
@@ -1164,7 +1164,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                 self.aufgabengruppe = (self.filterform.
                                        cleaned_data['aufgabengruppe'])
 
-        # we need that in the user filter: 
+        # we need that in the user filter:
         self.aufgabeQs = aufgabeQs
         self.filterconfig = self.filterconfigUser
         userQs = super(ManuelleZuteilungView, self).apply_filter(userQs)
@@ -1187,12 +1187,12 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                           (-1, 'x'))
                           for a in aufgabenQs])
 
-        for u in userQs: 
+        for u in userQs:
             tmp = {'last_name': u.last_name,
                     'first_name': u.first_name,
                     'mitglied': u,
                     }
-            # print 'user:', u.id 
+            # print 'user:', u.id
             tmp.update(aufgaben)
             mQs =  models.Meldung.objects.filter(melder=u)
             ## if self.aufgabengruppe <> None:
@@ -1217,7 +1217,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             ##     zQs = zQs.filter(aufgabe__gruppe__gruppe =  self.aufgabengruppe)
             zQs = zQs.filter(aufgabe__in=aufgabenQs)
 
-            for z in zQs: 
+            for z in zQs:
                 tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore')
                 meldung, meldungCreated = z.aufgabe.meldung_set.get_or_create(
                     melder=u,
@@ -1232,7 +1232,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                 statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
 
             # TODO: Add to tmp the amount of already zugeteilt work per user
-            # This is wrong, have to take into account Stundenplanzuteilungen! 
+            # This is wrong, have to take into account Stundenplanzuteilungen!
             ## tmp['zugeteilt'] = (models.Zuteilung.objects
             ##                     .filter(ausfuehrer = u)
             ##                     .aggregate(Sum('aufgabe__stunden'))
@@ -1256,7 +1256,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
     def post (self,request, *args, **kwargs):
 
         previousStatus = dict([ tuple(s.split('=') )
-                   for s in 
+                   for s in
                     request.POST.get('status').split(';')
                   ])
 
@@ -1448,10 +1448,10 @@ class ZuteilungUebersichtView(isVorstandMixin, FilteredListView):
 
         # pp( data)
 
-        # TODO: allow filtering of those Aufgaben 
+        # TODO: allow filtering of those Aufgaben
         # qs = self.apply_filter(qs)
 
-        # for each remaining Aufgabe in qs, find the already assigned STunden 
+        # for each remaining Aufgabe in qs, find the already assigned STunden
 
         return data
 
@@ -1557,30 +1557,30 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
         # print [(sz.zuteilung.ausfuehrer, sz.uhrzeit) for sz in stundenzuteilungen]
 
         ## # TODO: rewrite that to only iterate over users with zuteilung for this aufgabe
-        ## # should be tremendously more efficient 
+        ## # should be tremendously more efficient
         ## for u in models.User.objects.all():
         ##     newEntry = {'last_name': u.last_name,
         ##                 'first_name': u.first_name,
         ##                 }
 
-        ##     try: 
+        ##     try:
         ##         zuteilung = models.Zuteilung.objects.get(ausfuehrer=u,
         ##                                                  aufgabe=aufgabe)
         ##         stundenzuteilungen =  zuteilung.stundenzuteilung_set.values_list('uhrzeit',
         ##                                                                          flat=True )
 
-        ##         # print "Zuteilung fuer User: ", u, stundenzuteilungen 
+        ##         # print "Zuteilung fuer User: ", u, stundenzuteilungen
 
         ##         for s in stundenplaene:
         ##             tag = 'uhrzeit_' + str(u.id) + "_" + str(s.uhrzeit)
-        ##             present = s.uhrzeit in stundenzuteilungen 
+        ##             present = s.uhrzeit in stundenzuteilungen
         ##             newEntry['u'+ str(s.uhrzeit)] = (1 if present else 0, tag)
-        ##             if present: 
+        ##             if present:
         ##                 checkedboxes.append(str(u.id) + "_" + str(s.uhrzeit))
 
         ##         data.append(newEntry)
 
-        ##     except models.Zuteilung.DoesNotExist:  # keine Zuteilung gefunden 
+        ##     except models.Zuteilung.DoesNotExist:  # keine Zuteilung gefunden
         ##         pass
 
         ##     print "checkedboxes after user: ", u, " : ", checkedboxes
@@ -1610,7 +1610,7 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
         checkedboxes = [(int(x[0]), int(x[1])) for x in tmp ]
         # print "checkboxes: ", checkedboxes
 
-        # any values to add? 
+        # any values to add?
         for v in self.request.POST:
             if v.startswith('uhrzeit_'):
                 tag, uid, uhrzeit = v.split('_')
@@ -1628,7 +1628,7 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
                 # print "Z: ", zuteilung
                 stundenzuteilung, created  = models.StundenZuteilung.objects.get_or_create (
                     zuteilung = zuteilung,
-                    uhrzeit = int(uhrzeit), 
+                    uhrzeit = int(uhrzeit),
                     )
                 if created:
                     stundenzuteilung.save()
@@ -1649,10 +1649,10 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
 
         return redirect (# "arbeitsplan-stundenplaeneEdit",
                          self.request.get_full_path(),
-                         aufgabeid = aufgabeid, 
+                         aufgabeid = aufgabeid,
                          )
 
-    
+
 ########################################################################################
 #########   LEISTUNG
 ########################################################################################
@@ -1674,7 +1674,7 @@ class CreateLeistungView (CreateView):
         return HttpResponseRedirect(self.success_url)
 
 # class CreateLeistungDritteView (CreateView):
-    
+
 ####################################
 
 
@@ -1696,7 +1696,7 @@ class ListLeistungView (FilteredListView):
     model = models.Leistung
 
     def get_data(self):
-        # TODO: enable arbitrary user to be shown, if called by vorstand 
+        # TODO: enable arbitrary user to be shown, if called by vorstand
         qsLeistungen = self.model.objects.filter(melder=self.request.user)
 
         res = []
@@ -1715,7 +1715,7 @@ class ListLeistungView (FilteredListView):
 class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
     """
     A view to show a table of non-accepted/rejected Leistungen to a Vorstand.
-    Allows to accept, reject, or enquiry them. 
+    Allows to accept, reject, or enquiry them.
     """
 
     title = "Gemeldete Leistungen bearbeiten"
@@ -1749,7 +1749,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
         if isVorstand(self.request.user):
             zustaendig = self.kwargs['zustaendig']
 
-            if zustaendig=="me": 
+            if zustaendig=="me":
                 mainqs = models.Leistung.objects.filter(aufgabe__verantwortlich=
                                                         self.request.user)
             else:
@@ -1768,7 +1768,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
         - vorstand may do everything
         - teamleaders only for those tasks they lead.
         They only see those tasks in regular operation, but
-        hackers might try to inject wierd stuff here. 
+        hackers might try to inject wierd stuff here.
         """
 
         if isVorstand(request.user):
@@ -1787,12 +1787,12 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
         data = {}
         for k, v in request.POST.iteritems():
             try:
-                # TODO: shorten to startswith construction 
-                # print 'post value: ', k, v 
+                # TODO: shorten to startswith construction
+                # print 'post value: ', k, v
                 if "status" == k[:6]:
                     # print "status detected"
                     opt, num = k.split('_')
-                    # print opt, num 
+                    # print opt, num
                     if not num in data.keys():
                         data[num] = {'status': "",
                                      'bemerkungVorstand': "",
@@ -1810,7 +1810,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
                     data[num][tag] = v
 
             except:
-                pass 
+                pass
 
         # print data
 
@@ -1855,7 +1855,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
         return redirect(self.request.get_full_path())
 
 
-##########################    
+##########################
 
 
 class Salden(isVorstandMixin, FilteredListView):
@@ -1874,7 +1874,36 @@ class Salden(isVorstandMixin, FilteredListView):
     intro_text = """
     Ein Überblick über die von den Mitgliedern geleistete Arbeit,
     basiered auf den vorliegenden Leistungsmeldungen und deren
-    Bewertungen durch Vorstände. Zuteilungen werden separat aufgeführt.
+    Bewertungen durch Vorstände. Zuteilungen werden separat aufgeführt. <p>
+    Die Filter bezeichnen:
+    <ul>
+    <li><b>Kein Statusfilter</b>: Keine Filterung anhand der
+    geleisteten Stunden </li>
+    <li><b>Pensum erfüllt</b>: Nur Nutzer anzeigen, deren akzeptiere
+    Leistungsmeldungen
+    größer oder gleich der individuellen Arbeitslast liegen</li>
+    <li><b>Chance zu erfüllen</b>: Nur Nutzer anzeigen, deren akzeptiere
+    Leistungsmeldungen noch nicht die Arbeitslast erfüllt, aber deren bereits
+    akzeptierte Leistungen, deren offene Leistungsmeldungen, sowie die Stunden
+    der zugeteilten Aufagebn (die in der Zukunft liegen oder kein Datum haben)
+    die Arbeitslast übersteigt. <br>
+    Dieser Filter zeigt nur dann das erwartete Resultat an, wenn alle Stunden
+    aus vergangen Arbeitszuteilungen auch schon als Leistungsmeldung vorliegen.
+    Nicht gemeldete Stunden vergangenen Aufgaben werden hier nicht
+    berücksichtigt,
+    so dass ggf. zu viele Personen hier angezeigt werden.
+    </li>
+    <li><b> Pensum kann nicht erfüllt werden</b>:
+    Dieser Filter zeigt Personen an, bei denen die akzeptieren Leistungen,
+    die offenen Leistungen, sowie die Stunden aus zugeteilten Aufgaben in der
+    Zukunft und zugeteilte Aufgaben ohne Datum insgesamt nicht ausreichen, die
+    invdividuelle Arbeitslast zu erfüllen.
+    <p>
+    Auch hier werden Aufgaben in der Vergangenheit, für die noch keine Leistungen
+    eingetragen worden, nicht brücksichtigt. Entsprechend werden auch hier
+    ggf. zu viele Personen angezeigt.
+    </li>
+    </ul>
     """
 
     # TODO: für einen anklickbaren User braucht es nur:
@@ -1892,17 +1921,17 @@ class Salden(isVorstandMixin, FilteredListView):
 
         return {
             '--': lambda u: True,
-            'OK': lambda u: u['AK'][0] >= JAHRESSTUNDEN,
-            'CH': lambda u: ((u['AK'][0] < JAHRESSTUNDEN) and
+            'OK': lambda u: u['AK'][0] >= u['user'].mitglied.arbeitslast,
+            'CH': lambda u: ((u['AK'][0] < u['user'].mitglied.arbeitslast) and
                              ((u['AK'][0] or 0) +
                               (u['OF'][0] or 0) +
                               u['future'] + u['nodate'] >=
-                             JAHRESSTUNDEN)
+                             u['user'].mitglied.arbeitslast)
                              ),
             'PR': lambda u: ((u['AK'][0] or 0) +
                              (u['OF'][0] or 0) +
                              u['future'] + u['nodate'] <
-                             JAHRESSTUNDEN),
+                             u['user'].mitglied.arbeitslast),
             }[filterchoice](userdata)
 
     def annotate_data(self, userQs):
@@ -1919,19 +1948,19 @@ class Salden(isVorstandMixin, FilteredListView):
                 zeit = qs.filter(status=s[0]
                                  ).aggregate(Sum('zeit'))['zeit__sum']
 
-                if zeit: 
+                if zeit:
                     linktarget = rurl + "?" + urlencode({
                         'last_name': u.last_name,
                         'first_name': u.first_name,
                         'status': s[0],
                         'filter': 'Filter anwenden'})
                 else:
-                    linktarget = None 
+                    linktarget = None
 
                 tmp[s[0]] = (zeit, linktarget)
 
 
-            # TODO: add linked column here as well 
+            # TODO: add linked column here as well
             ## zugeteilt = (models.Zuteilung.objects.
             ##              filter(ausfuehrer=u).aggregate(Sum('aufgabe__stunden'))['aufgabe__stunden__sum'])
             zugeteilt = u.mitglied.zugeteilteStunden()
@@ -1959,7 +1988,7 @@ class Salden(isVorstandMixin, FilteredListView):
 
 
 ########################################################################################
-### EXPERIMENTELL 
+### EXPERIMENTELL
 ########################################################################################
 
 
@@ -2074,7 +2103,7 @@ class FilteredEmailCreateView (isVorstandOrTeamleaderMixin, FilteredListView):
 
                 d = self.constructTemplateDict(instance)
                 d['anmerkung'] = anmerkung
-                d['ergaenzung'] = ergaenzung 
+                d['ergaenzung'] = ergaenzung
 
                 mail.send(
                     [thisuser.email],
@@ -2101,7 +2130,7 @@ class FilteredEmailCreateView (isVorstandOrTeamleaderMixin, FilteredListView):
             messages.warning(request,
                              u"Vergessen Sie nicht, die Benachrichtigungen explizit abzuschicken!")
 
-        ## TODO: better redirect home 
+        ## TODO: better redirect home
         return redirect(request.get_full_path())
 
 
@@ -2137,7 +2166,7 @@ class LeistungEmailView (isVorstandMixin, FilteredEmailCreateView):
 
     filterconfig = [('aufgabengruppe', 'aufgabe__gruppe__gruppe'),
                     ('status', 'status__in'),
-                    ('benachrichtigt', benachrichtigt_filter), 
+                    ('benachrichtigt', benachrichtigt_filter),
                     ]
     # specific data about the email handling:
     emailTemplate = "leistungEmail"
@@ -2153,7 +2182,7 @@ class LeistungEmailView (isVorstandMixin, FilteredEmailCreateView):
     def annotate_data(self, qs):
         qs = super(LeistungEmailView, self).annotate_data(qs)
         for q in qs:
-            q.sendit = True if q.veraendert > q.benachrichtigt else False    
+            q.sendit = True if q.veraendert > q.benachrichtigt else False
 
         return qs
 
@@ -2173,7 +2202,7 @@ class LeistungEmailView (isVorstandMixin, FilteredEmailCreateView):
         return d
 
 class MeldungNoetigEmailView(isVorstandMixin, FilteredEmailCreateView):
-    """Display a list of all users where not enough Zuteilungen have happened so far. 
+    """Display a list of all users where not enough Zuteilungen have happened so far.
     """
 
     title = "Benachrichtigung für Mitglieder mit ungenügenden Meldungen/Zuteilungen"
@@ -2194,7 +2223,7 @@ class MeldungNoetigEmailView(isVorstandMixin, FilteredEmailCreateView):
 
         for q in qs:
             q.sendit = True
-            
+
         return qs
 
     def constructTemplateDict(self, instance):
@@ -2209,10 +2238,10 @@ class MeldungNoetigEmailView(isVorstandMixin, FilteredEmailCreateView):
              'numMeldungen': instance.gemeldeteAnzahlAufgaben(),
             }
 
-        # print d 
-        return d 
-        
-    
+        # print d
+        return d
+
+
 class ZuteilungEmailView(isVorstandMixin, FilteredEmailCreateView):
     """Display a list of all users where the zuteilung has changed since last
     notification. Send them out.
@@ -2240,8 +2269,8 @@ class ZuteilungEmailView(isVorstandMixin, FilteredEmailCreateView):
 
 
     filterconfig = [('last_name', 'user__last_name__icontains'),
-                    ('first_name', 'user__first_name__icontains'), 
-                    ('benachrichtigt', noetig_filter), 
+                    ('first_name', 'user__first_name__icontains'),
+                    ('benachrichtigt', noetig_filter),
                     ]
 
     emailTemplate = "zuteilungEmail"
@@ -2262,14 +2291,14 @@ class ZuteilungEmailView(isVorstandMixin, FilteredEmailCreateView):
         qs = super(ZuteilungEmailView, self).annotate_data(qs)
         for q in qs:
             q.sendit = q.zuteilungBenachrichtigungNoetig
-        return qs 
+        return qs
 
     def constructTemplateDict(self, instance):
         """this view operates on models.User, so instance is a user object.
         We have to find all zuteilungen for this user and stuff this data into
         the construct Tempalte Dict for the email to render
 
-        TODO: perhgaps filter here for zuteilung in the future? 
+        TODO: perhgaps filter here for zuteilung in the future?
         """
 
         d = {'first_name': instance.user.first_name,
@@ -2277,8 +2306,8 @@ class ZuteilungEmailView(isVorstandMixin, FilteredEmailCreateView):
              'zuteilungen': models.Zuteilung.objects.filter(ausfuehrer=instance.user)
             }
 
-        # print d 
-        return d 
+        # print d
+        return d
 
 
 class EmailSendenView(isVorstandMixin, View):
@@ -2393,8 +2422,8 @@ class MediaChecks(View):
         """
 
         basepath = SENDFILE_ROOT
-	
-	# print "in Meia checks: ", basepath
+
+        # print "in Meia checks: ", basepath
 
         if request.user.is_staff:
             filename = "SVPB-entwickler.pdf"
@@ -2408,7 +2437,7 @@ class MediaChecks(View):
         return sendfile(request,
                         os.path.join(basepath, filename))
 
-        
+
 
 ##############
 
@@ -2427,18 +2456,18 @@ class AccountList(SuccessMessageMixin, isVorstandMixin, FilteredListView):
 
     tabletitle = "Alle Mitglieder"
     tableClass = MitgliederTable
-    
+
     filterconfig = [('first_name', 'first_name__icontains'),
                     ('last_name', 'last_name__icontains'),
                     ('mitgliedsnummer', 'mitglied__mitgliedsnummer__icontains'),
                     ]
 
-    intro_text = mark_safe("""Diese Seite zeigt eine Liste aller Mitglieder an. 
-    Sie dient vor allem dazu, einzelne Mitglieder-Konten zu finden und zu editieren. 
-    Eine Übersicht über gemeldete, zugeteilte, erbrachte und akzeptieren 
-    Arbeitsstunden findet sich separat in der <a href="/arbeitsplan/salden/">Saldenübersicht</a>. 
+    intro_text = mark_safe("""Diese Seite zeigt eine Liste aller Mitglieder an.
+    Sie dient vor allem dazu, einzelne Mitglieder-Konten zu finden und zu editieren.
+    Eine Übersicht über gemeldete, zugeteilte, erbrachte und akzeptieren
+    Arbeitsstunden findet sich separat in der <a href="/arbeitsplan/salden/">Saldenübersicht</a>.
     """)
-    
+
 ##########
 
 # A siomple home-view to provide aufgabengruppe to the template
@@ -2454,6 +2483,3 @@ class HomeView(TemplateView):
             for a in models.Aufgabengruppe.objects.all()],
                   'bla': 'blub', })
         return c
-        
-        
-

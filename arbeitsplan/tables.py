@@ -823,7 +823,7 @@ def SaldenTableFactory (l):
 
     attrs = {}
     for s in models.Leistung.STATUS:
-        attrs[s[0]] = LinkedColumn(verbose_name=s[1] + ' (h)')
+        attrs[s[0]] = LinkedColumn(verbose_name='Leistungs- angabe ' + s[1] + ' (h)')
 
     attrs['zugeteilt'] = LinkedColumn(verbose_name="Zugeteilt insgesamt (h)")
     attrs['past'] = django_tables2.Column(
@@ -832,12 +832,16 @@ def SaldenTableFactory (l):
         verbose_name="Zuteilungen zukünftiger Aufgaben (h)")
     attrs['nodate'] = django_tables2.Column(
         verbose_name="Zuteilungen Aufgaben ohne Datum (h)")
-
+    attrs['arbeitslast'] = django_tables2.Column(
+        verbose_name="Arbeitslast",
+        accessor="user.mitglied.arbeitslast")
+    
     t = NameTableFactory("salden", attrs, l,
                          kontakt=('user', 'Mitglied'),
                          meta={'sequence': ('kontakt',
                              ## 'last_name',
                              ##                'first_name',
+                                            'arbeitslast',
                                             'zugeteilt',
                                             'past',
                                             'future',
