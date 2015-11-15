@@ -125,7 +125,8 @@ SVPB -- Arbeitsverwaltung
             <i class="fa fa-check fa-fw"></i>
             Leistung <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/arbeitsplan/leistung/">Eintragen</a></li>
+                <li><a href="/arbeitsplan/leistung/">Eintragen (eigene Aufgaben)</a></li>
+                <li><a href="/arbeitsplan/leistungAlle/">Eintragen (beliebige Aufgaben)</a></li>
                 <li><a href="/arbeitsplan/leistungListe/">Anzeigen</a></li>
                 {% for g in  user.groups.all %}
                   {% if g.name == "Vorstand" %}

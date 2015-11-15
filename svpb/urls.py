@@ -140,6 +140,11 @@ urlpatterns = patterns('',
              success_url="/home/")),
          name="arbeitsplan-leistung",),
 
+    url (r'^arbeitsplan/leistungAlle/$',
+         active_and_login_required(arbeitsplan.views.CreateLeistungView.as_view(
+             success_url="/home/")),
+         name="arbeitsplan-leistung",),
+                       
     url (r'^arbeitsplan/leistungenBearbeiten/z=(?P<zustaendig>[a-zA-Z]+)/$',
          active_and_login_required(arbeitsplan.views.LeistungBearbeitenView.as_view()),
          name="arbeitsplan-leistungBearbeiten",),

@@ -76,8 +76,20 @@ class CrispyFormMixin(object):
 class CreateLeistungForm(CrispyFormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
+        try:
+            user = kwargs.pop('user')
+        except:
+            user = None
+            
         super(CreateLeistungForm, self).__init__(*args, **kwargs)
 
+        if user:
+            # filter out the Aufgaben for which the user has a Zuteilung: 
+            zuteilungQs = models.Zuteilung.objects.filter(ausfuehrer=user)
+            # and get the Aufgaben from this zuteliung:
+            aufgabenQs = models.Aufgabe.objects.filter(zuteilung__in=zuteilungQs)
+            self.fields['aufgabe'].queryset = aufgabenQs
+        
         self.helper.layout = Layout(
             'aufgabe',
             Field('wann', css_class="datepicker"),

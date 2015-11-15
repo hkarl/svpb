@@ -1686,6 +1686,17 @@ class CreateLeistungView (CreateView):
     form_class = forms.CreateLeistungForm
     template_name = "arbeitsplan_createLeistung.html"
 
+    def get_form_kwargs(self):
+
+        kwargs = super(CreateLeistungView, self).get_form_kwargs()
+
+        if "Alle" in self.request.path:
+            kwargs['user'] = None
+        else:
+            kwargs['user'] = self.request.user
+
+        return kwargs
+
     def form_valid(self, form):
         # print "in Create Leistung View form_valid"
         leistung = form.save(commit=False)
