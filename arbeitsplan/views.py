@@ -630,6 +630,14 @@ class MeldungEdit (FilteredListView):
                     # TODO: display error
                     continue
 
+                if ((not m.aufgabe.datum ==  None) and
+                    (m.aufgabe.datum < datetime.date.today())):
+                    messages.error(request,
+                                   u"""Die Aufgabe {0} liegt in der Vergangenheit.
+                                   Solche Meldungen können nicht verändert werden.""".
+                                   format(m.aufgabe.aufgabe))
+                    continue
+
                 if key == 'bemerkung':
                     if m.bemerkung <> value:
                         m.bemerkung = value
