@@ -662,7 +662,9 @@ class MeldungEdit (FilteredListView):
                             messages.success(request,
                                              u"Sie haben sich für  Aufgabe {0} gemeldet. "
                                              u"Der Vorstand wird dies  "
-                                             u"prüfen und ggf. einen Termin zusagen.".
+                                             u"prüfen und ggf. einen Termin zusagen. "
+                                             u"WICHITG: Sie können NICHT davon ausgehen, "
+                                             u"dass Sie diese Aufgaben zugeteilt bekommen!".
                                              format(m.aufgabe.aufgabe))
                         elif (int(value) ==
                               models.Meldung.MODELDEFAULTS['prefMitglied']):
