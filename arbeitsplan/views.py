@@ -19,6 +19,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management import call_command
+from django.db.models import Q
 
 from collections import defaultdict
 from post_office import mail
@@ -419,7 +420,7 @@ class ListAufgabenView (FilteredListView):
 
     # filterform_class = forms.AufgabengruppeFilterForm
     filterform_class = forms.AufgabenDatumFilter
-    title = "Alle Aufgaben anzeigen"
+    title = "Aufgaben mit Arbeitsbedarf anzeigen"
     filtertitle = "Filter nach Aufgabengruppe oder Zeitintervall"
     tabletitle = "Aufgabenliste"
     tableClass = AufgabenTable
@@ -438,7 +439,7 @@ class ListAufgabenView (FilteredListView):
     <li> Die Spalte Quickmeldung erlaubt eine vereinfachte Meldung für eine Aufgabe. Klicken Sie auf das Handsymbol; ein Haken in der Zeile markiert Aufgaben, für die Sie sich gemeldet haben.</li>
     </ul>
     <p>
-    Sie können die angezeigten Aufgaben nach Aufgabengruppe filtern (--- entfernt den Filter). Zusätzlich können Sie nach dem Datum der Aufgabe filtern. Wählen Sie die Filter aus und klicken auf "Filter anwenden".
+    Sie können die angezeigten Aufgaben nach Aufgabengruppe filtern (--- entfernt den Filter). Zusätzlich können Sie nach dem Datum der Aufgabe filtern (Aufgaben mit Datum in der Vergangenheit werden aber grundsätzlich nicht angezeigt). Wählen Sie die Filter aus und klicken auf "Filter anwenden".
     """
     ## todo_text = """
     ## <li> Spalten klickbar machen: Aufgabe, Verantowrtlicher (direkt email senden?)  </li>
@@ -453,6 +454,7 @@ class ListAufgabenView (FilteredListView):
 
         qs = super(ListAufgabenView, self).apply_filter()
 
+        qs = qs.filter(Q(datum__gte=datetime.date.today())|Q(datum=None))
         qs = [q for q in qs if q.is_open()]
 
         return qs
