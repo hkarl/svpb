@@ -1903,6 +1903,11 @@ class Salden(isVorstandMixin, FilteredListView):
     filtertitle = "Salden nach Vor- oder Nachnamen filtern"
     filterform_class = forms.SaldenFilter
 
+    filterconfig = [('first_name', 'first_name__icontains'),
+                    ('last_name', 'last_name__icontains'),
+                    ]
+
+
     model = models.User
 
     intro_text = """
