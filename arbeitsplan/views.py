@@ -813,6 +813,11 @@ class CreateMeldungenView (MeldungEdit):
     <p>
     Zeigen Sie auf den Aufgabennamen um ggf. weitere Information
     über die Aufgabe zu sehen.
+    <p>
+    <b> WICHTIG: Eine Meldung hier ist nur ein WUNSCH; es ist
+    nicht die automatische Zusgae, für die Aufgabe auch
+    eingeteilt zu werden.
+    </b>
     """
 
     ## todo_text = """
