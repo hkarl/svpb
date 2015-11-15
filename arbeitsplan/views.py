@@ -794,6 +794,11 @@ class CreateMeldungenView (MeldungEdit):
     (z.B., wenn Sie die Aufgaben mit einem Partner zusammenarbeiten
     erledigen möchten oder nur zu bestimmten Uhrzeiten können).
     <p>
+    Aufgaben aus der Vergangenheit werden nicht angezeigt!
+    Wenn Sie sich im Laufe des Jahres für Aufgaben ohne Datum
+    eintragen wollen, sprechen Sie dies bitte mit dem zuständigen
+    Vorstand/Teamleiter ab.
+    <p>
     Sie können die Aufgabenliste eingrenzen, in dem Sie nach
     Aufgabengruppen filtern (--- entfernt den Filter).
     Zusätzlich können Sie (mit dem zweiten Filter)
@@ -823,6 +828,7 @@ class CreateMeldungenView (MeldungEdit):
         """
 
         qs = super(CreateMeldungenView, self).apply_filter()
+        qs = qs.filter(Q(datum__gte=datetime.date.today())|Q(datum=None))
 
         qs = [q for q in qs if q.is_open()]
 
