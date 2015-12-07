@@ -29,7 +29,6 @@ django-autoslug==1.6.1
 django-chartit==0.1
 django-crispy-forms==1.4.0
 django-daterange-filter==1.0.0
-django-evolution==0.6.8
 django-extensions==1.4.0
 django-haystack==2.1.0
 django-impersonate==0.8.1
