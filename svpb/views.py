@@ -68,7 +68,7 @@ class isVorstandOrTeamleaderMixin(object):
 from svpb.forms import (LoginForm, ActivateForm, AccountEdit, AccountOtherEdit,
                         MitgliederAddForm, MitgliederInactiveResetForm,
                         )
-from svpb.settings import SENDFILE_ROOT, STATIC_ROOT, OFFLINE
+from svpb.settings import SENDFILE_ROOT, STATIC_ROOT, OFFLINE, JAHRESENDE
 from arbeitsplan.models import Mitglied
 from post_office.models import EmailTemplate
 
@@ -76,7 +76,7 @@ from sendfile import sendfile
 
 
 class SvpbLogin(FormView):
-    if OFFLINE:
+    if OFFLINE or JAHRESENDE:
         template_name = "home.html"
     else:
         template_name = "registration/justForm.html"
