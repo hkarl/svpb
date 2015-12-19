@@ -8,7 +8,7 @@ Views for the entire adminstration of SVPB
 
 import os
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View, FormView, CreateView, ListView, DeleteView
 from django.shortcuts import (render_to_response,
@@ -76,7 +76,7 @@ from sendfile import sendfile
 
 
 class SvpbLogin(FormView):
-    if OFFLINE or JAHRESENDE:
+    if OFFLINE:
         template_name = "home.html"
     else:
         template_name = "registration/justForm.html"
@@ -87,7 +87,10 @@ class SvpbLogin(FormView):
     def get_context_data(self, **kwargs):
         context = super(SvpbLogin, self).get_context_data(**kwargs)
         context['title'] = "Anmeldung"
-        context['intro_text'] = ""
+        if JAHRESENDE:
+            context['intro_text'] = "Zur Zeit ist eine Anmeldung nur für Vorstände und Teamleiter möglich!"
+        else:
+            context['intro_text'] = ""
         context['post_text'] = format_html('Passwort vergessen? <a href="/reset/recover/"> Hier zurücksetzen.<a/>')
         context['todo_text'] = ""
 
@@ -102,6 +105,18 @@ class SvpbLogin(FormView):
         # print user
         if user is not None:
             succ = login(self.request, user)
+
+            if JAHRESENDE and not isVorstandOrTeamleader(user):
+                messages.warning(self.request,
+                                 format_html(u"Derzeit ist ein Anmeldung nur für Vorstände oder Teamleiter möglich."))
+                # make normal users go away
+                logout(self.request)
+                return redirect('/')
+
+            if JAHRESENDE:
+                messages.warning(self.request,
+                                 format_html(u"Jahresende-Modues! Bitte nur Aufgaben bearbeiten!"))
+
             if user.is_active:
                 tmp = user.mitglied.profileIncomplete()
                 if tmp:
