@@ -6,6 +6,7 @@ Views for the entire adminstration of SVPB
 
 """
 
+
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import user_passes_test
@@ -71,7 +72,10 @@ class SvpbLogin(FormView):
     def get_context_data(self, **kwargs):
         context = super(SvpbLogin, self).get_context_data(**kwargs)
         context['title'] = "Anmeldung"
-        context['intro_text'] = ""
+        if JAHRESENDE:
+            context['intro_text'] = "Zur Zeit ist eine Anmeldung nur für Vorstände und Teamleiter möglich!"
+        else:
+            context['intro_text'] = ""
         context['post_text'] = format_html('Passwort vergessen? <a href="/reset/recover/"> Hier zurücksetzen.<a/>')
         context['todo_text'] = ""
 
@@ -92,6 +96,18 @@ class SvpbLogin(FormView):
         # print user
         if user is not None:
             succ = login(self.request, user)
+
+            if JAHRESENDE and not isVorstandOrTeamleader(user):
+                messages.warning(self.request,
+                                 format_html(u"Derzeit ist ein Anmeldung nur für Vorstände oder Teamleiter möglich."))
+                # make normal users go away
+                logout(self.request)
+                return redirect('/')
+
+            if JAHRESENDE:
+                messages.warning(self.request,
+                                 format_html(u"Jahresende-Modues! Bitte nur Aufgaben bearbeiten!"))
+
             if user.is_active:
                 tmp = user.mitglied.profileIncomplete()
                 if tmp:

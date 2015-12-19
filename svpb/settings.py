@@ -6,7 +6,9 @@ APPLICATION_DIR = os.path.dirname( globals()[ '__file__' ] )
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
-OFFLINE = False
+
+OFFLINE = True
+JAHRESENDE = True
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
