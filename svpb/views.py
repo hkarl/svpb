@@ -115,7 +115,7 @@ class SvpbLogin(FormView):
 
             if JAHRESENDE:
                 messages.warning(self.request,
-                                 format_html(u"Jahresende-Modus! Bitte nur Aufgaben bearbeiten!"))
+                                 format_html(u"Jahresende-Modus! Bitte <b>vor allem die Aufgaben</b> bearbeiten - Datum prüfen, ggf. direk Mitglieder einteilen!"))
 
             if user.is_active:
                 tmp = user.mitglied.profileIncomplete()
