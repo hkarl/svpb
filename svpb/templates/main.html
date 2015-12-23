@@ -12,10 +12,60 @@ Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}
 
 {% if user.is_authenticated %}
 
-<ul>
-    <li> <a href="arbeitsplan/home">Arbeit</a> </li>
-    <li> Boote </li>
-</ul>
+    <div class="row">
+        <div class="col-md-6">
+        <a href="arbeitsplan/">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-titel">
+                        Arbeitsplan
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <p>Bild mit Arbeit</p>
+                    <p>Für Aufgaben melden, Leistungen eingeben, ... </p>
+                </div>
+            </div>
+        </a>
+        </div>
+
+        <div class="col-md-6">
+        <a href="boote/">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-titel">
+                        Boote und Mitsegeln
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <p> Bild mit Boot </p>
+                    <p>
+                        Vereinsboote nutzen,
+                        bei Vereinsmitgliedern mitsegln, ...
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+        <div class="col-md-6">
+        <a href="mitglieder/home">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-titel">
+                        Mitglieder
+                    </div>
+                </div>
+                <div class="panel-body">
+
+                    <p>Bild mit Menschen</p>
+                    <p>Mitglieder verwalten,
+                    neu anlegen, ... </p>
+                </div>
+            </div>
+        </a>
+    </div>
+    </div>
 {% else %}
 
 <div class="container">
