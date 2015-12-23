@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from django import forms
-import models
-from django.forms.models import inlineformset_factory
-from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
-
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Button, Field, Div, HTML
-from crispy_forms.bootstrap import StrictButton, FormActions, InlineCheckboxes, InlineField
-
 import django_select2
+from crispy_forms.bootstrap import FormActions, InlineCheckboxes, InlineField
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Layout, Field, HTML
+from django import forms
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+
+import models
+
 
 class PasswordChange(forms.Form):
 
@@ -613,7 +612,3 @@ class SaldenFilter(NameFilterForm,
     pass
 
 
-class PersonMitgliedsnummer(NameFilterForm,
-                            MitgliedsnummerFilterForm,
-                            ):
-    pass

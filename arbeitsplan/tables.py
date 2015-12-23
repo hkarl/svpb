@@ -4,16 +4,16 @@
 Collect all the tables and column types relevant for django_tables2 here.
 """
 
-from django.utils.safestring import mark_safe
-from django.utils.html import escape, format_html
-from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+import unicodedata
 
 import django_tables2
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.utils.html import escape, format_html
+from django.utils.safestring import mark_safe
 from django_tables2.utils import A  # alias for Accessor
 
 import models
-import unicodedata
 
 
 ####################################
@@ -1119,31 +1119,3 @@ class ImpersonateTable(django_tables2.Table):
                   'id',
                   )
 
-class MitgliederTable(django_tables2.Table):
-
-    mitgliedsnummer = django_tables2.Column(accessor="mitglied.mitgliedsnummer")
-
-    edit = django_tables2.TemplateColumn(
-        "<a href=\"{% url 'accountOtherEdit' record.pk %}\"> Editieren </a></i>",
-        verbose_name=u"Editieren",
-        orderable=False,
-        empty_values=(),
-        )
-
-    delete = django_tables2.TemplateColumn(
-        "<a href=\"{% url 'accountDelete' record.pk %}\"> Löschen </a></i>",
-        verbose_name=u"Löschen",
-        orderable=False,
-        empty_values=(),
-        )
-
-    class Meta:
-        model = User
-
-        attrs = {"class": "paleblue"}
-        fields = ('first_name',
-                  'last_name',
-                  'mitgliedsnummer',
-                  'edit',
-                  'delete',
-                  )

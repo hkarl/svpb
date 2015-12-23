@@ -30,6 +30,7 @@ class SimpleTest(TestCase):
 
         for u in User.objects.all():
             for a in Aufgabe.objects.all():
+                pass
         
     def setUp(self):
         """

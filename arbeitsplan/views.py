@@ -2,59 +2,37 @@
 
 # Create your views here.
 
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.views.generic import View, ListView, CreateView
-from django.views.generic import FormView, UpdateView, DeleteView, TemplateView
-from django.contrib.auth.models import User
-
-from django.utils.http import urlencode
-from django.utils.html import format_html
-from django.db.models import Sum, F, Count
-from django.contrib.auth import logout
-from django.forms.models import modelformset_factory
-from django.forms.formsets import formset_factory
-from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib import messages
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.management import call_command
-from django.db.models import Q
-
+import collections
+import datetime
+import os
+import types
 from collections import defaultdict
+
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.management import call_command
+from django.core.urlresolvers import reverse_lazy
+from django.db.models import Q
+from django.db.models import Sum, F, Count
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, get_object_or_404
+from django.utils.http import urlencode
+from django.utils.timezone import utc
+from django.views.generic import FormView, UpdateView, DeleteView, TemplateView
+from django.views.generic import View, ListView, CreateView
 from post_office import mail
 
-import datetime
-from django.utils.timezone import utc
-
-from pprint import pprint as pp
-
-import django_tables2
-import unicodedata
-
-import types
-import collections
-import os
-
 # Arbeitsplan-Importe:
-import models
 import forms
 from tables import *  # TODO: change import not to polute name space
-from svpb.settings import JAHRESSTUNDEN, STATIC_ROOT, SENDFILE_ROOT
+from svpb.settings import JAHRESSTUNDEN, SENDFILE_ROOT
 
 from sendfile import sendfile
 
 
-from svpb.views import isTeamlead, isVorstand, isVorstandMixin, isVorstandOrTeamleader, isVorstandOrTeamleaderMixin
+from svpb.views import isTeamlead, isVorstand, isVorstandMixin, isVorstandOrTeamleaderMixin
 #################
 
-
-
-
-def logout_view(request):
-    # print "logout view"
-    logout(request)
-    return render(request, "registration/logged_out.html", {})
 
 
 
@@ -2484,28 +2462,6 @@ class MediaChecks(View):
 # TODO: This really should go into the svpb.views, but that would
 # create cricular imports because of the FilteredListView :-(
 # this will need serious code refactoring some time
-
-class AccountList(SuccessMessageMixin, isVorstandMixin, FilteredListView):
-    model = User
-    title = "Mitglieder bearbeiten"
-
-    # filterform_class = forms.NameFilterForm
-    filterform_class = forms.PersonMitgliedsnummer
-    filtertile = "Mitglieder nach Vor- oder Nachnamen filtern"
-
-    tabletitle = "Alle Mitglieder"
-    tableClass = MitgliederTable
-
-    filterconfig = [('first_name', 'first_name__icontains'),
-                    ('last_name', 'last_name__icontains'),
-                    ('mitgliedsnummer', 'mitglied__mitgliedsnummer__icontains'),
-                    ]
-
-    intro_text = mark_safe("""Diese Seite zeigt eine Liste aller Mitglieder an.
-    Sie dient vor allem dazu, einzelne Mitglieder-Konten zu finden und zu editieren.
-    Eine Übersicht über gemeldete, zugeteilte, erbrachte und akzeptieren
-    Arbeitsstunden findet sich separat in der <a href="/arbeitsplan/salden/">Saldenübersicht</a>.
-    """)
 
 ##########
 

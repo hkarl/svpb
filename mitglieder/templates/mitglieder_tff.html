@@ -1,0 +1,85 @@
+{% extends "bootstrap/bootstrap_mitglied.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+{{title}}
+{% endblock %}
+
+{% block content %}
+
+{% if intro_text %}
+<div class="alert alert-info">
+{{ intro_text }}
+  </div>
+<hr>
+{% endif %}
+
+{% block prefilter %}
+{% endblock %}
+  
+{% if filtertitle %}
+<h3> {{filtertitle}} </h3>
+<p>
+{% endif %}
+
+{% if filterform %}
+{% crispy filterform %}
+<p>
+{% endif %}
+
+
+{% if tabletitle %}
+<h3> {{tabletitle}} </h3>
+<p>
+{% endif %}
+
+{% if tableform %}
+<form method="POST" action="{{fullpath}}">
+{% csrf_token %}
+{% endif %}
+
+{% render_table object_list  %}
+
+<p> 
+{% if tableform %}
+  {% if furtherfields %}
+  <p>
+    {% crispy furtherfields %}
+  {% endif %}
+<p>
+<input type=submit class="btn btn-primary" name="{{tableform.name}}" value="{{tableform.value}}">
+    {% for h in tableformHidden %}
+        <input type="hidden" name="{{ h.name }}" value="{{ h.value }}">
+    {% endfor %}
+  </form>
+{% endif %}
+
+{% if post_text %}
+<hr>
+{{ post_text }}
+{% endif %}
+
+{% if todo_text %}
+<hr>
+<div class="alert alert-danger">
+<b> TODO </b>
+<ul>
+{{ todo_text }}
+</ul>
+</div>
+{% endif %}
+
+{% if discuss_text %}
+<hr>
+<div class="alert alert-warning">
+<b> DISCUSS </b>
+<ul>
+{{ discuss_text }}
+</ul>
+</div>
+{% endif %}
+
+
+{% endblock %}

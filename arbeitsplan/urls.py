@@ -1,11 +1,7 @@
-from django.conf.urls import patterns, include, url
-from django.views.generic import TemplateView
-from django.core.urlresolvers import reverse
+from django.conf.urls import patterns, url
 
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth import REDIRECT_FIELD_NAME
 
-import arbeitsplan.views, svpb.views
+import arbeitsplan.views
 import arbeitsplan.models
 
 from svpb.activeTest import active_and_login_required

@@ -1,0 +1,72 @@
+{% extends "bootstrap/bootstrap_mitglied.html" %}
+{% load staticfiles %}
+
+
+{% block branding %}
+Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}}
+{% endif %}!
+{% endblock %}
+
+{% block content %}
+
+
+
+{% if user.is_authenticated %}
+
+{% if msg %}
+<div class="alert alert-{{msgclass}}">
+  {{ msg }}
+</div>
+<p>
+  {% endif %}
+
+  <p>
+  Ihnen stehen folgende Funktionen zur Mitgliederverwaltung zur Verfügung:
+  </p>
+
+
+{% for g in  user.groups.all %}
+{% if g.name == "Vorstand" %}
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-danger">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Mitgliederdaten verwalten
+        </div>
+      </div>
+      <div class="panel-body">
+        <ul class="list-group">
+          <li class="list-group-item"> <a href="/accounts/add/"> Mitglied hinzufügen </a> </li>
+          <li class="list-group-item"> <a href="/accounts/list/"> Mitgliederliste </a> </li>
+          <li class="list-group-item"> <a href="/accounts/mitgliederexcel.xlsx"> <i class="fa fa-file-excel-o fa-lg fa-fw"></i>  Mitglieder als Excel, mit unterschiedlichen Filtern </a> </li>
+          {% comment %}
+          <li class="list-group-item"> <a href="/accounts/inaktiveReset/">  Inaktive Mitglieder mit neuen Passwörtern versehen</a> </li>
+          {% endcomment %}
+          {% if user.is_staff %}
+          <li class="list-group-item"> <a href="/admin/"> <i class="fa fa-database fa-lg fa-fw"></i>&nbsp; Rohdaten verwalten </a> Achtung, direkter Datenbankzugriff! Gefährlich!</li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% endif %}
+{% endfor %}
+
+
+{% endif %}
+
+<p></p>
+<hr>
+
+    <a href="/about">Über diese Webseite</a>
+
+{% endblock %}
+<!-- hhmts start -->Last modified: Wed Mar  4 20:50:37 CET 2015 <!-- hhmts end -->
+
+
