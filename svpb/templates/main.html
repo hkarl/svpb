@@ -46,25 +46,31 @@ Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}
                 </div>
             </div>
         </a>
-    </div>
+        </div>
 
-        <div class="col-md-6">
-        <a href="mitglieder/home">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <div class="panel-titel">
-                        Mitglieder
+        {% for g in  user.groups.all %}
+        {% if g.name == "Vorstand" %}
+
+            <div class="col-md-6">
+            <a href="accounts/">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-titel">
+                            Mitglieder
+                        </div>
+                    </div>
+                    <div class="panel-body">
+
+                        <p>Bild mit Menschen</p>
+                        <p>Mitglieder verwalten,
+                        neu anlegen, ... </p>
                     </div>
                 </div>
-                <div class="panel-body">
-
-                    <p>Bild mit Menschen</p>
-                    <p>Mitglieder verwalten,
-                    neu anlegen, ... </p>
-                </div>
+            </a>
             </div>
-        </a>
-    </div>
+        {% endif %}
+        {% endfor %}
+
     </div>
 {% else %}
 
@@ -88,11 +94,11 @@ Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}
     {% else %}
     <p>
         Bist Du ein Mitglied, so
-        <a href="/accounts/login/?next=/home/"> melde Dich bitte an
+        <a href="/login/?next=/home/"> melde Dich bitte an
         </a>.
     </p>
     <p>
-        <a href="/accounts/login/?next=/home/"
+        <a href="/login/?next=/home/"
            class="btn btn-primary btn-lg" role="button">
             Anmelden</a>
     </p>
