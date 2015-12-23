@@ -1,0 +1,126 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+{% load staticfiles %}
+
+{% block apphome %}
+<a href="/arbeitsplan/home">
+    <i class="fa fa-home fa-fw"></i>
+    Home
+</a>
+{% endblock %}
+
+
+{% block appnav %}
+<!-- AUFGABEN -->
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="fa fa-list-ul fa-fw"></i>
+        Aufgaben
+        <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="/arbeitsplan/aufgaben/">Anzeigen</a></li>
+        {% for g in  user.groups.all %}
+            {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li> <a href="/arbeitsplan/aufgabeErzeugen/"> Neue Aufgabe anlegen </a> </li>
+                <li>  <a href="/arbeitsplan/aufgabenVorstand/"> Aufgaben anzeigen und editieren </a> </li>
+                <li> <a href="/arbeitsplan/aufgabengruppeErzeugen/"> Neue Aufgabengruppe anlegen </a> </li>
+                <li> <a href="/arbeitsplan/aufgabengruppen/"> Aufgabengruppen anzeigen und editieren </a> </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</li>
+
+<!-- MELDUNG -->
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="fa fa-hand-o-up fa-fw"></i>
+        Meldung
+        <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="/arbeitsplan/meldung/liste">Übersicht</a></li>
+        <li><a href="/arbeitsplan/meldung/">Meldung bearbeiten</a></li>
+        <li><a href="/arbeitsplan/meldung/?gemeldet=GA&filter=Filter+anwenden">Meldung löschen</a></li>
+        {% for g in  user.groups.all %}
+            {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li><a href="/arbeitsplan/meldungVorstand/">Bewerten</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</li>
+
+
+<!-- ZUTEILUNG -->
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="fa fa-hand-o-right fa-fw"></i>
+        Zuteilung
+        <b class="caret"></b></a>
+    <ul class="dropdown-menu">
+        <li><a href="/arbeitsplan/zuteilungAnzeige/me/">Anzeigen</a></li>
+        {% for g in  user.groups.all %}
+            {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li><a href="/arbeitsplan/zuteilungAnzeige/all/">Alle Zuteilungen anzeigen </a></li>
+                <li><a href="/arbeitsplan/zuteilungUebersicht/"> Aufgaben und Zuteilungsübersicht </a> </li>
+                <li><a href="/arbeitsplan/manuelleZuteilung/">Manuell
+                    zuteilen: alle Aufgaben, alle Mitglieder</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</li>
+
+
+<!-- LEISTUNG -->
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="fa fa-check fa-fw"></i>
+        Leistung <b class="caret"></b></a>
+    <ul class="dropdown-menu">
+        <li><a href="/arbeitsplan/leistung/">Eintragen (eigene Aufgaben)</a></li>
+        <li><a href="/arbeitsplan/leistungAlle/">Eintragen (beliebige Aufgaben)</a></li>
+        <li><a href="/arbeitsplan/leistungListe/">Anzeigen</a></li>
+        {% for g in  user.groups.all %}
+            {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li><a href="/arbeitsplan/leistungenBearbeiten/z=me/">Bearbeiten (für mich)</a></li>
+                <li><a href="/arbeitsplan/leistungenBearbeiten/z=all/">Bearbeiten (für alle Vorstände)</a></li>
+                <li><a href="/arbeitsplan/salden/">Saldenübersicht</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if user.teamleader_set.count > 0 %}
+            <li class="divider"></li>
+            <li><a href="/arbeitsplan/leistungenBearbeiten/z=team/">Bearbeiten (für Team)</a></li>
+        {% endif %}
+    </ul>
+</li>
+
+
+<!-- BENACHRICHTIGEN -->
+{% for g in  user.groups.all %}
+    {% if g.name == "Vorstand" %}
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-envelope-o fa-fw"></i>
+                Benachrichtigen <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li> <a href="/arbeitsplan/benachrichtigen/zuteilung/"> Zuteilungen </a> </li>
+                <li> <a href="/arbeitsplan/benachrichtigen/leistung/"> Leistungen </a> </li>
+                <li> <a href="/arbeitsplan/benachrichtigen/meldungsAufforderung/">
+                    Meldungsaufforderung</a>
+                </li>
+                <li> <a
+                        href="/arbeitsplan/benachrichtigen/senden/"> Absenden </a> </li>
+            </ul>
+        </li>
+    {% endif %}
+{% endfor %}
+
+
+{% endblock %}

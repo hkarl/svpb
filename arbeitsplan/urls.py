@@ -16,6 +16,16 @@ urlpatterns = patterns('',
     # url(r'^$', 'svpb.views.home', name='home'),
     # url(r'^svpb/', include('svpb.foo.urls')),
 
+    url (r'^home/$',
+         arbeitsplan.views.HomeView.as_view (template_name='home.html'),
+         name="home2",
+         ),
+
+    url (r'^$',
+         arbeitsplan.views.HomeView.as_view (template_name='home.html'),
+         name="home2",
+         ),
+
     url (r'^benachrichtigen/leistung/$',
          active_and_login_required(arbeitsplan.views.LeistungEmailView.as_view()),
          name="arbeitsplan-benachrichtigen-leistung",

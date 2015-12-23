@@ -1,0 +1,59 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+{% load staticfiles %}
+
+
+{% block branding %}
+Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}}
+{% endif %}!
+{% endblock %}
+
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<ul>
+    <li> <a href="arbeitsplan/home">Arbeit</a> </li>
+    <li> Boote </li>
+</ul>
+{% else %}
+
+<div class="container">
+    <div class="row">
+        <div class ="col-md-12">
+            <img class="img-responsive" src="{% static "media/head_startseite_01.jpg"%}">
+        </div>
+    </div>
+</div>
+<div class="jumbotron">
+    <p> In einem Segelverein fällt viel Arbeit an,
+        die auf die Mitglieder verteilt werden muss.
+        Diese Seite dient der Organisation dieser Arbeit.
+    </p>
+
+    {% if OFFLINE %}
+    <b><big>
+        Die Web-Anwendung ist wegen Wartung kurzfristig ausser Betrieb. Anmelden ist derzeit nicht mögich. Bitte versuchen Sie es später erneut! Wir entschuldigen uns für die Unannehmlichkeiten.
+    </big></b>
+    {% else %}
+    <p>
+        Bist Du ein Mitglied, so
+        <a href="/accounts/login/?next=/home/"> melde Dich bitte an
+        </a>.
+    </p>
+    <p>
+        <a href="/accounts/login/?next=/home/"
+           class="btn btn-primary btn-lg" role="button">
+            Anmelden</a>
+    </p>
+    {% endif %}
+</div>
+
+{% endif %}
+
+<hr>
+<p>
+    <a href="/about">Über diese Webseite</a>
+</p>
+
+{% endblock %}
