@@ -74,9 +74,15 @@ Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}
                         </div>
                     </div>
                     <div class="panel-body">
-                        <p>Mitglieder verwalten,
-                        neu anlegen, ... </p>
-                        <i class="fa fa-users fa-fw fa-5x"></i>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>Mitglieder verwalten,
+                                    neu anlegen, ... </p>
+                            </div>
+                            <div class="col-md-6">
+                                <i class="fa fa-users fa-fw fa-5x"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </a>
