@@ -13,12 +13,12 @@ urlpatterns = patterns('',
     # url(r'^svpb/', include('svpb.foo.urls')),
 
     url (r'^home/$',
-         arbeitsplan.views.HomeView.as_view (template_name='home.html'),
+         active_and_login_required(arbeitsplan.views.HomeView.as_view (template_name='home.html')),
          name="home2",
          ),
 
     url (r'^$',
-         arbeitsplan.views.HomeView.as_view (template_name='home.html'),
+         active_and_login_required(arbeitsplan.views.HomeView.as_view (template_name='home.html')),
          name="home2",
          ),
 
