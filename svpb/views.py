@@ -77,6 +77,12 @@ class SvpbLogin(FormView):
 
         return context
 
+    def get_success_url(self):
+        try:
+            return self.request.GET['next']
+        except:
+            return super(SvpbLogin, self).get_success_url()
+
     def form_valid(self, form):
         """form checks the authentication.
         This is only called if the user can be logged in, but is not
