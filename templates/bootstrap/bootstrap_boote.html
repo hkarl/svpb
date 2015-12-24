@@ -1,0 +1,33 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+{% load staticfiles %}
+
+{% block apphome %}
+<a href="/boote/">
+    <img src="{% static "media/sailboat.png"%}" class="img-responsive">
+    <i class="fa fa-home fa-fw"></i>
+    Boote
+</a>
+{% endblock %}
+
+
+{% block appnav %}
+<!-- AUFGABEN -->
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        Boote
+        <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="/boote/XXX/">XXX</a></li>
+        {% for g in  user.groups.all %}
+            {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li> <a href="/boote/YYY/"> BootVorstand </a> </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</li>
+
+
+{% endblock %}

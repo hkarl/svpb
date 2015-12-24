@@ -1,0 +1,40 @@
+{% extends "bootstrap/bootstrap_boote.html" %}
+{% load staticfiles %}
+
+
+{% block branding %}
+Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}}
+{% endif %}!
+{% endblock %}
+
+{% block content %}
+
+
+{% if user.is_authenticated %}
+
+{% if msg %}
+<div class="alert alert-{{msgclass}}">
+  {{ msg }}
+</div>
+<p>
+  {% endif %}
+
+  <p>
+  Boote, Mitsegler - der eigentliche Zweck eines Segelvereins!
+  </p>
+
+
+{% else %}
+
+<a href="login/?next=/home/"> Bitte loggen Sie sich ein! </a>
+{% endif %}
+
+<p></p>
+<hr>
+
+    <a href="/about">Über diese Webseite</a>
+
+{% endblock %}
+<!-- hhmts start -->Last modified: Wed Mar  4 20:50:37 CET 2015 <!-- hhmts end -->
+
+
