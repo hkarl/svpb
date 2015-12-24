@@ -9,11 +9,11 @@ import mitglieder.views
 
 urlpatterns = patterns('',
     url(r'^$',
-        TemplateView.as_view(template_name="mitgliederHome.html"),
+        active_and_login_required(TemplateView.as_view(template_name="mitgliederHome.html")),
         name="mitgliederHome"),
 
     url(r'^home/',
-        TemplateView.as_view(template_name="mitgliederHome.html"),
+        active_and_login_required(TemplateView.as_view(template_name="mitgliederHome.html")),
         name="mitgliederHome"),
 
     # url (r'^accounts/login/', login),
