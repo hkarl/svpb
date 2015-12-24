@@ -19,7 +19,7 @@ urlpatterns = patterns('',
          name="main",
          ),
 
-    url (r'home/^$',
+    url (r'^home/$',
          TemplateView.as_view (template_name="main.html"),
          name="main",
          ),
@@ -32,6 +32,8 @@ urlpatterns = patterns('',
     url(r'^arbeitsplan/', include('arbeitsplan.urls')),
 
     url(r'^accounts/', include('mitglieder.urls')),
+
+    url(r'^boote/', include('boote.urls')),
 
     url (r'^bootstrap$',
          TemplateView.as_view(template_name="bootstrap.html"),
