@@ -22,8 +22,14 @@ Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}
                     </div>
                 </div>
                 <div class="panel-body">
-                    <p>Bild mit Arbeit</p>
-                    <p>Für Aufgaben melden, Leistungen eingeben, ... </p>
+                    <div class="row">
+                        <div class="col-md-6">
+                        <p>Für Aufgaben melden, zugeteilte Aufgaben ansehen, Leistungen eingeben, ... </p>
+                        </div>
+                        <div class="col-md-6">
+                        <img src="{% static "media/worker.png"%}" class="img-responsive">
+                        </div>
+                    </div>
                 </div>
             </div>
         </a>
@@ -38,11 +44,19 @@ Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}
                     </div>
                 </div>
                 <div class="panel-body">
-                    <p> Bild mit Boot </p>
-                    <p>
-                        Vereinsboote nutzen,
-                        bei Vereinsmitgliedern mitsegln, ...
-                    </p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>
+                                <b>BALD VERFÜGBAR:
+                                    Vereinsboote nutzen,
+                                    bei Vereinsmitgliedern mitsegln, ...
+                                </b>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <img src="{% static "media/sailboat.png"%}" class="img-responsive">
+                        </div>
+                    </div>
                 </div>
             </div>
         </a>
@@ -60,10 +74,9 @@ Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}
                         </div>
                     </div>
                     <div class="panel-body">
-
-                        <p>Bild mit Menschen</p>
                         <p>Mitglieder verwalten,
                         neu anlegen, ... </p>
+                        <i class="fa fa-users fa-fw fa-5x"></i>
                     </div>
                 </div>
             </a>
