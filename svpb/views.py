@@ -56,7 +56,7 @@ class isVorstandOrTeamleaderMixin(object):
 
 from svpb.forms import (LoginForm,
                         )
-from svpb.settings import OFFLINE
+from svpb.settings import OFFLINE, JAHRESENDE
 from arbeitsplan.models import Mitglied
 
 
