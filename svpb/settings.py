@@ -6,9 +6,10 @@ APPLICATION_DIR = os.path.dirname( globals()[ '__file__' ] )
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
+LOGIN_URL = "/login/"
 
 OFFLINE = False
-JAHRESENDE = True
+JAHRESENDE = False
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
