@@ -2411,7 +2411,7 @@ class ImpersonateListe(isVorstandMixin, FilteredListView):
 class PasswordChange(FormView):
     template_name = "password_change.html"
     form_class = forms.PasswordChange
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("main")
 
     def form_valid(self, form):
         try:
