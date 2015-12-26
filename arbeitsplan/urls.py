@@ -14,12 +14,12 @@ urlpatterns = patterns('',
 
     url (r'^home/$',
          active_and_login_required(arbeitsplan.views.HomeView.as_view (template_name='home.html')),
-         name="home2",
+         name="home2Arbeitsplan",
          ),
 
     url (r'^$',
          active_and_login_required(arbeitsplan.views.HomeView.as_view (template_name='home.html')),
-         name="home2",
+         name="homeArbeitsplan",
          ),
 
     url (r'^benachrichtigen/leistung/$',

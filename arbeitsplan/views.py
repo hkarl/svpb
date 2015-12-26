@@ -466,7 +466,7 @@ class AufgabenCreate (isVorstandMixin, SimpleCreateView):
     model = models.Aufgabe
     form_class = forms.AufgabeForm
     template_name = "arbeitsplan_aufgabenCreate.html"
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("homeArbeitsplan")
     title = "Neue Aufgabe anlegen"
     buttontext = "Aufgabe anlegen"
 
@@ -536,7 +536,7 @@ class AufgabenCreate (isVorstandMixin, SimpleCreateView):
 
 class AufgabengruppeCreate(isVorstandMixin, SimpleCreateView):
     model = models.Aufgabengruppe
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("homeArbeitsplan")
     title = "Neue Aufgabengruppe anlegen"
     buttontext = "Aufgabengruppe anlegen"
     template_name = "arbeitsplan_aufgabengruppeCreate.html"
@@ -1793,7 +1793,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
                            u"Sie dürfen diese Funktion nicht benutzen!"
                            )
 
-            redirect("home")
+            redirect("homeArbeitsplan")
 
 
         data = {}
@@ -2041,7 +2041,7 @@ class ErstelleZuteilungView(View):
 
         messages.error(request,
                         "Diese Funktion ist noch nicht implementiert!")
-        return redirect ('home')
+        return redirect ('homeArbeitsplan')
 
 
 ########################
@@ -2366,7 +2366,7 @@ class EmailSendenView(isVorstandMixin, View):
                                "werden! Sysadmin kontaktieren!".
                                format(failed))
 
-        return redirect('home')
+        return redirect('homeArbeitsplan')
 
 
 ################################
