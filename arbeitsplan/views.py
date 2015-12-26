@@ -2372,42 +2372,6 @@ class EmailSendenView(isVorstandMixin, View):
 ################################
 ## Impersonateion
 
-class ImpersonateListe(isVorstandMixin, FilteredListView):
-    """Show a table with all Mitglieder,
-    pick one to impersonate.
-    Needs a suitable linked Column to point
-    to impersonate/user-id
-    """
-    title = "Darzustellenden Nutzer auswählen"
-    tableClass = ImpersonateTable
-    tabletitle = "Mitglieder"
-    model = User
-
-    filterform_class = forms.NameFilterForm
-    filterconfig = [('first_name', 'first_name__icontains'),
-                    ('last_name', 'last_name__icontains'),
-                    ]
-
-
-    intro_text = """Sie können die Identität eines
-    anderen Nutzers annehmen,
-    beispielsweise um Meldungen oder Leistungen für diesen einzutragen.
-    <p>
-    Bitte gehen Sie verantwortlich mit dieser Möglichkeit um!
-    <p>
-    Beachten Sie: Diese Funktion funktioniert nicht bei Mitgliedern
-    mit Sonderstatus (z.B. Adminstratoren dieser Webseite).
-    """
-
-    def get_data(self):
-        return (self.model.objects
-                .filter(is_active=True)
-                .filter(is_staff=False)
-                .filter(is_superuser=False)
-                .exclude(id=self.request.user.id))
-    pass
-
-
 ##############
 
 

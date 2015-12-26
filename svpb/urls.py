@@ -66,9 +66,10 @@ urlpatterns = patterns('',
 
                        ## Impersonation of other users:
     url(r'^impersonate/', include('impersonate.urls')),
-                       url(r'^impersonate/liste/$',
-         active_and_login_required(arbeitsplan.views.ImpersonateListe.as_view()),
-         name="arbeitsplan-impersonateListe",),
+
+    url(r'^impersonate/liste/$',
+        active_and_login_required(mitglieder.views.ImpersonateListe.as_view()),
+        name="arbeitsplan-impersonateListe", ),
 
                        # password reset; compare http://django-password-reset.readthedocs.org/en/latest/quickstart.html
     url(r'^reset/', include('password_reset.urls')),
