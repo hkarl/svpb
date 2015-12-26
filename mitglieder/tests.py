@@ -77,12 +77,12 @@ class MitgliederTest(TestCase):
 
         cl, response = self.login_user('su')
 
-        print "adding"
+        # print "adding"
 
         response = cl.get(
                 '/accounts/add/')
 
-        print "response after get:"
+        # print "response after get:"
         pp(response)
 
         response = cl.post(
