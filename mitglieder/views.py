@@ -237,7 +237,7 @@ class AccountAdd(SuccessMessageMixin, isVorstandMixin, CreateView):
 class AccountEdit(SuccessMessageMixin, FormView):
     template_name = "registration/justForm.html"
     form_class = AccountEdit
-    success_url = "/accounts/list/"
+    success_url = "/"
     post_text = format_html("""
     <p>
     Sie haben Ihr Passwort vergessen? Sie können es <a href="{{% url "password_reset_recover" %}}">
