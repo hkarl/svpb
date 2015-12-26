@@ -224,3 +224,39 @@ class PersonMitgliedsnummer(NameFilterForm,
                             MitgliedsnummerFilterForm,
                             ):
     pass
+
+
+class PasswordChange(forms.Form):
+
+    pw1 = forms.CharField(max_length=30,
+                          required=True,
+                          label="Neues Passwort",
+                          widget=forms.PasswordInput(),
+                          )
+
+    pw2 = forms.CharField(max_length=30,
+                          required=True,
+                          label="Neues Passwort (Wiederholung)",
+                          widget=forms.PasswordInput(),
+                          )
+
+    def __init__(self, *args, **kwargs):
+        super(PasswordChange, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = self.__class__.__name__
+        self.helper.form_method = "post"
+
+        self.helper.layout = Layout(
+            'pw1',
+            'pw2',
+            HTML("<p>"),
+            )
+        self.helper.add_input(Submit('apply', 'Neues Passwort setzen'))
+
+    def clean(self):
+        if self.cleaned_data['pw1'] != self.cleaned_data['pw2']:
+            raise ValidationError(u'Die beiden Passwörter stimmen nicht überein',
+                            code='invalid'
+                            )
+        else:
+            return self.cleaned_data

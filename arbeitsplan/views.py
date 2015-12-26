@@ -18,7 +18,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404
 from django.utils.http import urlencode
 from django.utils.timezone import utc
-from django.views.generic import FormView, UpdateView, DeleteView, TemplateView
+from django.views.generic import UpdateView, DeleteView, TemplateView
 from django.views.generic import View, ListView, CreateView
 from post_office import mail
 
@@ -2407,26 +2407,6 @@ class ImpersonateListe(isVorstandMixin, FilteredListView):
                 .exclude(id=self.request.user.id))
     pass
 
-
-class PasswordChange(FormView):
-    template_name = "password_change.html"
-    form_class = forms.PasswordChange
-    success_url = reverse_lazy("main")
-
-    def form_valid(self, form):
-        try:
-            u = self.request.user
-            u.set_password(form.cleaned_data['pw1'])
-            u.save()
-            messages.success(self.request,
-                             u'Ihr Passwort wurde erfolgreich geändert'
-                             )
-        except Exception as e:
-            messages.error(self.request,
-                           u'Ihre Passwortänderung ist fehlgeschlagen: ' +
-                           str(e),
-                           )
-        return super(PasswordChange, self).form_valid(form)
 
 ##############
 

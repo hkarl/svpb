@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 
 import arbeitsplan.views, svpb.views
+import mitglieder.views
 
 from activeTest import active_and_login_required
 
@@ -21,7 +22,7 @@ urlpatterns = patterns('',
 
     url (r'^home/$',
          TemplateView.as_view (template_name="main.html"),
-         name="main",
+         name="mainHome",
          ),
 
     url (r'^keinVorstand/$',
@@ -54,7 +55,7 @@ urlpatterns = patterns('',
     url (r'^logout/', svpb.views.logout_view),
 
     url (r'^password/change/$',
-         active_and_login_required(arbeitsplan.views.PasswordChange.as_view()),
+         active_and_login_required(mitglieder.views.PasswordChange.as_view()),
          name='password_change',
          ),
 

@@ -25,7 +25,8 @@ from post_office.models import EmailTemplate
 from pwgen import pwgen
 from sendfile import sendfile
 
-
+import mitglieder.forms
+from arbeitsplan import forms
 from mitglieder.tables import MitgliederTable
 from arbeitsplan.views import FilteredListView
 
@@ -450,3 +451,25 @@ class MitgliederExcel(View):
                             os.path.join(basepath, filename))
         else:
             return redirect ("keinVorstand")
+
+
+class PasswordChange(FormView):
+    template_name = "password_change.html"
+    form_class = mitglieder.forms.PasswordChange
+    success_url = reverse_lazy("main")
+
+    def form_valid(self, form):
+        try:
+            u = self.request.user
+            u.set_password(form.cleaned_data['pw1'])
+            u.save()
+            messages.success(self.request,
+                             u'Ihr Passwort wurde erfolgreich geändert'
+                             )
+        except Exception as e:
+            messages.error(self.request,
+                           u'Ihre Passwortänderung ist fehlgeschlagen: ' +
+                           str(e),
+                           )
+        return super(PasswordChange, self).form_valid(form)
+
