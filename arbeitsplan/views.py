@@ -2342,6 +2342,7 @@ class ZuteilungEmailView(isVorstandMixin, FilteredEmailCreateView):
 
         d = {'first_name': instance.user.first_name,
              'last_name': instance.user.last_name,
+             'u': instance.user,
              'zuteilungen': models.Zuteilung.objects.filter(ausfuehrer=instance.user)
             }
 
