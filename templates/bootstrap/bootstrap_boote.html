@@ -11,14 +11,55 @@
 
 
 {% block appnav %}
-<!-- AUFGABEN -->
+
+<!-- BOOTE -->
 <li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
         Boote
         <b class="caret"></b>
     </a>
     <ul class="dropdown-menu">
-        <li><a href="/boote/XXX/">XXX</a></li>
+        <li><a href="/boote/boots_liste/">Vereinsboote</a></li>
+        <li><a href="/boote/vereinsboote/xxx/">Problem melden</a></li>
+        {% for g in  user.groups.all %}
+            {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li> <a href="/boote/YYY/"> BootVorstand </a> </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</li>
+
+
+<!-- BOOT RESERVIEREN -->
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        Reservieren
+        <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="/boote/booking/overview/">Verfügbare Termine</a></li>
+        <li><a href="/boote/booking/my_bookings/">Meine Reservationen</a></li>
+        {% for g in  user.groups.all %}
+            {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li> <a href="/boote/YYY/"> BootVorstand </a> </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</li>
+
+<!-- MITSEGELN -->
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        Mitsegeln
+        <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="/boote/XXX/">Aktuele Anfragen</a></li>
+        <li><a href="/boote/XXX/">Neue Anfrage</a></li>
         {% for g in  user.groups.all %}
             {% if g.name == "Vorstand" %}
                 <li class="divider"></li>
