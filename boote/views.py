@@ -3,7 +3,7 @@ from django.template import RequestContext, loader
 from datetime import datetime, timedelta
 import time 
 from django.shortcuts import render
-from .models import Boat, BoatType, Booking
+from .models import Boat, BoatType, Booking, BoatIssue
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 
@@ -51,33 +51,24 @@ def boot_liste(request):
     template = loader.get_template('boote/boot_liste.html')
 
     user = request.user
-
-    mybookings = []
-    for booking in Booking.objects.filter(user=user, date__gte=datetime.now()).order_by('date'):
-        mybookings.append([booking.date.strftime("%A"),booking.date.strftime("%Y/%d/%m"),booking.time_from.strftime("%H:%M"),booking.time_to.strftime("%H:%M"), booking.boat, booking.pk])
-
-    overview = []
-    for boat in Boat.objects.all():
-        overview.append([boat.name + " (" + boat.type.name +")", boat.pk, boat.getBookings7days()])
-
-    dates = []
-    d = datetime.now()
-    for i in range(0,7):
-        dates.append([d.strftime("%A"), d.strftime("%Y/%d/%m")])
-        d = d + timedelta(days=1)
-
-    context = RequestContext(request, {'booking_overview': overview, "booking_dates":dates, "mybookings":mybookings})
+    
+    boots = []
+    for boat in Boat.objects.all().order_by('-type'):
+        boots.append([boat, boat.getNumberOfIssues])
+        
+    context = RequestContext(request, {'boots': boots})
     return HttpResponse(template.render(context))
 
 def boot_detail(request, boot_pk):
     template = loader.get_template('boote/boot_detail.html')
     boot = Boat.objects.get(pk=boot_pk)
     user = request.user
-   
+    issues = BoatIssue.objects.filter(boat=boot_pk)
 
     context = RequestContext(request, {        
         'boot': boot,
         'user': user,
+        'issues': issues,
     })
     return HttpResponse(template.render(context))
 
@@ -118,7 +109,7 @@ def booking_boot(request, boot_pk):
             b = Booking(user=user, boat=boot, date=res_date, time_from=res_start, time_to=res_end)
             b.save()
             # redirect to a new URL:
-            return HttpResponseRedirect(reverse('booking-my-bookings', args=[boot_pk]))
+            return HttpResponseRedirect(reverse('booking-my-bookings'))
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -134,7 +125,17 @@ def booking_boot(request, boot_pk):
     })
     return HttpResponse(template.render(context))
 
-def vereinsboote_remove_booking(request, booking_pk):
-    booking = Booking.objects.  get(pk=booking_pk, user=request.user)
+def booking_remove(request, booking_pk):
+    booking = Booking.objects. get(pk=booking_pk, user=request.user)
     booking.delete()
     return redirect('booking-my-bookings')
+
+def boot_fix_issue(request, issue_pk):
+    issue = BoatIssue.objects.get(pk=issue_pk)
+    issue.status = 2
+    issue.fixed_by = request.user
+    issue.fixed_date = datetime.now()
+    issue.save()
+    return redirect('boot-detail', issue.boat.pk)
+    
+    

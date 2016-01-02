@@ -85,6 +85,7 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     # os.path.join (APPLICATION_DIR, '..', 'arbeitsplan', 'static'),
+    os.path.join (APPLICATION_DIR, '..', 'boote'),
     os.path.join (APPLICATION_DIR, '..', 'templates'),
 )
 
@@ -166,6 +167,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'impersonate',
     'arbeitsplan',
+    'boote',
     'post_office',
     'sendfile',
     'password_reset',

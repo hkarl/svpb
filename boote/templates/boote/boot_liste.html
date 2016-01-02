@@ -4,122 +4,42 @@
 {% load crispy_forms_tags %}
 
 {% block branding %}
-Vereinsboote
+Alle Vereinsboote
 {% endblock %}
 
 {% block content %}
 
-<style type="text/css">
-
-#boatslist table {
-  height: 320px;
-  border-collapse: collapse;
-  border: 1px solid #38678f;
-  margin: 50px auto;
-  background: white;
-}
-#boatslist th {
-  background: steelblue;
-  height: 54px;
-  padding: 4px;
-  font-weight: lighter;
-  text-shadow: 0 1px 0 #38678f;
-  color: white;
-  border: 1px solid #38678f;
-  box-shadow: inset 0px 1px 2px #568ebd;
-  transition: all 0.2s;
-}
-
-#boatslist th.date{
-  background: #537E8C;
-  width: 100px;  
-}
-
-#boatslist tr {
-  border-bottom: 1px solid #cccccc;
-}
-#boatslist tr:last-child {
-  border-bottom: 0px;
-}
-#boatslist td {
-  border-right: 1px solid #cccccc;
-  padding: 5px;
-  transition: all 0.2s;
-  text-align: center;
-}
-#boatslist td:last-child {
-  border-right: 0px;
-}
-#boatslist td.selected {
-  background: #d7e4ef;
-  z-index: ;
-}
-
-#boatslist td.booked0 {
-  background: #5CB85C;
-  font-size: 80%;
-  height: 50px;
-}
-
-#boatslist td.booked1 {
-  background: #F0AD4E;
-  font-size: 80%;
-  height: 50px;
-}
-
-#boatslist td.booked2 {
-  background: #D9534F;
-  font-size: 80%;
-  height: 50px;
-}
-
-#boatslist td input {
-  font-size: 14px;
-  background: none;
-  outline: none;
-  border: 0;
-  display: table-cell;
-  height: 100%;
-
-}
-#boatslist td input:focus {
-  box-shadow: 0 1px 0 steelblue;
-  color: steelblue;
-}
-::-moz-selection {
-  background: steelblue;
-  color: white;
-}
-::selection {
-  background: steelblue;
-  color: white;
-}
-#boatslist .heavyTable {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  animation: float 5s infinite;
-}
-</style>
-
-
 
 <p>
-LISTAAAAA
-
+Here a list of all boats. Select a boat to see details.
 </p>
 
 <TABLE id='boatslist'>
- <thead>
+	<thead>
         <tr>
-            <th>Boots Typ</th>
-            <th>Boots Name</th>            
+            <th>Type</th>
+            <th>Name</th>            
+            <th>Länge</th>
+            <th>Breite</th>  
+            <th>Tiefgang</th>               
+            <th>Offene Meldungen</th>
+            <th>Bootspate</th>
         </tr>
-    </thead>
+	</thead>
 
-
-{% for name, pk, overview7days in booking_overview %}
+{% for boot, numIssues in boots %}
   <TR>
-    <TD style="text-align: left;"> <a href='/boote/boot/{{ pk }}'> <i class="fa fa-hand-o-right"></i> {{ name }} </a></TD>
-   
+    <td style="text-align: left;">{{ boot.type.name }} </td>
+    <td style="text-align: left;"> <a href='/boote/boot/{{ boot.pk }}'> <i class="fa fa-ship"></i> {{ boot.name }} </a></TD>        
+    <td>{{ boot.type.length }} </td>
+    <td>{{ boot.type.beam }} </td>
+    <td>{{ boot.type.draught }} </td>
+    {% if numIssues %}
+    <td style='color: red'> <i class="fa fa-cog"></i> {{ numIssues }}</td>
+    {% else %}
+    <td > - </td>
+{% endif %}
+    <td style="text-align: left;"> <a href="mailto:{{ boot.resp_email }}">{{ boot.resp_name }}</a>, Tel. {{ boot.resp_tel }} </td>
   </TR>
 {% endfor %}
 

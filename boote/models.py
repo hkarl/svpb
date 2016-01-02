@@ -20,6 +20,7 @@ class Boat(models.Model):
     resp_email = models.CharField(max_length=30, null=True)
     resp_tel = models.CharField(max_length=30, null=True)
     remarks = models.CharField(max_length=2000, null=True)
+    booking_remarks = models.CharField(max_length=2000, null=True)
 
     def getBookings7days(self):
         "This function delivers list that describes bookings for upcoming 7 days (0 for free, 1 for partially booked, 2 for fully booked)"
@@ -42,11 +43,24 @@ class Boat(models.Model):
             for i in range(startIdx, endIdx):
                 res[offset][i] = 1
         return res
-
-
+    
+    def getNumberOfIssues(self):
+        return BoatIssue.objects.filter(boat=self, status=1).count()
+        
 class Booking(models.Model):
     user = models.ForeignKey(User)
     boat = models.ForeignKey(Boat)
     date = models.DateField()
     time_from = models.TimeField()
     time_to = models.TimeField()
+
+class BoatIssue(models.Model):
+    boat = models.ForeignKey(Boat)
+    status = models.IntegerField(default=1)
+    reported_by = models.ForeignKey(User,related_name="user_reporting")
+    reported_date = models.DateField()
+    reported_descr = models.CharField(max_length=2000)
+    fixed_by = models.ForeignKey(User,related_name="user_fixing", null=True)
+    fixed_date = models.DateField(null=True)
+    fixed_descr = models.CharField(max_length=2000, null=True)
+    

@@ -2,15 +2,15 @@
 {% load staticfiles %}
 
 {% block apphome %}
-<a href="/boote/">
-    <img src="{% static "media/sailboat.png"%}" class="img-responsive">
-    <i class="fa fa-home fa-fw"></i>
-    Boote
+<a href="/boote/">    
+    <i class="fa fa-ship fa-fw"></i>
+    Home
 </a>
 {% endblock %}
 
 
 {% block appnav %}
+<link rel="stylesheet" href="/static/bootstrap/css/bootstrap-boote.css" type="text/css" />
 
 <!-- BOOTE -->
 <li class="dropdown">
@@ -18,9 +18,9 @@
         Boote
         <b class="caret"></b>
     </a>
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu">    	
         <li><a href="/boote/boots_liste/">Vereinsboote</a></li>
-        <li><a href="/boote/vereinsboote/xxx/">Problem melden</a></li>
+        <li><a href="/boote/vereinsboote/xxx/">Andere Boote</a></li>
         {% for g in  user.groups.all %}
             {% if g.name == "Vorstand" %}
                 <li class="divider"></li>

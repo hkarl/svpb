@@ -4,147 +4,25 @@
 {% load crispy_forms_tags %}
 
 {% block branding %}
-Vereinsboot
+Reservation {{ boot.name }} ({{ boot.type.name }})
 {% endblock %}
 
 {% block content %}
 
-<style type="text/css">
-
-#boatslist table {
-  height: 320px;
-  border-collapse: collapse;
-  border: 1px solid #38678f;
-  margin: 50px auto;
-  background: white;
-}
-#boatslist th {
-  background: steelblue;
-  height: 54px;
-  padding: 4px;
-  font-weight: lighter;
-  text-shadow: 0 1px 0 #38678f;
-  color: white;
-  border: 1px solid #38678f;
-  box-shadow: inset 0px 1px 2px #568ebd;
-  transition: all 0.2s;
-}
-
-#boatslist th.date{
-  background: #537E8C;
-  width: 70px;  
-}
-
-#boatslist tr {
-  border-bottom: 1px solid #cccccc;
-}
-#boatslist tr:last-child {
-  border-bottom: 0px;
-}
-#boatslist td {
-  border-right: 1px solid #cccccc;
-  padding: 5px;
-  transition: all 0.2s;
-  text-align: center;
-}
-#boatslist td:last-child {
-  border-right: 0px;
-}
-#boatslist td.selected {
-  background: #d7e4ef;
-  z-index: ;
-}
-
-#boatslist td.booked0 {
-  background: #5CB85C;
-  font-size: 80%;
- width: 35px;
-}
-
-#boatslist td.booked1 {
-  background: #F0AD4E;
-  font-size: 80%;
- width: 35px;
-}
-
-#boatslist td.booked2 {
-  background: #D9534F;
-  font-size: 80%;
- width: 35px;
-}
-
-#boatslist td input {
-  font-size: 14px;
-  background: none;
-  outline: none;
-  border: 0;
-  display: table-cell;
-  height: 100%;
-
-}
-#boatslist td input:focus {
-  box-shadow: 0 1px 0 steelblue;
-  color: steelblue;
-}
-::-moz-selection {
-  background: steelblue;
-  color: white;
-}
-::selection {
-  background: steelblue;
-  color: white;
-}
-#boatslist .heavyTable {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  animation: float 5s infinite;
-}
-
-#mainpic {
-	float: right;
-}
 
 
-
-
-#maindesc   dl {
-    padding: 0.5em;
- }
-#maindesc   dt {
-    float: left;
-    clear: left;
-    width: 130px;
-    text-align: left;
-    font-weight: bold;
-}
-#maindesc   dt:after {
-    content: ":";
-}
-#maindesc   dd {
-    margin: 0 0 0 140px;
-    padding: 0 0 0.5em 0;
-}
-</style>
-
-<div id='mainpic'>
-<img src="{% static "static/conger.jpg"%}"> 
-</div>
-
-<div id='maindesc'>
-<dl>
-  <dt>Bootstype</dt><dd><a href="{{ boot.type.url }}" target="_blank">{{ boot.type.name }}</a></dd>
-  <dt>Bootsname</dt><dd>{{ boot.name }}</dd>
-  <dt>Länge üA</dt><dd>{{ boot.type.length }}</dd>
-  <dt>Breite üA</dt><dd>{{ boot.type.beam }}</dd>
-  <dt>Tiefgang</dt><dd>{{ boot.type.draught }}</dd>
-  <dt>Bootspate</dt><dd>{{ boot.resp_name }} (<a href="mailto:{{ boot.resp_email }}">{{ boot.resp_email }}</a>, Tel. {{ boot.resp_tel }})</dd>
-  <dt>Besondersheiten</dt><dd>{{ boot.remarks }}</dd>
-</dl>
 <p>
-
+Mochtest Du Vereinsboot <b>"{{ boot.name }}"</b> verbindlich reservieren (<a href='/boote/boot/{{ boot.pk }}'>das Boot anzeigen</a>)?
 </p>
-</div>
 
-<h2>Verfügbarkeit - {{ boot.name }} ({{ boot.type.name }})</h2>
+<p style='border: 1px solid rgb(159, 159, 230); padding: 5px; background-color: rgb(199, 199, 255)'><b>Wichtige Hinweis</b>: {{ boot.booking_remarks }}<br> <br> Beachte "Bedingungen fuer Vereinsboote"!</p>
+
+
+{% crispy form %}
+
+
+
+<h2>Verfuegbarkeit - {{ boot.name }}</h2>
 <p>
 Verfuegbarkeit von Vereinsboot "{{ boot.name }}" in kommenden 7 Tage.
 </p>
@@ -180,28 +58,6 @@ Verfuegbarkeit von Vereinsboot "{{ boot.name }}" in kommenden 7 Tage.
 
 
 </TABLE>
-
-
-<h2>Reservieren</h2>
-
-{% if mybookings %}
-<p>
-Hier Deine aktuelle reservationen:
-</p>
-
-<ul>
-
-{% for weekday, date, time_from, time_to, boat, reservationid in mybookings %}
-  <li>Am <b>{{ weekday }}, {{ date }}</b> (von {{ time_from }} bis {{ time_to }}) - Boot "{{ boat.name }}" ({{ boat.type.name }}) (<a href="/boote/vereinsboote/bookingremove/{{ reservationid }}" style="color:red"><i class="fa fa-minus-square"></i> stornieren</a>) </li>
-{% endfor %}
-
-</ul>
-{% endif %}
-<p>
-Mochtest Du Vereinsboot <b>"{{ boot.name }}"</b> verbindlich reservieren?
-</p>
-
-{% crispy form %}
 
 
 
