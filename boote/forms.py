@@ -5,6 +5,7 @@ from crispy_forms.layout import Submit, Layout, Field
 from crispy_forms.bootstrap import (
     PrependedText, PrependedAppendedText, FormActions)
 from django.core.exceptions import ValidationError
+from gc import disable
 
 DATES = []
 d = datetime.now()
@@ -73,3 +74,20 @@ class NewReservationForm(forms.Form):
         cleaned_data = super(NewReservationForm, self).clean()
         res_start = cleaned_data.get("res_start")
         res_duration = cleaned_data.get("res_duration")
+
+
+class BootIssueForm(forms.Form):    
+    res_reported_descr = forms.CharField(label="Beschreibung",required=True,widget= forms.Textarea)    
+    
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-exampleForm'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'POST'
+
+        self.helper.add_input(Submit('submit', 'Speichern'))
+        super(BootIssueForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super(BootIssueForm, self).clean()
+        res_reported_descr = cleaned_data.get("res_reported_descr")        

@@ -11,12 +11,10 @@ Reservationen
 
 
 
-<p>
-Hier Deine aktuelle Reservationen:
-</p>
-
-<ul>
 {% if mybookings %}
+<p>
+Hier Deine aktuelle Reservationen (beachte <a href='/static/media/SVPB-bedinungen-boote.pdf' target='_blank'>Bedingungen fuer Vereinsboote</a>):
+</p>
 <table id="boatslist">
  <thead>
         <tr>
@@ -34,16 +32,16 @@ Hier Deine aktuelle Reservationen:
   	<td>{{ weekday }}, {{ date }}</td> 
   	<td>von {{ time_from }} bis {{ time_to }}</td>
   	<td><a href='dd'>PDF</a></td>
-  	<td><a href="/boote/booking_remove/{{ reservationid }}" style="color:red"><i class="fa fa-minus-square"></i> stornieren</a></td>
+  	<td><a href="/boote/booking_remove/{{ reservationid }}" class="btn btn-primary">Stornieren</a></td>
   </tr>
 {% endfor %}
 </table>
 {% else %}
-    <li style="color:#999999">Du hast aktuell keine aktive Reservationen</li>
+    Du hast aktuell keine Reservationen. <a href="/boote/booking/overview/">Such dir ein Boot und Termin aus.</a>
 {% endif %}
-</ul>
 
-Beachte <a href='/static/media/SVPB-bedinungen-boote.pdf' target='_blank'>Bedingungen fuer Vereinsboote</a>!
+<h2>Alte Reservationen<h2>
+
 
 
 {% endblock %}

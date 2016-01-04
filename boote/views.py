@@ -7,10 +7,7 @@ from .models import Boat, BoatType, Booking, BoatIssue
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 
-from .forms import NewReservationForm
-# Create your views here.
-
-
+from .forms import NewReservationForm, BootIssueForm
 
 
 def booking_overview(request):
@@ -61,14 +58,15 @@ def boot_liste(request):
 
 def boot_detail(request, boot_pk):
     template = loader.get_template('boote/boot_detail.html')
-    boot = Boat.objects.get(pk=boot_pk)
+    boat = Boat.objects.get(pk=boot_pk)
     user = request.user
-    issues = BoatIssue.objects.filter(boat=boot_pk)
-
+    numIssues = boat.getNumberOfIssues
+    
+    
     context = RequestContext(request, {        
-        'boot': boot,
+        'boot': boat,
         'user': user,
-        'issues': issues,
+        'numIssues' : numIssues
     })
     return HttpResponse(template.render(context))
 
@@ -130,12 +128,46 @@ def booking_remove(request, booking_pk):
     booking.delete()
     return redirect('booking-my-bookings')
 
+
+def boot_issues(request, boot_pk):
+    template = loader.get_template('boote/boot_issue.html')
+    boot = Boat.objects.get(pk=boot_pk)
+    user = request.user
+    issues = BoatIssue.objects.filter(boat=boot_pk)
+    
+    
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = BootIssueForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            res_reported_descr = form.cleaned_data['res_reported_descr']
+            
+            b = BoatIssue(boat=boot, status=1, reported_descr=res_reported_descr, reported_by=user, reported_date=datetime.now())
+            b.save()
+            # redirect to a new URL:
+            return redirect('boot-issues', boot.pk)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = BootIssueForm()
+
+    context = RequestContext(request, {
+        'form_issue': form,
+        'boot': boot,
+        'user': user,
+        'issues' : issues,        
+    })
+    return HttpResponse(template.render(context))
+
 def boot_fix_issue(request, issue_pk):
     issue = BoatIssue.objects.get(pk=issue_pk)
     issue.status = 2
     issue.fixed_by = request.user
     issue.fixed_date = datetime.now()
     issue.save()
-    return redirect('boot-detail', issue.boat.pk)
+    return redirect('boot-issues', issue.boat.pk)
     
     

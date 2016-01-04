@@ -23,6 +23,10 @@ urlpatterns = patterns('',
          active_and_login_required(boote.views.boot_fix_issue),
          name="booking-remove",
     ),
+    url (r'^boot_issues/(?P<boot_pk>[0-9]+)/$',
+         active_and_login_required(boote.views.boot_issues),
+         name="boot-issues",
+    ),
                        
 # BOOKING 
     url (r'^booking/overview/$',

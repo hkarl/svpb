@@ -29,7 +29,7 @@ Verfuegbarkeit von Vereinsbooten in kommenden 7 Tagen.
 
 {% for name, pk, overview7days in booking_overview %}
   <TR>
-    <TD style="text-align: left;">{{ name }} <br> <a href='/boote/boot/{{ pk }}'>mehr info</a></TD>
+    <TD style="text-align: left;"><a href='/boote/boot/{{ pk }}'><i class="fa fa-ship"></i>{{ name }}</a></TD>
     <TD style="text-align: left;"><a href='/boote/booking/boot/{{ pk }}'> <i class="fa fa-calendar"></i> RESERVIEREN </a></TD>
     {% for day in overview7days %}
       <TD class='booked{{ day }}'>

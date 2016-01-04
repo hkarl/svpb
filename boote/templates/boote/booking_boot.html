@@ -3,16 +3,21 @@
 {% load render_table from django_tables2 %}
 {% load crispy_forms_tags %}
 
+
+
 {% block branding %}
 Reservation {{ boot.name }} ({{ boot.type.name }})
 {% endblock %}
 
 {% block content %}
 
+<p>
+ <a href='/boote/boot/{{ boot.pk }}'>&lt; zurück zum {{ boot.name }}</a>
+</p>
 
 
 <p>
-Mochtest Du Vereinsboot <b>"{{ boot.name }}"</b> verbindlich reservieren (<a href='/boote/boot/{{ boot.pk }}'>das Boot anzeigen</a>)?
+Mochtest Du <b>"{{ boot.name }}"</b> verbindlich reservieren?
 </p>
 
 <p style='border: 1px solid rgb(159, 159, 230); padding: 5px; background-color: rgb(199, 199, 255)'><b>Wichtige Hinweis</b>: {{ boot.booking_remarks }}<br> <br> Beachte "Bedingungen fuer Vereinsboote"!</p>
@@ -21,8 +26,6 @@ Mochtest Du Vereinsboot <b>"{{ boot.name }}"</b> verbindlich reservieren (<a hre
 {% crispy form %}
 
 
-
-<h2>Verfuegbarkeit - {{ boot.name }}</h2>
 <p>
 Verfuegbarkeit von Vereinsboot "{{ boot.name }}" in kommenden 7 Tage.
 </p>
@@ -55,9 +58,8 @@ Verfuegbarkeit von Vereinsboot "{{ boot.name }}" in kommenden 7 Tage.
     {% endfor %}
   </TR>
 {% endfor %}
-
-
 </TABLE>
+
 
 
 

@@ -4,7 +4,7 @@
 {% load crispy_forms_tags %}
 
 {% block branding %}
-Vereinsboot {{ boot.name }}
+Vereinsboot "{{ boot.name }}"
 {% endblock %}
 
 {% block content %}
@@ -27,50 +27,20 @@ Vereinsboot {{ boot.name }}
  </dl>
 </div>
 
+<p>
+Falls Du gerne dieser Boot segel möchtest, reservier mal ein Termin am Lippesee (maximal 2 Stunden).</br>
+<a href="/boote/booking/boot/{{ boot.pk }}"  class="btn btn-primary">Termin reservieren</a><br>
+</p>
 
-<a href="/boote/booking/boot/{{ boot.pk }}">Termin reservieren</a><br>
-
-<h2>Meldungen</h2>
-<p><a href="/ddd">Neue Problem melden</a></p>
-
-{% if issues %}
-<p>Es ligen folgende offene Meldungen fuer {{ boot.name }} vor (Bootspate wurde informiert):</p>
-<table id="boatslist">
- <thead>
-        <tr>
-        	<th style="width: 100px">Gemeldet</th>
-        	<th style="width: 100px">Erledigt</th>
-        	<th style="width: 70px">Status</th>
-            <th>Beschreibung</th>
-            <th>Aktion</th>
-        </tr>
-    </thead>
-
-{% for issue in issues %}
-  <tr>
-  	<td>{{ issue.reported_by.first_name }} {{ issue.reported_by.last_name }} am {{ issue.reported_date }}</td>  	
-  	{% if issue.status = 1 %} 	
-  		<td>-</td>
-  		<td style='color: red'> <i class="fa fa-cog"></i> Offen</td>
-  	{% else %}
-  	 	<td>{{ issue.fixed_by.first_name }} {{ issue.fixed_by.last_name }} am {{ issue.fixed_date }}</td>
-  	 	<td style='color: green'> <i class="fa fa-check"></i> Erledigt</td>
-  	{% endif %}
-  	<td>{{ issue.reported_descr }}</td>
-  	{% if issue.status = 1 %} 	
-  		<td><a href='/boote/boot_fix_issue/{{ issue.pk }}/'>als Erledigt markieren</a></td>
-  	{% else %}
-  	 	<td>-</td>
-  	{% endif %}
-  	  	
-  </tr>
-{% endfor %}
-</table>
-{% else %}
-    <p>Es liegen <span style="color: rgb(0, 161, 30)">keine</span> offene Meldungen fuer {{ boot.name }} vor.</p>
+<p>
+Hast Du kleinere Probleme an Boot entdeckt, bitte melde es hier - der Bootspate wird sich drum kümmern.</br> 
+{% if numIssues %}
+	<span style='color: red'><i class="fa fa-cog"></i> Es gibt schon offene Meldungen: {{ numIssues }}</span></br>
 {% endif %}
-
-<br>
+	<a href="/boote/boot_issues/{{ boot.pk }}/" class="btn btn-primary">Meldungen</a>  
+	
+ </p>
+    
 
 
 {% endblock %}
