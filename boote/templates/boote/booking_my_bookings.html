@@ -18,30 +18,65 @@ Hier Deine aktuelle Reservationen (beachte <a href='/static/media/SVPB-bedinunge
 <table id="boatslist">
  <thead>
         <tr>
+        	<th>Reserviert für</th>
         	<th>Boot</th>
         	<th>Datum</th>
             <th>Zeitraum</th>
-            <th>Download</th>                   
-            <th>Stornieren</th>          
+            <th>Stornieren</th>            
+                      
             
         </tr>
     </thead>
-{% for weekday, date, time_from, time_to, boat, reservationid in mybookings %}
+{% for user, created_date, weekday, date, time_from, time_to, boat, reservationid in mybookings %}
   <tr>
+  	<td>{{ user.first_name }} {{ user.last_name }}</td>
   	<td style='text-align:left;'><a href="/boote/boot/{{ boat.pk }}/"> <i class="fa fa-ship"></i>  {{ boat.name }} ({{ boat.type.name }})</a></td> 
   	<td>{{ weekday }}, {{ date }}</td> 
   	<td>von {{ time_from }} bis {{ time_to }}</td>
-  	<td><a href='dd'>PDF</a></td>
   	<td><a href="/boote/booking_remove/{{ reservationid }}" class="btn btn-primary">Stornieren</a></td>
   </tr>
 {% endfor %}
 </table>
 {% else %}
-    Du hast aktuell keine Reservationen. <a href="/boote/booking/overview/">Such dir ein Boot und Termin aus.</a>
+    Du hast aktuell keine Reservationen. <br> <a href="/boote/booking/overview/">Such dir ein Boot und Termin aus.</a>
 {% endif %}
 
-<h2>Alte Reservationen<h2>
 
+
+
+<h2>Alte Reservationen</h2>
+{% if oldbookings %}
+<p>
+Hier Deine <b>alte</b> Reservationen:
+</p>
+<table id="boatslist">
+ <thead>
+        <tr>
+        	<th>Boot</th>
+        	<th>Datum</th>
+            <th>Zeitraum</th>                      
+            <th>Status</th>
+            
+        </tr>
+    </thead>
+{% for status, weekday, date, time_from, time_to, boat, reservationid in oldbookings %}
+  <tr>
+  	<td style='text-align:left;'>{{ boat.name }} ({{ boat.type.name }})</td> 
+  	<td>{{ weekday }}, {{ date }}</td> 
+  	<td>von {{ time_from }} bis {{ time_to }}</td>
+  	<td>
+  	{% if status = 0 %}
+  		Storniert
+  	{% else %}
+  		Alt	
+  	{% endif %}
+  	</td>
+  </tr>
+{% endfor %}
+</table>
+{% else %}
+    Du hast noch keine alte Reservationen. 
+{% endif %}
 
 
 {% endblock %}
