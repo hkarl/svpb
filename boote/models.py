@@ -38,10 +38,11 @@ class Boat(models.Model):
         d2 = d1 + timedelta(days=7)
         for booking in Booking.objects.filter(boat=self, date__lte=d2, date__gte=d1, status=1):
             offset = (booking.date - d1.date()).days
+            uid = booking.user.username 
             startIdx = (booking.time_from.hour-8)*2+(booking.time_from.minute/30)
             endIdx = (booking.time_to.hour-8)*2+(booking.time_to.minute/30)
             for i in range(startIdx, endIdx):
-                res[offset][i] = 1
+                res[offset][i] = uid
         return res
     
     def getNumberOfIssues(self):

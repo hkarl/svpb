@@ -15,25 +15,26 @@ Reservationen
 <p>
 Hier Deine aktuelle Reservationen (beachte <a href='/static/media/SVPB-bedinungen-boote.pdf' target='_blank'>Bedingungen fuer Vereinsboote</a>):
 </p>
+
 <table id="boatslist">
- <thead>
+  
+   <thead>
         <tr>
         	<th>Reserviert für</th>
         	<th>Boot</th>
         	<th>Datum</th>
             <th>Zeitraum</th>
             <th>Stornieren</th>            
-                      
-            
         </tr>
     </thead>
+
 {% for user, created_date, weekday, date, time_from, time_to, boat, reservationid in mybookings %}
   <tr>
   	<td>{{ user.first_name }} {{ user.last_name }}</td>
   	<td style='text-align:left;'><a href="/boote/boot/{{ boat.pk }}/"> <i class="fa fa-ship"></i>  {{ boat.name }} ({{ boat.type.name }})</a></td> 
   	<td>{{ weekday }}, {{ date }}</td> 
   	<td>von {{ time_from }} bis {{ time_to }}</td>
-  	<td><a href="/boote/booking_remove/{{ reservationid }}" class="btn btn-primary">Stornieren</a></td>
+  	<td><a href="/boote/booking_remove/{{ reservationid }}" class="btn btn-primary"  onclick='return window.confirm("Möchtest Du deine Reservation für {{ boat.name }} ({{ weekday }}, {{ date }}, von {{ time_from }} bis {{ time_to }}) stornieren?");'>Stornieren</a></td>
   </tr>
 {% endfor %}
 </table>

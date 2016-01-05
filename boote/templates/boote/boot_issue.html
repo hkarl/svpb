@@ -17,11 +17,11 @@ Meldungen {{ boot.name }} ({{ boot.type.name }})
 <table id="boatslist">
  <thead>
         <tr>
-        	<th style="width: 100px">Gemeldet</th>
-        	<th style="width: 100px">Erledigt</th>
+        	<th style="width: 100px">Gemeldet von</th>
+        	<th style="width: 100px">Erledigt von</th>
         	<th style="width: 70px">Status</th>
             <th>Beschreibung</th>
-            <th>Aktion</th>
+            <th style="width: 100px">Aktion</th>
         </tr>
     </thead>
 
@@ -37,7 +37,7 @@ Meldungen {{ boot.name }} ({{ boot.type.name }})
   	{% endif %}
   	<td>{{ issue.reported_descr }}</td>
   	{% if issue.status = 1 %} 	
-  		<td><a href='/boote/boot_fix_issue/{{ issue.pk }}/'>als Erledigt markieren</a></td>
+  		<td><a href='/boote/boot_fix_issue/{{ issue.pk }}/'  onclick='return window.confirm("Soll diese Meldung (erstellt von {{ issue.reported_by.first_name }} {{ issue.reported_by.last_name }} am {{ issue.reported_date }}) als Erledigt markiert werden?");'>als Erledigt markieren</a></td>
   	{% else %}
   	 	<td>-</td>
   	{% endif %}

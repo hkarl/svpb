@@ -6,6 +6,7 @@ from crispy_forms.bootstrap import (
     PrependedText, PrependedAppendedText, FormActions)
 from django.core.exceptions import ValidationError
 from gc import disable
+from .models import Booking, Boat
 
 DATES = []
 d = datetime.now()
@@ -55,26 +56,51 @@ DURATION.append(["60","1 Stunde"])
 DURATION.append(["90","1.5 Stunden"])
 DURATION.append(["120","2 Stunden"])
 
-class NewReservationForm(forms.Form):
-    res_date = forms.ChoiceField(label="Datum",required=True, widget=forms.Select, choices=DATES)
-    res_start = forms.ChoiceField(label="Von",required=True, widget=forms.Select, choices=TIME)
-    res_duration = forms.ChoiceField(label="Dauer",required=True, widget=forms.Select, choices=DURATION)
-    
+class NewReservationForm(forms.Form):    
+    res_date = forms.ChoiceField(label="Datum",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DATES)
+    res_start = forms.ChoiceField(label="Von",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=TIME)
+    res_duration = forms.ChoiceField(label="Dauer",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DURATION)
+        
     accepted_agb = forms.BooleanField(label="Ich akceptiere <a href='/static/media/SVPB-bedinungen-boote.pdf' target='_blank'>Bedingungen fuer Vereinsboote</a>.", required=True)
+    
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
-        self.helper.form_id = 'id-exampleForm'
+        self.helper.form_id = 'id-reservation-form'
         self.helper.form_class = 'blueForms'
         self.helper.form_method = 'POST'
 
         self.helper.add_input(Submit('submit', 'Verbindlich reservieren'))
         super(NewReservationForm, self).__init__(*args, **kwargs)
-
+        
     def clean(self):
+        import re
+        
         cleaned_data = super(NewReservationForm, self).clean()
-        res_start = cleaned_data.get("res_start")
-        res_duration = cleaned_data.get("res_duration")
-
+        
+        # check date and time
+        res_date = cleaned_data['res_date']
+        res_start = cleaned_data['res_start']        
+        
+        try:
+            start = datetime.strptime(res_date + " " + res_start, '%Y-%m-%d %H:%M')
+        except ValueError:
+            raise forms.ValidationError("Bitte Datum und Uhrzeit auswaehlen.")
+        
+        # check duration
+        res_duration = cleaned_data['res_duration']
+        try:
+            res_duration = int(res_duration)
+        except ValueError:
+            raise forms.ValidationError("Bitte Dauer auswaehlen.")
+        
+        if (res_duration<30):
+            raise forms.ValidationError("Minimale Reservation von 30 Minuten moeglich.")
+        if (res_duration>120):
+            raise forms.ValidationError("Maximal 2 Stunden Reservation moeglich.")
+        
+        end = start + timedelta(0,0,0,0,res_duration) # minutes                        
+        res_end =  end            
+                    
 
 class BootIssueForm(forms.Form):    
     res_reported_descr = forms.CharField(label="Beschreibung",required=True,widget= forms.Textarea)    

@@ -7,9 +7,7 @@ from .models import Boat, BoatType, Booking, BoatIssue
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.db.models import Q
-
 from .forms import NewReservationForm, BootIssueForm
-
 
 def booking_overview(request):
     template = loader.get_template('boote/booking_overview.html')
@@ -83,23 +81,22 @@ def booking_boot(request, boot_pk):
     template = loader.get_template('boote/booking_boot.html')
     boot = Boat.objects.get(pk=boot_pk)
     user = request.user
-
+        
     bookings = Boat.getDetailedBookings7Days(boot)
     overview = []
     d = datetime.now()
     for i in range(0,7):
         overview.append([d.strftime("%A"), d.strftime("%Y/%d/%m"), bookings[i]])
         d = d + timedelta(days=1)
-
-    # check which bookings are done for current user
-    mybookings = []
-    for booking in Booking.objects.filter(user=user, date__gte=datetime.now(), status=1).order_by('date'):
-        mybookings.append([booking.date.strftime("%A"),booking.date.strftime("%Y/%d/%m"),booking.time_from.strftime("%H:%M"),booking.time_to.strftime("%H:%M"), booking.boat, booking.pk])
-
+   
+    error_list=[]
+    
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
+        
         # create a form instance and populate it with data from the request:
         form = NewReservationForm(request.POST)
+
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
@@ -109,23 +106,33 @@ def booking_boot(request, boot_pk):
             res_duration = int(res_duration)
             
             start = datetime.strptime(res_date + " " + res_start, '%Y-%m-%d %H:%M')
-            end = start + timedelta(0,0,0,0,res_duration) # minutes
-                        
-            res_end =  end
-            b = Booking(user=user, boat=boot, date=res_date, time_from=res_start, time_to=res_end)
-            b.save()
-            # redirect to a new URL:
-            return HttpResponseRedirect(reverse('booking-my-bookings'))
+            end = start + timedelta(0,0,0,0,res_duration) # minutes                        
+            res_end =  end            
+
+            # check if dates overlapping
+            if (Booking.objects.filter(user=user, boat=boot, date=res_date, status=1, time_from__lte=res_start, time_to__gt=res_start)):
+                error_list.append("Dein Termin startet in anderen besezten Termin");
+            if (Booking.objects.filter(user=user, boat=boot, date=res_date, status=1, time_from__lt=res_end, time_to__gt=res_end)):
+                error_list.append("Dein Termin endet in anderen besezten Termin");
+            if (Booking.objects.filter(user=user, boat=boot, date=res_date, status=1, time_from__gte=res_start, time_to__lte=res_end)):
+                error_list.append("Dein Termin ist schon besetzt mit anderen Termin");
+                
+            if (not error_list):
+                # save new booking
+                b = Booking(user=user, boat=boot, date=res_date, time_from=res_start, time_to=res_end)
+                b.save()
+                # redirect to a new URL:
+                return HttpResponseRedirect(reverse('booking-my-bookings'))            
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = NewReservationForm()
+        form = NewReservationForm()        
 
     context = RequestContext(request, {
+        'error_list': error_list,        
         'form': form,
         'boot': boot,
         'user': user,
-        'mybookings': mybookings,
         'booking_overview':overview,
 
     })

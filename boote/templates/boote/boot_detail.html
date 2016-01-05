@@ -10,7 +10,8 @@ Vereinsboot "{{ boot.name }}"
 {% block content %}
 
 <div id='mainpic'>
-<img src="{% static "media/conger.jpg"%}" class="img-responsive"> 
+<img src="/static/boote/boat_types/boat_type_{{  boot.type.pk }}.png" style="width: 50px;" class="img-responsive"><br>
+<img src="/static/boote/boat_img/boat_{{ boot.pk }}.jpg" class="picture">  
 </div>
 
 <div id='maindesc'>

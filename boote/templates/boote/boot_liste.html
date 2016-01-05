@@ -29,7 +29,7 @@ Here a list of all boats. Select a boat to see details.
 
 {% for boot, numIssues in boots %}
   <TR>
-    <td style="text-align: left;">{{ boot.type.name }} </td>
+    <td style="text-align: left;"><img src="/static/boote/boat_types/boat_type_{{  boot.type.pk }}.png" style="width: 50px;" class="img-responsive">{{ boot.type.name }} </td>
     <td style="text-align: left;"> <a href='/boote/boot/{{ boot.pk }}'> <i class="fa fa-ship"></i> {{ boot.name }} </a></TD>        
     <td>{{ boot.type.length }} </td>
     <td>{{ boot.type.beam }} </td>
