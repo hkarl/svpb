@@ -1,0 +1,47 @@
+{% extends "bootstrap/bootstrap_boote.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Vereinsboot "{{ boot.name }}"
+{% endblock %}
+
+{% block content %}
+
+<div id='mainpic'>
+<img src="/static/boote/boat_types/boat_type_{{  boot.type.pk }}.png" style="width: 50px;" class="img-responsive"><br>
+<img src="/static/boote/boat_img/boat_{{ boot.pk }}.jpg" class="picture">  
+</div>
+
+<div id='maindesc'>
+<dl>
+  <dt>Bootstype</dt><dd><a href="{{ boot.type.url }}" target="_blank">{{ boot.type.name }}</a></dd>
+  <dt>Bootsname</dt><dd>{{ boot.name }}</dd>
+  <dt>Länge üA</dt><dd>{{ boot.type.length }}</dd>
+  <dt>Breite üA</dt><dd>{{ boot.type.beam }}</dd>
+  <dt>Tiefgang</dt><dd>{{ boot.type.draught }}</dd>
+  <dt>Beschreibung</dt><dd>{{ boot.remarks }}</dd>
+  <dt>Bootspate</dt><dd>{{ boot.resp_name }} (<a href="mailto:{{ boot.resp_email }}">{{ boot.resp_email }}</a>, Tel. {{ boot.resp_tel }})</dd>  
+  <dt>Hinweise</dt><dd>{{ boot.booking_remarks }}</dd>
+  
+ </dl>
+</div>
+
+<p>
+Falls Du gerne dieser Boot segel möchtest, reservier mal ein Termin am Lippesee (maximal 2 Stunden).</br>
+<a href="/boote/booking/boot/{{ boot.pk }}"  class="btn btn-primary">Termin reservieren</a><br>
+</p>
+
+<p>
+Hast Du kleinere Probleme an Boot entdeckt, bitte melde es hier - der Bootspate wird sich drum kümmern.</br> 
+{% if numIssues %}
+	<span style='color: red'><i class="fa fa-cog"></i> Es gibt schon offene Meldungen: {{ numIssues }}</span></br>
+{% endif %}
+	<a href="/boote/boot_issues/{{ boot.pk }}/" class="btn btn-primary">Meldungen</a>  
+	
+ </p>
+    
+
+
+{% endblock %}

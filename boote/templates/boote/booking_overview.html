@@ -1,0 +1,53 @@
+{% extends "bootstrap/bootstrap_boote.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Vereinsboote
+{% endblock %}
+
+{% block content %}
+
+<p>
+Verfuegbarkeit von Vereinsbooten in kommenden 7 Tagen.
+
+</p>
+
+<TABLE id='boatslist'>
+ 	<thead>
+        <tr>
+            <th>Boot</th>
+            <th>Reservieren</th>
+
+            {% for weekday, date in booking_dates %}
+              <th class="date">{{ weekday }}<br><small>({{ date }})</small></th>
+            {% endfor %}
+        </tr>
+    </thead>
+
+
+{% for name, pk, overview7days in booking_overview %}
+  <TR>
+    <TD style="text-align: left;"><a href='/boote/boot/{{ pk }}'><i class="fa fa-ship"></i>{{ name }}</a></TD>
+    <TD style="text-align: left;"><a href='/boote/booking/boot/{{ pk }}'> <i class="fa fa-calendar"></i> RESERVIEREN </a></TD>
+    {% for day in overview7days %}
+      <TD class='booked{{ day }}'>
+        {% if day == 0 %}
+          Frei
+        {% elif day == 1 %}
+          Teilweise reserviert
+        {% else %}
+          Reserviert
+        {% endif %}
+      </TD>
+    {% endfor %}
+  </TR>
+{% endfor %}
+
+
+</TABLE>
+
+
+
+{% endblock %}
