@@ -8,6 +8,9 @@ from django.core.exceptions import ValidationError
 from gc import disable
 from .models import Booking, Boat
 
+import locale
+locale.setlocale(locale.LC_TIME, "de_DE.UTF-8")
+
 DATES = []
 d = datetime.now()
 DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%Y/%m/%d)")])

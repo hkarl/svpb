@@ -51,17 +51,17 @@ Hier Deine aktuelle Reservationen (beachte <a href='/static/media/SVPB-bedinunge
 Hier Deine <b>alte</b> Reservationen:
 </p>
 <table id="boatslist">
- <thead>
-        <tr>
-        	<th>Boot</th>
-        	<th>Datum</th>
-            <th>Zeitraum</th>                      
-            <th>Status</th>
+ <thead >
+        <tr >
+        	<th style="background-color: #5F7384;">Boot</th>
+        	<th style="background-color: #5F7384;">Datum</th>
+            <th style="background-color: #5F7384;">Zeitraum</th>                      
+            <th style="background-color: #5F7384;">Status</th>
             
         </tr>
     </thead>
 {% for status, weekday, date, time_from, time_to, boat, reservationid in oldbookings %}
-  <tr>
+  <tr  style="color: #aaaaaa">
   	<td style='text-align:left;'>{{ boat.name }} ({{ boat.type.name }})</td> 
   	<td>{{ weekday }}, {{ date }}</td> 
   	<td>von {{ time_from }} bis {{ time_to }}</td>

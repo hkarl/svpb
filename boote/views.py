@@ -110,11 +110,11 @@ def booking_boot(request, boot_pk):
             res_end =  end            
 
             # check if dates overlapping
-            if (Booking.objects.filter(user=user, boat=boot, date=res_date, status=1, time_from__lte=res_start, time_to__gt=res_start)):
+            if (Booking.objects.filter(boat=boot, date=res_date, status=1, time_from__lte=res_start, time_to__gt=res_start)):
                 error_list.append("Dein Termin startet in anderen besezten Termin");
-            if (Booking.objects.filter(user=user, boat=boot, date=res_date, status=1, time_from__lt=res_end, time_to__gt=res_end)):
+            if (Booking.objects.filter(boat=boot, date=res_date, status=1, time_from__lt=res_end, time_to__gt=res_end)):
                 error_list.append("Dein Termin endet in anderen besezten Termin");
-            if (Booking.objects.filter(user=user, boat=boot, date=res_date, status=1, time_from__gte=res_start, time_to__lte=res_end)):
+            if (Booking.objects.filter(boat=boot, date=res_date, status=1, time_from__gte=res_start, time_to__lte=res_end)):
                 error_list.append("Dein Termin ist schon besetzt mit anderen Termin");
                 
             if (not error_list):
