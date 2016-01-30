@@ -13,7 +13,7 @@ Reservationen
 
 {% if mybookings %}
 <p>
-Hier Deine aktuelle Reservationen (beachte <a href='/static/media/SVPB-bedinungen-boote.pdf' target='_blank'>Bedingungen fuer Vereinsboote</a>):
+Hier Deine aktuellen Reservierungen (beachte <a href='/static/media/SVPB-bedinungen-boote.pdf' target='_blank'>Bedingungen fuer Vereinsboote</a>):
 </p>
 
 <table id="boatslist">
@@ -39,16 +39,16 @@ Hier Deine aktuelle Reservationen (beachte <a href='/static/media/SVPB-bedinunge
 {% endfor %}
 </table>
 {% else %}
-    Du hast aktuell keine Reservationen. <br> <a href="/boote/booking/overview/">Such dir ein Boot und Termin aus.</a>
+    Du hast aktuell keine Reservierungen. <br> <a href="/boote/booking/overview/">Such Dir Boot und Termin aus.</a>
 {% endif %}
 
 
 
 
-<h2>Alte Reservationen</h2>
+<h2>Vergangene Reservierungen</h2>
 {% if oldbookings %}
 <p>
-Hier Deine <b>alte</b> Reservationen:
+Hier Deine <b>vergangenen</b> Reservierungen:
 </p>
 <table id="boatslist">
  <thead>
@@ -76,7 +76,7 @@ Hier Deine <b>alte</b> Reservationen:
 {% endfor %}
 </table>
 {% else %}
-    Du hast noch keine alte Reservationen. 
+    Du hast bisher noch keine Reservierungen getätigt.
 {% endif %}
 
 

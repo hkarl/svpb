@@ -29,16 +29,16 @@ Vereinsboot "{{ boot.name }}"
 </div>
 
 <p>
-Falls Du gerne dieser Boot segel möchtest, reservier mal ein Termin am Lippesee (maximal 2 Stunden).</br>
+Falls Du gerne eines dieser Boot segel nmöchtest, reservier einen Termin am Lippesee (maximal 2 Stunden).</br>
 <a href="/boote/booking/boot/{{ boot.pk }}"  class="btn btn-primary">Termin reservieren</a><br>
 </p>
 
 <p>
-Hast Du kleinere Probleme an Boot entdeckt, bitte melde es hier - der Bootspate wird sich drum kümmern.</br> 
+Hast Du kleinere Probleme an Boot entdeckt, bitte trage das hier ein - der Bootspate wird sich darum kümmern.</br>
 {% if numIssues %}
-	<span style='color: red'><i class="fa fa-cog"></i> Es gibt schon offene Meldungen: {{ numIssues }}</span></br>
+	<span style='color: red'><i class="fa fa-cog"></i> Es gibt schon offene Probleme: {{ numIssues }}</span></br>
 {% endif %}
-	<a href="/boote/boot_issues/{{ boot.pk }}/" class="btn btn-primary">Meldungen</a>  
+	<a href="/boote/boot_issues/{{ boot.pk }}/" class="btn btn-primary">Probleme</a>
 	
  </p>
     
