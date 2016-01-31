@@ -24,8 +24,8 @@ class Command(BaseCommand):
 
         # Leistungen
 
-        with open('leistungen.cvs', 'w') as csvfile:
-            csvfile.write('#AufgabeNr, Aufgabe, Gruppe, Angefordert(h), Geleistet(h)\n')
+        with open('leistungen.csv', 'w') as csvfile:
+            csvfile.write('#AufgabeNr, Aufgabe, Gruppe, Angefordert(h), Geleistet(h), #Personen\n')
             l = models.Leistung.objects.values('aufgabe','aufgabe__aufgabe',
                                                'aufgabe__anzahl','aufgabe__stunden',
                                                'aufgabe__gruppe__gruppe')\
