@@ -25,23 +25,27 @@ class Command(BaseCommand):
         # Leistungen
 
         with open('leistungen.csv', 'w') as csvfile:
-            csvfile.write('#AufgabeNr, Aufgabe, Gruppe, Angefordert(h), Geleistet(h), #Personen\n')
-            l = models.Leistung.objects.values('aufgabe','aufgabe__aufgabe',
+            csvfile.write('#AufgabeNr, Aufgabe, Gruppe, Angefordert(h), Geleistet(h), #Personen, #Durchschnitt\n')
+            l = (models.Leistung.objects
+                 .filter(status='AK')
+                 .values('aufgabe','aufgabe__aufgabe',
                                                'aufgabe__anzahl','aufgabe__stunden',
                                                'aufgabe__gruppe__gruppe')\
-                .annotate(geleistet=Sum('zeit'))\
-                .annotate(melder=Count('melder', distinct=True))
+                 .annotate(geleistet=Sum('zeit'))\
+                 .annotate(melder=Count('melder', distinct=True))
+                 )
 
             # self.stdout.write('#'.join(['{}-{}'.format(x[0], x[1]) for x in l[0].items()]))
 
             for ll in l:
-                csvfile.write('{},{},{},{},{},{}\n'.format(
+                csvfile.write('{},{},{},{},{},{},{}\n'.format(
                     ll['aufgabe'],
                     ll['aufgabe__aufgabe'].encode('utf8'),
                     ll['aufgabe__gruppe__gruppe'].encode('utf8'),
                     ll['aufgabe__anzahl'] * ll['aufgabe__stunden'],
                     int(ll['geleistet']),
                     ll['melder'],
+                    float(ll['geleistet'])/ll['melder'],
                 ))
 
 
