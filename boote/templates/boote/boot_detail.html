@@ -4,7 +4,12 @@
 {% load crispy_forms_tags %}
 
 {% block branding %}
-Vereinsboot "{{ boot.name }}"
+{% if boot.club_boat %}
+Vereinsboot
+{% else %}
+Boot
+{% endif %}
+ "{{ boot.name }}"
 {% endblock %}
 
 {% block content %}
@@ -28,11 +33,15 @@ Vereinsboot "{{ boot.name }}"
  </dl>
 </div>
 
+{% if boot.club_boat %}
 <p>
 Falls Du gerne eines dieser Boot segel nmöchtest, reservier einen Termin am Lippesee (maximal 2 Stunden).</br>
 <a href="/boote/booking/boot/{{ boot.pk }}"  class="btn btn-primary">Termin reservieren</a><br>
 </p>
+{% endif %}    
 
+
+{% if boot.club_boat %}
 <p>
 Hast Du kleinere Probleme an Boot entdeckt, bitte trage das hier ein - der Bootspate wird sich darum kümmern.</br>
 {% if numIssues %}
@@ -40,8 +49,6 @@ Hast Du kleinere Probleme an Boot entdeckt, bitte trage das hier ein - der Boots
 {% endif %}
 	<a href="/boote/boot_issues/{{ boot.pk }}/" class="btn btn-primary">Probleme</a>
 	
- </p>
-    
 
 
 {% endblock %}

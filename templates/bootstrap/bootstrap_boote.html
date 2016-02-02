@@ -19,9 +19,8 @@
         <b class="caret"></b>
     </a>
     <ul class="dropdown-menu">    	
-        <li><a href="/boote/boots_liste/">Vereinsboote</a></li>
-        <li><a href="/boote/TBD/" style="color: #cccccc">Andere Boote</a></li>
-        <li><a href="/boote/TBD/" style="color: #cccccc">Mein Boot</a></li>
+        <li><a href="/boote/boots_liste/">Alle Boote</a></li>        
+        <li><a href="/boote/boot/edit/">Mein Boot</a></li>
         {% for g in  user.groups.all %}
             {% if g.name == "Vorstand" %}
                 <li class="divider"></li>
