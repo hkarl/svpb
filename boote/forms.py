@@ -1,12 +1,16 @@
 from django import forms
 from datetime import datetime, timedelta
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Field
+from crispy_forms.layout import Submit, Layout, Field, Hidden
 from crispy_forms.bootstrap import (
     PrependedText, PrependedAppendedText, FormActions)
+from crispy_forms.bootstrap import TabHolder, Tab
 from django.core.exceptions import ValidationError
 from gc import disable
 from .models import Booking, Boat
+
+import locale
+locale.setlocale(locale.LC_TIME, "de_DE.UTF-8")
 
 DATES = []
 d = datetime.now()
@@ -107,7 +111,7 @@ class BootIssueForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
-        self.helper.form_id = 'id-exampleForm'
+        self.helper.form_id = 'id-boot-issue'
         self.helper.form_class = 'blueForms'
         self.helper.form_method = 'POST'
 
@@ -116,4 +120,53 @@ class BootIssueForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(BootIssueForm, self).clean()
-        res_reported_descr = cleaned_data.get("res_reported_descr")        
+        res_reported_descr = cleaned_data.get("res_reported_descr")
+        
+        
+class BootEditForm(forms.ModelForm):    
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-boot-edit'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'POST'
+
+        self.helper.add_input(Submit('submit', 'Speichern'))
+                
+        self.helper.layout = Layout('name', 'owner')
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            TabHolder(
+                    Tab(
+                          'Basic Information',
+                          'type',
+                          'name',
+                          'remarks',
+                    ),
+                    Tab(
+                          'Bootspate',                              
+                          'resp_name',
+                          'resp_email',
+                          'resp_tel'
+                    ),   
+                    Tab(
+                          'Reservationen',
+                          'club_boat',
+                          'booking_remarks'
+                    ),
+            )
+        ) 
+        
+        super(BootEditForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super(BootEditForm, self).clean()        
+    
+    class Meta:
+        model = Boat
+        exclude = ('owner',)
+        widgets = {
+          'remarks': forms.Textarea(attrs={'rows':4, 'cols':15}),
+          'booking_remarks': forms.Textarea(attrs={'rows':4, 'cols':15}),          
+        }
+                        
