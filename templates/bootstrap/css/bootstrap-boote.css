@@ -4,6 +4,10 @@
 	background-color: #FEFEFE;
 }
 
+.smallboatpic{
+	width: 60px;
+}
+
 #newbooking {
 	float: right;
 	background:rgba(255,0,0,0.4);

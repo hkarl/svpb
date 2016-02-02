@@ -17,6 +17,7 @@ Here a list of all boats. Select a boat to see details.
 <TABLE id='boatslist'>
 	<thead>
         <tr>
+            <th>Eigner</th>
             <th>Type</th>
             <th>Name</th>            
             <th>Länge</th>
@@ -29,6 +30,7 @@ Here a list of all boats. Select a boat to see details.
 
 {% for boot, numIssues in boots_verein %}
   <TR>
+    <td style="text-align: left;">{% if boot.club_boat %}<img src="/static/boote/svpb.png" style="width: 50px;" class="img-responsive">{% endif %}</td>
     <td style="text-align: left;"><img src="/static/boote/boat_types/boat_type_{{  boot.type.pk }}.png" style="width: 50px;" class="img-responsive">{{ boot.type.name }} </td>
     <td style="text-align: left;"> <a href='/boote/boot/{{ boot.pk }}'> <i class="fa fa-ship"></i> {{ boot.name }} </a></TD>        
     <td>{{ boot.type.length }} </td>

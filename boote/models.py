@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date, datetime, timedelta
+import uuid
 
 
 # Create your models here.
@@ -14,18 +15,23 @@ class BoatType(models.Model):
     def __unicode__(self):
         return self.name
 
+def boat_img_path(instance, filename):
+    unique_filename = uuid.uuid4()
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return 'boats_gallery/{1}{2}'.format(instance.pk, unique_filename, filename[-4:])
 
 class Boat(models.Model):
     owner = models.ForeignKey(User)
     type = models.ForeignKey(BoatType)
+    photo = models.ImageField(upload_to=boat_img_path, null=True)
     name = models.CharField(max_length=30)
     resp_name = models.CharField(max_length=30, null=True)
     resp_email = models.CharField(max_length=30, null=True)
     resp_tel = models.CharField(max_length=30, null=True)
     remarks = models.CharField(max_length=2000, null=True)
     club_boat = models.BooleanField(default=False)
-    booking_remarks = models.CharField(max_length=2000, null=True)    
-
+    booking_remarks = models.CharField(max_length=2000, null=True, default='')     
+    
     def getBookings7days(self):
         "This function delivers list that describes bookings for upcoming 7 days (0 for free, 1 for partially booked, 2 for fully booked)"
         d1 = datetime.now()

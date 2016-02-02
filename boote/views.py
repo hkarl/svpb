@@ -207,7 +207,7 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
     # PROCESSING USER INPUT 
     if request.method == 'POST':
             # create a form instance and populate it with data from the request:            
-            form = BootEditForm(request.POST)            
+            form = BootEditForm(request.POST, request.FILES)            
             # check whether it's valid:
             if form.is_valid():            
                 # process           
@@ -225,14 +225,25 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
                 boat.remarks = form.cleaned_data['remarks']
                 boat.club_boat = form.cleaned_data['club_boat']
                 boat.booking_remarks = form.cleaned_data['booking_remarks']
-                                
+                if form.cleaned_data['photo'] is not None:
+                    boat.photo = form.cleaned_data['photo']
+                
+                
                 # persist in DB
                 boat.save()
                 
                 # redirect to a new URL:
                 return redirect('boot-edit-list')
             else:
-                error
+                # error
+                context = RequestContext(request, {
+                'form_boot_edit': form,
+                'edit': edit,                
+                'my_boats': my_boats,
+                'user': user,                
+                })
+                
+                return HttpResponse(template.render(context))
     
     # CREATING USER QUERY / FORM 
     if edit == True:

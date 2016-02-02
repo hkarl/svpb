@@ -16,7 +16,9 @@ Boot
 
 <div id='mainpic'>
 <img src="/static/boote/boat_types/boat_type_{{  boot.type.pk }}.png" style="width: 50px;" class="img-responsive"><br>
-<img src="/static/boote/boat_img/boat_{{ boot.pk }}.jpg" class="picture">  
+{% if boot.photo %}  
+<img src="/{{ boot.photo.url }}" class="picture">
+{% endif %}
 </div>
 
 <div id='maindesc'>

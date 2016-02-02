@@ -1,13 +1,17 @@
 from django import forms
 from datetime import datetime, timedelta
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Field, Hidden
+from crispy_forms.layout import Submit, Layout, Field, Hidden, HTML
 from crispy_forms.bootstrap import (
     PrependedText, PrependedAppendedText, FormActions)
 from crispy_forms.bootstrap import TabHolder, Tab
 from django.core.exceptions import ValidationError
 from gc import disable
 from .models import Booking, Boat
+import StringIO
+from .custom_widgets import AdvancedFileInput
+from PIL import Image
+
 
 import locale
 locale.setlocale(locale.LC_TIME, "de_DE.UTF-8")
@@ -126,6 +130,8 @@ class BootIssueForm(forms.Form):
 class BootEditForm(forms.ModelForm):    
 
     def __init__(self, *args, **kwargs):
+        super(BootEditForm, self).__init__(*args, **kwargs)
+        
         self.helper = FormHelper()
         self.helper.form_id = 'id-boot-edit'
         self.helper.form_class = 'blueForms'
@@ -133,21 +139,25 @@ class BootEditForm(forms.ModelForm):
 
         self.helper.add_input(Submit('submit', 'Speichern'))
                 
-        self.helper.layout = Layout('name', 'owner')
-        self.helper.form_tag = False
         self.helper.layout = Layout(
             TabHolder(
                     Tab(
                           'Basic Information',
                           'type',
                           'name',
-                          'remarks',
+                          'remarks',                          
+                          
+                    ),
+                    Tab(
+                          'Bild',
+                          'photo',
                     ),
                     Tab(
                           'Bootspate',                              
-                          'resp_name',
-                          'resp_email',
-                          'resp_tel'
+                          Field('resp_name', placeholder="Vorname Nachname"),
+                          PrependedText('resp_email', '@', placeholder="z.B. some@email.com"),
+                          Field('resp_tel', placeholder="z.B. 0171 554 5522"),
+                          
                     ),   
                     Tab(
                           'Reservationen',
@@ -157,16 +167,40 @@ class BootEditForm(forms.ModelForm):
             )
         ) 
         
-        super(BootEditForm, self).__init__(*args, **kwargs)
+        self.fields['booking_remarks'].required = False
+        self.fields['booking_remarks'].label = "Wichtige Hinweise (Reservation)"
+        
+        self.fields['photo'].required = False
+        self.fields['photo'].label = "Bild (Format: JPG)"
+         
+        self.fields['resp_name'].label = "Bootspate"
+        self.fields['resp_email'].label = "Email von Bootspate"
+        self.fields['resp_tel'].label = "Telefonnummer"
+        
 
     def clean(self):
-        cleaned_data = super(BootEditForm, self).clean()        
+        cleaned_data = super(BootEditForm, self).clean()
+        
+        # scale image        
+        image_field = self.cleaned_data.get('photo')
+        if image_field:
+            image_file = StringIO.StringIO(image_field.read())
+            image = Image.open(image_file)
+            w, h = image.size
+
+            image = image.resize((400, 400*h/w), Image.ANTIALIAS)
+
+            image_file = StringIO.StringIO()
+            image.save(image_file, 'JPEG', quality=90)
+
+            image_field.file = image_file        
     
     class Meta:
         model = Boat
         exclude = ('owner',)
         widgets = {
           'remarks': forms.Textarea(attrs={'rows':4, 'cols':15}),
-          'booking_remarks': forms.Textarea(attrs={'rows':4, 'cols':15}),          
+          'booking_remarks': forms.Textarea(attrs={'rows':4, 'cols':15}),
+          'photo': AdvancedFileInput()          
         }
-                        
+               
