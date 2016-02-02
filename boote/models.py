@@ -11,16 +11,20 @@ class BoatType(models.Model):
     length = models.CharField(max_length=15)
     beam = models.CharField(max_length=15)
     draught = models.CharField(max_length=15)
+    def __unicode__(self):
+        return self.name
 
 
 class Boat(models.Model):
+    owner = models.ForeignKey(User)
     type = models.ForeignKey(BoatType)
     name = models.CharField(max_length=30)
     resp_name = models.CharField(max_length=30, null=True)
     resp_email = models.CharField(max_length=30, null=True)
     resp_tel = models.CharField(max_length=30, null=True)
     remarks = models.CharField(max_length=2000, null=True)
-    booking_remarks = models.CharField(max_length=2000, null=True)
+    club_boat = models.BooleanField(default=False)
+    booking_remarks = models.CharField(max_length=2000, null=True)    
 
     def getBookings7days(self):
         "This function delivers list that describes bookings for upcoming 7 days (0 for free, 1 for partially booked, 2 for fully booked)"
@@ -66,4 +70,3 @@ class BoatIssue(models.Model):
     fixed_by = models.ForeignKey(User,related_name="user_fixing", null=True)
     fixed_date = models.DateField(null=True)
     fixed_descr = models.CharField(max_length=2000, null=True)
-    

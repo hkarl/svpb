@@ -7,7 +7,7 @@ from .models import Boat, BoatType, Booking, BoatIssue
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.db.models import Q
-from .forms import NewReservationForm, BootIssueForm
+from .forms import NewReservationForm, BootIssueForm, BootEditForm
 
 def booking_overview(request):
     template = loader.get_template('boote/booking_overview.html')
@@ -19,7 +19,7 @@ def booking_overview(request):
         mybookings.append([booking.date.strftime("%A"),booking.date.strftime("%Y/%d/%m"),booking.time_from.strftime("%H:%M"),booking.time_to.strftime("%H:%M"), booking.boat, booking.pk])
 
     overview = []
-    for boat in Boat.objects.all():
+    for boat in Boat.objects.filter(club_boat = True):
         overview.append([boat.name + " (" + boat.type.name +")", boat.pk, boat.getBookings7days()])
 
     dates = []
@@ -55,11 +55,16 @@ def boot_liste(request):
 
     user = request.user
     
-    boots = []
-    for boat in Boat.objects.all().order_by('-type'):
-        boots.append([boat, boat.getNumberOfIssues])
+    boots_verein = []
+    for boat in Boat.objects.filter(club_boat = True).order_by('-type'):
+        boots_verein.append([boat, boat.getNumberOfIssues])
+    
+    boots_andere = []
+    for boat in Boat.objects.filter(club_boat = False).order_by('-type'):
+        boots_andere.append([boat])
         
-    context = RequestContext(request, {'boots': boots})
+    context = RequestContext(request, {'boots_verein': boots_verein,'boots_andere': boots_andere})
+    
     return HttpResponse(template.render(context))
 
 def boot_detail(request, boot_pk):
@@ -185,5 +190,70 @@ def boot_fix_issue(request, issue_pk):
     issue.fixed_date = datetime.now()
     issue.save()
     return redirect('boot-issues', issue.boat.pk)
+
+
+def boot_edit_list(request):
+    return boot_edit(request, 0, False)
+
+def boot_edit_new(request):
+    return boot_edit(request, 0, True, True)
+
+def boot_edit(request, boot_pk, edit=True, new_boat=False):
+    template = loader.get_template('boote/boot_edit.html')    
+    user = request.user
+    my_boats = Boat.objects.filter(owner=user)
     
     
+    # PROCESSING USER INPUT 
+    if request.method == 'POST':
+            # create a form instance and populate it with data from the request:            
+            form = BootEditForm(request.POST)            
+            # check whether it's valid:
+            if form.is_valid():            
+                # process           
+                if new_boat:
+                    boat = Boat()
+                    boat.owner = user
+                else:
+                    boat = Boat.objects.get(pk=boot_pk, owner=user)                                                 
+                                            
+                boat.type = form.cleaned_data['type']
+                boat.name = form.cleaned_data['name']
+                boat.resp_name = form.cleaned_data['resp_name']
+                boat.resp_email = form.cleaned_data['resp_email']
+                boat.resp_tel = form.cleaned_data['resp_tel']
+                boat.remarks = form.cleaned_data['remarks']
+                boat.club_boat = form.cleaned_data['club_boat']
+                boat.booking_remarks = form.cleaned_data['booking_remarks']
+                                
+                # persist in DB
+                boat.save()
+                
+                # redirect to a new URL:
+                return redirect('boot-edit-list')
+            else:
+                error
+    
+    # CREATING USER QUERY / FORM 
+    if edit == True:
+        if new_boat:
+            boat = Boat()
+        else:
+            boat = Boat.objects.get(pk=boot_pk, owner=user)
+            
+        form = BootEditForm(instance = boat)    
+                    
+        context = RequestContext(request, {
+                'form_boot_edit': form,
+                'edit': edit,
+                'boat': boat,
+                'my_boats': my_boats,
+                'user': user,                
+                })
+    else:
+        context = RequestContext(request, {                
+                'edit': edit,                
+                'my_boats': my_boats,
+                'user': user,                
+                })
+    return HttpResponse(template.render(context))

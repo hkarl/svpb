@@ -4,12 +4,12 @@
 {% load crispy_forms_tags %}
 
 {% block branding %}
-Alle Vereinsboote
+Alle Boote
 {% endblock %}
 
 {% block content %}
 
-
+<h2>Vereinsboote von SVPB</h2>
 <p>
 Here a list of all boats. Select a boat to see details.
 </p>
@@ -27,7 +27,7 @@ Here a list of all boats. Select a boat to see details.
         </tr>
 	</thead>
 
-{% for boot, numIssues in boots %}
+{% for boot, numIssues in boots_verein %}
   <TR>
     <td style="text-align: left;"><img src="/static/boote/boat_types/boat_type_{{  boot.type.pk }}.png" style="width: 50px;" class="img-responsive">{{ boot.type.name }} </td>
     <td style="text-align: left;"> <a href='/boote/boot/{{ boot.pk }}'> <i class="fa fa-ship"></i> {{ boot.name }} </a></TD>        
@@ -39,6 +39,36 @@ Here a list of all boats. Select a boat to see details.
     {% else %}
     <td > - </td>
 {% endif %}
+    <td style="text-align: left;"> <a href="mailto:{{ boot.resp_email }}">{{ boot.resp_name }}</a>, Tel. {{ boot.resp_tel }} </td>
+  </TR>
+{% endfor %}
+
+
+</TABLE>
+
+<h2>Andere Boote am Lippesee</h2>
+<p>
+Here a list of all boats. Select a boat to see details.
+</p>
+<TABLE id='boatslist'>
+	<thead>
+        <tr>
+            <th>Type</th>
+            <th>Name</th>            
+            <th>Länge</th>
+            <th>Breite</th>  
+            <th>Tiefgang</th>               
+            <th>Bootspate</th>
+        </tr>
+	</thead>
+
+{% for boot, numIssues in boots_andere %}
+  <TR>
+    <td style="text-align: left;"><img src="/static/boote/boat_types/boat_type_{{  boot.type.pk }}.png" style="width: 50px;" class="img-responsive">{{ boot.type.name }} </td>
+    <td style="text-align: left;"> <a href='/boote/boot/{{ boot.pk }}'> <i class="fa fa-ship"></i> {{ boot.name }} </a></TD>        
+    <td>{{ boot.type.length }} </td>
+    <td>{{ boot.type.beam }} </td>
+    <td>{{ boot.type.draught }} </td>
     <td style="text-align: left;"> <a href="mailto:{{ boot.resp_email }}">{{ boot.resp_name }}</a>, Tel. {{ boot.resp_tel }} </td>
   </TR>
 {% endfor %}
