@@ -1,0 +1,56 @@
+{% extends "bootstrap/bootstrap_boote.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Heutige Reservationen
+{% endblock %}
+ 
+{% block content %}
+<p>
+Es gibt generell kein Möglichkeit ein Vereinsboot für <b>aktuelle</b> Tag zu reservieren.
+</p>
+<p>
+Möchtest Du Vereinsboot segeln?
+<ul>
+<li>Such dir ein freien Termin in unteren Auflistung von Reservationen für aktuelle Tag und komm zur Lippesee (keine Garantie)</li>
+<li>Such dir ein Boot aus und reservier ein Termin für kommende Tage: <a href='/boote/booking/overview/'>hier</a></li>
+</ul>
+</p>
+
+<h3>Stand: {{ date }}</h3>
+
+<TABLE id='boatslist'>
+ <thead>
+        <tr>
+            <th>Boat</th>
+            <th class="date" colspan="2">08:00</th>
+            <th class="date" colspan="2">09:00</th>
+            <th class="date" colspan="2">10:00</th>
+            <th class="date" colspan="2">11:00</th>
+            <th class="date" colspan="2">12:00</th>
+            <th class="date" colspan="2">13:00</th>
+            <th class="date" colspan="2">14:00</th>
+            <th class="date" colspan="2">15:00</th>
+            <th class="date" colspan="2">16:00</th>
+            <th class="date" colspan="2">17:00</th>
+            <th class="date" colspan="2">18:00</th>
+         </tr>
+ </thead>
+
+{% for boat, overviewday in bookings %}
+  <TR>
+    <TD> <b>{{ boat.name }}</b> </TD>
+    {% for userid in overviewday %}
+    	{% if userid = 0 %}
+      	<TD class='booked0'>&nbsp</TD>
+      	{% else %}
+      	<TD class='booked1'>x</TD>
+      	{% endif %}
+    {% endfor %}
+  </TR>
+{% endfor %}
+</TABLE>
+
+{% endblock %}

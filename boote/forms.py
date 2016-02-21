@@ -69,7 +69,7 @@ class NewReservationForm(forms.Form):
     res_start = forms.ChoiceField(label="Von",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=TIME)
     res_duration = forms.ChoiceField(label="Dauer",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DURATION)
         
-    accepted_agb = forms.BooleanField(label="Ich akceptiere <a href='/static/media/SVPB-bedinungen-boote.pdf' target='_blank'>Bedingungen fuer Vereinsboote</a>.", required=True)
+    accepted_agb = forms.BooleanField(label="Ich akceptiere <a href='/static/boote/AlgemRegelnVereinsboote.pdf' target='_blank'>Allgemeine Regeln zur Nutzung der Vereinsboote</a>.", required=True)
     
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()

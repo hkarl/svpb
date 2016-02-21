@@ -31,6 +31,33 @@ def booking_overview(request):
     context = RequestContext(request, {'booking_overview': overview, "booking_dates":dates, "mybookings":mybookings})
     return HttpResponse(template.render(context))
 
+def booking_today(request):
+    template = loader.get_template('boote/booking_today.html')
+    
+    bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
+    
+    bookings = []
+    for boat in Boat.objects.filter(club_boat = True):
+        bookings.append([boat, boat.getDetailedBookingsToday])
+    
+    context = RequestContext(request, {"bookings":bookings, 'date': datetime.now()})
+    
+    return HttpResponse(template.render(context))
+
+
+def booking_today_public(request):
+    template = loader.get_template('boote/booking_today_pub.html')
+    
+    bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
+    
+    bookings = []
+    for boat in Boat.objects.filter(club_boat = True):
+        bookings.append([boat, boat.getDetailedBookingsToday])
+    
+    context = RequestContext(request, {"bookings":bookings, 'date': datetime.now()})
+    
+    return HttpResponse(template.render(context))
+
 def booking_my_bookings(request):
     template = loader.get_template('boote/booking_my_bookings.html')
 
