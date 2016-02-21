@@ -1,10 +1,13 @@
 <head>
 
 <style>
+
 #boatslist {  
   border-collapse: collapse;
   border: 1px solid #38678f;  
   background: white;
+  width: 100%;
+  height: 95%;
   
 }
 #boatslist th {
@@ -12,29 +15,46 @@
   padding: 2px;  
   text-shadow: 0 1px 0 #38678f;
   color: white;
-  border: 1px solid #38678f;
+  border: 1px solid black;
   box-shadow: inset 0px 1px 2px #568ebd;
   transition: all 0.2s;
 }
 
+#boatslist th.date:nth-of-type(2n) {
+	background: #33678f;
+}
+
 #boatslist th.date{
-  background: #537E8C;    
+  background: #537E8C; 
+  text-align: left;   
 }
 
 #boatslist tr {
-  border-bottom: 1px solid #cccccc;
+  border-bottom: 1px solid #ddd;
 }
 #boatslist tr:last-child {
   border-bottom: 0px;
 }
-#boatslist td {
-  border-right: 1px solid #cccccc;
+#boatslist td {  
   padding: 1px;
   transition: all 0.2s;
   text-align: center;
+  width: 4%;
+  height: 30px;
+  border-right: 1px solid black;
 }
+
+#boatslist td:nth-of-type(2n) {
+	border-right: 1px solid #ccc;
+}
+	
+
+#boatslist td:first-child {
+  width: 12%;  
+}
+
 #boatslist td:last-child {
-  border-right: 0px;
+  border-right: 0px;  
 }
 #boatslist td.selected {
   background: #d7e4ef;  
@@ -42,15 +62,12 @@
 
 #boatslist td.booked0 {
   background: #5CB85C;  
-  height: 5px;
-  width: 5px;
 }
 
 #boatslist td.booked1 {
-  background: #F0AD4E;  
-  height: 5px;
-  width: 5px;
+  background: #F0AD4E; 
 }
+
 
 
 #boatslist td input {  
@@ -79,17 +96,18 @@
 }
 
 body,table {
-	font-size: 20%;	
 }
+
 </style>
 
-
+<meta http-equiv="refresh" content="60; URL=/boote/booking/today/public/">
+<link rel="stylesheet" href="/static/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
 
 
 
-Stand: {{ date }}
+
 <TABLE id='boatslist'>
  <thead>
         <tr>
@@ -115,13 +133,13 @@ Stand: {{ date }}
     	{% if userid = 0 %}
       	<TD class='booked0'>&nbsp</TD>
       	{% else %}
-      	<TD class='booked1'>x</TD>
+      	<TD class='booked1'><i class="fa fa-lock"></i><br>res.</TD>
       	{% endif %}
     {% endfor %}
   </TR>
 {% endfor %}
 </TABLE>
-
+Stand: {{ date }}
 
 
 </body>
