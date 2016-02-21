@@ -46,7 +46,7 @@ def booking_today(request):
 
 
 def booking_today_public(request):
-    template = loader.get_template('boote/booking_today_pub.html')
+    template = loader.get_template('boote/booking_today_public.html')
     
     bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
     
