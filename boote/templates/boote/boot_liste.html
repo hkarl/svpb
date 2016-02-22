@@ -11,72 +11,65 @@ Alle Boote
 
 <h2>Vereinsboote von SVPB</h2>
 <p>
-Here a list of all boats. Select a boat to see details.
+Folgende Vereinsboote stehen allem Mitglieder zur Verfügung.
 </p>
 
 <TABLE id='boatslist'>
 	<thead>
         <tr>
-            <th>Eigner</th>
-            <th>Type</th>
+            <th>Eigner</th>            
             <th>Name</th>            
             <th>Länge</th>
             <th>Breite</th>  
             <th>Tiefgang</th>               
-            <th>Offene Meldungen</th>
-            <th>Bootspate</th>
         </tr>
 	</thead>
 
 {% for boot, numIssues in boots_verein %}
   <TR>
-    <td style="text-align: left;">{% if boot.club_boat %}<img src="/static/boote/svpb.png" style="width: 50px;" class="img-responsive">{% endif %}</td>
-    <td style="text-align: left;"><img src="/static/boote/boat_types/boat_type_{{  boot.type.pk }}.png" style="width: 50px;" class="img-responsive">{{ boot.type.name }} </td>
-    <td style="text-align: left;"> <a href='/boote/boot/{{ boot.pk }}'> <i class="fa fa-ship"></i> {{ boot.name }} </a></TD>        
+    <td style="text-align: left;">{% if boot.club_boat %}<img src="/static/boote/svpb.png" style="width: 50px;" class="img-responsive">{% endif %}</td>        
+    <td style="text-align: left;"> <a href='/boote/boot/{{ boot.pk }}'> <i class="fa fa-ship"></i> {{ boot.name }} </a> ({{ boot.type.name }} )</TD>        
     <td>{{ boot.type.length }} </td>
     <td>{{ boot.type.beam }} </td>
     <td>{{ boot.type.draught }} </td>
-    {% if numIssues %}
-    <td style='color: red'> <i class="fa fa-cog"></i> {{ numIssues }}</td>
-    {% else %}
-    <td > - </td>
-{% endif %}
-    <td style="text-align: left;"> <a href="mailto:{{ boot.resp_email }}">{{ boot.resp_name }}</a>, Tel. {{ boot.resp_tel }} </td>
   </TR>
 {% endfor %}
 
 
 </TABLE>
 
+
+
+
+{% if boots_andere %}
+
 <h2>Andere Boote am Lippesee</h2>
 <p>
-Here a list of all boats. Select a boat to see details.
+Es gibt auch viele andere Boote die am Lippesee seine Zuhause haben - hier Einige davon.
 </p>
 <TABLE id='boatslist'>
 	<thead>
-        <tr>
-            <th>Type</th>
+        <tr>            
             <th>Name</th>            
             <th>Länge</th>
             <th>Breite</th>  
-            <th>Tiefgang</th>               
-            <th>Bootspate</th>
+            <th>Tiefgang</th>
         </tr>
 	</thead>
 
 {% for boot, numIssues in boots_andere %}
-  <TR>
-    <td style="text-align: left;"><img src="/static/boote/boat_types/boat_type_{{  boot.type.pk }}.png" style="width: 50px;" class="img-responsive">{{ boot.type.name }} </td>
-    <td style="text-align: left;"> <a href='/boote/boot/{{ boot.pk }}'> <i class="fa fa-ship"></i> {{ boot.name }} </a></TD>        
+  <TR>    
+    <td style="text-align: left;"> <a href='/boote/boot/{{ boot.pk }}'> <i class="fa fa-ship"></i> {{ boot.name }} </a> ({{ boot.type.name }})</TD>        
     <td>{{ boot.type.length }} </td>
     <td>{{ boot.type.beam }} </td>
-    <td>{{ boot.type.draught }} </td>
-    <td style="text-align: left;"> <a href="mailto:{{ boot.resp_email }}">{{ boot.resp_name }}</a>, Tel. {{ boot.resp_tel }} </td>
+    <td>{{ boot.type.draught }} </td>    
   </TR>
 {% endfor %}
 
 
 </TABLE>
+
+{% endif %}
 
 
 
