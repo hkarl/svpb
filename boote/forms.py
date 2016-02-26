@@ -64,6 +64,28 @@ DURATION.append(["60","1 Stunde"])
 DURATION.append(["90","1.5 Stunden"])
 DURATION.append(["120","2 Stunden"])
 
+BOOKING_TYPE = []
+BOOKING_TYPE.append(['AUS', 'Ausbildung'])
+BOOKING_TYPE.append(['REG', 'Regatta'])
+
+MONTHS= []
+MONTHS.append(['01','Januar'])
+MONTHS.append(['02','Februar'])
+MONTHS.append(['03','Maerz'])
+MONTHS.append(['04','April'])
+MONTHS.append(['05','Mai'])
+MONTHS.append(['06','Juni'])
+MONTHS.append(['07','Juli'])
+MONTHS.append(['08','August'])
+MONTHS.append(['09','September'])
+MONTHS.append(['10','Oktober'])
+MONTHS.append(['11','November'])
+MONTHS.append(['12','Dezember'])
+
+DAYS = []
+for i in range(1,9):
+    DAYS.append(['0'+str(i),'0'+str(i)])
+    
 class NewReservationForm(forms.Form):    
     res_date = forms.ChoiceField(label="Datum",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DATES)
     res_start = forms.ChoiceField(label="Von",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=TIME)
@@ -86,9 +108,13 @@ class NewReservationForm(forms.Form):
         cleaned_data = super(NewReservationForm, self).clean()
         
         # check date and time
-        res_date = cleaned_data['res_date']
-        res_start = cleaned_data['res_start']        
-        
+        try:
+            res_date = cleaned_data['res_date']
+            res_start = cleaned_data['res_start']        
+        except KeyError:
+            res_date = ''
+            res_start =''
+             
         try:
             start = datetime.strptime(res_date + " " + res_start, '%Y-%m-%d %H:%M')
         except ValueError:
@@ -109,6 +135,60 @@ class NewReservationForm(forms.Form):
         end = start + timedelta(0,0,0,0,res_duration) # minutes                        
         res_end =  end            
                     
+class NewClubReservationForm(forms.Form):       
+    club_boats = Boat.objects.filter(club_boat='true')
+    CBOATS = []
+    for cb in club_boats:
+        CBOATS.append([cb.pk,cb.name + " (" + cb.type.name + ")"])  
+    
+    res_type = forms.ChoiceField(label="Reservations-Typ",required=True, widget=forms.Select(), choices=BOOKING_TYPE)
+    res_boat = forms.ChoiceField(label="Vereinsboot",required=True, widget=forms.Select(), choices=CBOATS)
+    res_month = forms.ChoiceField(label="Monat",required=True, widget=forms.Select(), choices=MONTHS)
+    res_day = forms.ChoiceField(label="Tag des Monats",required=True, widget=forms.Select(), choices=DAYS)
+    res_start = forms.ChoiceField(label="Von",required=True, widget=forms.Select(), choices=TIME, initial='08:00')
+    res_end = forms.ChoiceField(label="Bis",required=True, widget=forms.Select(), choices=TIME, initial='19:00')
+    
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-reservation-form-club'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'POST'
+
+        self.helper.add_input(Submit('submit', 'Termin speichern'))
+        super(NewClubReservationForm, self).__init__(*args, **kwargs)
+        
+    def clean(self):
+        import re
+        
+        cleaned_data = super(NewClubReservationForm, self).clean()
+        
+        # check date and time
+        now = datetime.now()
+        res_year = now.year
+        res_month = cleaned_data['res_month']
+        res_day = cleaned_data['res_day']
+        res_start = cleaned_data['res_start']
+        res_end = cleaned_data['res_end']              
+        
+        res_date=str(res_year) + "-" + res_month + "-"+ res_day
+         
+        try:            
+            start = datetime.strptime(res_date + " " + res_start, '%Y-%m-%d %H:%M')
+        except ValueError:
+            raise forms.ValidationError("Bitte Datum und Uhrzeit auswaehlen.")
+        
+        try:
+            start = datetime.strptime(res_date + " " + res_start, '%Y-%m-%d %H:%M')
+        except ValueError:
+            raise forms.ValidationError("Bitte Datum und Start-Uhrzeit auswaehlen.")
+        try:
+            end = datetime.strptime(res_date + " " + res_end, '%Y-%m-%d %H:%M')
+        except ValueError:
+            raise forms.ValidationError("Bitte Datum und End-Uhrzeit auswaehlen.")
+        
+        if start>=end:
+            raise forms.ValidationError("End muss nach dem Start sein.")
+        
 
 class BootIssueForm(forms.Form):    
     res_reported_descr = forms.CharField(label="Beschreibung",required=True,widget= forms.Textarea)    

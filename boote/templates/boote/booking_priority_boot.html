@@ -1,0 +1,86 @@
+{% extends "bootstrap/bootstrap_boote.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Regta- und Ausbildungstermine
+{% endblock %}
+
+{% block content %}
+
+{% if error_list %}
+<div class='alert alert-block alert-danger'>
+	<ul>
+	{% for error in error_list %}
+		<li>{{ error }}</li>
+	{% endfor %}
+	</ul>
+</div>
+{% endif %}
+
+
+{% if edit %}
+<div class="overlay">
+<div class="modalbox">
+<h2>Neue Termin</h2>
+	
+	{% crispy form %}
+	
+<a href="/boote/booking/priority/" class="btn btn-secondary">Cancel</a> 
+</div>
+</div>
+{% endif %}
+
+<p>
+Als Vorstandsmitglied bist du berechtigt ein Regatta- oder Ausbildung-Termin zu definieren.<br>  
+<a href="/boote/booking/priority/new/" class="btn btn-primary">Neue Termin</a>
+</p>
+
+<h3>Ausbildung</h3>
+<img src="/static/boote/ausbildung.png" style='width: 200px' class="img-responsive"><br>
+<TABLE  id='boatslist'>
+<thead>
+        <tr>        
+            <th>Datum</th>
+            <th>Von</th>
+            <th>Bis</th>
+            <th>Boot</th>
+            <th>Aktion</th>
+         </tr>
+ </thead>
+{% for b in bookings_reg %}
+	<tr>		
+		<td>{{ b.date }}</td>
+		<td>{{ b.time_from }}</td>
+		<td>{{ b.time_to }}</td>
+		<td>{{ b.boat.name }} ({{ b.boat.type.name }})</td>
+		<td><a href="/boote/booking_remove/{{ reservationid }}" class="btn btn-primary"  onclick='return window.confirm("Möchtest Du deine Reservation für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Stornieren</a></td>
+	</tr>
+{% endfor %}
+</TABLE>
+
+<h3>Regatta</h3>
+<img src="/static/boote/regatta.png" style='width: 200px' class="img-responsive"><br>
+<TABLE  id='boatslist'>
+<thead>
+        <tr>            
+            <th>Datum</th>
+            <th>Von</th>
+            <th>Bis</th>
+            <th>Boot</th>
+            <th>Aktion</th>
+         </tr>
+ </thead>
+{% for b in bookings_aus %}
+	<tr>
+		<td>{{ b.date }}</td>
+		<td>{{ b.time_from }}</td>
+		<td>{{ b.time_to }}</td>
+		<td>{{ b.boat.name }} ({{ b.boat.type.name }})</td>
+		<td><a href="/boote/booking_remove/{{ reservationid }}" class="btn btn-primary"  onclick='return window.confirm("Möchtest Du deine Reservation für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Stornieren</a></td>
+	</tr>
+{% endfor %}
+</TABLE>
+
+{% endblock %}

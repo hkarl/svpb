@@ -62,6 +62,16 @@ urlpatterns = patterns('',
          active_and_login_required(boote.views.booking_boot),
          name="booking-boot",
     ),
+    
+    url (r'^booking/priority/$',
+         active_and_login_required(boote.views.booking_priority_boot_list),
+         name="priority-booking-boot-list",
+    ),
+       
+    url (r'^booking/priority/new/$',
+         active_and_login_required(boote.views.booking_priority_boot_new),
+         name="priority-booking-boot-new",
+    ),
                                         
     url (r'^booking/my_bookings/$',
          active_and_login_required(boote.views.booking_my_bookings),

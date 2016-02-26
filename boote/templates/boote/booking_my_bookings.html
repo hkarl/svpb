@@ -43,41 +43,4 @@ Hier Deine aktuelle Reservationen (beachte <a href='/static/boote/AlgemRegelnVer
 {% endif %}
 
 
-
-
-<h2>Alte Reservationen</h2>
-{% if oldbookings %}
-<p>
-Hier Deine <b>alte</b> Reservationen:
-</p>
-<table id="boatslist">
- <thead >
-        <tr >
-        	<th style="background-color: #5F7384;">Boot</th>
-        	<th style="background-color: #5F7384;">Datum</th>
-            <th style="background-color: #5F7384;">Zeitraum</th>                      
-            <th style="background-color: #5F7384;">Status</th>
-            
-        </tr>
-    </thead>
-{% for status, weekday, date, time_from, time_to, boat, reservationid in oldbookings %}
-  <tr  style="color: #aaaaaa">
-  	<td style='text-align:left;'>{{ boat.name }} ({{ boat.type.name }})</td> 
-  	<td>{{ weekday }}, {{ date }}</td> 
-  	<td>von {{ time_from }} bis {{ time_to }}</td>
-  	<td>
-  	{% if status = 0 %}
-  		Storniert
-  	{% else %}
-  		Alt	
-  	{% endif %}
-  	</td>
-  </tr>
-{% endfor %}
-</table>
-{% else %}
-    Du hast noch keine alte Reservationen. 
-{% endif %}
-
-
 {% endblock %}

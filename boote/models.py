@@ -73,6 +73,7 @@ class Booking(models.Model):
     created_date = models.DateField(default=datetime.now)
     boat = models.ForeignKey(Boat)
     status = models.IntegerField(default=1)
+    type = models.CharField(max_length=3,choices=(('PRV', 'Freie Nutzung'),('AUS', 'Ausbildung'),('REG', 'Regatta'),),default='PRV')
     date = models.DateField()
     time_from = models.TimeField()
     time_to = models.TimeField()
