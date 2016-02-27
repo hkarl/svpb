@@ -83,8 +83,11 @@ MONTHS.append(['11','November'])
 MONTHS.append(['12','Dezember'])
 
 DAYS = []
-for i in range(1,9):
+for i in range(1,10):
     DAYS.append(['0'+str(i),'0'+str(i)])
+for i in range(10,32):
+    DAYS.append([str(i),str(i)])
+
     
 class NewReservationForm(forms.Form):    
     res_date = forms.ChoiceField(label="Datum",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DATES)

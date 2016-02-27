@@ -42,11 +42,11 @@ Möchtest Du Vereinsboot segeln?
 {% for boat, overviewday in bookings %}
   <TR>
     <TD> <b>{{ boat.name }}</b> ({{ boat.type.name }})</TD>
-    {% for userid in overviewday %}
-    	{% if userid = 0 %}
-      	<TD class='booked0'>&nbsp</TD>
+    {% for userid, type in overviewday %}
+    	{% if userid %}
+      	<TD class='{{ type }}'><i class="fa fa-lock" alt="{{ userid }}"><br><span class="tinyfont">{{ type }}</span></TD>
       	{% else %}
-      	<TD class='booked1'>x</TD>
+      	<TD class='booked0'>&nbsp</TD>
       	{% endif %}
     {% endfor %}
   </TR>

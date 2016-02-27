@@ -49,7 +49,7 @@ Als Vorstandsmitglied bist du berechtigt ein Regatta- oder Ausbildung-Termin zu 
             <th>Aktion</th>
          </tr>
  </thead>
-{% for b in bookings_reg %}
+{% for b in bookings_aus %}
 	<tr>		
 		<td>{{ b.date }}</td>
 		<td>{{ b.time_from }}</td>
@@ -72,7 +72,7 @@ Als Vorstandsmitglied bist du berechtigt ein Regatta- oder Ausbildung-Termin zu 
             <th>Aktion</th>
          </tr>
  </thead>
-{% for b in bookings_aus %}
+{% for b in bookings_reg %}
 	<tr>
 		<td>{{ b.date }}</td>
 		<td>{{ b.time_from }}</td>

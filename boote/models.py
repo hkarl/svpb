@@ -45,11 +45,11 @@ class Boat(models.Model):
     def getDetailedBookingsToday(self):
         res = [0 for x in range(22)]        
         for booking in Booking.objects.filter(boat=self, date=datetime.now(), status=1):            
-            uid = booking.user.username 
+            uid = booking.user.username             
             startIdx = (booking.time_from.hour-8)*2+(booking.time_from.minute/30)
             endIdx = (booking.time_to.hour-8)*2+(booking.time_to.minute/30)
             for i in range(startIdx, endIdx):
-                res[i] = uid
+                res[i] = [uid, booking.type]
         return res
     
     def getDetailedBookings7Days(self):
@@ -62,7 +62,7 @@ class Boat(models.Model):
             startIdx = (booking.time_from.hour-8)*2+(booking.time_from.minute/30)
             endIdx = (booking.time_to.hour-8)*2+(booking.time_to.minute/30)
             for i in range(startIdx, endIdx):
-                res[offset][i] = uid
+                res[offset][i] = [uid, booking.type]
         return res
     
     def getNumberOfIssues(self):

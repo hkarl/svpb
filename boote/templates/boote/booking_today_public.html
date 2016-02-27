@@ -69,6 +69,33 @@
 }
 
 
+#boatslist td.PRV {
+  background: #E4FF2E;
+  font-size: 80%;
+  height: 50px;
+  width: 50px;
+}
+
+#boatslist td.REG {
+  background: #FF5151;
+  font-size: 80%;
+  height: 50px;
+  width: 50px;
+}
+
+#boatslist td.AUS {
+  background: #54f3ff;
+  font-size: 80%;
+  height: 50px;
+  width: 50px;
+}
+
+span.tinyfont {
+ font-size: 90%;
+}
+
+
+
 
 #boatslist td input {  
   background: none;
@@ -129,11 +156,11 @@ body,table {
 {% for boat, overviewday in bookings %}
   <TR>
     <TD> <b>{{ boat.name }}</b> </TD>
-    {% for userid in overviewday %}
-    	{% if userid = 0 %}
-      	<TD class='booked0'>&nbsp</TD>
+     {% for userid, type in overviewday %}
+    	{% if userid %}
+      	<TD class='{{ type }}'><i class="fa fa-lock" alt="{{ userid }}"><br><span class="tinyfont">{{ type }}</span></TD>
       	{% else %}
-      	<TD class='booked1'><i class="fa fa-lock"></i><br>res.</TD>
+      	<TD class='booked0'>&nbsp</TD>
       	{% endif %}
     {% endfor %}
   </TR>

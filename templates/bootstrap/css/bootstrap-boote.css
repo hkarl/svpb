@@ -71,8 +71,33 @@
   width: 50px;
 }
 
+#boatslist td.PRV {
+  background: #E4FF2E;
+  font-size: 80%;
+  height: 50px;
+  width: 50px;
+}
+
+#boatslist td.REG {
+  background: #FF5151;
+  font-size: 80%;
+  height: 50px;
+  width: 50px;
+}
+
+#boatslist td.AUS {
+  background: #54f3ff;
+  font-size: 80%;
+  height: 50px;
+  width: 50px;
+}
+
+span.tinyfont {
+ font-size: 90%;
+}
+
 #boatslist td.booked1 {
-  background: #F0AD4E;
+  background: #CFDE3E;
   font-size: 80%;
   height: 50px;
   width: 50px;
