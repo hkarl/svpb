@@ -30,8 +30,7 @@ Boot
   <dt>Tiefgang</dt><dd>{{ boot.type.draught }}</dd>
   <dt>Beschreibung</dt><dd>{{ boot.remarks }}</dd>
   <dt>Bootspate</dt><dd>{{ boot.resp_name }} (<a href="mailto:{{ boot.resp_email }}">{{ boot.resp_email }}</a>, Tel. {{ boot.resp_tel }})</dd>  
-  <dt>Hinweise</dt><dd>{{ boot.booking_remarks }}</dd>
-  
+  <dt>Hinweise</dt><dd>{{ boot.booking_remarks }}</dd>  
  </dl>
 </div>
 
@@ -53,5 +52,7 @@ Hast Du kleinere Probleme an Boot entdeckt, bitte melde es hier - der Bootspate 
 </p>
 {% endif %}    
 
+
+<p style="font-size: 80%">* Falls Informationen über Vereinsboot "{{ boot.name }}" auf diese Seite nicht aktuell sind sag es an <b>{{ boot.owner.first_name }} {{ boot.owner.last_name }}</b> bescheid.</p>
 
 {% endblock %}

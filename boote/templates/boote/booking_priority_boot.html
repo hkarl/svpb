@@ -55,7 +55,7 @@ Als Vorstandsmitglied bist du berechtigt ein Regatta- oder Ausbildung-Termin zu 
 		<td>{{ b.time_from }}</td>
 		<td>{{ b.time_to }}</td>
 		<td>{{ b.boat.name }} ({{ b.boat.type.name }})</td>
-		<td><a href="/boote/booking_remove/{{ reservationid }}" class="btn btn-primary"  onclick='return window.confirm("Möchtest Du deine Reservation für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Stornieren</a></td>
+		<td><a href="/boote/booking_remove/{{ b.id }}" class="btn btn-primary"  onclick='return window.confirm("Möchtest Du deine Reservation für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Stornieren</a> <br> <span class="tinyfont">{{ b.user }}</span></td>
 	</tr>
 {% endfor %}
 </TABLE>
@@ -78,7 +78,7 @@ Als Vorstandsmitglied bist du berechtigt ein Regatta- oder Ausbildung-Termin zu 
 		<td>{{ b.time_from }}</td>
 		<td>{{ b.time_to }}</td>
 		<td>{{ b.boat.name }} ({{ b.boat.type.name }})</td>
-		<td><a href="/boote/booking_remove/{{ reservationid }}" class="btn btn-primary"  onclick='return window.confirm("Möchtest Du deine Reservation für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Stornieren</a></td>
+		<td><a href="/boote/booking_remove/{{ b.pk }}" class="btn btn-primary"  onclick='return window.confirm("Möchtest Du deine Reservation für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Stornieren</a> <br> <span class="tinyfont">{{ b.user }}</span></td>
 	</tr>
 {% endfor %}
 </TABLE>
