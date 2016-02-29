@@ -21,7 +21,8 @@ Folgende Vereinsboote stehen allen Mitgliedern zur Verfügung.
             <th>Name</th>            
             <th>Länge</th>
             <th>Breite</th>  
-            <th>Tiefgang</th>               
+            <th>Tiefgang</th>
+            <th>Betreuung</th>                  
         </tr>
 	</thead>
 
@@ -32,6 +33,7 @@ Folgende Vereinsboote stehen allen Mitgliedern zur Verfügung.
     <td>{{ boot.type.length }} </td>
     <td>{{ boot.type.beam }} </td>
     <td>{{ boot.type.draught }} </td>
+    <td style='font-size: 80%; text-align: left;'>Bootspate: {{ boot.resp_name }}<br> Beschreibung: {{ boot.owner.first_name }} {{ boot.owner.last_name }} </td>
   </TR>
 {% endfor %}
 
@@ -54,6 +56,7 @@ Es gibt auch viele andere Booten, die am Lippesee ihr Zuhause haben - hier Einig
             <th>Länge</th>
             <th>Breite</th>  
             <th>Tiefgang</th>
+            <th>Betreuung</th>     
         </tr>
 	</thead>
 
@@ -63,6 +66,7 @@ Es gibt auch viele andere Booten, die am Lippesee ihr Zuhause haben - hier Einig
     <td>{{ boot.type.length }} </td>
     <td>{{ boot.type.beam }} </td>
     <td>{{ boot.type.draught }} </td>    
+    <td style='font-size: 80%; text-align: left;'>Bootspate: {{ boot.resp_name }}<br> Beschreibung: {{ boot.owner.first_name }} {{ boot.owner.last_name }} </td>
   </TR>
 {% endfor %}
 

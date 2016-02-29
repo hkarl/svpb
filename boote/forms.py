@@ -225,7 +225,7 @@ class BootEditForm(forms.ModelForm):
         self.helper.layout = Layout(
             TabHolder(
                     Tab(
-                          'Basic Information',
+                          'Hauptinformationen',
                           'type',
                           'name',
                           'remarks',                          
@@ -253,11 +253,13 @@ class BootEditForm(forms.ModelForm):
         self.fields['booking_remarks'].required = False
         self.fields['booking_remarks'].label = "Wichtige Hinweise (Reservation)"
         
+        self.fields['club_boat'].label = "Vereinsboot"
+        
         self.fields['photo'].required = False
         self.fields['photo'].label = "Bild (Format: JPG)"
          
         self.fields['resp_name'].label = "Bootspate"
-        self.fields['resp_email'].label = "Email von Bootspate"
+        self.fields['resp_email'].label = "Email"
         self.fields['resp_tel'].label = "Telefonnummer"
         
 
