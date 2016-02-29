@@ -4,27 +4,15 @@
 {% load crispy_forms_tags %}
 
 {% block branding %}
-Heutige Reservationen
+Verfügbarkeit - Heute
 {% endblock %}
  
 {% block content %}
-<p>
-Es gibt generell kein Möglichkeit ein Vereinsboot für <b>aktuelle</b> Tag zu reservieren.
-</p>
-<p>
-Möchtest Du Vereinsboot segeln?
-<ul>
-<li>Such dir ein freien Termin in unteren Auflistung von Reservationen für aktuelle Tag und komm zur Lippesee (keine Garantie)</li>
-<li>Such dir ein Boot aus und reservier ein Termin für kommende Tage: <a href='/boote/booking/overview/'>hier</a></li>
-</ul>
-</p>
-
-<h3>Stand: {{ date }}</h3>
-
 <TABLE id='boatslist'>
  <thead>
         <tr>
             <th>Boat</th>
+            <th>Reservieren</th>
             <th class="date" colspan="2">08:00</th>
             <th class="date" colspan="2">09:00</th>
             <th class="date" colspan="2">10:00</th>
@@ -42,6 +30,7 @@ Möchtest Du Vereinsboot segeln?
 {% for boat, overviewday in bookings %}
   <TR>
     <TD> <b>{{ boat.name }}</b> ({{ boat.type.name }})</TD>
+    <TD style="text-align: center;"><a href='/boote/booking/boot/{{ boat.pk }}'  class="btn btn-primary"> <i class="fa fa-calendar"></i> RESERVIEREN </a></TD>
     {% for userid, type in overviewday %}
     	{% if userid %}
       	<TD class='{{ type }}'><i class="fa fa-lock" alt="{{ userid }}"><br><span class="tinyfont">{{ type }}</span></TD>
@@ -52,5 +41,7 @@ Möchtest Du Vereinsboot segeln?
   </TR>
 {% endfor %}
 </TABLE>
+
+<span style='tinyfont'>Stand: {{ date }}</span>
 
 {% endblock %}

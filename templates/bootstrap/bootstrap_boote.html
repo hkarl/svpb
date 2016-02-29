@@ -31,8 +31,7 @@
         Reservieren
         <b class="caret"></b>
     </a>
-    <ul class="dropdown-menu">
-        <li><a href="/boote/booking/today/">Verfügbarkeit - Heute</a></li>
+    <ul class="dropdown-menu">        
         <li><a href="/boote/booking/overview/">Termin Reservieren</a></li>        
         <li><a href="/boote/booking/my_bookings/">Meine Reservationen</a></li>
         {% for g in  user.groups.all %}
@@ -53,14 +52,7 @@
     </a>
     <ul class="dropdown-menu">
         <li><a href="/boote/XXX/" style="color: #cccccc">Aktuele Anfragen</a></li>
-        <li><a href="/boote/XXX/" style="color: #cccccc">Neue Anfrage</a></li>
-        {% for g in  user.groups.all %}
-            {% if g.name == "Vorstand" %}
-                <li class="divider"></li>
-                <li class="dropdown-header">Vorstandsfunktionen</li>
-                <li> <a href="/boote/YYY/"> BootVorstand </a> </li>
-            {% endif %}
-        {% endfor %}
+        <li><a href="/boote/XXX/" style="color: #cccccc">Neue Anfrage</a></li>        
     </ul>
 </li>
 

@@ -52,11 +52,6 @@ urlpatterns = patterns('',
          boote.views.booking_today_public,
          name="booking-overview",
     ),
-                       
-    url (r'^booking/today/$',
-         boote.views.booking_today,
-         name="booking-overview",
-    ),
       
     url (r'^booking/boot/(?P<boot_pk>[0-9]+)/$',
          active_and_login_required(boote.views.booking_boot),

@@ -10,15 +10,57 @@ Vereinsboote
 {% block content %}
 
 <p>
-Verfügbarkeit von Vereinsbooten in kommenden 7 Tagen.
+Such dir ein Termin und ein Boot aus. 
+</p>
 
+
+<h2>Verfügbarkeit - Heute ({{ date }})</h2>
+<p>Detalierte Verfügbarkeit von Verneinsbooten für heute. Falls keine Regatta (<b>REG</b>) oder Ausbildung (<b>AUS</b>) stattfindet, stehen die Vereinsboote zur freie Verfügung (<b>PRV</b>).  
+</p>
+<TABLE id='boatslist'>
+ <thead>
+        <tr>
+            <th style='width: 12%'>Boot</th>
+            <th style='width: 12%'>Reservieren</th>
+            <th class="date" colspan="2">08:00</th>
+            <th class="date" colspan="2">09:00</th>
+            <th class="date" colspan="2">10:00</th>
+            <th class="date" colspan="2">11:00</th>
+            <th class="date" colspan="2">12:00</th>
+            <th class="date" colspan="2">13:00</th>
+            <th class="date" colspan="2">14:00</th>
+            <th class="date" colspan="2">15:00</th>
+            <th class="date" colspan="2">16:00</th>
+            <th class="date" colspan="2">17:00</th>
+            <th class="date" colspan="2">18:00</th>
+         </tr>
+ </thead>
+
+{% for boat, overviewday in bookings %}
+  <TR>
+    <TD style="text-align: left;"><span class='tinyfont'>{{ boat.type.name }}</span><br><a href='/boote/boot/{{ boat.pk }}'><i class="fa fa-ship"></i>{{ boat.name }}</a></TD>    
+    <TD style="text-align: center;"><a href='/boote/booking/boot/{{ boat.pk }}'  class="btn btn-primary"> <i class="fa fa-calendar"></i> reservieren </a></TD>
+    {% for userid, usertag, type in overviewday %}
+    	{% if userid %}
+      	<TD class='{{ type }}' title="{{ usertag }}"><i class="fa fa-lock" alt="{{ userid }}" ><br><span class="tinyfont">{{ type }}</span></TD>
+      	{% else %}
+      	<TD class='booked0'>&nbsp</TD>
+      	{% endif %}
+    {% endfor %}
+  </TR>
+{% endfor %}
+</TABLE>
+
+<h2>Verfügbarkeit - Woche</h2>
+<p>
+Verfügbarkeit von Vereinsbooten in kommenden 7 Tagen.
 </p>
 
 <TABLE id='boatslist'>
  	<thead>
         <tr>
-            <th>Boot</th>
-            <th>Reservieren</th>
+            <th style='width: 12%'>Boot</th>
+            <th style='width: 12%'>Reservieren</th>
 
             {% for weekday, date in booking_dates %}
               <th class="date">{{ weekday }}<br><small>({{ date }})</small></th>
@@ -27,10 +69,10 @@ Verfügbarkeit von Vereinsbooten in kommenden 7 Tagen.
     </thead>
 
 
-{% for name, pk, overview7days in booking_overview %}
+{% for name, type, pk, overview7days in booking_overview %}
   <TR>
-    <TD style="text-align: left;"><a href='/boote/boot/{{ pk }}'><i class="fa fa-ship"></i>{{ name }}</a></TD>
-    <TD style="text-align: center;"><a href='/boote/booking/boot/{{ pk }}'  class="btn btn-primary"> <i class="fa fa-calendar"></i> RESERVIEREN </a></TD>
+    <TD style="text-align: left;"><span class='tinyfont'>{{ type }}</span><br><a href='/boote/boot/{{ pk }}'><i class="fa fa-ship"></i>{{ name }}</a></TD>
+    <TD style="text-align: center;"><a href='/boote/booking/boot/{{ pk }}'  class="btn btn-primary"> <i class="fa fa-calendar"></i> reservieren </a></TD>
     {% for day in overview7days %}
       <TD class='booked{{ day }}'>
         {% if day == 0 %}
@@ -47,6 +89,7 @@ Verfügbarkeit von Vereinsbooten in kommenden 7 Tagen.
 
 
 </TABLE>
+
 
 
 

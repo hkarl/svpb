@@ -34,19 +34,25 @@ Regta- und Ausbildungstermine
 
 <p>
 Als Vorstandsmitglied bist du berechtigt ein Regatta- oder Ausbildung-Termin zu definieren.<br>  
+</p>
+
+<p>
 <a href="/boote/booking/priority/new/" class="btn btn-primary">Neue Termin</a>
 </p>
+
+
 
 <h3>Ausbildung</h3>
 <img src="/static/boote/ausbildung.png" style='width: 200px' class="img-responsive"><br>
 <TABLE  id='boatslist'>
 <thead>
         <tr>        
-            <th>Datum</th>
-            <th>Von</th>
-            <th>Bis</th>
-            <th>Boot</th>
-            <th>Aktion</th>
+            <th style=''>Datum</th>
+            <th style='width: 15%'>Von</th>
+            <th style='width: 15%'>Bis</th>
+            <th style='width: 15%'>Boot</th>
+            <th style='width: 15%'>Erstellt von</th>
+            <th style='width: 15%'>Aktion</th>
          </tr>
  </thead>
 {% for b in bookings_aus %}
@@ -55,7 +61,12 @@ Als Vorstandsmitglied bist du berechtigt ein Regatta- oder Ausbildung-Termin zu 
 		<td>{{ b.time_from }}</td>
 		<td>{{ b.time_to }}</td>
 		<td>{{ b.boat.name }} ({{ b.boat.type.name }})</td>
-		<td><a href="/boote/booking_remove/{{ b.id }}" class="btn btn-primary"  onclick='return window.confirm("Möchtest Du deine Reservation für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Stornieren</a> <br> <span class="tinyfont">{{ b.user }}</span></td>
+		<td><span class="tinyfont">{{ b.user.first_name }} {{ b.user.last_name }}</span></td>
+		<td>
+		{% if b.user = user %}
+			<a href="/boote/booking_remove/{{ b.id }}" class="btn btn-primary" onclick='return window.confirm("Möchtest Du deine Reservation für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Stornieren</a>
+		{% endif %}
+		</td>
 	</tr>
 {% endfor %}
 </TABLE>
@@ -65,11 +76,12 @@ Als Vorstandsmitglied bist du berechtigt ein Regatta- oder Ausbildung-Termin zu 
 <TABLE  id='boatslist'>
 <thead>
         <tr>            
-            <th>Datum</th>
-            <th>Von</th>
-            <th>Bis</th>
-            <th>Boot</th>
-            <th>Aktion</th>
+      		<th style=''>Datum</th>
+            <th style='width: 15%'>Von</th>
+            <th style='width: 15%'>Bis</th>
+            <th style='width: 15%'>Boot</th>
+            <th style='width: 15%'>Erstellt von</th>
+            <th style='width: 15%'>Aktion</th>
          </tr>
  </thead>
 {% for b in bookings_reg %}
@@ -78,7 +90,12 @@ Als Vorstandsmitglied bist du berechtigt ein Regatta- oder Ausbildung-Termin zu 
 		<td>{{ b.time_from }}</td>
 		<td>{{ b.time_to }}</td>
 		<td>{{ b.boat.name }} ({{ b.boat.type.name }})</td>
-		<td><a href="/boote/booking_remove/{{ b.pk }}" class="btn btn-primary"  onclick='return window.confirm("Möchtest Du deine Reservation für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Stornieren</a> <br> <span class="tinyfont">{{ b.user }}</span></td>
+		<td><span class="tinyfont">{{ b.user.first_name }} {{ b.user.last_name }}</span></td>
+		<td>
+		{% if b.user = user %}
+			<a href="/boote/booking_remove/{{ b.id }}" class="btn btn-primary" onclick='return window.confirm("Möchtest Du deine Reservation für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Stornieren</a>
+		{% endif %}
+		</td>
 	</tr>
 {% endfor %}
 </TABLE>

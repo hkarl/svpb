@@ -14,13 +14,15 @@ def booking_overview(request):
 
     user = request.user
 
-    mybookings = []
-    for booking in Booking.objects.filter(user=user, date__gte=datetime.now()).order_by('date'):
-        mybookings.append([booking.date.strftime("%A"),booking.date.strftime("%Y/%d/%m"),booking.time_from.strftime("%H:%M"),booking.time_to.strftime("%H:%M"), booking.boat, booking.pk])
-
     overview = []
     for boat in Boat.objects.filter(club_boat = True):
-        overview.append([boat.name + " (" + boat.type.name +")", boat.pk, boat.getBookings7days()])
+        overview.append([boat.name, boat.type.name, boat.pk, boat.getBookings7days()])
+ 
+    bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
+    
+    bookings = []
+    for boat in Boat.objects.filter(club_boat = True):
+        bookings.append([boat, boat.getDetailedBookingsToday])
 
     dates = []
     d = datetime.now()
@@ -28,22 +30,14 @@ def booking_overview(request):
         dates.append([d.strftime("%A"), d.strftime("%Y/%d/%m")])
         d = d + timedelta(days=1)
 
-    context = RequestContext(request, {'booking_overview': overview, "booking_dates":dates, "mybookings":mybookings})
-    return HttpResponse(template.render(context))
-
-def booking_today(request):
-    template = loader.get_template('boote/booking_today.html')
-    
-    bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
-    
-    bookings = []
-    for boat in Boat.objects.filter(club_boat = True):
-        bookings.append([boat, boat.getDetailedBookingsToday])
-    
-    context = RequestContext(request, {"bookings":bookings, 'date': datetime.now()})
+    context = RequestContext(request, 
+                            {'booking_overview': overview, 
+                             "booking_dates":dates, 
+                             "bookings":bookings, 
+                             'date': datetime.now().strftime("%A"),
+                             })
     
     return HttpResponse(template.render(context))
-
 
 def booking_today_public(request):
     template = loader.get_template('boote/booking_today_public.html')
@@ -241,7 +235,7 @@ def boot_issues(request, boot_pk):
     template = loader.get_template('boote/boot_issue.html')
     boot = Boat.objects.get(pk=boot_pk)
     user = request.user
-    issues = BoatIssue.objects.filter(boat=boot_pk)
+    issues = BoatIssue.objects.filter(boat=boot_pk, )
     
     
     # if this is a POST request we need to process the form data
