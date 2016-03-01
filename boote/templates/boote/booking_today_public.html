@@ -69,25 +69,25 @@
 }
 
 
+#boatslist td {
+  height: 50px;
+  width: 50px;
+}
+
 #boatslist td.PRV {
   background: #E4FF2E;
   font-size: 80%;
-  height: 50px;
-  width: 50px;
+
 }
 
 #boatslist td.REG {
   background: #FF5151;
   font-size: 80%;
-  height: 50px;
-  width: 50px;
 }
 
 #boatslist td.AUS {
   background: #54f3ff;
   font-size: 80%;
-  height: 50px;
-  width: 50px;
 }
 
 span.tinyfont {
@@ -127,7 +127,7 @@ body,table {
 
 </style>
 
-<meta http-equiv="refresh" content="60; URL=/boote/booking/today/public/">
+<meta http-equiv="refresh" content="10; URL=/boote/booking/today/public/">
 <link rel="stylesheet" href="/static/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
@@ -156,9 +156,9 @@ body,table {
 {% for boat, overviewday in bookings %}
   <TR>
     <TD> <b>{{ boat.name }}</b> </TD>
-     {% for userid, type in overviewday %}
+     {% for userid, usertag, type in overviewday %}
     	{% if userid %}
-      	<TD class='{{ type }}'><i class="fa fa-lock" alt="{{ userid }}"><br><span class="tinyfont">{{ type }}</span></TD>
+      	<TD class='{{ type }}'><i class="fa fa-lock"><br><span class="tinyfont">{{ type }}</span></TD>
       	{% else %}
       	<TD class='booked0'>&nbsp</TD>
       	{% endif %}
