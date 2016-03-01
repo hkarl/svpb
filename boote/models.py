@@ -34,7 +34,7 @@ class Boat(models.Model):
     
     def getBookings7days(self):
         "This function delivers list that describes bookings for upcoming 7 days (0 for free, 1 for partially booked, 2 for fully booked)"
-        d1 = datetime.now()
+        d1 = datetime.now() + timedelta(days=1)
         d2 = d1 + timedelta(days=7)
         result = [0, 0, 0, 0, 0, 0, 0]
         for booking in Booking.objects.filter(boat=self, date__lte=d2, date__gte=d1, status=1):

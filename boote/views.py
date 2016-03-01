@@ -25,7 +25,7 @@ def booking_overview(request):
         bookings.append([boat, boat.getDetailedBookingsToday])
 
     dates = []
-    d = datetime.now()
+    d = datetime.now() + timedelta(days=1)
     for i in range(0,7):
         dates.append([d.strftime("%A"), d.strftime("%Y/%d/%m")])
         d = d + timedelta(days=1)
