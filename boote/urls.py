@@ -41,6 +41,10 @@ urlpatterns = patterns('',
          active_and_login_required(boote.views.boot_issues),
          name="boot-issues",
     ),
+    url (r'^boot_issues/all/$',
+         active_and_login_required(boote.views.boot_issues_all),
+         name="boot-issues-all",
+    ),
                        
 # BOOKING 
     url (r'^booking/overview/$',

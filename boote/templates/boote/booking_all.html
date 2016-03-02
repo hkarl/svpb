@@ -1,0 +1,53 @@
+{% extends "bootstrap/bootstrap_boote.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Reservationen
+{% endblock %}
+
+{% block content %}
+
+
+
+{% if bookings %}
+<p>
+Hier alle aktuellen Reservationen:
+</p>
+
+<table id="boatslist">
+  
+   <thead>
+        <tr>
+        	<th>Reserviert für</th>
+        	<th>Boot</th>
+        	<th>Datum</th>
+            <th>Zeitraum</th>
+            <th>Typ</th>
+            <th>Status</th>            
+        </tr>
+    </thead>
+
+{% for b, weekday, date, time_from, time_to in bookings %}
+  <tr>
+  	<td>{{ b.user.first_name }} {{ b.user.last_name }}</td>
+  	<td style='text-align:left;'><a href="/boote/boot/{{ b.boat.pk }}/"> <i class="fa fa-ship"></i>  {{ b.boat.name }} ({{ b.boat.type.name }})</a></td> 
+  	<td style='text-align: right'>{{ weekday }}, {{ date }}</td> 
+  	<td>von {{ time_from }} bis {{ time_to }}</td>
+  	<td>{{ b.type }}</td>
+  	{% if b.status = 1 %}
+  		<td>Aktiv</td>
+  	{% else %}
+  		<td>Storniert</td>
+  	{% endif %}
+  	
+  </tr>
+{% endfor %}
+</table>
+{% else %}
+    Du hast aktuell keine Reservationen. <br> <a href="/boote/booking/overview/">Such dir ein Boot und Termin aus.</a>
+{% endif %}
+
+
+{% endblock %}

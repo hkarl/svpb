@@ -245,6 +245,17 @@ def booking_remove(request, booking_pk):
     return redirect('booking-my-bookings')
 
 
+def boot_issues_all(request):
+    template = loader.get_template('boote/boot_issue_all.html')
+    user = request.user
+    issues = BoatIssue.objects.filter().order_by('-reported_date')
+        
+    context = RequestContext(request, {
+        'user': user,
+        'issues' : issues,        
+    })
+    return HttpResponse(template.render(context))
+
 def boot_issues(request, boot_pk):
     template = loader.get_template('boote/boot_issue.html')
     boot = Boat.objects.get(pk=boot_pk)
