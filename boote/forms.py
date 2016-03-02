@@ -94,6 +94,8 @@ class NewReservationForm(forms.Form):
     res_start = forms.ChoiceField(label="Von",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=TIME)
     res_duration = forms.ChoiceField(label="Dauer",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DURATION)
         
+    accepted_datenschutz = forms.BooleanField(label="Ich akceptiere, dass meine Name fur die Reservation sichtbar fur anderen Mitgliedern ist.", required=True)
+    
     accepted_agb = forms.BooleanField(label="Ich akceptiere <a href='/static/boote/AlgemRegelnVereinsboote.pdf' target='_blank'>Allgemeine Regeln zur Nutzung der Vereinsboote</a>.", required=True)
     
     def __init__(self, *args, **kwargs):
