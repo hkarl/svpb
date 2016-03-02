@@ -20,8 +20,18 @@
     </a>
     <ul class="dropdown-menu">    	
         <li><a href="/boote/boots_liste/">Alle Boote</a></li>        
-        <li><a href="/boote/boot/edit/">Mein Boot</a></li>        
+        <li><a href="/boote/boot/edit/">Mein Boot</a></li>
+         {% for g in  user.groups.all %}
+            {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li> <a href="/boote/issues/all/">Alle Meldungen</a> </li>
+            {% endif %}
+        {% endfor %}        
     </ul>
+    
+    
+    
 </li>
 
 
@@ -39,6 +49,7 @@
                 <li class="divider"></li>
                 <li class="dropdown-header">Vorstandsfunktionen</li>
                 <li> <a href="/boote/booking/priority/">Regata/Ausbildung</a> </li>
+                <li> <a href="/boote/booking/all/">All Reservationen</a> </li>
             {% endif %}
         {% endfor %}
     </ul>

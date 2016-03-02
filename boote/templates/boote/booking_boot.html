@@ -29,7 +29,7 @@ function showbooking() {
 	
 	var width = 48*(dur_idx+1);	
 	var left = 48*(time_idx-23) + width - 2;
-	var top = date_idx*50.0-350;
+	var top = date_idx*50.0-300;
 	
     box.style.top = top+"px";
     box.style.left = left+"px";
@@ -85,7 +85,7 @@ Verfügbarkeit von dem Vereinsboot "{{ boot.name }}" in kommenden 7 Tagen.
 
 {% for weekday, date, overviewday in booking_overview %}
   <TR>
-    <TD style="font-size: 80%"> <b>{{ weekday }}</b> <br>{{ date }}</TD>
+    <TD style="font-size: 80%"> <b>{{ weekday }}</b> <br>({{ date }})</TD>
    {% for userid, type in overviewday %}
     	{% if userid %}
       	<TD class='{{ type }}'><i class="fa fa-lock" alt="{{ userid }}"><br><span class="tinyfont">{{ type }}</span></TD>

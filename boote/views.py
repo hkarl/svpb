@@ -52,6 +52,20 @@ def booking_today_public(request):
     
     return HttpResponse(template.render(context))
 
+def booking_all(request):
+    template = loader.get_template('boote/booking_all.html')
+
+    user = request.user
+
+    bookings = []
+    for booking in Booking.objects.filter().order_by('-date'):
+        bookings.append([booking, booking.date.strftime("%A"),booking.date.strftime("%Y %b %d"),booking.time_from.strftime("%H:%M"),booking.time_to.strftime("%H:%M")])
+  
+    context = RequestContext(request, {
+        "bookings":bookings,        
+        })
+    return HttpResponse(template.render(context))
+
 def booking_my_bookings(request):
     template = loader.get_template('boote/booking_my_bookings.html')
 
@@ -107,7 +121,7 @@ def booking_boot(request, boot_pk):
     overview = []
     d = datetime.now()
     for i in range(0,7):
-        overview.append([d.strftime("%A"), d.strftime("%Y/%d/%m"), bookings[i]])
+        overview.append([d.strftime("%A"), d.strftime("%d. %b"), bookings[i]])
         d = d + timedelta(days=1)
    
     error_list=[]
