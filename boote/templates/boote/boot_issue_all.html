@@ -34,9 +34,7 @@ Alle Meldungen
   	 	<td style='color: green'> <i class="fa fa-check"></i> Erledigt</td>
   	{% endif %}
   	<td style="text-align: left;"> <a href='/boote/boot/{{ issue.boat.pk }}'> <i class="fa fa-ship"></i> {{ issue.boat.name }} </a><br><span style='font-size:70%'> ({{ issue.boat.type.name }})</span></TD>
-  	<td style="text-align: left; vertical-align: top; font-style:italic;">{{ issue.reported_descr }}</td>
-  	
-  	  	
+  	<td style="text-align: left; vertical-align: top; font-style:italic;">{{ issue.reported_descr }}</td>  	  	
   </tr>
 {% endfor %}
 </table>

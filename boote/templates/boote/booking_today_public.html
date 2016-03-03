@@ -1,5 +1,7 @@
 <head>
 
+<title>Vereinsboote</title>
+
 <style>
 
 #boatslist {  
@@ -70,24 +72,21 @@
 
 
 #boatslist td {
-  height: 50px;
+  height: 30px;
   width: 50px;
+  font-size: 60%;
 }
 
 #boatslist td.PRV {
-  background: #E4FF2E;
-  font-size: 80%;
-
+  background: #E4FF2E;  
 }
 
 #boatslist td.REG {
-  background: #FF5151;
-  font-size: 80%;
+  background: #FF5151;  
 }
 
 #boatslist td.AUS {
-  background: #54f3ff;
-  font-size: 80%;
+  background: #54f3ff;  
 }
 
 span.tinyfont {
@@ -127,7 +126,32 @@ body,table {
 
 </style>
 
-<meta http-equiv="refresh" content="10; URL=/boote/booking/today/public/">
+<SCRIPT language=JavaScript1.2>
+var speed=1
+
+var currentpos=0,alt=1,curpos1=0,curpos2=-1,oldpos=0
+
+function initialize(){
+	startit()
+}
+
+function scrollwindow(){
+		oldpos = document.body.scrollTop				
+		currentpos=oldpos+speed		
+		window.scroll(0,currentpos)
+		if (document.body.scrollTop==oldpos)
+			speed=-speed		
+}
+
+function startit(){
+	setInterval("scrollwindow()",200)
+}
+
+window.onload=initialize
+
+</SCRIPT>
+
+
 <link rel="stylesheet" href="/static/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
@@ -138,7 +162,7 @@ body,table {
 <TABLE id='boatslist'>
  <thead>
         <tr>
-            <th>Boat</th>
+            <th>Boot</th>
             <th class="date" colspan="2">08:00</th>
             <th class="date" colspan="2">09:00</th>
             <th class="date" colspan="2">10:00</th>
@@ -155,7 +179,7 @@ body,table {
 
 {% for boat, overviewday in bookings %}
   <TR>
-    <TD> <b>{{ boat.name }}</b> </TD>
+    <TD style='font-size:70%'> <b>{{ boat.name }}</b><br>{{ boat.type.name }}</span> </TD>
      {% for userid, usertag, type in overviewday %}
     	{% if userid %}
       	<TD class='{{ type }}'><i class="fa fa-lock"><br><span class="tinyfont">{{ type }}</span></TD>

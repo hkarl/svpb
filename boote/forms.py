@@ -17,7 +17,7 @@ import locale
 locale.setlocale(locale.LC_TIME, "de_DE.UTF-8")
 
 DATES = []
-d = datetime.now() + timedelta(days=1)
+d = datetime.now()
 DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
 d = d + timedelta(days=1)
 DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
