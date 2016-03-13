@@ -16,21 +16,6 @@ from PIL import Image
 import locale
 locale.setlocale(locale.LC_TIME, "de_DE.UTF-8")
 
-DATES = []
-d = datetime.now()
-DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
-d = d + timedelta(days=1)
-DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
-d = d + timedelta(days=1)
-DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
-d = d + timedelta(days=1)
-DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
-d = d + timedelta(days=1)
-DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
-d = d + timedelta(days=1)
-DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
-d = d + timedelta(days=1)
-DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
 
 TIME = []
 TIME.append(["-","-"])
@@ -89,7 +74,17 @@ for i in range(10,32):
     DAYS.append([str(i),str(i)])
 
     
-class NewReservationForm(forms.Form):    
+class NewReservationForm(forms.Form):
+    # initialize DATES   
+    DATES = []
+    
+    d = datetime.now()
+    #DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])    
+    
+    for i in range(1,7):
+        d = d + timedelta(days=1)
+        DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
+    
     res_date = forms.ChoiceField(label="Datum",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DATES)
     res_start = forms.ChoiceField(label="Von",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=TIME)
     res_duration = forms.ChoiceField(label="Dauer",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DURATION)

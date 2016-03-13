@@ -26,7 +26,7 @@ Falls keine Regatta (<b style='background: #FF5151;'>REG</b>) oder Ausbildung (<
  <thead>
         <tr>
             <th style='width: 12%'>Boot</th>            
-            <th style='width: 12%'>Reservieren</th>
+            
             <th class="date" colspan="2">08:00</th>
             <th class="date" colspan="2">09:00</th>
             <th class="date" colspan="2">10:00</th>
@@ -44,7 +44,7 @@ Falls keine Regatta (<b style='background: #FF5151;'>REG</b>) oder Ausbildung (<
 {% for boat, overviewday in bookings %}
   <TR>
     <TD style="text-align: left;"><span class='tinyfont'>{{ boat.type.name }}</span><br><a href='/boote/boot/{{ boat.pk }}'><i class="fa fa-ship"></i>{{ boat.name }}</a></TD>   
-    <TD style="text-align: center;"><a href='/boote/booking/boot/{{ boat.pk }}'  class="btn btn-primary"> <i class="fa fa-calendar"></i> reservieren </a></TD>
+    
     
     {% for userid, usertag, type in overviewday %}
     	{% if userid %}
