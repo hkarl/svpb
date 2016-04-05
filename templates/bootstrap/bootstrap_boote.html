@@ -19,13 +19,13 @@
         <b class="caret"></b>
     </a>
     <ul class="dropdown-menu">    	
-        <li><a href="/boote/boots_liste/">Alle Boote</a></li>        
-        <li><a href="/boote/boot/edit/">Mein Boot</a></li>
+        <li><a href="/boote/boots_liste/">Alle Boote</a></li>                
          {% for g in  user.groups.all %}
             {% if g.name == "Vorstand" %}
                 <li class="divider"></li>
                 <li class="dropdown-header">Vorstandsfunktionen</li>
-                <li> <a href="/boote/boot_issues/all/">Alle Meldungen</a> </li>
+                <li><a href="/boote/boot/edit/">Mein Boot</a></li>
+                <li><a href="/boote/boot_issues/all/">Alle Meldungen</a></li>
             {% endif %}
         {% endfor %}        
     </ul>

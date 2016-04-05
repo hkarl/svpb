@@ -27,7 +27,7 @@ def booking_overview(request):
     dates = []
     d = datetime.now()
     for i in range(0,7):
-        dates.append([d.strftime("%A"), d.strftime("%Y/%d/%m")])
+        dates.append([d.strftime("%A"), d.strftime("%d. %b")])
         d = d + timedelta(days=1)
 
     context = RequestContext(request, 
