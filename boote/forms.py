@@ -75,17 +75,8 @@ for i in range(10,32):
 
     
 class NewReservationForm(forms.Form):
-    # initialize DATES   
-    DATES = []
     
-    d = datetime.now()
-    #DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])    
-    
-    for i in range(1,7):
-        d = d + timedelta(days=1)
-        DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
-    
-    res_date = forms.ChoiceField(label="Datum",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DATES)
+    res_date = forms.ChoiceField(label="Datum",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=[])
     res_start = forms.ChoiceField(label="Von",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=TIME)
     res_duration = forms.ChoiceField(label="Dauer",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DURATION)
         
@@ -94,13 +85,22 @@ class NewReservationForm(forms.Form):
     accepted_agb = forms.BooleanField(label="Ich akceptiere <a href='/static/boote/AlgemRegelnVereinsboote.pdf' target='_blank'>Allgemeine Regeln zur Nutzung der Vereinsboote</a>.", required=True)
     
     def __init__(self, *args, **kwargs):
+        super(NewReservationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = 'id-reservation-form'
         self.helper.form_class = 'blueForms'
         self.helper.form_method = 'POST'
 
+        # initialize DATES   
+        DATES = []
+        d = datetime.now()
+        for i in range(1,7):
+            d = d + timedelta(days=1)
+            DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
+        self.fields['res_date'] = forms.ChoiceField(label="Datum",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DATES)
+
         self.helper.add_input(Submit('submit', 'Verbindlich reservieren'))
-        super(NewReservationForm, self).__init__(*args, **kwargs)
+        
         
     def clean(self):
         import re
