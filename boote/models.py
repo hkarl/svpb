@@ -37,7 +37,7 @@ class Boat(models.Model):
         d1 = datetime.now()
         d2 = d1 + timedelta(days=7)
         result = [0, 0, 0, 0, 0, 0, 0]
-        for booking in Booking.objects.filter(boat=self, date__lte=d2, date__gte=d1, status=1):
+        for booking in Booking.objects.filter(boat=self, date__lt=d2, date__gte=d1, status=1):
             offset = (booking.date - d1.date()).days
             result[offset] = 1
         return result
