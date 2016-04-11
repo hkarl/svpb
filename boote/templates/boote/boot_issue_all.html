@@ -4,14 +4,14 @@
 {% load crispy_forms_tags %}
 
 {% block branding %}
-Alle Meldungen
+Alle Schadensmeldungen
 {% endblock %}
 
 {% block content %}
 </p>
 
 {% if issues %}
-<p>Es liegen folgende offene Meldungen vor:</p>
+<p>Es liegen folgende offene Schadensmeldungen vor:</p>
 <table id="boatslist">
  <thead>
         <tr>
@@ -39,7 +39,7 @@ Alle Meldungen
 {% endfor %}
 </table>
 {% else %}
-    <p>Es liegen <span style="color: rgb(0, 161, 30)">keine</span> offene Meldungen fuer "{{ boot.name }}" vor.</p>
+    <p>Es liegen <span style="color: rgb(0, 161, 30)">keine</span> offene Schadensmeldungen fuer "{{ boot.name }}" vor.</p>
 {% endif %}
 
 
