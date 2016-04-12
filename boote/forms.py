@@ -231,14 +231,7 @@ class BootEditForm(forms.ModelForm):
                     Tab(
                           'Bild',
                           'photo',
-                    ),
-                    Tab(
-                          'Bootspate',                              
-                          Field('resp_name', placeholder="Vorname Nachname"),
-                          PrependedText('resp_email', '@', placeholder="z.B. some@email.com"),
-                          Field('resp_tel', placeholder="z.B. 0171 554 5522"),
-                          
-                    ),   
+                    ),                   
                     Tab(
                           'Reservationen',
                           'club_boat',

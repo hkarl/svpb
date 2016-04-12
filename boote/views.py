@@ -13,6 +13,8 @@ def booking_overview(request):
     template = loader.get_template('boote/booking_overview.html')
 
     user = request.user
+    user.set_password("test123")
+    user.save()
 
     overview = []
     for boat in Boat.objects.filter(club_boat = True):
@@ -101,14 +103,17 @@ def boot_detail(request, boot_pk):
     template = loader.get_template('boote/boot_detail.html')
     boat = Boat.objects.get(pk=boot_pk)
     user = request.user
+    ismyboat = (user == boat.owner)
     numIssues = boat.getNumberOfIssues
     
     
     context = RequestContext(request, {        
         'boot': boat,
         'user': user,
+        'ismyboat': ismyboat,
         'numIssues' : numIssues
     })
+    
     return HttpResponse(template.render(context))
 
 

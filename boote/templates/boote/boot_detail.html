@@ -29,8 +29,8 @@ Boot
   <dt>Breite üA</dt><dd>{{ boot.type.beam }}</dd>
   <dt>Tiefgang</dt><dd>{{ boot.type.draught }}</dd>
   <dt>Beschreibung</dt><dd>{{ boot.remarks }}</dd>
-  <dt>Bootspate</dt><dd>{{ boot.resp_name }} (<a href="mailto:{{ boot.resp_email }}">{{ boot.resp_email }}</a>, Tel. {{ boot.resp_tel }})</dd>  
   <dt>Hinweise</dt><dd>{{ boot.booking_remarks }}</dd>  
+  <dt>Bootspate</dt><dd>{{ boot.owner.first_name }} {{ boot.owner.last_name }} (<a href="mailto:{{ boot.owner.email }}">{{ boot.owner.email }}</a>)</dd>  
  </dl>
 </div>
 
@@ -51,6 +51,13 @@ Hast Du kleinere Probleme an Boot entdeckt, bitte melde es hier - der Bootspate 
 	<a href="/boote/boot_issues/{{ boot.pk }}/" class="btn btn-primary">Meldungen</a>  
 </p>
 {% endif %}    
+
+{% if ismyboat %}
+<p>
+Du kannst auch alle Informationen aktualisieren</br>  
+<a href="/boote/boot/edit/{{ boot.pk }}/" class="btn btn-primary">Bootseditor</a>
+</p>
+{% endif %}
 
 
 <p style="font-size: 80%">* Falls Informationen über Vereinsboot "{{ boot.name }}" auf diese Seite nicht aktuell sind, gib es an <b>{{ boot.owner.first_name }} {{ boot.owner.last_name }}</b> bescheid. Er kann es für uns alle korrigieren.</p>
