@@ -248,10 +248,6 @@ class BootEditForm(forms.ModelForm):
         self.fields['photo'].required = False
         self.fields['photo'].label = "Bild (Format: JPG)"
          
-        self.fields['resp_name'].label = "Bootspate"
-        self.fields['resp_email'].label = "Email"
-        self.fields['resp_tel'].label = "Telefonnummer"
-        
 
     def clean(self):
         cleaned_data = super(BootEditForm, self).clean()

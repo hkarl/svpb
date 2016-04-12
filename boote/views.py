@@ -330,15 +330,11 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
                                             
                 boat.type = form.cleaned_data['type']
                 boat.name = form.cleaned_data['name']
-                boat.resp_name = form.cleaned_data['resp_name']
-                boat.resp_email = form.cleaned_data['resp_email']
-                boat.resp_tel = form.cleaned_data['resp_tel']
                 boat.remarks = form.cleaned_data['remarks']
                 boat.club_boat = form.cleaned_data['club_boat']
                 boat.booking_remarks = form.cleaned_data['booking_remarks']
                 if form.cleaned_data['photo'] is not None:
                     boat.photo = form.cleaned_data['photo']
-                
                 
                 # persist in DB
                 boat.save()
