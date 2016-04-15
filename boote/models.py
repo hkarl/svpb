@@ -46,7 +46,7 @@ class Boat(models.Model):
             usertag = booking.user.first_name + " " + booking.user.last_name              
             startIdx = (booking.time_from.hour-8)*2+(booking.time_from.minute/30)
             endIdx = (booking.time_to.hour-8)*2+(booking.time_to.minute/30)
-            for i in range(startIdx, endIdx):
+            for i in range(max(0,startIdx), min(22,endIdx)):
                 res[i] = [uid, usertag, booking.type]
         return res
     
