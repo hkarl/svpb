@@ -59,7 +59,7 @@ class Boat(models.Model):
             uid = booking.user.username 
             startIdx = (booking.time_from.hour-8)*2+(booking.time_from.minute/30)
             endIdx = (booking.time_to.hour-8)*2+(booking.time_to.minute/30)
-            for i in range(startIdx, endIdx):
+            for i in range(max(0,startIdx), min(22,endIdx)):
                 res[offset][i] = [uid, booking.type]
         return res
     
