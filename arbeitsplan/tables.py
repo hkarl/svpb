@@ -95,6 +95,32 @@ class KontaktColumn(django_tables2.columns.Column):
             ))
 
 
+
+class DeleteIconColumn(django_tables2.columns.Column):
+    """Show a delete icon for a particular entry
+    """
+
+    urlBase = "/"
+
+    def __init__(self, *args, **kwargs):
+        if "urlBase" in kwargs:
+            self.urlBase = kwargs.pop("urlBase")
+
+        print "kwargs: ", kwargs
+        super(DeleteIconColumn, self).__init__(*args, **kwargs)
+
+
+    def render(self, value):
+        # print value, type(value)
+        return mark_safe(u'<a href="{}/{}">'
+                         u'<span class="glyphicon glyphicon-trash">'
+                         u'</a>'.format(self.urlBase,
+                                        (value)),
+                         )
+
+
+
+
 class ValuedCheckBoxColumn(django_tables2.columns.Column):
     """A checkbox column where a pair of values is expected:
     name and whether the box is checked or not.
@@ -604,11 +630,19 @@ class ZuteilungTableVorstand(django_tables2.Table):
     ausfuehrer = KontaktColumn(accessor="ausfuehrer",
                                verbose_name="Ausführer")
 
+
+    deleteColumn = DeleteIconColumn(
+        urlBase ='/arbeitsplan/zuteilungDelete',
+        accessor="id",
+        verbose_name="Löschen")
+
     class Meta:
         model = models.Zuteilung
         attrs = {"class": "paleblue"}
 
-        fields = ("aufgabe", 'verantwortlicher', 'datum', 'ausfuehrer')
+        fields = ("aufgabe", 'verantwortlicher',
+                  'datum', 'ausfuehrer',
+                  'deleteColumn')
 
 ##############################
 

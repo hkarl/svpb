@@ -1360,6 +1360,30 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
         return redirect(self.request.get_full_path())
 
+
+class ZuteilungLoeschenView(isVorstandMixin, DeleteView):
+    # TODO: Merge this with AufgabeLoeschen
+    model = models.Zuteilung
+    success_url = "/arbeitsplan/zuteilungAnzeige/all/"
+    template_name = "zuteilung_confirm_delete.html"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            r = super(ZuteilungLoeschenView, self).get(request, *args, **kwargs)
+            return r
+        except Exception as e:
+            # print e
+            messages.error(self.request,
+                           'Die Zuteilung konnte nicht gelöscht werden')
+
+            return redirect('/arbeitsplan/zuteilungAnzeige/all/')
+        
+    def get_success_url(self):
+        messages.success(self.request,
+                 "Die Zuteilung wurde erfolgreich gelöscht.")
+
+        return super(ZuteilungLoeschenView, self).get_success_url()
+
 class ZuteilungUebersichtView(isVorstandMixin, FilteredListView):
     title = "Übersicht der Aufgaben und Zuteilungen"
     tableClassFactory = staticmethod(StundenplanTableFactory)

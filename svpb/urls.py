@@ -117,6 +117,11 @@ urlpatterns = patterns('',
          name="arbeitsplan-zuteilungUebersicht",
          ),
 
+    url (r'^arbeitsplan/zuteilungDelete/(?P<pk>\d+)/$',
+         active_and_login_required(arbeitsplan.views.ZuteilungLoeschenView.as_view()),
+         name="arbeitsplan-zuteilungDelete",
+         ),
+
     url (r'^arbeitsplan/stundenplaene/(?P<aufgabeid>\d+)/$',
          active_and_login_required(arbeitsplan.views.StundenplaeneEdit.as_view()),
          name="arbeitsplan-stundenplaeneEdit",
