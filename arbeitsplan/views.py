@@ -1757,7 +1757,7 @@ class ListLeistungView (FilteredListView):
         # TODO: enable arbitrary user to be shown, if called by vorstand
         qsLeistungen = self.model.objects.filter(melder=self.request.user)
 
-        res = []
+        res = [(-1, 'Arbeitssoll', -1, self.request.user.mitglied.arbeitslast,)]
         for s in models.Leistung.STATUS:
             qs = models.Leistung.objects.filter(status=s[0],
                                                 melder=self.request.user,
