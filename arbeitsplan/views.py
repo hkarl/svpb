@@ -1230,8 +1230,11 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                                             m.aufgabe.aufgabe).encode('ASCII', 'ignore')
                 tmp[tag] = (0,
                             'box_'+  str(u.id)+"_"+str(m.aufgabe.id),
-                            ' ({0} / {1})'.format(m.prefMitglied,
-                                                  m.prefVorstand)
+                            (' ({0} / {1})'.format(m.prefMitglied,
+                                                  m.prefVorstand) +
+                             (("<br><small>" + m.bemerkung + "</small>") if m.bemerkung else "")
+                             ),
+
                             )
                 statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
 
@@ -1249,8 +1252,9 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                     )
                 tmp[tag] = (1,
                             'box_'+ str(u.id)+"_"+str(z.aufgabe.id),
-                            ' ({0} / {1})'.format(meldung.prefMitglied,
-                                                  meldung.prefVorstand)
+                            (' ({0} / {1})'.format(meldung.prefMitglied,
+                                                  meldung.prefVorstand)  +
+                             ((" <br><small>" + meldung.bemerkung + "</small>") if meldung.bemerkung else ""))
                             )
                 statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
 
