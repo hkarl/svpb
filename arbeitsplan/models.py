@@ -547,7 +547,7 @@ class Leistung (models.Model):
                              ) 
     zeit = models.DecimalField (max_digits=3,
                                 decimal_places = 1,
-                                help_text="Wieviel Zeit (in Stunden) haben Sie gearbeitet? Eingabe von Zentelstunden möglich. Je nach fBrowsereinstellung mit . oder , die Nachkommastelle abtrennen: 1.4 oder 1,4 für 1 Stunde 24 Minuten. ", 
+                                help_text="Wieviel Zeit (in Stunden) haben Sie gearbeitet? Eingabe von Zentelstunden möglich. Je nach Browsereinstellung mit . oder , die Nachkommastelle abtrennen: 1.4 oder 1,4 für 1 Stunde 24 Minuten. ",
                                 )
     ## auslagen = models.DecimalField (max_digits=6,
     ##                                 decimal_places = 2,
