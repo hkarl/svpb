@@ -71,3 +71,6 @@ attic
 ansible
 testdata
 backup_svpb.sq
+.idea
+leistungen.csv
+leistungen.cvs
