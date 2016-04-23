@@ -1208,8 +1208,11 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                                             m.aufgabe.aufgabe).encode('ASCII', 'ignore')
                 tmp[tag] = (0,
                             'box_'+  str(u.id)+"_"+str(m.aufgabe.id),
-                            ' ({0} / {1})'.format(m.prefMitglied,
-                                                  m.prefVorstand)
+                            (' ({0} / {1})'.format(m.prefMitglied,
+                                                  m.prefVorstand) +
+                             (("<br><small>" + m.bemerkung + "</small>") if m.bemerkung else "")
+                             ),
+
                             )
                 statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
 
@@ -1227,8 +1230,9 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                     )
                 tmp[tag] = (1,
                             'box_'+ str(u.id)+"_"+str(z.aufgabe.id),
-                            ' ({0} / {1})'.format(meldung.prefMitglied,
-                                                  meldung.prefVorstand)
+                            (' ({0} / {1})'.format(meldung.prefMitglied,
+                                                  meldung.prefVorstand)  +
+                             ((" <br><small>" + meldung.bemerkung + "</small>") if meldung.bemerkung else ""))
                             )
                 statuslist[str(u.id)+"_"+str(z.aufgabe.id)]='1'
 
@@ -1337,6 +1341,30 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
         # TODO: emails senden?
 
         return redirect(self.request.get_full_path())
+
+
+class ZuteilungLoeschenView(isVorstandMixin, DeleteView):
+    # TODO: Merge this with AufgabeLoeschen
+    model = models.Zuteilung
+    success_url = "/arbeitsplan/zuteilungAnzeige/all/"
+    template_name = "zuteilung_confirm_delete.html"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            r = super(ZuteilungLoeschenView, self).get(request, *args, **kwargs)
+            return r
+        except Exception as e:
+            # print e
+            messages.error(self.request,
+                           'Die Zuteilung konnte nicht gelöscht werden')
+
+            return redirect('/arbeitsplan/zuteilungAnzeige/all/')
+        
+    def get_success_url(self):
+        messages.success(self.request,
+                 "Die Zuteilung wurde erfolgreich gelöscht.")
+
+        return super(ZuteilungLoeschenView, self).get_success_url()
 
 class ZuteilungUebersichtView(isVorstandMixin, FilteredListView):
     title = "Übersicht der Aufgaben und Zuteilungen"
@@ -1711,7 +1739,7 @@ class ListLeistungView (FilteredListView):
         # TODO: enable arbitrary user to be shown, if called by vorstand
         qsLeistungen = self.model.objects.filter(melder=self.request.user)
 
-        res = []
+        res = [(-1, 'Arbeitssoll', -1, self.request.user.mitglied.arbeitslast,)]
         for s in models.Leistung.STATUS:
             qs = models.Leistung.objects.filter(status=s[0],
                                                 melder=self.request.user,
@@ -2320,6 +2348,7 @@ class ZuteilungEmailView(isVorstandMixin, FilteredEmailCreateView):
 
         d = {'first_name': instance.user.first_name,
              'last_name': instance.user.last_name,
+             'u': instance.user,
              'zuteilungen': models.Zuteilung.objects.filter(ausfuehrer=instance.user)
             }
 

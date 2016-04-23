@@ -29,7 +29,7 @@ urlpatterns = patterns('',
 
     url (r'^benachrichtigen/zuteilung/$',
          active_and_login_required(arbeitsplan.views.ZuteilungEmailView.as_view()),
-         name="arbeitsplan-benachrichtigen-leistung",
+         name="arbeitsplan-benachrichtigen-zuteilung",
          ),
 
     url (r'^benachrichtigen/senden/$',
@@ -90,6 +90,11 @@ urlpatterns = patterns('',
     url (r'^zuteilungUebersicht/$',
          active_and_login_required(arbeitsplan.views.ZuteilungUebersichtView.as_view()),
          name="arbeitsplan-zuteilungUebersicht",
+         ),
+
+    url (r'^zuteilungDelete/(?P<pk>\d+)/$',
+         active_and_login_required(arbeitsplan.views.ZuteilungLoeschenView.as_view()),
+         name="arbeitsplan-zuteilungDelete",
          ),
 
     url (r'^stundenplaene/(?P<aufgabeid>\d+)/$',

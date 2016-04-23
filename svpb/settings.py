@@ -11,6 +11,7 @@ LOGIN_URL = "/login/"
 OFFLINE = False
 JAHRESENDE = False
 
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -137,7 +138,6 @@ ROOT_URLCONF = 'svpb.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'svpb.wsgi.application'
-
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".

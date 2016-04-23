@@ -64,6 +64,7 @@ static
 notes
 backup
 svpb.sq
+emailSettings.py
 loginSVPB.html
 svpb-notes.org
 attic
@@ -71,3 +72,6 @@ ansible
 testdata
 backup_svpb.sq
 years
+.idea
+leistungen.csv
+leistungen.cvs
