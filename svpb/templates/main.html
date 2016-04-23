@@ -35,21 +35,23 @@ Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}
         </a>
         </div>
 
+        {% for g in  user.groups.all %}
+        {% if g.name == "Boote" %}
+        
         <div class="col-md-6">
         <a href="/boote/">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="panel-titel">
-                        Boote und Mitsegeln
+                        Boote
                     </div>
                 </div>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-6">
                             <p>
-                                <b>BALD VERFÜGBAR:
-                                    Vereinsboote nutzen,
-                                    bei Vereinsmitgliedern mitsegln, ...
+                                <b>Vereinsboote reservieren und nutzen,
+                                    Schaden melden, ...
                                 </b>
                             </p>
                         </div>
@@ -61,6 +63,10 @@ Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}
             </div>
         </a>
         </div>
+        
+        {% endif %}
+        {% endfor %}
+        
 
         {% for g in  user.groups.all %}
         {% if g.name == "Vorstand" %}

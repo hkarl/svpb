@@ -13,7 +13,7 @@ Reservationen
 
 {% if mybookings %}
 <p>
-Hier Deine aktuellen Reservierungen (beachte <a href='/static/media/SVPB-bedinungen-boote.pdf' target='_blank'>Bedingungen fuer Vereinsboote</a>):
+Hier Deine aktuellen Reservierungen (beachte <a href='/static/boote/AlgemRegelnVereinsboote.pdf' target='_blank'>Allgemeine Regeln zur Nutzung der Vereinsboote</a>):
 </p>
 
 <table id="boatslist">
@@ -40,43 +40,6 @@ Hier Deine aktuellen Reservierungen (beachte <a href='/static/media/SVPB-bedinun
 </table>
 {% else %}
     Du hast aktuell keine Reservierungen. <br> <a href="/boote/booking/overview/">Such Dir Boot und Termin aus.</a>
-{% endif %}
-
-
-
-
-<h2>Vergangene Reservierungen</h2>
-{% if oldbookings %}
-<p>
-Hier Deine <b>vergangenen</b> Reservierungen:
-</p>
-<table id="boatslist">
- <thead >
-        <tr >
-        	<th style="background-color: #5F7384;">Boot</th>
-        	<th style="background-color: #5F7384;">Datum</th>
-            <th style="background-color: #5F7384;">Zeitraum</th>                      
-            <th style="background-color: #5F7384;">Status</th>
-            
-        </tr>
-    </thead>
-{% for status, weekday, date, time_from, time_to, boat, reservationid in oldbookings %}
-  <tr  style="color: #aaaaaa">
-  	<td style='text-align:left;'>{{ boat.name }} ({{ boat.type.name }})</td> 
-  	<td>{{ weekday }}, {{ date }}</td> 
-  	<td>von {{ time_from }} bis {{ time_to }}</td>
-  	<td>
-  	{% if status = 0 %}
-  		Storniert
-  	{% else %}
-  		Alt	
-  	{% endif %}
-  	</td>
-  </tr>
-{% endfor %}
-</table>
-{% else %}
-    Du hast bisher noch keine Reservierungen getätigt.
 {% endif %}
 
 

@@ -25,6 +25,7 @@ future==0.14.3
 httplib2==0.9.1
 Jinja2==2.7.3
 jsonfield==1.0.0
+Pillow==2.3.0
 pwgen==0.4
 python-dateutil==2.3
 pytz==2014.10

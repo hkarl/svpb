@@ -1,0 +1,196 @@
+<head>
+
+<title>Vereinsboote</title>
+
+<style>
+
+#boatslist {  
+  border-collapse: collapse;
+  border: 1px solid #38678f;  
+  background: white;
+  width: 100%;
+  height: 95%;
+  
+}
+#boatslist th {
+  background: steelblue;  
+  padding: 2px;  
+  text-shadow: 0 1px 0 #38678f;
+  color: white;
+  border: 1px solid black;
+  box-shadow: inset 0px 1px 2px #568ebd;
+  transition: all 0.2s;
+}
+
+#boatslist th.date:nth-of-type(2n) {
+	background: #33678f;
+}
+
+#boatslist th.date{
+  background: #537E8C; 
+  text-align: left;   
+}
+
+#boatslist tr {
+  border-bottom: 1px solid #ddd;
+}
+#boatslist tr:last-child {
+  border-bottom: 0px;
+}
+#boatslist td {  
+  padding: 1px;
+  transition: all 0.2s;
+  text-align: center;
+  width: 4%;
+  height: 30px;
+  border-right: 1px solid black;
+}
+
+#boatslist td:nth-of-type(2n) {
+	border-right: 1px solid #ccc;
+}
+	
+
+#boatslist td:first-child {
+  width: 12%;  
+}
+
+#boatslist td:last-child {
+  border-right: 0px;  
+}
+#boatslist td.selected {
+  background: #d7e4ef;  
+}
+
+#boatslist td.booked0 {
+  background: #5CB85C;  
+}
+
+#boatslist td.booked1 {
+  background: #F0AD4E; 
+}
+
+
+#boatslist td {
+  height: 30px;
+  width: 50px;
+  font-size: 60%;
+}
+
+#boatslist td.PRV {
+  background: #E4FF2E;  
+}
+
+#boatslist td.REG {
+  background: #FF5151;  
+}
+
+#boatslist td.AUS {
+  background: #54f3ff;  
+}
+
+span.tinyfont {
+ font-size: 90%;
+}
+
+
+
+
+#boatslist td input {  
+  background: none;
+  outline: none;
+  border: 0;
+  display: table-cell;
+  height: 100%;
+}
+
+#boatslist td input:focus {
+  box-shadow: 0 1px 0 steelblue;
+  color: steelblue;
+}
+::-moz-selection {
+  background: steelblue;
+  color: white;
+}
+::selection {
+  background: steelblue;
+  color: white;
+}
+#boatslist .heavyTable {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: float 5s infinite;
+}
+
+body,table {
+}
+
+</style>
+
+<SCRIPT language=JavaScript1.2>
+var speed=1
+
+var currentpos=0,alt=1,curpos1=0,curpos2=-1,oldpos=0
+
+function initialize(){
+	startit()
+}
+
+function scrollwindow(){
+		oldpos = document.body.scrollTop				
+		currentpos=oldpos+speed		
+		window.scroll(0,currentpos)
+		if (document.body.scrollTop==oldpos)
+			speed=-speed		
+}
+
+function startit(){
+	setInterval("scrollwindow()",200)
+}
+
+window.onload=initialize
+
+</SCRIPT>
+
+
+<link rel="stylesheet" href="/static/font-awesome/css/font-awesome.min.css">
+</head>
+<body>
+
+
+
+
+<TABLE id='boatslist'>
+ <thead>
+        <tr>
+            <th>Boot</th>
+            <th class="date" colspan="2">08:00</th>
+            <th class="date" colspan="2">09:00</th>
+            <th class="date" colspan="2">10:00</th>
+            <th class="date" colspan="2">11:00</th>
+            <th class="date" colspan="2">12:00</th>
+            <th class="date" colspan="2">13:00</th>
+            <th class="date" colspan="2">14:00</th>
+            <th class="date" colspan="2">15:00</th>
+            <th class="date" colspan="2">16:00</th>
+            <th class="date" colspan="2">17:00</th>
+            <th class="date" colspan="2">18:00</th>
+         </tr>
+ </thead>
+
+{% for boat, overviewday in bookings %}
+  <TR>
+    <TD style='font-size:70%'> <b>{{ boat.name }}</b><br>{{ boat.type.name }}</span> </TD>
+     {% for userid, usertag, type in overviewday %}
+    	{% if userid %}
+      	<TD class='{{ type }}'><i class="fa fa-lock"><br><span class="tinyfont">{{ type }}</span></TD>
+      	{% else %}
+      	<TD class='booked0'>&nbsp</TD>
+      	{% endif %}
+    {% endfor %}
+  </TR>
+{% endfor %}
+</TABLE>
+Stand: {{ date }}
+
+
+</body>

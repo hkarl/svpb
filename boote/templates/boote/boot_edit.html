@@ -14,34 +14,36 @@ Meine Boote
 <div class="modalbox">
 <h2>Boot Editieren</h2>
 
-	<form method="POST">
+	
 	{% crispy form_boot_edit %}
-	</form>
+	
 
+<a href="/boote/boot/edit/" class="btn btn-secondary">Cancel</a> 
 </div>
 </div>
 {% endif %}
 
 {% if my_boats %}
-<h2>Bootsliste</h2>
-<table id="boatslist">
+<p>
+Du kanst hier deine Boote verwalten oder neue Boote anlegen.  
+</p>
+
+<table id="boatslist" style='width: 80%;'>
    <thead>
         <tr>
-            <th style="width: 100px">&nbsp;</th>
-            <th style="width: 100px">Boot Type</th>
-            <th style="width: 100px">Name</th>
-            <th style="width: 100px">Vereinsboot</th>
-            <th style="width: 100px">Aktionen</th>
+            <th style="width: 15px">Vereinsboot</th>
+            <th>Name</th>            
+            <th>Bootspate</th>
+            <th>Aktionen</th>
         </tr>
     </thead>
 
 {% for boat in my_boats %}
   <tr>
-  	<td style="text-align: left;"><img src="/static/boote/boat_types/boat_type_{{  boat.type.pk }}.png" style="width: 50px;" class="img-responsive"></td>  	
-  	<td style="text-align: left;">{{ boat.type.name }} </td>
-  	<td style="text-align: left;">{{ boat.name }}</TD>
-  	<td style="text-align: left;">{% if boat.club_boat %}<img src="/static/boote/svpb.png" style="width: 50px;" class="img-responsive">{% endif %}</td>
-  	<td><a href="/boote/boot/edit/{{ boat.pk }}/" class="btn btn-primary">Edit</a> <a href="/boote/boot/{{ boat.pk }}/" class="btn btn-primary">Anzeigen</a></td>
+  	<td style="text-align: center;">{% if boat.club_boat %}<img src="/static/boote/svpb.png" style="width: 50px;" class="img-responsive">{% endif %}</td>
+  	<td style="text-align: left;"><a href="/boote/boot/{{ boat.pk }}/" target="_blank"> <i class="fa fa-ship"></i> {{ boat.name }}</a> ({{ boat.type.name }})</TD>
+  	<td style="text-align: left;">{{ user.first_name }} {{ user.last_name }}</td>  		
+  	<td><a href="/boote/boot/edit/{{ boat.pk }}/" class="btn btn-primary">Edit</a></td>
   </tr>
 {% endfor %}
 </table>
@@ -49,7 +51,7 @@ Meine Boote
     <p>Du hast noch keine Boote.</p>
 {% endif %}
 <p>
-<a href="/boote/boot/edit/new/" class="btn btn-primary">Neue Boot</a>
+<a href="/boote/boot/edit/new/" class="btn btn-primary">Neues Boot definieren</a>
 </p>
 
 
