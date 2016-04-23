@@ -19,16 +19,19 @@
         <b class="caret"></b>
     </a>
     <ul class="dropdown-menu">    	
-        <li><a href="/boote/boots_liste/">Alle Boote</a></li>        
-        <li><a href="/boote/boot/edit/">Mein Boot</a></li>
-        {% for g in  user.groups.all %}
+        <li><a href="/boote/boots_liste/">Alle Boote</a></li>                
+         {% for g in  user.groups.all %}
             {% if g.name == "Vorstand" %}
                 <li class="divider"></li>
                 <li class="dropdown-header">Vorstandsfunktionen</li>
-                <li> <a href="/boote/YYY/"> BootVorstand </a> </li>
+                <li><a href="/boote/boot/edit/">Mein Boot</a></li>
+                <li><a href="/boote/boot_issues/all/">Alle Meldungen</a></li>
             {% endif %}
-        {% endfor %}
+        {% endfor %}        
     </ul>
+    
+    
+    
 </li>
 
 
@@ -38,33 +41,15 @@
         Reservieren
         <b class="caret"></b>
     </a>
-    <ul class="dropdown-menu">
-        <li><a href="/boote/booking/overview/">Verfügbare Termine</a></li>
+    <ul class="dropdown-menu">        
+        <li><a href="/boote/booking/overview/">Termin Reservieren</a></li>        
         <li><a href="/boote/booking/my_bookings/">Meine Reservationen</a></li>
         {% for g in  user.groups.all %}
             {% if g.name == "Vorstand" %}
                 <li class="divider"></li>
                 <li class="dropdown-header">Vorstandsfunktionen</li>
-                <li> <a href="/boote/YYY/"> BootVorstand </a> </li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-</li>
-
-<!-- MITSEGELN -->
-<li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown"  style="color: #cccccc">
-        Mitsegeln
-        <b class="caret"></b>
-    </a>
-    <ul class="dropdown-menu">
-        <li><a href="/boote/XXX/" style="color: #cccccc">Aktuele Anfragen</a></li>
-        <li><a href="/boote/XXX/" style="color: #cccccc">Neue Anfrage</a></li>
-        {% for g in  user.groups.all %}
-            {% if g.name == "Vorstand" %}
-                <li class="divider"></li>
-                <li class="dropdown-header">Vorstandsfunktionen</li>
-                <li> <a href="/boote/YYY/"> BootVorstand </a> </li>
+                <li> <a href="/boote/booking/priority/">Regata/Ausbildung</a> </li>
+                <li> <a href="/boote/booking/all/">All Reservationen</a> </li>
             {% endif %}
         {% endfor %}
     </ul>

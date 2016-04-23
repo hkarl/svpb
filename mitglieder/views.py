@@ -18,7 +18,7 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect, get_object_or_404
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from post_office import mail
 from post_office.models import EmailTemplate
@@ -35,7 +35,8 @@ from mitglieder.forms import (ActivateForm,
                               MitgliederAddForm,
                               AccountEdit,
                               AccountOtherEdit,
-                              PersonMitgliedsnummer)
+                              PersonMitgliedsnummer,
+                              )
 from arbeitsplan.models import Mitglied
 from svpb.forms import MitgliederInactiveResetForm
 from svpb.settings import SENDFILE_ROOT
@@ -327,13 +328,15 @@ class AccountOtherEdit(isVorstandMixin, AccountEdit):
         context['title'] = "Bearbeiten Sie das  SVPB-Konto eines Mitgliedes"
         return context
 
-    def fillinUser(self, user):
+    def fillinUser(self, user):      
+        
         initial = super(AccountOtherEdit, self).fillinUser(user)
         initial['vorname'] = user.first_name
         initial['nachname'] = user.last_name
         initial['arbeitslast'] = user.mitglied.arbeitslast
         initial['status'] = user.mitglied.status
         initial['aktiv'] = user.is_active
+        initial['boots_app'] = user.groups.filter(name='Boote').exists()
 
         return initial
 
@@ -344,6 +347,14 @@ class AccountOtherEdit(isVorstandMixin, AccountEdit):
         user.is_active = form.cleaned_data['aktiv']
         user.mitglied.arbeitslast = form.cleaned_data['arbeitslast']
         user.mitglied.status = form.cleaned_data['status']
+
+        # assign BOOTE group
+        group_boots = Group.objects.get(name="Boote")
+        if (form.cleaned_data['boots_app']):            
+            user.groups.add(group_boots)
+        else:
+            user.groups.remove(group_boots)
+        
 
     def get_user(self):
         userid = self.kwargs['id']
@@ -384,7 +395,7 @@ class AccountList(SuccessMessageMixin, isVorstandMixin, FilteredListView):
     Eine Übersicht über gemeldete, zugeteilte, erbrachte und akzeptieren
     Arbeitsstunden findet sich separat in der <a href="/arbeitsplan/salden/">Saldenübersicht</a>.
     """)
-
+    
 
 class AccountInactiveReset(FormView):
     """Für allen nicht-aktiven Accounts neue Passwörter erzeugen und PDF anlegen.

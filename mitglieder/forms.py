@@ -6,7 +6,7 @@
 
 # generic imports from django:
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
 
 from crispy_forms.helper import FormHelper
@@ -207,6 +207,11 @@ class AccountOtherEdit(AccountEdit):
                                help_text="Setzen Sie den Nutzer auf inaktiv, "
                                "um ein neues Passwort verschicken zu können."
                                )
+    
+    boots_app = forms.BooleanField(required=False,
+                               label="Zugriff zum Boots App",
+                               help_text=""
+                               )
 
     def computeLayout(self):
         l = super(AccountOtherEdit, self).computeLayout()
@@ -215,9 +220,11 @@ class AccountOtherEdit(AccountEdit):
                        'nachname',
                        HTML("<p>"),
                        l,
-                       'arbeitslast',
+                       
                        'status',
-                       'aktiv')
+                       'aktiv',
+                       'arbeitslast',
+                       'boots_app')
 
 
 class PersonMitgliedsnummer(NameFilterForm,
@@ -260,3 +267,7 @@ class PasswordChange(forms.Form):
                             )
         else:
             return self.cleaned_data
+        
+     
+        
+  

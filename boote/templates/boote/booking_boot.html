@@ -27,9 +27,9 @@ function showbooking() {
 		box.style.display = "none";		
 	}
 	
-	var width = 48*dur_idx;	
-	var left = 48*(time_idx-23) + width - 1;
-	var top = date_idx*50.0-350;
+	var width = 48*(dur_idx+1);	
+	var left = 48*(time_idx-23) + width - 2;
+	var top = date_idx*50.0-300;
 	
     box.style.top = top+"px";
     box.style.left = left+"px";
@@ -43,7 +43,7 @@ function showbooking() {
 
 
 <p>
-Mochtest Du <b>"{{ boot.name }}"</b> verbindlich reservieren?
+Möchtest du <b>"{{ boot.name }}"</b> verbindlich reservieren?
 </p>
 
 <p style='border: 1px solid rgb(159, 159, 230); padding: 5px; background-color: rgb(199, 199, 255)'><b>Wichtige Hinweise</b>: {{ boot.booking_remarks }}</p>
@@ -62,7 +62,7 @@ Mochtest Du <b>"{{ boot.name }}"</b> verbindlich reservieren?
 
 
 <p>
-Verfügbarkeit von Vereinsboot "{{ boot.name }}" in den kommenden 7 Tagen.
+Verfügbarkeit des Vereinsboots "{{ boot.name }}" in den kommenden 7 Tagen.
 </p>
 
 <TABLE id='boatslist'>
@@ -85,17 +85,19 @@ Verfügbarkeit von Vereinsboot "{{ boot.name }}" in den kommenden 7 Tagen.
 
 {% for weekday, date, overviewday in booking_overview %}
   <TR>
-    <TD style="font-size: 80%"> <b>{{ weekday }}</b> <br>{{ date }}</TD>
-    {% for userid in overviewday %}
-    	{% if userid = 0 %}
-      	<TD class='booked0'>frei</TD>
+    <TD style="font-size: 80%"> <b>{{ weekday }}</b> <br>({{ date }})</TD>
+   {% for userid, type in overviewday %}
+    	{% if userid %}
+      	<TD class='{{ type }}'><i class="fa fa-lock" alt="{{ userid }}"><br><span class="tinyfont">{{ type }}</span></TD>
       	{% else %}
-      	<TD class='booked1'><i class="fa fa-lock" alt="{{ userid }}"></i></TD>
+      	<TD class='booked0'>&nbsp</TD>
       	{% endif %}
     {% endfor %}
   </TR>
 {% endfor %}
 </TABLE>
+
 <div id="newbooking">&nbsp</div>
+
 
 {% endblock %}

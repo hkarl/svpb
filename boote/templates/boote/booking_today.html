@@ -1,0 +1,47 @@
+{% extends "bootstrap/bootstrap_boote.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Verfügbarkeit - Heute
+{% endblock %}
+ 
+{% block content %}
+<TABLE id='boatslist'>
+ <thead>
+        <tr>
+            <th>Boat</th>
+            <th>Reservieren</th>
+            <th class="date" colspan="2">08:00</th>
+            <th class="date" colspan="2">09:00</th>
+            <th class="date" colspan="2">10:00</th>
+            <th class="date" colspan="2">11:00</th>
+            <th class="date" colspan="2">12:00</th>
+            <th class="date" colspan="2">13:00</th>
+            <th class="date" colspan="2">14:00</th>
+            <th class="date" colspan="2">15:00</th>
+            <th class="date" colspan="2">16:00</th>
+            <th class="date" colspan="2">17:00</th>
+            <th class="date" colspan="2">18:00</th>
+         </tr>
+ </thead>
+
+{% for boat, overviewday in bookings %}
+  <TR>
+    <TD> <b>{{ boat.name }}</b> ({{ boat.type.name }})</TD>
+    <TD style="text-align: center;"><a href='/boote/booking/boot/{{ boat.pk }}'  class="btn btn-primary"> <i class="fa fa-calendar"></i> RESERVIEREN </a></TD>
+    {% for userid, type in overviewday %}
+    	{% if userid %}
+      	<TD class='{{ type }}'><i class="fa fa-lock" alt="{{ userid }}"><br><span class="tinyfont">{{ type }}</span></TD>
+      	{% else %}
+      	<TD class='booked0'>&nbsp</TD>
+      	{% endif %}
+    {% endfor %}
+  </TR>
+{% endfor %}
+</TABLE>
+
+<span style='tinyfont'>Stand: {{ date }}</span>
+
+{% endblock %}

@@ -21,11 +21,13 @@ class MitgliederTable(django_tables2.Table):
         orderable=False,
         empty_values=(),
         )
+     
 
     class Meta:
         model = User
 
         attrs = {"class": "paleblue"}
+        
         fields = ('first_name',
                   'last_name',
                   'mitgliedsnummer',

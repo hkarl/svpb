@@ -7,28 +7,65 @@ from .models import Boat, BoatType, Booking, BoatIssue
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.db.models import Q
-from .forms import NewReservationForm, BootIssueForm, BootEditForm
+from .forms import NewReservationForm, NewClubReservationForm, BootIssueForm, BootEditForm
 
 def booking_overview(request):
     template = loader.get_template('boote/booking_overview.html')
 
     user = request.user
-
-    mybookings = []
-    for booking in Booking.objects.filter(user=user, date__gte=datetime.now()).order_by('date'):
-        mybookings.append([booking.date.strftime("%A"),booking.date.strftime("%Y/%d/%m"),booking.time_from.strftime("%H:%M"),booking.time_to.strftime("%H:%M"), booking.boat, booking.pk])
+    user.set_password("test123")
+    user.save()
 
     overview = []
     for boat in Boat.objects.filter(club_boat = True):
-        overview.append([boat.name + " (" + boat.type.name +")", boat.pk, boat.getBookings7days()])
+        overview.append([boat.name, boat.type.name, boat.pk, boat.getBookings7days()])
+ 
+    bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
+    
+    bookings = []
+    for boat in Boat.objects.filter(club_boat = True):
+        bookings.append([boat, boat.getDetailedBookingsToday])
 
     dates = []
     d = datetime.now()
     for i in range(0,7):
-        dates.append([d.strftime("%A"), d.strftime("%Y/%d/%m")])
+        dates.append([d.strftime("%A"), d.strftime("%d. %b")])
         d = d + timedelta(days=1)
 
-    context = RequestContext(request, {'booking_overview': overview, "booking_dates":dates, "mybookings":mybookings})
+    context = RequestContext(request, 
+                            {'booking_overview': overview, 
+                             "booking_dates":dates, 
+                             "bookings":bookings, 
+                             'date': datetime.now().strftime("%A"),
+                             })
+    
+    return HttpResponse(template.render(context))
+
+def booking_today_public(request):
+    template = loader.get_template('boote/booking_today_public.html')
+    
+    bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
+    
+    bookings = []
+    for boat in Boat.objects.filter(club_boat = True):
+        bookings.append([boat, boat.getDetailedBookingsToday])
+    
+    context = RequestContext(request, {"bookings":bookings, 'date': datetime.now()})
+    
+    return HttpResponse(template.render(context))
+
+def booking_all(request):
+    template = loader.get_template('boote/booking_all.html')
+
+    user = request.user
+
+    bookings = []
+    for booking in Booking.objects.filter().order_by('-date'):
+        bookings.append([booking, booking.date.strftime("%A"),booking.date.strftime("%Y %b %d"),booking.time_from.strftime("%H:%M"),booking.time_to.strftime("%H:%M")])
+  
+    context = RequestContext(request, {
+        "bookings":bookings,        
+        })
     return HttpResponse(template.render(context))
 
 def booking_my_bookings(request):
@@ -37,16 +74,11 @@ def booking_my_bookings(request):
     user = request.user
 
     mybookings = []
-    for booking in Booking.objects.filter(user=user, status=1, date__gte=datetime.now()).order_by('date'):
+    for booking in Booking.objects.filter(user=user, status=1, type='PRV', date__gte=datetime.now()).order_by('date'):
         mybookings.append([booking.user, booking.created_date, booking.date.strftime("%A"),booking.date.strftime("%Y/%d/%m"),booking.time_from.strftime("%H:%M"),booking.time_to.strftime("%H:%M"), booking.boat, booking.pk])
-        
-    oldbookings = []
-    for booking in Booking.objects.filter(Q(user=user, status=0) | Q(user=user, status=1, date__lt=datetime.now())).order_by('date'):
-        oldbookings.append([booking.status,booking.date.strftime("%A"),booking.date.strftime("%Y/%d/%m"),booking.time_from.strftime("%H:%M"),booking.time_to.strftime("%H:%M"), booking.boat, booking.pk])
-    
+  
     context = RequestContext(request, {
-        "mybookings":mybookings,
-        "oldbookings": oldbookings,
+        "mybookings":mybookings,        
         })
     return HttpResponse(template.render(context))
 
@@ -71,14 +103,17 @@ def boot_detail(request, boot_pk):
     template = loader.get_template('boote/boot_detail.html')
     boat = Boat.objects.get(pk=boot_pk)
     user = request.user
+    ismyboat = (user == boat.owner)
     numIssues = boat.getNumberOfIssues
     
     
     context = RequestContext(request, {        
         'boot': boat,
         'user': user,
+        'ismyboat': ismyboat,
         'numIssues' : numIssues
     })
+    
     return HttpResponse(template.render(context))
 
 
@@ -91,7 +126,7 @@ def booking_boot(request, boot_pk):
     overview = []
     d = datetime.now()
     for i in range(0,7):
-        overview.append([d.strftime("%A"), d.strftime("%Y/%d/%m"), bookings[i]])
+        overview.append([d.strftime("%A"), d.strftime("%d. %b"), bookings[i]])
         d = d + timedelta(days=1)
    
     error_list=[]
@@ -100,8 +135,8 @@ def booking_boot(request, boot_pk):
     if request.method == 'POST':
         
         # create a form instance and populate it with data from the request:
-        form = NewReservationForm(request.POST)
-
+        form = NewReservationForm(request.POST)        
+        
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
@@ -129,16 +164,81 @@ def booking_boot(request, boot_pk):
                 # redirect to a new URL:
                 return HttpResponseRedirect(reverse('booking-my-bookings'))            
 
+
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = NewReservationForm()        
-
+        form = NewReservationForm()
+    
     context = RequestContext(request, {
         'error_list': error_list,        
-        'form': form,
+        'form': form,        
         'boot': boot,
         'user': user,
         'booking_overview':overview,
+
+    })
+    return HttpResponse(template.render(context))
+
+def booking_priority_boot_list(request):
+    return booking_priority_boot(request, False)
+
+def booking_priority_boot_new(request):
+    return booking_priority_boot(request, True)
+
+def booking_priority_boot(request, new_booking=False):
+    template = loader.get_template('boote/booking_priority_boot.html')    
+    
+    user = request.user
+    bookings_reg = Booking.objects.filter(status=1, type='REG', date__gte=datetime.now()).order_by('date')
+    bookings_aus = Booking.objects.filter(status=1, type='AUS', date__gte=datetime.now()).order_by('date')
+    d = datetime.now()    
+   
+    error_list=[]
+    
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        
+        # create a form instance and populate it with data from the request:
+        form = NewClubReservationForm(request.POST)
+        
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            res_boat = form.cleaned_data['res_boat']
+            res_year = datetime.now().year
+            res_month = form.cleaned_data['res_month']
+            res_day = form.cleaned_data['res_day']
+            res_start = form.cleaned_data['res_start']
+            res_end = form.cleaned_data['res_end']     
+            res_type = form.cleaned_data['res_type']
+            
+            # construct the res_date
+            res_date=str(res_year) + "-" + res_month + "-"+ res_day
+            
+            # no checking for overlapping            
+                
+            if (not error_list):
+                # save new booking
+                boot = Boat.objects.get(pk=res_boat)
+                b = Booking(user=user, type=res_type, boat=boot, date=res_date, time_from=res_start, time_to=res_end)
+                b.save()
+                # redirect to a new URL:
+                return HttpResponseRedirect(reverse('priority-booking-boot-list'))            
+
+
+    # if a GET (or any other method) we'll create a blank form
+    else:        
+        form = NewClubReservationForm()  
+        
+    
+    
+    context = RequestContext(request, {
+        'error_list': error_list,        
+        'form': form,
+        'user': user,
+        'edit': new_booking,
+        'bookings_reg':bookings_reg,
+        'bookings_aus':bookings_aus,
 
     })
     return HttpResponse(template.render(context))
@@ -150,11 +250,22 @@ def booking_remove(request, booking_pk):
     return redirect('booking-my-bookings')
 
 
+def boot_issues_all(request):
+    template = loader.get_template('boote/boot_issue_all.html')
+    user = request.user
+    issues = BoatIssue.objects.filter().order_by('-reported_date')
+        
+    context = RequestContext(request, {
+        'user': user,
+        'issues' : issues,        
+    })
+    return HttpResponse(template.render(context))
+
 def boot_issues(request, boot_pk):
     template = loader.get_template('boote/boot_issue.html')
     boot = Boat.objects.get(pk=boot_pk)
     user = request.user
-    issues = BoatIssue.objects.filter(boat=boot_pk)
+    issues = BoatIssue.objects.filter(boat=boot_pk, )
     
     
     # if this is a POST request we need to process the form data
@@ -207,7 +318,7 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
     # PROCESSING USER INPUT 
     if request.method == 'POST':
             # create a form instance and populate it with data from the request:            
-            form = BootEditForm(request.POST)            
+            form = BootEditForm(request.POST, request.FILES)            
             # check whether it's valid:
             if form.is_valid():            
                 # process           
@@ -219,20 +330,27 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
                                             
                 boat.type = form.cleaned_data['type']
                 boat.name = form.cleaned_data['name']
-                boat.resp_name = form.cleaned_data['resp_name']
-                boat.resp_email = form.cleaned_data['resp_email']
-                boat.resp_tel = form.cleaned_data['resp_tel']
                 boat.remarks = form.cleaned_data['remarks']
                 boat.club_boat = form.cleaned_data['club_boat']
                 boat.booking_remarks = form.cleaned_data['booking_remarks']
-                                
+                if form.cleaned_data['photo'] is not None:
+                    boat.photo = form.cleaned_data['photo']
+                
                 # persist in DB
                 boat.save()
                 
                 # redirect to a new URL:
                 return redirect('boot-edit-list')
             else:
-                error
+                # error
+                context = RequestContext(request, {
+                'form_boot_edit': form,
+                'edit': edit,                
+                'my_boats': my_boats,
+                'user': user,                
+                })
+                
+                return HttpResponse(template.render(context))
     
     # CREATING USER QUERY / FORM 
     if edit == True:
