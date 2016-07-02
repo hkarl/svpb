@@ -1,0 +1,121 @@
+{% extends "bootstrap/bootstrap_boote.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Reservation {{ boot.name }} ({{ boot.type.name }})
+{% endblock %}
+
+{% block content %}
+
+<script>
+
+function showbooking() {
+	date_idx = document.getElementById("id_res_date").selectedIndex+1;
+	time_idx = document.getElementById("id_res_start").selectedIndex;
+	dur_idx = document.getElementById("id_res_duration").selectedIndex;
+	
+	mark(date_idx, time_idx, dur_idx);	
+	
+}
+
+setx=1;
+sety=1;
+setd=0;
+
+function mark(x, y, d) {
+	// unmark old
+	
+	for (i = 0; i <= setd; i++) { 
+		off=sety+i
+    	var cell = document.getElementById("cell_"+setx+"_"+off);
+    	if (cell != null)
+    		cell.style.border="1px solid #cccccc";
+	}
+	
+	setx=x;
+	sety=y;
+	setd=d;
+
+	// mark new
+	for (i = 0; i <= setd; i++) { 
+		off=sety+i
+    	var cell = document.getElementById("cell_"+setx+"_"+off);
+    	if (cell != null)
+    		cell.style.border="2px solid blue";
+	}
+	
+}
+
+</script>
+
+<p>
+ <a href='/boote/boot/{{ boot.pk }}'>&lt; zurück zum {{ boot.name }}</a>
+</p>
+
+
+<p>
+Möchtest du <b>"{{ boot.name }}"</b> verbindlich reservieren?
+</p>
+
+<p style='border: 1px solid rgb(159, 159, 230); padding: 5px; background-color: rgb(199, 199, 255)'><b>Wichtige Hinweise</b>: {{ boot.booking_remarks }}</p>
+
+{% if error_list %}
+<div class='alert alert-block alert-danger'>
+	<ul>
+	{% for error in error_list %}
+		<li>{{ error }}</li>
+	{% endfor %}
+	</ul>
+</div>
+{% endif %}
+
+{% crispy form %}
+
+
+<p>
+Verfügbarkeit des Vereinsboots "{{ boot.name }}" in den kommenden 7 Tagen.
+</p>
+
+<TABLE id='boatslist'>
+ <thead>
+        <tr>
+            <th>Datum</th>
+            <th class="date" colspan="2">08:00</th>
+            <th class="date" colspan="2">09:00</th>
+            <th class="date" colspan="2">10:00</th>
+            <th class="date" colspan="2">11:00</th>
+            <th class="date" colspan="2">12:00</th>
+            <th class="date" colspan="2">13:00</th>
+            <th class="date" colspan="2">14:00</th>
+            <th class="date" colspan="2">15:00</th>
+            <th class="date" colspan="2">16:00</th>
+            <th class="date" colspan="2">17:00</th>
+            <th class="date" colspan="2">18:00</th>
+            <th class="date" colspan="2">19:00</th>
+            <th class="date" colspan="2">20:00</th>
+            <th class="date" colspan="2">21:00</th>
+         </tr>
+ </thead>
+
+{% for weekday, date, overviewday in booking_overview %}
+  {% with rowno=forloop.counter0 %}     
+  	<TR>
+	    <TD style="font-size: 80%"> <b>{{ weekday }}</b> <br>({{ date }})</TD>
+   	{% for userid, type in overviewday %}
+    		{% if userid %}
+      		<TD class='{{ type }}' id='cell_{{ rowno }}_{{ forloop.counter }}'><i class="fa fa-lock" alt="{{ userid }}"><br><span class="tinyfont">{{ type }}</span></TD>
+      		{% else %}
+      		<TD class='booked0' id='cell_{{ rowno }}_{{ forloop.counter }}'>&nbsp</TD>
+      		{% endif %}
+    	{% endfor %}
+	  </TR>
+	{% endwith %}
+{% endfor %}
+</TABLE>
+
+<div id="newbooking">&nbsp</div>
+
+
+{% endblock %}

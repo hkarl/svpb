@@ -1,0 +1,46 @@
+{% extends "bootstrap/bootstrap_boote.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Reservationen
+{% endblock %}
+
+{% block content %}
+
+
+
+{% if mybookings %}
+<p>
+Hier Deine aktuellen Reservierungen (beachte <a href='/static/boote/AlgemRegelnVereinsboote.pdf' target='_blank'>Allgemeine Regeln zur Nutzung der Vereinsboote</a>):
+</p>
+
+<table id="boatslist">
+  
+   <thead>
+        <tr>
+        	<th>Reserviert für</th>
+        	<th>Boot</th>
+        	<th>Datum</th>
+            <th>Zeitraum</th>
+            <th>Stornieren</th>            
+        </tr>
+    </thead>
+
+{% for user, created_date, weekday, date, time_from, time_to, boat, reservationid in mybookings %}
+  <tr>
+  	<td>{{ user.first_name }} {{ user.last_name }}</td>
+  	<td style='text-align:left;'><a href="/boote/boot/{{ boat.pk }}/"> <i class="fa fa-ship"></i>  {{ boat.name }} ({{ boat.type.name }})</a></td> 
+  	<td>{{ weekday }}, {{ date }}</td> 
+  	<td>von {{ time_from }} bis {{ time_to }}</td>
+  	<td><a href="/boote/booking_remove/{{ reservationid }}" class="btn btn-primary"  onclick='return window.confirm("Möchtest Du deine Reservation für {{ boat.name }} ({{ weekday }}, {{ date }}, von {{ time_from }} bis {{ time_to }}) stornieren?");'>Stornieren</a></td>
+  </tr>
+{% endfor %}
+</table>
+{% else %}
+    Du hast aktuell keine Reservierungen. <br> <a href="/boote/booking/overview/">Such Dir Boot und Termin aus.</a>
+{% endif %}
+
+
+{% endblock %}

@@ -6,6 +6,8 @@ APPLICATION_DIR = os.path.dirname( globals()[ '__file__' ] )
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
+LOGIN_URL = "/login/"
+
 OFFLINE = False
 JAHRESENDE = False
 
@@ -86,6 +88,7 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     # os.path.join (APPLICATION_DIR, '..', 'arbeitsplan', 'static'),
+    os.path.join (APPLICATION_DIR, '..', 'boote', 'static'),
     os.path.join (APPLICATION_DIR, '..', 'templates'),
 )
 
@@ -143,6 +146,9 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join (APPLICATION_DIR, '../templates'), 
+    os.path.join (APPLICATION_DIR, 'templates'),
+    os.path.join (APPLICATION_DIR, '../mitglieder/templates'),
+    os.path.join (APPLICATION_DIR, '../boote/templates'),
 )
 
 INSTALLED_APPS = (
@@ -163,6 +169,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'impersonate',
     'arbeitsplan',
+    'boote',
     'post_office',
     'sendfile',
     'password_reset',

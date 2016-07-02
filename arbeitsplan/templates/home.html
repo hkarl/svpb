@@ -1,4 +1,4 @@
-{% extends "bootstrap/bootstrap_base.html" %}
+{% extends "bootstrap/bootstrap_arbeit.html" %}
 {% load staticfiles %}
 
 
@@ -323,9 +323,9 @@ Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}
                 </big></b>
                 <p>
                   {% else %}
-                  Bist Du ein Mitglied, so <a href="/accounts/login/?next=/home/"> melde Dich bitte an</a>. 
+                  Bist Du ein Mitglied, so <a href="/login/?next=/home/"> melde Dich bitte an</a>.
                   
-                  <p><a href="/accounts/login/?next=/home/" class="btn btn-primary btn-lg" role="button">Anmelden</a></p>
+                  <p><a href="/login/?next=/home/" class="btn btn-primary btn-lg" role="button">Anmelden</a></p>
           </div>
           {% endif %}
           

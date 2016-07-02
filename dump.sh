@@ -1,6 +1,3 @@
-
-
-
 #python manage.py  dumpdata auth.User --format json > arbeitsplan/fixtures/user.json
 #python manage.py  dumpdata arbeitsplan --format json > arbeitsplan/fixtures/arbeitsplan.json
 #python manage.py  dumpdata post_office --format json > arbeitsplan/fixtures/post_office.json

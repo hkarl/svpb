@@ -1,0 +1,59 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+{% load staticfiles %}
+
+{% block apphome %}
+<a href="/boote/">    
+    <i class="fa fa-ship fa-fw"></i>
+    Home
+</a>
+{% endblock %}
+
+
+{% block appnav %}
+<link rel="stylesheet" href="/static/bootstrap/css/bootstrap-boote.css" type="text/css" />
+
+<!-- BOOTE -->
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        Boote
+        <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">    	
+        <li><a href="/boote/boots_liste/">Alle Boote</a></li>                
+         {% for g in  user.groups.all %}
+            {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li><a href="/boote/boot/edit/">Mein Boot</a></li>
+                <li><a href="/boote/boot_issues/all/">Alle Meldungen</a></li>
+            {% endif %}
+        {% endfor %}        
+    </ul>
+    
+    
+    
+</li>
+
+
+<!-- BOOT RESERVIEREN -->
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        Reservieren
+        <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">        
+        <li><a href="/boote/booking/overview/">Termin Reservieren</a></li>        
+        <li><a href="/boote/booking/my_bookings/">Meine Reservationen</a></li>
+        {% for g in  user.groups.all %}
+            {% if g.name == "Vorstand" %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Vorstandsfunktionen</li>
+                <li> <a href="/boote/booking/priority/">Regata/Ausbildung</a> </li>
+                <li> <a href="/boote/booking/all/">All Reservationen</a> </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</li>
+
+
+{% endblock %}

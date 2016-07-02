@@ -21,7 +21,7 @@
 
 <title>
 {% block title %}
-SVPB -- Arbeitsverwaltung
+SVPB -- Die kleine Webseite zur Vereinsunterstützung
 {% endblock %}
 </title>
 {% block extrastyle %}{% endblock %}
@@ -49,142 +49,32 @@ SVPB -- Arbeitsverwaltung
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand">SVPB</a>
+          <a class="navbar-brand" href="/">
+            SVPB
+          </a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/">
-            <i class="fa fa-home fa-fw"></i>
-            Home</a></li>
-          {% if user.is_active %}
-            <li class="dropdown">
-            <!-- AUFGABEN --> 
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-list-ul fa-fw"></i>
-            Aufgaben <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="/arbeitsplan/aufgaben/">Anzeigen</a></li>
-                {% for g in  user.groups.all %}
-                  {% if g.name == "Vorstand" %}
-                <li class="divider"></li>
-                <li class="dropdown-header">Vorstandsfunktionen</li>
-                <li> <a href="/arbeitsplan/aufgabeErzeugen/"> Neue Aufgabe anlegen </a> </li>
-                <li>  <a href="/arbeitsplan/aufgabenVorstand/"> Aufgaben anzeigen und editieren </a> </li>
-                <li> <a href="/arbeitsplan/aufgabengruppeErzeugen/"> Neue Aufgabengruppe anlegen </a> </li>
-                <li> <a href="/arbeitsplan/aufgabengruppen/"> Aufgabengruppen anzeigen und editieren </a> </li>
-                  {% endif %}
-                {% endfor %}
-              </ul>
+            <li>
+            {% block apphome %}
+            {% endblock %}
             </li>
-            <!-- MELDUNG --> 
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-hand-o-up fa-fw"></i>
-            Meldung <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="/arbeitsplan/meldung/liste">Übersicht</a></li>
-                <li><a href="/arbeitsplan/meldung/">Meldung bearbeiten</a></li>
-                <li><a href="/arbeitsplan/meldung/?gemeldet=GA&filter=Filter+anwenden">Meldung löschen</a></li>
-                {% for g in  user.groups.all %}
-                  {% if g.name == "Vorstand" %}
-                <li class="divider"></li>
-                <li class="dropdown-header">Vorstandsfunktionen</li>
-                <li><a href="/arbeitsplan/meldungVorstand/">Bewerten</a></li>
-                  {% endif %}
-                {% endfor %}
-              </ul>
-            </li>
-            <!-- ZUTEILUNG --> 
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-hand-o-right fa-fw"></i>
-            Zuteilung <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="/arbeitsplan/zuteilungAnzeige/me/">Anzeigen</a></li>
-                {% for g in  user.groups.all %}
-                  {% if g.name == "Vorstand" %}
-                <li class="divider"></li>
-                <li class="dropdown-header">Vorstandsfunktionen</li>
-                <li><a href="/arbeitsplan/zuteilungAnzeige/all/">Alle Zuteilungen anzeigen </a></li>
-                <li><a href="/arbeitsplan/zuteilungUebersicht/"> Aufgaben und Zuteilungsübersicht </a> </li>
-                <li><a href="/arbeitsplan/manuelleZuteilung/">Manuell
-                zuteilen: alle Aufgaben, alle Mitglieder</a></li>
-                <!--
-                <li><a href="/"> Ohne Meldung zuteilen (TODO) </a> </li>
-                <li><a
-                href="/arbeitsplan/erstelleZuteilung/">Automatisch zuteilen
-                (TODO)</a></li>
-                --!>
-                  {% endif %}
-                {% endfor %}
-              </ul>
-            </li>
-            <!-- LEISTUNG --> 
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-check fa-fw"></i>
-            Leistung <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="/arbeitsplan/leistung/">Eintragen (eigene Aufgaben)</a></li>
-                <li><a href="/arbeitsplan/leistungAlle/">Eintragen (beliebige Aufgaben)</a></li>
-                <li><a href="/arbeitsplan/leistungListe/">Anzeigen</a></li>
-                {% for g in  user.groups.all %}
-                  {% if g.name == "Vorstand" %}
-                <li class="divider"></li>
-                <li class="dropdown-header">Vorstandsfunktionen</li>
-                <li><a href="/arbeitsplan/leistungenBearbeiten/z=me/">Bearbeiten (für mich)</a></li>
-                <li><a href="/arbeitsplan/leistungenBearbeiten/z=all/">Bearbeiten (für alle Vorstände)</a></li>
-                <li><a href="/arbeitsplan/salden/">Saldenübersicht</a></li>
-                  {% endif %}
-                {% endfor %}
-                {% if user.teamleader_set.count > 0 %}
-                <li class="divider"></li>
-                <li><a href="/arbeitsplan/leistungenBearbeiten/z=team/">Bearbeiten (für Team)</a></li>                
-                {% endif %}
-              </ul>
-            </li>
-            <!-- BENACHRICHTIGEN --> 
-            {% for g in  user.groups.all %}
-              {% if g.name == "Vorstand" %}
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-envelope-o fa-fw"></i>
-            Benachrichtigen <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li> <a href="/arbeitsplan/benachrichtigen/zuteilung/"> Zuteilungen </a> </li>
-                <li> <a href="/arbeitsplan/benachrichtigen/leistung/"> Leistungen </a> </li>
-                <li> <a href="/arbeitsplan/benachrichtigen/meldungsAufforderung/"> Meldungsaufforderung</a> </li>
-                <li> <a
-      href="/arbeitsplan/benachrichtigen/senden/"> Absenden </a> </li>
-              </ul>
-            </li> 
-              {% endif %}
-            {% endfor %}
-            <!-- MITGLIEDER -->
-            {% for g in  user.groups.all %}
-              {% if g.name == "Vorstand" %}
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-users fa-fw"></i>
-              Mitglieder <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li> <a href="/accounts/add/"> Neu </a> </li>
-                <li> <a href="/accounts/list/"> Liste </a> </li>
-                <li> <a href="/accounts/mitgliederexcel.xlsx"><i class="fa fa-file-excel-o fa-lg fa-fw"></i>  Liste als Excel </a> </li>
-                <!-- Rohdaten Admin -->
-                {% if user.is_staff %}
-                <li> <a href="/admin/"> <i class="fa fa-database fa-lg fa-fw"></i>&nbsp; Rodaten </a> </li>
-                {% endif %}
-              </ul>
-            </li>
+            {% if user.is_active %}
+
+                {% block appnav %}
+                {% endblock %}
+
             {% endif %}
-            {% endfor %}
-            {% endif %}
+
           </ul>
+
           {% if user.is_active %}
+
+
           <ul class="nav navbar-nav navbar-right">
+
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"> 
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-user"></i>
             Mein Profil <b class="caret"></b></a>
               <ul class="dropdown-menu">
@@ -193,7 +83,7 @@ SVPB -- Arbeitsverwaltung
                 </li>
                 {% if user.has_usable_password %}
                 <li>
-                  <a href="{% url 'password_change' %}">{% trans 'Change password' %}</a> 
+                  <a href="{% url 'password_change' %}">{% trans 'Change password' %}</a>
                 </li>
                 <li>
                  <a href="{% url 'accountEdit' %}">Meine Profildaten editieren</a>
@@ -222,53 +112,11 @@ SVPB -- Arbeitsverwaltung
       </div>
     </div>
 
-    {% comment %}
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <!-- 
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">SVPB</a>
-        </div>
-        -->
-        <div class="navbar-collapse collapse">        
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="/">Home</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Aufgaben <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li> <a href="">Anzeigen</li>
-              </ul>
-            </li>
-          </ul>
-          {% if user.is_active %}
-          <ul class="nav navbar-nav narvbar-right">
-            <li>
-                {% if user.has_usable_password %}
-                <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
-                {% endif %}
-            </li>
-            <li>
-                <a href="/logout/">{% trans 'Log out' %}</a>
-            </li>
-          </ul>
-          {% endif %}
-      </div>
-      </div>
-    </div>
-    {% endcomment %}
-
     <div  class="container theme-showcase" role="main">
 
     <div class="page-header">
       <h1>       {% block branding %}
-      Arbeitsplan
+      SVPB
       {% endblock %}
       </h1>
     </div>

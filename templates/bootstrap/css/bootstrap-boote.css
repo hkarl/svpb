@@ -1,0 +1,178 @@
+.picture {
+	box-shadow: 0px 1px 3px rgba(24, 15, 15, 0.4);
+	padding: 5px;
+	background-color: #FEFEFE;
+}
+
+.smallboatpic{
+	width: 60px;
+}
+
+#newbooking {
+	float: right;
+	background:rgba(255,0,0,0.4);
+	border: 1px dotted yellow;
+	height: 49px;
+	position: relative;
+	left: 83px;	
+	width: 50px;
+	display: none;
+	color: white;
+}
+
+#boatslist {
+  width: 100%;  
+  border-collapse: collapse;
+  border: 1px solid #38678f;  
+  background: white;
+  
+}
+#boatslist th {
+  background: steelblue;
+  height: 54px;
+  padding: 4px;
+  font-weight: lighter;
+  text-shadow: 0 1px 0 #38678f;
+  color: white;
+  border: 1px solid #38678f;
+  box-shadow: inset 0px 1px 2px #568ebd;
+  transition: all 0.2s;
+}
+
+#boatslist th.date{
+  background: #537E8C;
+  width: 100px;  
+}
+
+#boatslist tr {
+  border-bottom: 1px solid #cccccc;
+}
+#boatslist tr:last-child {
+  border-bottom: 0px;
+}
+#boatslist td {
+  border-right: 1px solid #cccccc;
+  padding: 5px;
+  transition: all 0.2s;
+  text-align: center;
+}
+#boatslist td:last-child {
+  border-right: 0px;
+}
+#boatslist td.selected {
+  background: #d7e4ef;
+  z-index: ;
+}
+
+#boatslist td.booked0 {
+  background: #5CB85C;
+  font-size: 80%;
+  height: 50px;
+  width: 50px;
+}
+
+#boatslist td.PRV {
+  background: #E4FF2E;
+  font-size: 80%;
+  height: 50px;
+  
+}
+
+#boatslist td.REG {
+  background: #FF5151;
+  font-size: 80%;
+  height: 50px;
+  
+}
+
+#boatslist td.AUS {
+  background: #54f3ff;
+  font-size: 80%;
+  height: 50px;
+  
+}
+
+span.tinyfont {
+ font-size: 90%;
+}
+
+#boatslist td.booked1 {
+  background: #CFDE3E;
+  font-size: 80%;
+  height: 50px;
+  width: 50px;
+}
+
+#boatslist td.booked2 {
+  background: #D9534F;
+  font-size: 80%;
+  height: 50px;
+  width: 50px;
+}
+
+#boatslist td input {
+  font-size: 14px;
+  background: none;
+  outline: none;
+  border: 0;
+  display: table-cell;
+  height: 100%;
+
+}
+#boatslist td input:focus {
+  box-shadow: 0 1px 0 steelblue;
+  color: steelblue;
+}
+::-moz-selection {
+  background: steelblue;
+  color: white;
+}
+::selection {
+  background: steelblue;
+  color: white;
+}
+#boatslist .heavyTable {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: float 5s infinite;
+}
+
+
+#mainpic {
+	float: right;
+}
+
+#maindesc   dl {
+    padding: 0.5em;
+ }
+#maindesc   dt {
+    float: left;
+    clear: left;
+    width: 130px;
+    text-align: left;
+    font-weight: bold;
+}
+#maindesc   dt:after {
+    content: ":";
+}
+#maindesc   dd {
+    margin: 0 0 0 140px;
+    padding: 0 0 0.5em 0;
+}
+
+.overlay{
+  position: absolute;  
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.3); /*dim the background*/
+}
+.modalbox {
+  width: 50%;
+  padding: 20px;  
+  margin: auto;
+  margin-top: 150px;
+  background: white;
+  border-radius: 15px;
+}

@@ -1,0 +1,62 @@
+{% extends "bootstrap/bootstrap_boote.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Meine Boote
+{% endblock %}
+
+{% block content %}
+
+{% if edit %}
+<div class="overlay">
+<div class="modalbox">
+<h2>Boot Editieren</h2>
+
+	
+	{% crispy form_boot_edit %}
+	
+
+<a href="/boote/boot/edit/" class="btn btn-secondary">Cancel</a> 
+</div>
+</div>
+{% endif %}
+
+{% if my_boats %}
+<p>
+Du kanst hier deine Boote verwalten oder neue Boote anlegen.  
+</p>
+
+<table id="boatslist" style='width: 80%;'>
+   <thead>
+        <tr>
+            <th style="width: 15px">Vereinsboot</th>
+            <th>Name</th>            
+            <th>Bootspate</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+
+{% for boat in my_boats %}
+  <tr>
+  	<td style="text-align: center;">{% if boat.club_boat %}<img src="/static/boote/svpb.png" style="width: 50px;" class="img-responsive">{% endif %}</td>
+  	<td style="text-align: left;"><a href="/boote/boot/{{ boat.pk }}/" target="_blank"> <i class="fa fa-ship"></i> {{ boat.name }}</a> ({{ boat.type.name }})</TD>
+  	<td style="text-align: left;">{{ user.first_name }} {{ user.last_name }}</td>  		
+  	<td><a href="/boote/boot/edit/{{ boat.pk }}/" class="btn btn-primary">Edit</a></td>
+  </tr>
+{% endfor %}
+</table>
+{% else %}
+    <p>Du hast noch keine Boote.</p>
+{% endif %}
+<p>
+<a href="/boote/boot/edit/new/" class="btn btn-primary">Neues Boot definieren</a>
+</p>
+
+
+
+
+
+
+{% endblock %}

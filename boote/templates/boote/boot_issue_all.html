@@ -1,0 +1,48 @@
+{% extends "bootstrap/bootstrap_boote.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Alle Schadensmeldungen
+{% endblock %}
+
+{% block content %}
+</p>
+
+{% if issues %}
+<p>Es liegen folgende offene Schadensmeldungen vor:</p>
+<table id="boatslist">
+ <thead>
+        <tr>
+        	<th style="width: 10%">Gemeldet von</th>
+        	<th style="width: 10%">Erledigt von</th>
+        	<th style="width: 10%">Status</th>
+        	<th style="width: 10%">Boot</th>
+            <th>Beschreibung</th>
+        </tr>
+    </thead>
+
+{% for issue in issues %}
+  <tr>
+  	<td style='font-size: 80%'>{{ issue.reported_by.first_name }} {{ issue.reported_by.last_name }}<br> {{ issue.reported_date }}</td>  	
+  	{% if issue.status = 1 %} 	
+  		<td>-</td>
+  		<td style='color: red'> <i class="fa fa-cog"></i> Offen</td>
+  	{% else %}
+  	 	<td style='font-size: 80%'>{{ issue.fixed_by.first_name }} {{ issue.fixed_by.last_name }} <br> {{ issue.fixed_date }}</td>
+  	 	<td style='color: green'> <i class="fa fa-check"></i> Erledigt</td>
+  	{% endif %}
+  	<td style="text-align: left;"> <a href='/boote/boot/{{ issue.boat.pk }}'> <i class="fa fa-ship"></i> {{ issue.boat.name }} </a><br><span style='font-size:70%'> ({{ issue.boat.type.name }})</span></TD>
+  	<td style="text-align: left; vertical-align: top; font-style:italic;">{{ issue.reported_descr }}</td>  	  	
+  </tr>
+{% endfor %}
+</table>
+{% else %}
+    <p>Es liegen <span style="color: rgb(0, 161, 30)">keine</span> offene Schadensmeldungen fuer "{{ boot.name }}" vor.</p>
+{% endif %}
+
+
+
+
+{% endblock %}

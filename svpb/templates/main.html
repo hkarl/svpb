@@ -1,0 +1,148 @@
+{% extends "bootstrap/bootstrap_base.html" %}
+{% load staticfiles %}
+
+
+{% block branding %}
+Willkommen{% if user.is_authenticated %}, {{user.first_name}}  {{user.last_name}}
+{% endif %}!
+{% endblock %}
+
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+    <div class="row">
+        <div class="col-md-6">
+        <a href="/arbeitsplan/">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-titel">
+                        Arbeitsplan
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                        <p>Für Aufgaben melden, zugeteilte Aufgaben ansehen, Leistungen eingeben, ... </p>
+                        </div>
+                        <div class="col-md-6">
+                        <img src="{% static "media/worker.png"%}" class="img-responsive">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        </div>
+
+        {% for g in  user.groups.all %}
+        {% if g.name == "Boote" %}
+        
+        <div class="col-md-6">
+        <a href="/boote/">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-titel">
+                        Boote
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>
+                                <b>Vereinsboote reservieren und nutzen,
+                                    Schaden melden, ...
+                                </b>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <img src="{% static "media/sailboat.png"%}" class="img-responsive">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        </div>
+        
+        {% endif %}
+        {% endfor %}
+        
+
+        {% for g in  user.groups.all %}
+        {% if g.name == "Vorstand" %}
+
+            <div class="col-md-6">
+            <a href="/accounts/">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-titel">
+                            Mitglieder
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>Mitglieder verwalten,
+                                    neu anlegen, ... </p>
+                            </div>
+                            <div class="col-md-6">
+                                <i class="fa fa-users fa-fw fa-5x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            </div>
+        {% endif %}
+        {% endfor %}
+
+    </div>
+{% else %}
+
+<div class="container">
+    <div class="row">
+        <div class ="col-md-12">
+            <img class="img-responsive" src="{% static "media/head_startseite_01.jpg"%}">
+        </div>
+    </div>
+</div>
+<div class="jumbotron">
+    <p> In einem Segelverein fällt viel Arbeit an,
+        die auf die Mitglieder verteilt werden muss.
+        Diese Seite dient der Organisation dieser Arbeit.
+    </p>
+
+    {% if OFFLINE %}
+    <p>
+        <b><big>
+            Die Web-Anwendung ist wegen Wartung kurzfristig ausser Betrieb. Anmelden ist derzeit nicht mögich. Bitte versuchen Sie es später erneut! Wir entschuldigen uns für die Unannehmlichkeiten.
+        </big></b>
+    </p>
+    {% elif JAHRESENDE %}
+    <p>
+        <b><big>
+            Das Jahr ist zu Ende, mein.svpb geht in den Winterschlaf. Wir bereiten das neue Jahr vor. Bitte haben Sie etwas Geduld. Bald können Meldungen für das neue Jahr abgegeben werden.
+        </big></b>
+    </p>
+    {% else %}
+    <p>
+        Bist Du ein Mitglied, so
+        <a href="/login/?next=/home/"> melde Dich bitte an
+        </a>.
+    </p>
+    <p>
+        <a href="/login/?next=/home/"
+           class="btn btn-primary btn-lg" role="button">
+            Anmelden</a>
+    </p>
+    {% endif %}
+</div>
+
+{% endif %}
+
+<hr>
+<p>
+    <a href="/about">Über diese Webseite</a>
+</p>
+
+{% endblock %}

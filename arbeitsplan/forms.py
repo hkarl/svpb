@@ -1,51 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from django import forms
-import models
-from django.forms.models import inlineformset_factory
-from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
-
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Button, Field, Div, HTML
-from crispy_forms.bootstrap import StrictButton, FormActions, InlineCheckboxes, InlineField
-
 import django_select2
+from crispy_forms.bootstrap import FormActions, InlineCheckboxes, InlineField
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Layout, Field, HTML
+from django import forms
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
-class PasswordChange(forms.Form):
-
-    pw1 = forms.CharField(max_length=30,
-                          required=True,
-                          label="Neues Passwort",
-                          widget=forms.PasswordInput(),
-                          )
-
-    pw2 = forms.CharField(max_length=30,
-                          required=True,
-                          label="Neues Passwort (Wiederholung)",
-                          widget=forms.PasswordInput(),
-                          )
-
-    def __init__(self, *args, **kwargs):
-        super(PasswordChange, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_id = self.__class__.__name__
-        self.helper.form_method = "post"
-
-        self.helper.layout = Layout(
-            'pw1',
-            'pw2',
-            HTML("<p>"),
-            )
-        self.helper.add_input(Submit('apply', 'Neues Passwort setzen'))
-
-    def clean(self):
-        if self.cleaned_data['pw1'] != self.cleaned_data['pw2']:
-            raise ValidationError(u'Die beiden Passwörter stimmen nicht überein',
-                            code='invalid'
-                            )
-        else:
-            return self.cleaned_data
+import models
 
 
 class CrispyFormMixin(object):
@@ -613,7 +576,3 @@ class SaldenFilter(NameFilterForm,
     pass
 
 
-class PersonMitgliedsnummer(NameFilterForm,
-                            MitgliedsnummerFilterForm,
-                            ):
-    pass

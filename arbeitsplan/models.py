@@ -622,8 +622,8 @@ class Leistung (models.Model):
 
 
 ## this is just debug code for the meldung issue - trying to figure out why there are double instances
-from django.db.models.signals import pre_save, pre_init, post_save
-from django.dispatch import receiver 
+# from django.db.models.signals import pre_save, pre_init, post_save
+# from django.dispatch import receiver
 
 ## @receiver(pre_init, sender=Meldung)
 ## def meldungDebugPreInit (sender, args, **kwargs):

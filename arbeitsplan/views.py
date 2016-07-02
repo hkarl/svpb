@@ -2,59 +2,37 @@
 
 # Create your views here.
 
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.views.generic import View, ListView, CreateView
-from django.views.generic import FormView, UpdateView, DeleteView, TemplateView
-from django.contrib.auth.models import User
-
-from django.utils.http import urlencode
-from django.utils.html import format_html
-from django.db.models import Sum, F, Count
-from django.contrib.auth import logout
-from django.forms.models import modelformset_factory
-from django.forms.formsets import formset_factory
-from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib import messages
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.management import call_command
-from django.db.models import Q
-
+import collections
+import datetime
+import os
+import types
 from collections import defaultdict
+
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.management import call_command
+from django.core.urlresolvers import reverse_lazy
+from django.db.models import Q
+from django.db.models import Sum, F, Count
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, get_object_or_404
+from django.utils.http import urlencode
+from django.utils.timezone import utc
+from django.views.generic import UpdateView, DeleteView, TemplateView
+from django.views.generic import View, ListView, CreateView
 from post_office import mail
 
-import datetime
-from django.utils.timezone import utc
-
-from pprint import pprint as pp
-
-import django_tables2
-import unicodedata
-
-import types
-import collections
-import os
-
 # Arbeitsplan-Importe:
-import models
 import forms
 from tables import *  # TODO: change import not to polute name space
-from svpb.settings import JAHRESSTUNDEN, STATIC_ROOT, SENDFILE_ROOT
+from svpb.settings import JAHRESSTUNDEN, SENDFILE_ROOT
 
 from sendfile import sendfile
 
 
-from svpb.views import isTeamlead, isVorstand, isVorstandMixin, isVorstandOrTeamleader, isVorstandOrTeamleaderMixin
+from svpb.views import isTeamlead, isVorstand, isVorstandMixin, isVorstandOrTeamleaderMixin
 #################
 
-
-
-
-def logout_view(request):
-    # print "logout view"
-    logout(request)
-    return render(request, "registration/logged_out.html", {})
 
 
 
@@ -488,7 +466,7 @@ class AufgabenCreate (isVorstandMixin, SimpleCreateView):
     model = models.Aufgabe
     form_class = forms.AufgabeForm
     template_name = "arbeitsplan_aufgabenCreate.html"
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("homeArbeitsplan")
     title = "Neue Aufgabe anlegen"
     buttontext = "Aufgabe anlegen"
 
@@ -558,7 +536,7 @@ class AufgabenCreate (isVorstandMixin, SimpleCreateView):
 
 class AufgabengruppeCreate(isVorstandMixin, SimpleCreateView):
     model = models.Aufgabengruppe
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("homeArbeitsplan")
     title = "Neue Aufgabengruppe anlegen"
     buttontext = "Aufgabengruppe anlegen"
     template_name = "arbeitsplan_aufgabengruppeCreate.html"
@@ -1843,7 +1821,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
                            u"Sie dürfen diese Funktion nicht benutzen!"
                            )
 
-            redirect("home")
+            redirect("homeArbeitsplan")
 
 
         data = {}
@@ -2091,7 +2069,7 @@ class ErstelleZuteilungView(View):
 
         messages.error(request,
                         "Diese Funktion ist noch nicht implementiert!")
-        return redirect ('home')
+        return redirect ('homeArbeitsplan')
 
 
 ########################
@@ -2417,67 +2395,11 @@ class EmailSendenView(isVorstandMixin, View):
                                "werden! Sysadmin kontaktieren!".
                                format(failed))
 
-        return redirect('home')
+        return redirect('homeArbeitsplan')
 
 
 ################################
 ## Impersonateion
-
-class ImpersonateListe(isVorstandMixin, FilteredListView):
-    """Show a table with all Mitglieder,
-    pick one to impersonate.
-    Needs a suitable linked Column to point
-    to impersonate/user-id
-    """
-    title = "Darzustellenden Nutzer auswählen"
-    tableClass = ImpersonateTable
-    tabletitle = "Mitglieder"
-    model = User
-
-    filterform_class = forms.NameFilterForm
-    filterconfig = [('first_name', 'first_name__icontains'),
-                    ('last_name', 'last_name__icontains'),
-                    ]
-
-
-    intro_text = """Sie können die Identität eines
-    anderen Nutzers annehmen,
-    beispielsweise um Meldungen oder Leistungen für diesen einzutragen.
-    <p>
-    Bitte gehen Sie verantwortlich mit dieser Möglichkeit um!
-    <p>
-    Beachten Sie: Diese Funktion funktioniert nicht bei Mitgliedern
-    mit Sonderstatus (z.B. Adminstratoren dieser Webseite).
-    """
-
-    def get_data(self):
-        return (self.model.objects
-                .filter(is_active=True)
-                .filter(is_staff=False)
-                .filter(is_superuser=False)
-                .exclude(id=self.request.user.id))
-    pass
-
-
-class PasswordChange(FormView):
-    template_name = "password_change.html"
-    form_class = forms.PasswordChange
-    success_url = reverse_lazy("home")
-
-    def form_valid(self, form):
-        try:
-            u = self.request.user
-            u.set_password(form.cleaned_data['pw1'])
-            u.save()
-            messages.success(self.request,
-                             u'Ihr Passwort wurde erfolgreich geändert'
-                             )
-        except Exception as e:
-            messages.error(self.request,
-                           u'Ihre Passwortänderung ist fehlgeschlagen: ' +
-                           str(e),
-                           )
-        return super(PasswordChange, self).form_valid(form)
 
 ##############
 
@@ -2513,28 +2435,6 @@ class MediaChecks(View):
 # TODO: This really should go into the svpb.views, but that would
 # create cricular imports because of the FilteredListView :-(
 # this will need serious code refactoring some time
-
-class AccountList(SuccessMessageMixin, isVorstandMixin, FilteredListView):
-    model = User
-    title = "Mitglieder bearbeiten"
-
-    # filterform_class = forms.NameFilterForm
-    filterform_class = forms.PersonMitgliedsnummer
-    filtertile = "Mitglieder nach Vor- oder Nachnamen filtern"
-
-    tabletitle = "Alle Mitglieder"
-    tableClass = MitgliederTable
-
-    filterconfig = [('first_name', 'first_name__icontains'),
-                    ('last_name', 'last_name__icontains'),
-                    ('mitgliedsnummer', 'mitglied__mitgliedsnummer__icontains'),
-                    ]
-
-    intro_text = mark_safe("""Diese Seite zeigt eine Liste aller Mitglieder an.
-    Sie dient vor allem dazu, einzelne Mitglieder-Konten zu finden und zu editieren.
-    Eine Übersicht über gemeldete, zugeteilte, erbrachte und akzeptieren
-    Arbeitsstunden findet sich separat in der <a href="/arbeitsplan/salden/">Saldenübersicht</a>.
-    """)
 
 ##########
 

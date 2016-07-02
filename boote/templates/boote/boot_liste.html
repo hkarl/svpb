@@ -1,0 +1,80 @@
+{% extends "bootstrap/bootstrap_boote.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Alle Boote
+{% endblock %}
+
+{% block content %}
+
+<h2>Vereinsboote von SVPB</h2>
+<p>
+Folgende Vereinsboote stehen allen Mitgliedern zur Verfügung.
+</p>
+
+<TABLE id='boatslist'>
+	<thead>
+        <tr>
+            <th>Eigner</th>
+            <th>Name</th>            
+            <th>Länge</th>
+            <th>Breite</th>  
+            <th>Tiefgang</th>
+            <th>Bootspate</th>
+        </tr>
+	</thead>
+
+{% for boot, numIssues in boots_verein %}
+  <TR>
+    <td style="text-align: left;">{% if boot.club_boat %}<img src="/static/boote/svpb.png" style="width: 50px;" class="img-responsive">{% endif %}</td>
+    <td style="text-align: left;"> <a href='/boote/boot/{{ boot.pk }}'> <i class="fa fa-ship"></i> {{ boot.name }}  ({{ boot.type.name }})</a></TD>
+    <td>{{ boot.type.length }} </td>
+    <td>{{ boot.type.beam }} </td>
+    <td>{{ boot.type.draught }} </td>
+    <td style='font-size: 80%; text-align: left;'>{{ boot.owner.first_name }} {{ boot.owner.last_name }} <br> <a href="mailto:{{ boot.owner.email }}">{{ boot.owner.email }}</a></td>
+  </TR>
+{% endfor %}
+
+
+</TABLE>
+
+
+
+
+{% if boots_andere %}
+
+<h2>Andere Boote am Lippesee</h2>
+<p>
+Es gibt auch viele andere Booten, die am Lippesee ihr Zuhause haben - hier einige davon.
+</p>
+<TABLE id='boatslist'>
+	<thead>
+        <tr>
+            <th>Name</th>            
+            <th>Länge</th>
+            <th>Breite</th>  
+            <th>Tiefgang</th>
+            <th>Betreuung</th>
+        </tr>
+	</thead>
+
+{% for boot, numIssues in boots_andere %}
+  <TR>
+    <td style="text-align: left;"> <a href='/boote/boot/{{ boot.pk }}'> <i class="fa fa-ship"></i> {{ boot.name }} </a> ({{ boot.type.name }})</TD>
+    <td>{{ boot.type.length }} </td>
+    <td>{{ boot.type.beam }} </td>
+    <td>{{ boot.type.draught }} </td>
+    <td style='font-size: 80%; text-align: left;'>Bootspate: {{ boot.resp_name }}<br> Beschreibung: {{ boot.owner.first_name }} {{ boot.owner.last_name }} </td>
+  </TR>
+{% endfor %}
+
+
+</TABLE>
+
+{% endif %}
+
+
+
+{% endblock %}

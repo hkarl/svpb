@@ -8,6 +8,8 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test import Client
+from django.core.mail import outbox
+
 from arbeitsplan.models import *
 
 from pprint import pprint as pp
@@ -16,10 +18,12 @@ class SimpleTest(TestCase):
     fixtures=['arbeitsplan/fixtures/testdata/arbeitsplan.json',
               'arbeitsplan/fixtures/testdata/groups.json',
               'arbeitsplan/fixtures/testdata/user.json',
-              'arbeitsplan/fixtures/testdata/post_office.json',
+              'arbeitsplan/fixtures/testdata/po.json',
               ]
 
+    # in fixture, all users should have this password:
     plainpassword = "abc"
+    superuser = "su"
 
     def meldungOnlyOne(self):
         """
@@ -30,36 +34,44 @@ class SimpleTest(TestCase):
 
         for u in User.objects.all():
             for a in Aufgabe.objects.all():
+                pass
         
     def setUp(self):
         """
         Rewrite the passwords for the testusers
         """
-        # for u in User.objects.all():
-        #     u.set_password(self.plainpassword)
+        # not necessary; fixture has been adapted so
+        # that all users have same password (hopefully!)
+
+        # u = User.objects.get(username="hkarl")
+        # u.set_password(self.plainpassword)
+        # u.save()
+        pass
 
     def login_user(self, user):
 
         cl = Client()
         response = cl.post(
-            '/accounts/login/',
+            '/login/',
             {'username': user,
-             'password': self.plainpassword}
+             'password': self.plainpassword},
+            follow=True,
             )
 
-        self.assertTrue(response.status_code == 200 or
-                        response.status_code == 302)
-        return cl
+        self.assertTrue(response.status_code == 200)
+
+        return cl, response
 
     def test_login_works(self):
-        self.login_user('hkarl')
+        cl, response = self.login_user(self.superuser)
 
     def test_leistung_bearbeiten(self):
         """
-        According to github report #14, lesitung bearbeiten fails. 
+        According to github report #14, lesitung bearbeiten fails.
+        Problem not really clear from the description, however? :-(
         """
 
-        cl = self.login_user('JochenMelzian')
+        cl, response = self.login_user(self.superuser)
         response = cl.get('/arbeitsplan/leistungenBearbeiten/z=me/')
         self.assertEqual(response.status_code, 200)
 
@@ -67,8 +79,8 @@ class SimpleTest(TestCase):
         response = cl.get('/arbeitsplan/leistungenBearbeiten/z=me/?last_name=&first_name=&aufgabengruppe=3&von=&bis=&status=OF&status=RU&filter=Filter+anwenden')
         self.assertEqual(response.status_code, 200)
 
-    def test_changes_in_stundenplan(self):
-        cl = self.login_user('JochenMelzian')
+    def _test_changes_in_stundenplan(self):
+        cl, response = self.login_user(self.superuser)
         response = cl.get('/arbeitsplan/stundenplaene/6/')
         # print response
         self.assertEqual(response.status_code, 200)
@@ -123,8 +135,8 @@ class SimpleTest(TestCase):
 
         self.assertFalse(False)
 
-    def test_stundenplaene_duplicates(self):
-        """is there any process by which studneplaene entires become duplicates?
+    def _test_stundenplaene_duplicates(self):
+        """is there any process by which studneplaene entries become duplicates?
         Make a change to an Aufgabe Stundenplan
 
         TODO: not clear how to really do a post here with acceptable overhead
@@ -135,7 +147,7 @@ class SimpleTest(TestCase):
         problem = self.check_stundenplaene_unique()
         self.assertFalse(problem)
 
-        cl = self.login_user('JochenMelzian')
+        cl, response = self.login_user(self.superuser)
         response = cl.get('/arbeitsplan/aufgabeEditieren/7/')
         self.assertEqual(response.status_code, 200)
 
@@ -146,32 +158,50 @@ class SimpleTest(TestCase):
         self.assertTrue(True)
 
 
-    def _test_zuteilung_email(self):
-        """do the zuutliung emails look right?"""
+    def test_zuteilung_email(self):
+        """do the zuteilung emails look right?"""
 
         # make sure there is at least a single user with a zuteilung_noetig true
 
-        u = User.objects.first()
-        u.mitglied.zuteilungBenachrichtigungNoetig = True
-        u.mitglied.save()
+        u = Mitglied.objects.get(mitgliedsnummer="00003")
+        u.zuteilungBenachrichtigungNoetig = True
+        u.save()
 
-        cl = self.login_user("hkarl")
-        response = cl.get("/arbeitsplan/benachrichtigen/zuteilung/")
+        cl, response = self.login_user("su")
+        self.assertEqual(response.status_code, 200)
+
+        response = cl.get("/arbeitsplan/benachrichtigen/zuteilung/",
+                          follow=True)
         self.assertEqual(response.status_code, 200)
         
         # the user's email must appear in the response page:
-        self.assertContains(response, u.email, html=False)
+        self.assertContains(response, u.user.email, html=False)
+
+        # print response.content
 
         # do we have the dicts available?
-        print "REQUEST"
-        print response.request
-        print "---------------------"
-        print response.context
+        # print "REQUEST"
+        # print response.request
+        # print "---------------------"
+        # pp (response.context[-1])
         
         # let's generate the email
         response = cl.post("/arbeitsplan/benachrichtigen/zuteilung/",
                            {'eintragen': 'Benachrichtigungen eintragen',
-                            'sendit_4': 'on'})
+                            'sendit_2': 'on',
+                            'ergaenzung': 'ergaenzungtest',
+                            'anmerkung_2': 'anmerkungtest'},
+                           follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(outbox), 0)
 
-        # print response
-        self.assertEqual(response.status_code, 302)
+        # and actually send it off:
+
+        # TODO: check how to deal with post_office based mai handling
+        #
+        # response = cl.get("/arbeitsplan/benachrichtigen/senden/",
+        #                   follow=True)
+        #
+        # self.assertEqual(len(outbox), 1)
+        # print outbox[0]
+
