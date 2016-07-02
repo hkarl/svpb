@@ -10,7 +10,9 @@ OFFLINE = False
 JAHRESENDE = False
 
 
+# DEBUG = False
 DEBUG = True
+
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -21,11 +23,11 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'svpb.sq',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'svpbdata',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': 'UserPlaceholder',
-        'PASSWORD': 'PasswordPlaceholder',
+        'USER': 'svpbdb',
+        'PASSWORD': 'Eef1Aef3',
         'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
     }
@@ -33,7 +35,7 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [".svpb.de"]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -72,7 +74,7 @@ MEDIA_URL = 'media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = '/home/svpb/svpb/static'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -232,8 +234,8 @@ if SEND_TEST_EMAIL:
 # XSendfilte interface
 # this will only work with nginx, not in development setup - but that's not too important to test there
 
-SENDFILE_BACKEND = "sendfile.backends.development"
-SENDFILE_ROOT = os.path.join(STATIC_ROOT, "static/media/doc")
+SENDFILE_BACKEND = "sendfile.backends.nginx"
+SENDFILE_ROOT = os.path.join(STATIC_ROOT, "media/doc")
 SENDFILE_URL = "/media/doc"
 
 
