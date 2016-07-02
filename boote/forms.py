@@ -48,6 +48,9 @@ DURATION.append(["-","-"])
 DURATION.append(["60","1 Stunde"])
 DURATION.append(["90","1.5 Stunden"])
 DURATION.append(["120","2 Stunden"])
+DURATION.append(["150","2.5 Stunden"])
+DURATION.append(["180","3 Stunden"])
+
 
 BOOKING_TYPE = []
 BOOKING_TYPE.append(['AUS', 'Ausbildung'])
@@ -92,7 +95,7 @@ class NewReservationForm(forms.Form):
         # initialize DATES   
         DATES = []
         d = datetime.now()
-        for i in range(1,8):
+        for i in range(1,7):
             d = d + timedelta(days=1)
             DATES.append([d.strftime("%Y-%m-%d"), d.strftime("%A (%d. %b)")])
         self.fields['res_date'] = forms.ChoiceField(label="Datum",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DATES)
@@ -127,8 +130,8 @@ class NewReservationForm(forms.Form):
         
         if (res_duration<30):
             raise forms.ValidationError("Minimale Reservation von 30 Minuten moeglich.")
-        if (res_duration>120):
-            raise forms.ValidationError("Maximal 2 Stunden Reservation moeglich.")
+        if (res_duration>180):
+            raise forms.ValidationError("Maximal 3 Stunden Reservation moeglich.")
         
         end = start + timedelta(0,0,0,0,res_duration) # minutes                        
         res_end =  end            
