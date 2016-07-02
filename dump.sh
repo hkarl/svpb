@@ -7,7 +7,7 @@ python manage.py dumpdata --exclude auth.permission --exclude contenttypes > arb
 
 cd arbeitsplan/fixtures
 tar cfz svpbbackup.tgz *json
-echo XXXX | ccrypt -f -k - svpbbackup.tgz
+echo uRohX5aeyei4Xoov | ccrypt -f -k - svpbbackup.tgz
 cp svpbbackup.tgz.cpt /home/svpb/Dropbox/svpb
 
 
