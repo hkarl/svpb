@@ -1,0 +1,16 @@
+Hallo {{ booking.user.first_name }},
+
+You have reserved a boat:
+ 
+ Boat: {{ booking.boat.type.name }} "{{ booking.boat.name }}"
+ Date: {{ booking.date }}
+ From: {{ booking.time_from }} - {{ booking.time_to.time }}
+
+Please make sure you are on time and finish exactly at {{ booking.time_to.time }}. 
+
+If you do need the reservation anymore please cancel it from mein.svpb.de at least 2 days before.
+
+Have fun!
+
+--
+SVPB Lippesee

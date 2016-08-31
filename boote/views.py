@@ -2,12 +2,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
 from datetime import datetime, timedelta
 import time 
+from django.template.loader import get_template
+from django.template import Context
 from django.shortcuts import render
 from .models import Boat, BoatType, Booking, BoatIssue
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.db.models import Q
 from .forms import NewReservationForm, NewClubReservationForm, BootIssueForm, BootEditForm
+from django.core.mail import send_mail, BadHeaderError
 
 def booking_overview(request):
     template = loader.get_template('boote/booking_overview.html')
@@ -161,6 +164,21 @@ def booking_boot(request, boot_pk):
                 # save new booking
                 b = Booking(user=user, boat=boot, date=res_date, time_from=res_start, time_to=res_end)
                 b.save()
+                
+                # email
+                message = loader.get_template("boote/email_booking.html")                
+                ctx = Context({ 'booking': b})                
+                subject = "[SVPB] Boot reserviert" + b.boat.name                
+                from_email = "svpb@svpb.de"                
+                if subject and message and from_email:
+                    try:
+                        send_mail(subject, message.render(ctx), from_email, ['mdynia@gmail.com'], fail_silently=False)
+                    except BadHeaderError:
+                        return HttpResponse('Invalid header found.')                    
+                else:
+                    # In reality we'd use a form class
+                    # to get proper validation errors.
+                    return HttpResponse('Make sure all fields are entered and valid.')
                 # redirect to a new URL:
                 return HttpResponseRedirect(reverse('booking-my-bookings'))            
 
