@@ -25,11 +25,11 @@ Boot
 <dl>
   <dt>Bootstyp</dt><dd><a href="{{ boot.type.url }}" target="_blank">{{ boot.type.name }}</a></dd>
   <dt>Bootsname</dt><dd>{{ boot.name }}</dd>
-  <dt>Länge üA</dt><dd>{{ boot.type.length }}</dd>
-  <dt>Breite üA</dt><dd>{{ boot.type.beam }}</dd>
+  <dt>Länge/Breite</dt><dd>{{ boot.type.length }} / {{ boot.type.beam }}</dd>
   <dt>Tiefgang</dt><dd>{{ boot.type.draught }}</dd>
   <dt>Beschreibung</dt><dd>{{ boot.remarks }}</dd>
-  <dt>Hinweise</dt><dd>{{ boot.booking_remarks }}</dd>  
+  <dt>Hinweise</dt><dd>{{ boot.booking_remarks }}<br><i>Einweisung: {{ boot.briefing }}</i></dd> 
+  
   <dt>Bootspate</dt><dd>{{ boot.owner.first_name }} {{ boot.owner.last_name }} (<a href="mailto:{{ boot.owner.email }}">{{ boot.owner.email }}</a>)</dd>  
  </dl>
 </div>

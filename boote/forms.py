@@ -236,6 +236,7 @@ class BootEditForm(forms.ModelForm):
                     Tab(
                           'Reservationen',
                           'club_boat',
+                          'briefing',
                           'booking_remarks'
                     ),
             )
@@ -273,6 +274,7 @@ class BootEditForm(forms.ModelForm):
         widgets = {
           'remarks': forms.Textarea(attrs={'rows':4, 'cols':15}),
           'booking_remarks': forms.Textarea(attrs={'rows':4, 'cols':15}),
+          'briefing': forms.Textarea(attrs={'rows':4, 'cols':15}),          
           'photo': AdvancedFileInput()          
         }
                

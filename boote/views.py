@@ -349,6 +349,7 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
                 boat.type = form.cleaned_data['type']
                 boat.name = form.cleaned_data['name']
                 boat.remarks = form.cleaned_data['remarks']
+                boat.briefing = form.cleaned_data['briefing']
                 boat.club_boat = form.cleaned_data['club_boat']
                 boat.booking_remarks = form.cleaned_data['booking_remarks']
                 if form.cleaned_data['photo'] is not None:
@@ -358,7 +359,7 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
                 boat.save()
                 
                 # redirect to a new URL:
-                return redirect('boot-edit-list')
+                return redirect('boot-detail', boat.pk)
             else:
                 # error
                 context = RequestContext(request, {
