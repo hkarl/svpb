@@ -245,6 +245,9 @@ class BootEditForm(forms.ModelForm):
         self.fields['booking_remarks'].required = False
         self.fields['booking_remarks'].label = "Wichtige Hinweise (Reservation)"
         
+        self.fields['briefing'].required = False
+        self.fields['briefing'].label = "Einweisung"
+        
         self.fields['club_boat'].label = "Vereinsboot"
         
         self.fields['photo'].required = False

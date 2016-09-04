@@ -28,7 +28,11 @@ Boot
   <dt>Länge/Breite</dt><dd>{{ boot.type.length }} / {{ boot.type.beam }}</dd>
   <dt>Tiefgang</dt><dd>{{ boot.type.draught }}</dd>
   <dt>Beschreibung</dt><dd>{{ boot.remarks }}</dd>
-  <dt>Hinweise</dt><dd>{{ boot.booking_remarks }}<br><i>Einweisung: {{ boot.briefing }}</i></dd> 
+  <dt>Hinweise</dt><dd>{{ boot.booking_remarks }}
+  {% if boot.briefing %}
+  <br><i>Einweisung: {{ boot.briefing }}</i>
+  {% endif %}
+  </dd> 
   
   <dt>Bootspate</dt><dd>{{ boot.owner.first_name }} {{ boot.owner.last_name }} (<a href="mailto:{{ boot.owner.email }}">{{ boot.owner.email }}</a>)</dd>  
  </dl>
