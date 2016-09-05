@@ -43,14 +43,14 @@ class Command(BaseCommand):
             self.stdout.write('To: ' + booking.user.email)
             self.stdout.write('Subject: ' + sbj)
             self.stdout.write('Content:\n\r' + payload)
-            '''
+            
             mail.send(
                   [booking.user.email], 
                   settings.DEFAULT_FROM_EMAIL,
                   subject=sbj,                  
                   html_message=payload,
             )
-            '''
+            
             booking.notified = True
             booking.save()     
             
