@@ -53,7 +53,7 @@ class Command(BaseCommand):
             
             booking.notified = True
             booking.save()     
-        
+            
 
         call_command('send_queued_mail')
 
