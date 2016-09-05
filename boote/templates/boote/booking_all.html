@@ -25,7 +25,8 @@ Hier alle aktuellen Reservationen:
         	<th>Datum</th>
             <th>Zeitraum</th>
             <th>Typ</th>
-            <th>Status</th>            
+            <th>Status</th>
+            <th>Notified</th>            
         </tr>
     </thead>
 
@@ -40,6 +41,12 @@ Hier alle aktuellen Reservationen:
   		<td>Aktiv</td>
   	{% else %}
   		<td>Storniert</td>
+  	{% endif %}
+  	
+  	{% if b.notified = 1 %}
+  		<td><i class="fa fa-paper-plane" aria-hidden="true"></i></td>
+  	{% else %}
+  		<td>-</td>
   	{% endif %}
   	
   </tr>

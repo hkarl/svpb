@@ -1,16 +1,73 @@
-Hallo {{ booking.user.first_name }},
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" 
+  content="text/html; charset="UTF-8"/>
+  <title></title>
+  <style type="text/css">
+   body {
+       text-align: left;
+       color: #5f5f5f;       
+       width: 640px;
+       margin: auto;
+   }
+   
+   .welcome {
+   	font: 18px Arial,sans-serif;
+    color: #cc6600;
+    margin: 20px 20px 18px 0px;
+   }
+   
+   #bname {
+   	font-size: 150%;   	
+   }
+  </style>
+</head>
 
-You have reserved a boat:
- 
- Boat: {{ booking.boat.type.name }} "{{ booking.boat.name }}"
- Date: {{ booking.date }}
- From: {{ booking.time_from }} - {{ booking.time_to.time }}
+<body>
+<p class='welcome'>
+Hallo {{ booking.user.first_name }},<br>
+</p>
 
-Please make sure you are on time and finish exactly at {{ booking.time_to.time }}. 
+<p>du hast das folgende Boot reserviert:</p>
 
-If you do need the reservation anymore please cancel it from mein.svpb.de at least 2 days before.
+<p>
+ Boot: <u>{{ booking.boat.type.name }} <i>"{{ booking.boat.name }}"</i></u><br>
+ Datum: {{ booking.date }}  <br>
+ Uhrzeit: {{ booking.time_from }} - {{ booking.time_to }}
+</p>
 
-Have fun!
+{% if boot.briefing %}
+<p>
+<b>Einweisung erforderlich</b>: {{ boot.briefing }}
+</p>
+{% endif %}
+    
 
---
-SVPB Lippesee
+<p>
+<b>Wichtiges</b>:
+<ul>
+<li>1. Bitte sei pünktlich. Wenn das Boot ab
+ {{ booking.time_from }} nicht genutzt wird, 
+ verfällt die Reservierung.</li>
+<li>2. Wenn du das Boot doch nicht nutzen möchtest,
+ storniere bitte deine Reservierung unter 
+ <a href='http://mein.svpb.de'>mein.svpb.de</a>
+  spätestens 2 Tage vorher.</li>
+<li>3. Eine zusätzliche Eintragung in 
+die Nutzungsliste im Bootshaus entfällt.</li>
+<li>4. Mängel am Boot melde bitte über unser
+ Reservierungssystem unter 
+ <a href='http://mein.svpb.de'>mein.svpb.de</a></li>
+</ul>
+</p>
+
+<p>
+Viel Spass!
+</p>
+
+--<br>
+SVPB Lippesee<br>
+<br>
+<a href='http://www.svpb.de'>svpb.de</a><br>
+</body>
+</html>

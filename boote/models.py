@@ -81,6 +81,7 @@ class Booking(models.Model):
     date = models.DateField()
     time_from = models.TimeField()
     time_to = models.TimeField()
+    notified = models.BooleanField(default=False)
 
 class BoatIssue(models.Model):
     boat = models.ForeignKey(Boat)

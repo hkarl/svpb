@@ -11,13 +11,12 @@ from django.shortcuts import redirect
 from django.db.models import Q
 from .forms import NewReservationForm, NewClubReservationForm, BootIssueForm, BootEditForm
 from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import EmailMessage
 
 def booking_overview(request):
     template = loader.get_template('boote/booking_overview.html')
 
     user = request.user
-    user.set_password("test123")
-    user.save()
 
     overview = []
     for boat in Boat.objects.filter(club_boat = True):
@@ -109,7 +108,6 @@ def boot_detail(request, boot_pk):
     ismyboat = (user == boat.owner)
     numIssues = boat.getNumberOfIssues
     
-    
     context = RequestContext(request, {        
         'boot': boat,
         'user': user,
@@ -164,23 +162,12 @@ def booking_boot(request, boot_pk):
                 # save new booking
                 b = Booking(user=user, boat=boot, date=res_date, time_from=res_start, time_to=res_end)
                 b.save()
-                
-                # email
-                message = loader.get_template("boote/email_booking.html")                
-                ctx = Context({ 'booking': b})                
-                subject = "[SVPB] Boot reserviert" + b.boat.name                
-                from_email = "svpb@svpb.de"                
-                if subject and message and from_email:
-                    try:
-                        send_mail(subject, message.render(ctx), from_email, ['mdynia@gmail.com'], fail_silently=False)
-                    except BadHeaderError:
-                        return HttpResponse('Invalid header found.')                    
-                else:
-                    # In reality we'd use a form class
-                    # to get proper validation errors.
-                    return HttpResponse('Make sure all fields are entered and valid.')
-                # redirect to a new URL:
-                return HttpResponseRedirect(reverse('booking-my-bookings'))            
+            else:
+                # In reality we'd use a form class
+                # to get proper validation errors.
+                return HttpResponse('Make sure all fields are entered and valid.')
+            # redirect to a new URL:
+            return HttpResponseRedirect(reverse('booking-my-bookings'))            
 
 
     # if a GET (or any other method) we'll create a blank form
