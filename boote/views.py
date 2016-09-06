@@ -13,6 +13,36 @@ from .forms import NewReservationForm, NewClubReservationForm, BootIssueForm, Bo
 from django.core.mail import send_mail, BadHeaderError
 from django.core.mail import EmailMessage
 
+def booking_today(request):
+    template = loader.get_template('boote/booking_today.html')
+
+    user = request.user
+
+    overview = []
+    for boat in Boat.objects.filter(club_boat = True):
+        overview.append([boat.name, boat.type.name, boat.pk, boat.getBookings7days()])
+ 
+    bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
+    
+    bookings = []
+    for boat in Boat.objects.filter(club_boat = True):
+        bookings.append([boat, boat.getDetailedBookingsToday])
+
+    dates = []
+    d = datetime.now()
+    for i in range(0,7):
+        dates.append([d.strftime("%A"), d.strftime("%d. %b")])
+        d = d + timedelta(days=1)
+
+    context = RequestContext(request, 
+                            {'booking_overview': overview, 
+                             "booking_dates":dates, 
+                             "bookings":bookings, 
+                             'date': datetime.now().strftime("%A, %d. %b"),
+                             })
+    
+    return HttpResponse(template.render(context))
+
 def booking_overview(request):
     template = loader.get_template('boote/booking_overview.html')
 
@@ -162,13 +192,8 @@ def booking_boot(request, boot_pk):
                 # save new booking
                 b = Booking(user=user, boat=boot, date=res_date, time_from=res_start, time_to=res_end)
                 b.save()
-            else:
-                # In reality we'd use a form class
-                # to get proper validation errors.
-                return HttpResponse('Make sure all fields are entered and valid.')
-            # redirect to a new URL:
-            return HttpResponseRedirect(reverse('booking-my-bookings'))            
-
+                # redirect to a new URL:
+                return HttpResponseRedirect(reverse('booking-my-bookings'))            
 
     # if a GET (or any other method) we'll create a blank form
     else:

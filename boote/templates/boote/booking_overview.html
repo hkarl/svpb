@@ -4,69 +4,12 @@
 {% load crispy_forms_tags %}
 
 {% block branding %}
-Vereinsboote
+Reservation
 {% endblock %}
 
 {% block content %}
 
-<p>
-Such dir ein Termin und ein Boot aus. 
-</p>
-
-
-
-
-
-
-<h2>Verfügbarkeit - Heute ({{ date }})</h2>
-<p>Detalierte Verfügbarkeit von Verneinsbooten für heute. 
-Falls keine Regatta (<b style='background: #FF5151;'>REG</b>) oder Ausbildung (<b style='background: #54f3ff;'>AUS</b>) stattfindet, stehen die Vereinsboote zur freie Verfügung (<b style='background: #E4FF2E;'>PRV</b>).  
-</p>
-<TABLE id='boatslist'>
- <thead>
-        <tr>
-            <th style='width: 12%'>Boot</th>            
-            
-            <th class="date" colspan="2">08:00</th>
-            <th class="date" colspan="2">09:00</th>
-            <th class="date" colspan="2">10:00</th>
-            <th class="date" colspan="2">11:00</th>
-            <th class="date" colspan="2">12:00</th>
-            <th class="date" colspan="2">13:00</th>
-            <th class="date" colspan="2">14:00</th>
-            <th class="date" colspan="2">15:00</th>
-            <th class="date" colspan="2">16:00</th>
-            <th class="date" colspan="2">17:00</th>
-            <th class="date" colspan="2">18:00</th>
-            <th class="date" colspan="2">19:00</th>
-            <th class="date" colspan="2">20:00</th>
-            <th class="date" colspan="2">21:00</th>            
-         </tr>
- </thead>
-
-{% for boat, overviewday in bookings %}
-  <TR>
-    <TD style="text-align: left;"><span class='tinyfont'>{{ boat.type.name }}</span><br><a href='/boote/boot/{{ boat.pk }}'><i class="fa fa-ship"></i>{{ boat.name }}</a></TD>   
-    
-    
-    {% for userid, usertag, type in overviewday %}
-    	{% if userid %}
-      	<TD class='{{ type }}' title="{{ usertag }}"><i class="fa fa-lock" alt="{{ userid }}" ><br><span class="tinyfont">{{ type }}</span></TD>
-      	{% else %}
-      	<TD class='booked0'>&nbsp</TD>
-      	{% endif %}
-    {% endfor %}
-  </TR>
-{% endfor %}
-</TABLE>
-
-
-
-
-<h2>Verfügbarkeit - Woche</h2>
-<p>
-Verfügbarkeit von Vereinsbooten in den kommenden 7 Tagen.
-</p>
+<p>Verfügbarkeit von Vereinsbooten in den kommenden 7 Tagen. Such dir ein Termin und ein Boot aus.</p>
 
 <TABLE id='boatslist'>
  	<thead>
