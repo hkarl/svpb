@@ -4,7 +4,7 @@
 {% load crispy_forms_tags %}
 
 {% block branding %}
-Reservationen
+Reservierungen
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@ Reservationen
 
 {% if bookings %}
 <p>
-Hier alle aktuellen Reservationen:
+Hier alle aktuellen Reservierungen:
 </p>
 
 <table id="boatslist">
@@ -25,7 +25,8 @@ Hier alle aktuellen Reservationen:
         	<th>Datum</th>
             <th>Zeitraum</th>
             <th>Typ</th>
-            <th>Status</th>            
+            <th>Status</th>
+            <th>Notified</th>            
         </tr>
     </thead>
 
@@ -42,11 +43,17 @@ Hier alle aktuellen Reservationen:
   		<td>Storniert</td>
   	{% endif %}
   	
+  	{% if b.notified = 1 %}
+  		<td><i class="fa fa-paper-plane" aria-hidden="true"></i></td>
+  	{% else %}
+  		<td>-</td>
+  	{% endif %}
+  	
   </tr>
 {% endfor %}
 </table>
 {% else %}
-    Du hast aktuell keine Reservationen. <br> <a href="/boote/booking/overview/">Such dir ein Boot und Termin aus.</a>
+    Du hast aktuell keine Reservierungen. <br> <a href="/boote/booking/overview/">Such dir ein Boot und Termin aus.</a>
 {% endif %}
 
 
