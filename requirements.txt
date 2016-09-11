@@ -12,13 +12,12 @@ XlsxWriter==0.6.6
 Xlsxcursor==0.1.7
 aafigure==0.5
 ansible==1.8.1
-apt-xapian-index==0.45
 argh==0.26.2
 argparse==1.2.1
 bpython==0.12
-chardet==2.0.1
+chardet==2.3.0
 colorama==0.2.5
-defer==1.0.6
+defer==1.0.4
 django-admin-bootstrapped==1.6.4
 django-autoslug==1.6.1
 django-chartit==0.1
