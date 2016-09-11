@@ -2,19 +2,51 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
 from datetime import datetime, timedelta
 import time 
+from django.template.loader import get_template
+from django.template import Context
 from django.shortcuts import render
 from .models import Boat, BoatType, Booking, BoatIssue
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.db.models import Q
 from .forms import NewReservationForm, NewClubReservationForm, BootIssueForm, BootEditForm
+from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import EmailMessage
+
+def booking_today(request):
+    template = loader.get_template('boote/booking_today.html')
+
+    user = request.user
+
+    overview = []
+    for boat in Boat.objects.filter(club_boat = True):
+        overview.append([boat.name, boat.type.name, boat.pk, boat.getBookings7days()])
+ 
+    bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
+    
+    bookings = []
+    for boat in Boat.objects.filter(club_boat = True):
+        bookings.append([boat, boat.getDetailedBookingsToday])
+
+    dates = []
+    d = datetime.now()
+    for i in range(0,7):
+        dates.append([d.strftime("%A"), d.strftime("%d. %b")])
+        d = d + timedelta(days=1)
+
+    context = RequestContext(request, 
+                            {'booking_overview': overview, 
+                             "booking_dates":dates, 
+                             "bookings":bookings, 
+                             'date': datetime.now().strftime("%A, %d. %b"),
+                             })
+    
+    return HttpResponse(template.render(context))
 
 def booking_overview(request):
     template = loader.get_template('boote/booking_overview.html')
 
     user = request.user
-    user.set_password("test123")
-    user.save()
 
     overview = []
     for boat in Boat.objects.filter(club_boat = True):
@@ -106,7 +138,6 @@ def boot_detail(request, boot_pk):
     ismyboat = (user == boat.owner)
     numIssues = boat.getNumberOfIssues
     
-    
     context = RequestContext(request, {        
         'boot': boat,
         'user': user,
@@ -163,7 +194,6 @@ def booking_boot(request, boot_pk):
                 b.save()
                 # redirect to a new URL:
                 return HttpResponseRedirect(reverse('booking-my-bookings'))            
-
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -331,6 +361,7 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
                 boat.type = form.cleaned_data['type']
                 boat.name = form.cleaned_data['name']
                 boat.remarks = form.cleaned_data['remarks']
+                boat.briefing = form.cleaned_data['briefing']
                 boat.club_boat = form.cleaned_data['club_boat']
                 boat.booking_remarks = form.cleaned_data['booking_remarks']
                 if form.cleaned_data['photo'] is not None:
@@ -340,7 +371,7 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
                 boat.save()
                 
                 # redirect to a new URL:
-                return redirect('boot-edit-list')
+                return redirect('boot-detail', boat.pk)
             else:
                 # error
                 context = RequestContext(request, {
