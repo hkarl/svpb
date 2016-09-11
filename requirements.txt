@@ -12,6 +12,7 @@ XlsxWriter==0.6.6
 Xlsxcursor==0.1.7
 aafigure==0.5
 ansible==1.8.1
+# apt-xapian-index==0.45
 argh==0.26.2
 argparse==1.2.1
 bpython==0.12
