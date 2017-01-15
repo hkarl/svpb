@@ -1568,6 +1568,9 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
                 messages.error(u'Error 13: ' + aufgabe.__unicode__()
                                + u' - ' + u.__unicode__())
 
+            newEntry['anzahl'] = (zuteilungThisUser[:1].get().zusatzhelfer,
+                                  'anzahl_{}'.format(str(u.id)))
+
             stundenzuteilung = (zuteilungThisUser[:1].get().
                                 stundenzuteilung_set.values_list('uhrzeit',
                                                                  flat=True))
@@ -1641,6 +1644,20 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
 
         # any values to add?
         for v in self.request.POST:
+
+            if v.startswith('anzahl'):
+                # what is the anzahl value?
+                anzahl = int(self.request.POST.get(v))
+                # print("anzahl: ", anzahl)
+
+                _tmp, uid = v.split('_')
+                zuteilung = models.Zuteilung.objects.get (ausfuehrer__id = uid,
+                                                          aufgabe__id = aufgabeid)
+
+                if zuteilung.zusatzhelfer <> anzahl:
+                    zuteilung.zusatzhelfer = anzahl
+                    zuteilung.save()
+
             if v.startswith('uhrzeit_'):
                 tag, uid, uhrzeit = v.split('_')
 
