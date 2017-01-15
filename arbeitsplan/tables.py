@@ -163,9 +163,12 @@ class IntegerEditColumn(django_tables2.columns.Column):
                            )
         except Exception as e:
             # sometimes, we get a None as value; not sure why and when :-/ ? 
-            # print "Exc: ", e
+            # print "Exc2: ", e
+            # print value
             res = ""
-            
+
+            # print "IEC: ", res
+
         return res
     
 
@@ -336,7 +339,7 @@ def StundenplanEditFactory(l, aufgabe):
 
     # valus obtained from views/StundenplaeneEdit: 
     newattrs['anzahl'] = IntegerEditColumn(accessor='anzahl',
-                                           verbose_name="Anzahl",
+                                           verbose_name="Anzahl ZUSÄTZLICHE Helfer",
                                            empty_values=(),)
     
     for i in range(models.Stundenplan.startZeit,
@@ -350,8 +353,9 @@ def StundenplanEditFactory(l, aufgabe):
             benoetigt = 0
         # print benoetigt
 
-        zugewiesen = aufgabe.zuteilung_set.filter(stundenzuteilung__uhrzeit=i).count()
-        # zugewiesen = aufgabe.zugeteilte_Anzahl(i)
+        zugewiesen = sum([z.zusatzhelfer + 1
+                          for z in aufgabe.zuteilung_set.filter(stundenzuteilung__uhrzeit=i)])
+
         # print zugewiesen
 
         newattrs['u'+str(i)] = ValuedCheckBoxColumn(accessor='u'+str(i),
@@ -924,7 +928,9 @@ def ZuteilungsTableFactory (tuple):
                                                                                  ))
                                              if a.has_Stundenplan()
                                              else ''
-                                                )
+                                            )  + (u"<br><b>UNVOLLSTÄNDIG</b>"
+                                                  if not a.stundenplan_complete()
+                                                  else "<br>ok" )
                                     ))),
             orderable=False)
     # TODO: in verbose_name hier noch Anzahl benötigt, anzahl zugeteilt eintragen

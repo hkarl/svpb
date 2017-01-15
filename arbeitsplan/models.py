@@ -344,6 +344,19 @@ class Aufgabe(models.Model):
 
         return self.stundenplan_set.filter(anzahl__gt=0).count() > 0
 
+    def stundenplan_complete(self):
+        """Is there enough manpower for every hour in the Stundenplan?"""
+        stundenplan = self.stundenplan_set.filter(anzahl__gt=0)
+        if stundenplan.count() > 0:
+            for s in stundenplan:
+                print s, type(s)
+                zuteilungen = self.zuteilung_set.filter(stundenzuteilung__uhrzeit=s.uhrzeit)
+                zugewiesen = sum([z.zusatzhelfer +1 for z in zuteilungen])
+                if zugewiesen < s.anzahl:
+                    return False
+
+        return True
+
     def is_open(self):
         """Do enough Zuteilungen already exist for this Aufgabe?"""
 
@@ -435,6 +448,7 @@ class Zuteilung (models.Model):
     aufgabe = models.ForeignKey(Aufgabe)
     ausfuehrer = models.ForeignKey(User)
     automatisch = models.BooleanField(default=False)
+    zusatzhelfer = models.IntegerField(default=0)
 
     def __unicode__(self):
         # print self.stundenzuteilung_set.all() 
