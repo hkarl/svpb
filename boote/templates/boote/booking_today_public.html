@@ -25,7 +25,7 @@
 #boatslist th.date:nth-of-type(2n) {
 	background: #33678f;
 }
-
+{{ userid }}
 #boatslist th.date{
   background: #537E8C; 
   text-align: left;   
@@ -185,7 +185,7 @@ window.onload=initialize
     <TD style='font-size:70%'> <b>{{ boat.name }}</b><br>{{ boat.type.name }}</span> </TD>
      {% for userid, usertag, type in overviewday %}
     	{% if userid %}
-      	<TD class='{{ type }}'><i class="fa fa-lock"><br><span class="tinyfont">{{ type }}</span></TD>
+      	<TD class='{{ type }}'><i class="fa fa-lock"><br><span class="tinyfont">{{ type }}<br>{{ userid }}</span></TD>
       	{% else %}
       	<TD class='booked0'>&nbsp</TD>
       	{% endif %}

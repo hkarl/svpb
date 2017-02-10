@@ -43,7 +43,7 @@ Falls keine Regatta (<b style='background: #FF5151;'>REG</b>) oder Ausbildung (<
     
     {% for userid, usertag, type in overviewday %}
     	{% if userid %}
-      	<TD class='{{ type }}' title="{{ usertag }}"><i class="fa fa-lock" alt="{{ userid }}" ><br><span class="tinyfont">{{ type }}</span></TD>
+      	<TD class='{{ type }}' title="{{ usertag }}"><i class="fa fa-lock" alt="{{ userid }}" ><br><span class="tinyfont">{{ type }}<br>{{ userid }}</span></TD>
       	{% else %}
       	<TD class='booked0'>&nbsp</TD>
       	{% endif %}

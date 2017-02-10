@@ -105,7 +105,7 @@ Verfügbarkeiten von dem Vereinsboot "{{ boot.name }}" in den kommenden 7 Tagen.
 	    <TD style="font-size: 80%"> <b>{{ weekday }}</b> <br>({{ date }})</TD>
    	{% for userid, type in overviewday %}
     		{% if userid %}
-      		<TD class='{{ type }}' id='cell_{{ rowno }}_{{ forloop.counter }}'><i class="fa fa-lock" alt="{{ userid }}"><br><span class="tinyfont">{{ type }}</span></TD>
+      		<TD class='{{ type }}' id='cell_{{ rowno }}_{{ forloop.counter }}'><i class="fa fa-lock" alt="{{ userid }}"><br><span class="tinyfont">{{ type }}<br>{{ userid }}</span></TD>
       		{% else %}
       		<TD class='booked0' id='cell_{{ rowno }}_{{ forloop.counter }}'>&nbsp</TD>
       		{% endif %}
