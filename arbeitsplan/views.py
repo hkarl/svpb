@@ -338,8 +338,8 @@ class AufgabenUpdate (SuccessMessageMixin, isVorstandMixin, UpdateView):
                                              m.__unicode__()))
 
                         # TODO: das abschalten, nur für Testzwekce!
-                        m.mitglied.zuteilungBenachrichtigungNoetig = True
-                        m.mitglied.save()
+                        # m.mitglied.zuteilungBenachrichtigungNoetig = True
+                        # m.mitglied.save()
             except Exception as e:
                 # print e, form.cleaned_data['schnellzuweisung'], self.object
                 messages.error(self.request,
