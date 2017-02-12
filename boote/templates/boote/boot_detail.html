@@ -23,20 +23,24 @@ Boot
 
 <div id='maindesc'>
 <dl>
-  <dt>Bootstype</dt><dd><a href="{{ boot.type.url }}" target="_blank">{{ boot.type.name }}</a></dd>
+  <dt>Bootstyp</dt><dd><a href="{{ boot.type.url }}" target="_blank">{{ boot.type.name }}</a></dd>
   <dt>Bootsname</dt><dd>{{ boot.name }}</dd>
-  <dt>Länge üA</dt><dd>{{ boot.type.length }}</dd>
-  <dt>Breite üA</dt><dd>{{ boot.type.beam }}</dd>
+  <dt>Länge/Breite</dt><dd>{{ boot.type.length }} / {{ boot.type.beam }}</dd>
   <dt>Tiefgang</dt><dd>{{ boot.type.draught }}</dd>
   <dt>Beschreibung</dt><dd>{{ boot.remarks }}</dd>
-  <dt>Hinweise</dt><dd>{{ boot.booking_remarks }}</dd>
-  <dt>Bootspate</dt><dd>{{ boot.owner.first_name }} {{ boot.owner.last_name }} (<a href="mailto:{{ boot.owner.email }}">{{ boot.owner.email }}</a>)</dd>
+  <dt>Hinweise</dt><dd>{{ boot.booking_remarks }}
+  {% if boot.briefing %}
+  <br><i>Einweisung (erforderlich): {{ boot.briefing }}</i>
+  {% endif %}
+  </dd> 
+  
+  <dt>Bootspate</dt><dd>{{ boot.owner.first_name }} {{ boot.owner.last_name }} (<a href="mailto:{{ boot.owner.email }}">{{ boot.owner.email }}</a>)</dd>  
  </dl>
 </div>
 
 {% if boot.club_boat %}
 <p>
-Falls Du gerne auf diesem Boot segeln möchtest, reserviere  einen Termin am Lippesee (maximal 2 Stunden).</br>
+Falls du gerne auf diesem Boot segeln möchtest, reserviere bitte einen Termin am Lippesee (maximal 3 Stunden).</br>
 <a href="/boote/booking/boot/{{ boot.pk }}"  class="btn btn-primary">Termin reservieren</a><br>
 </p>
 {% endif %}    
@@ -44,9 +48,9 @@ Falls Du gerne auf diesem Boot segeln möchtest, reserviere  einen Termin am Lip
 
 {% if boot.club_boat %}
 <p>
-Hast Du kleinere Probleme an Boot entdeckt, bitte trage das hier ein - der Bootspate wird sich darum kümmern.</br>
+Hast Du kleinere Probleme am Boot entdeckt, melde diese bitte hier über <em>Meldungen</em>. Der Bootspate wird sich drum kümmern.</br> 
 {% if numIssues %}
-	<span style='color: red'><i class="fa fa-cog"></i> Es gibt schon offene Meldungen: {{ numIssues }}</span></br>
+	<span style='color: red'><i class="fa fa-cog"></i> Offene Meldungen: {{ numIssues }}</span></br>
 {% endif %}
 	<a href="/boote/boot_issues/{{ boot.pk }}/" class="btn btn-primary">Meldungen</a>  
 </p>
@@ -60,6 +64,6 @@ Du kannst auch alle Informationen aktualisieren</br>
 {% endif %}
 
 
-<p style="font-size: 80%">* Falls Informationen über Vereinsboot "{{ boot.name }}" auf diese Seite nicht aktuell sind, gib es an <b>{{ boot.owner.first_name }} {{ boot.owner.last_name }}</b> bescheid. Er kann es für uns alle korrigieren.</p>
+<p style="font-size: 80%">* Falls Informationen über Vereinsboote "{{ boot.name }}" auf diese Seite nicht aktuell sind, gib dem Administrator <b>{{ boot.owner.first_name }} {{ boot.owner.last_name }}</b> bescheid. Er kann es korrigieren.</p>
 
 {% endblock %}

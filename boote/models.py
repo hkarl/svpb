@@ -1,8 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date, datetime, timedelta
+#from django.core.files.storage import FileSystemStorage
+
 import uuid
 
+#image_storage = FileSystemStorage(location='/static/boote/boat_gallery')
 
 # Create your models here.
 
@@ -20,11 +23,14 @@ def boat_img_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'boats_gallery/{1}{2}'.format(instance.pk, unique_filename, filename[-4:])
 
+
+
 class Boat(models.Model):
     owner = models.ForeignKey(User)
     type = models.ForeignKey(BoatType)
     photo = models.ImageField(upload_to=boat_img_path, null=True)
     name = models.CharField(max_length=30)
+    briefing = models.CharField(max_length=2000, null=True, default='')
     remarks = models.CharField(max_length=2000, null=True)
     club_boat = models.BooleanField(default=False)
     booking_remarks = models.CharField(max_length=2000, null=True, default='')     
@@ -75,6 +81,7 @@ class Booking(models.Model):
     date = models.DateField()
     time_from = models.TimeField()
     time_to = models.TimeField()
+    notified = models.BooleanField(default=False)
 
 class BoatIssue(models.Model):
     boat = models.ForeignKey(Boat)

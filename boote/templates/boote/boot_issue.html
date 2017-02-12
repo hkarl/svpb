@@ -37,7 +37,7 @@ Schadensmeldungen {{ boot.name }} ({{ boot.type.name }})
   	{% endif %}
   	<td style="text-align: left; vertical-align: top; font-style:italic;">{{ issue.reported_descr }}</td>
   	{% if issue.status = 1 %} 	
-  		<td><a href='/boote/boot_fix_issue/{{ issue.pk }}/'  class="btn btn-primary" onclick='return window.confirm("Soll diese Schadensmeldung (erstellt von {{ issue.reported_by.first_name }} {{ issue.reported_by.last_name }} am {{ issue.reported_date }}) als Erledigt markiert werden?");'>Als Erledigt markieren</a></td>
+  		<td><a href='/boote/boot_fix_issue/{{ issue.pk }}/'  class="btn btn-primary" onclick='return window.confirm("Soll diese Schadensmeldung (erstellt von {{ issue.reported_by.first_name }} {{ issue.reported_by.last_name }} am {{ issue.reported_date }}) als erledigt markiert werden?");'>Als erledigt markieren</a></td>
   	{% else %}
   	 	<td>-</td>
   	{% endif %}
