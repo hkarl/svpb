@@ -24,19 +24,15 @@
 </head>
 
 <body>
-<p class='welcome'>
-Schadensmeldung<br>
-</p>
 
 <p>
  <b>Boot:</b> <a href='http://mein.svpb.de/boote/boot/{{ issue.boat.pk }}'>{{ issue.boat.type.name }} <i>"{{ issue.boat.name }}"</i></a><br>
- <b>Datum:</b> {{ issue.reported_date }}  <br>
- <b>Gemeldet von:</b> {{ issue.reported_by.first_name }} {{ issue.reported_by.last_name }} <br> 
- <b>Status:</b> {{ issue.status }}<br>
+ <b>Gemeldet von:</b> {{ issue.reported_by.first_name }} {{ issue.reported_by.last_name }} ({{ issue.reported_by.email }})<br>
+ <b>Datum:</b> {{ issue.reported_date }} 
 </p>
 
 <p class='welcome'>
-Beschreibung<br>
+Schadensmeldung<br>
 </p>
 
 <p>

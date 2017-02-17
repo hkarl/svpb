@@ -63,15 +63,14 @@ class Command(BaseCommand):
             try:
                 c = Context({ 'issue': issue})
                 payload = t.render(c)
-                sbj = '[SVPB]  Schadensmeldung - ' + issue.boat.type.name + " \"" + issue.boat.name + "\"" 
+                sbj = '[SVPB] Schadensmeldung - ' + issue.boat.type.name + " \"" + issue.boat.name + "\"" 
                 self.stdout.write('From: ' +  settings.DEFAULT_FROM_EMAIL)
-                self.stdout.write('To: ' + issue.boat.owner.email)
-                self.stdout.write('CC: ' + issue.reported_by.email)
+                self.stdout.write('To: ' + issue.boat.owner.email)                
                 self.stdout.write('Subject: ' + sbj)
                 self.stdout.write('Content:\n\r' + payload)
                 
                 mail.send(
-                            [issue.boat.owner.email], 
+                            [issue.boat.owner.email, issue.reported_by.email], 
                             settings.DEFAULT_FROM_EMAIL,
                             subject=sbj,                  
                             html_message=payload,
