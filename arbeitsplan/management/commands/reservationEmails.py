@@ -59,7 +59,7 @@ class Command(BaseCommand):
         for issue in models.BoatIssue.objects.filter(notified = False):
             c = Context({ 'issue': issue})
             payload = t.render(c)
-            sbj = '[SVPB]  Schadensmeldung - ' + issue.boat.type.name + " \"" + booking.boat.name + "\"" 
+            sbj = '[SVPB]  Schadensmeldung - ' + issue.boat.type.name + " \"" + issue.boat.name + "\"" 
             self.stdout.write('From: ' +  settings.DEFAULT_FROM_EMAIL)
             self.stdout.write('To: ' + issue.boat.owner.email)
             self.stdout.write('CC: ' + issue.reported_by.email)
@@ -67,7 +67,7 @@ class Command(BaseCommand):
             self.stdout.write('Content:\n\r' + payload)
             
             mail.send(
-                  [booking.user.email], 
+                  [issue.boat.owner.email], 
                   settings.DEFAULT_FROM_EMAIL,
                   subject=sbj,                  
                   html_message=payload,
