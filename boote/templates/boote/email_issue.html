@@ -24,20 +24,16 @@
 </head>
 
 <body>
-
-<p>
- <b>Boot:</b> <a href='http://mein.svpb.de/boote/boot/{{ issue.boat.pk }}'>{{ issue.boat.type.name }} <i>"{{ issue.boat.name }}"</i></a><br>
- <b>Bootspate:</b> {{ issue.boat.owner.first_name }} {{ issue.boat.owner.last_name }} ({{ issue.boat.owner.email }})<br>  
-</p>
-
 <p class='welcome'>
 Schadensmeldung<br>
 </p>
 
 <p>
+<b>Boot:</b> <a href='http://mein.svpb.de/boote/boot/{{ issue.boat.pk }}'>{{ issue.boat.type.name }} <i>"{{ issue.boat.name }}"</i></a><br>
+<b>Bootspate:</b> {{ issue.boat.owner.first_name }} {{ issue.boat.owner.last_name }} ({{ issue.boat.owner.email }})<br>  
 <b>Gemeldet von:</b> {{ issue.reported_by.first_name }} {{ issue.reported_by.last_name }} ({{ issue.reported_by.email }})<br>
-<b>Datum:</b> {{ issue.reported_date }}
-<b>Beschreibung:</b> {{ issue.reported_descr }}
+<b>Datum:</b> {{ issue.reported_date }}<br>
+<b>Beschreibung:</b> {{ issue.reported_descr }}<br>
 <b>Link:</b> <a href='http://mein.svpb.de/boote/boot_issues/{{ issue.boat.pk }}/'>In mein.svpb.de anzeigen</a>
 </p>
 <br>
