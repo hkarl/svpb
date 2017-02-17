@@ -28,18 +28,19 @@
 Schadensmeldung<br>
 </p>
 
-<p>http://mein.svpb.de/boote/boot_issues/1/
- Boot: <a href='http://mein.svpb.de/boote/boot/{{ issue.boat.pk }}'>{{ issue.boat.type.name }} <i>"{{ issue.boat.name }}"</i></a><br>
- Datum: {{ issue.reported_date }}  <br>
- Gemeldet von: {{ issue.reported_by.first_name }} {{ issue.reported_by.last_name }} <br> 
- Status: {{ issue.reported_by.first_name }}<br>
+<p>
+ <b>Boot:</b> <a href='http://mein.svpb.de/boote/boot/{{ issue.boat.pk }}'>{{ issue.boat.type.name }} <i>"{{ issue.boat.name }}"</i></a><br>
+ <b>Datum:</b> {{ issue.reported_date }}  <br>
+ <b>Gemeldet von:</b> {{ issue.reported_by.first_name }} {{ issue.reported_by.last_name }} <br> 
+ <b>Status:</b> {{ issue.status }}<br>
 </p>
 
+<p class='welcome'>
+Beschreibung<br>
+</p>
 
 <p>
-<b>Beschreibung:</b><br>
 {{ issue.reported_descr }}
-
 </p>
 
 <p>
