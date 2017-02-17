@@ -35,46 +35,52 @@ class Command(BaseCommand):
         t = loader.get_template("boote/email_booking.html")        
         # get records        
         for booking in models.Booking.objects.filter(notified = False).order_by('-date'):
-            c = Context({ 'booking': booking})
-            payload = t.render(c)
-            sbj = '[SVPB] Reservation (' + booking.date.strftime('%d, %b %Y') + ') - ' + booking.boat.type.name + " \"" + booking.boat.name + "\"" 
-            self.stdout.write('From: ' +  settings.DEFAULT_FROM_EMAIL)
-            self.stdout.write('To: ' + booking.user.email)
-            self.stdout.write('Subject: ' + sbj)
-            self.stdout.write('Content:\n\r' + payload)
+            try:
+                c = Context({ 'booking': booking})
+                payload = t.render(c)
+                sbj = '[SVPB] Reservation (' + booking.date.strftime('%d, %b %Y') + ') - ' + booking.boat.type.name + " \"" + booking.boat.name + "\"" 
+                self.stdout.write('From: ' +  settings.DEFAULT_FROM_EMAIL)
+                self.stdout.write('To: ' + booking.user.email)
+                self.stdout.write('Subject: ' + sbj)
+                self.stdout.write('Content:\n\r' + payload)
             
-            mail.send(
-                  [booking.user.email], 
-                  settings.DEFAULT_FROM_EMAIL,
-                  subject=sbj,                  
-                  html_message=payload,
-            )
+                mail.send(
+                    [booking.user.email], 
+                    settings.DEFAULT_FROM_EMAIL,
+                    subject=sbj,                  
+                    html_message=payload,
+                )
             
-            booking.notified = True
-            booking.save()     
+                booking.notified = True
+                booking.save()
+            except:
+                print("Unexpected error ")     
             
         # EMAIL ISSUES
         t = loader.get_template("boote/email_issue.html")        
         # get records        
         for issue in models.BoatIssue.objects.filter(notified = False):
-            c = Context({ 'issue': issue})
-            payload = t.render(c)
-            sbj = '[SVPB]  Schadensmeldung - ' + issue.boat.type.name + " \"" + issue.boat.name + "\"" 
-            self.stdout.write('From: ' +  settings.DEFAULT_FROM_EMAIL)
-            self.stdout.write('To: ' + issue.boat.owner.email)
-            self.stdout.write('CC: ' + issue.reported_by.email)
-            self.stdout.write('Subject: ' + sbj)
-            self.stdout.write('Content:\n\r' + payload)
+            try:
+                c = Context({ 'issue': issue})
+                payload = t.render(c)
+                sbj = '[SVPB]  Schadensmeldung - ' + issue.boat.type.name + " \"" + issue.boat.name + "\"" 
+                self.stdout.write('From: ' +  settings.DEFAULT_FROM_EMAIL)
+                self.stdout.write('To: ' + issue.boat.owner.email)
+                self.stdout.write('CC: ' + issue.reported_by.email)
+                self.stdout.write('Subject: ' + sbj)
+                self.stdout.write('Content:\n\r' + payload)
+                
+                mail.send(
+                            [issue.boat.owner.email], 
+                            settings.DEFAULT_FROM_EMAIL,
+                            subject=sbj,                  
+                            html_message=payload,
+                            )
             
-            mail.send(
-                  [issue.boat.owner.email], 
-                  settings.DEFAULT_FROM_EMAIL,
-                  subject=sbj,                  
-                  html_message=payload,
-            )
-            
-            issue.notified = True
-            issue.save()  
+                issue.notified = True
+                issue.save()
+            except:
+                print("Unexpected error ")  
 
         call_command('send_queued_mail')
 
