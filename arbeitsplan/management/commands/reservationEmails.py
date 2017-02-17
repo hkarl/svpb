@@ -56,7 +56,7 @@ class Command(BaseCommand):
         # EMAIL ISSUES
         t = loader.get_template("boote/email_issue.html")        
         # get records        
-        for issue in models.BoatIssue.objects.filtered(notified = False):
+        for issue in models.BoatIssue.objects.filter(notified = False):
             c = Context({ 'issue': issue})
             payload = t.render(c)
             sbj = '[SVPB]  Schadensmeldung - ' + issue.boat.type.name + " \"" + booking.boat.name + "\"" 
