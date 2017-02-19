@@ -40,9 +40,7 @@ Boot
 
 {% if boot.club_boat %}
 <p>
-
-Falls Du gerne auf diesem Boot segeln möchtest, reserviere bitte einen Termin am Lippesee (maximal 3 Stunden).</br>
-
+Falls du gerne auf diesem Boot segeln möchtest, reserviere bitte einen Termin am Lippesee (maximal 3 Stunden).</br>
 <a href="/boote/booking/boot/{{ boot.pk }}"  class="btn btn-primary">Termin reservieren</a><br>
 </p>
 {% endif %}    
@@ -51,7 +49,6 @@ Falls Du gerne auf diesem Boot segeln möchtest, reserviere bitte einen Termin a
 {% if boot.club_boat %}
 <p>
 Hast Du kleinere Probleme am Boot entdeckt, melde diese bitte hier über <em>Meldungen</em>. Der Bootspate wird sich drum kümmern.</br> 
-
 {% if numIssues %}
 	<span style='color: red'><i class="fa fa-cog"></i> Offene Meldungen: {{ numIssues }}</span></br>
 {% endif %}
