@@ -92,3 +92,4 @@ class BoatIssue(models.Model):
     fixed_by = models.ForeignKey(User,related_name="user_fixing", null=True)
     fixed_date = models.DateField(null=True)
     fixed_descr = models.CharField(max_length=2000, null=True)
+    notified = models.BooleanField(default=False)
