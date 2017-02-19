@@ -1,0 +1,56 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" 
+  content="text/html; charset="UTF-8"/>
+  <title></title>
+  <style type="text/css">
+   body {
+       text-align: left;
+       color: #5f5f5f;       
+       width: 640px;
+       margin: auto;
+   }
+   
+   .welcome {
+   	font: 18px Arial,sans-serif;
+    color: #cc6600;
+    margin: 20px 20px 18px 0px;
+   }
+   
+   #bname {
+   	font-size: 150%;   	
+   }
+  </style>
+</head>
+
+<body>
+<p class='welcome'>
+Schadensmeldung<br>
+</p>
+
+<p>
+<b>Boot:</b> <a href='http://mein.svpb.de/boote/boot/{{ issue.boat.pk }}'>{{ issue.boat.type.name }} <i>"{{ issue.boat.name }}"</i></a><br>
+<b>Bootspate:</b> {{ issue.boat.owner.first_name }} {{ issue.boat.owner.last_name }} ({{ issue.boat.owner.email }})<br>  
+<b>Gemeldet von:</b> {{ issue.reported_by.first_name }} {{ issue.reported_by.last_name }} ({{ issue.reported_by.email }})<br>
+<b>Datum:</b> {{ issue.reported_date }}<br>
+<b>Beschreibung:</b> {{ issue.reported_descr }}<br>
+<b>Link:</b> <a href='http://mein.svpb.de/boote/boot_issues/{{ issue.boat.pk }}/'>In mein.svpb.de anzeigen</a>
+</p>
+<br>
+-- <br>
+Segler-Verein Paderborn	e.V.<br>
+Sennelagerstraße 58b<br>
+33106	Paderborn	<br>
+<br>
+E-Mail:	<a href='mailto:>mail@svpb.de'>mail@svpb.de</a><br>
+<a href='http://www.svpb.de'>www.svpb.de</a><br>
+<a href='http://www.facebook.com/SeglerVereinPaderborn<'>www.facebook.com/SeglerVereinPaderborn</a><br>
+----------------------------------------------------------------------------<br>
+Segler-Verein Paderborn.e.V.: Sitz: Paderborn | Amtsgericht Paderborn VR 638<br>
+Geschäftsführung: Dirk Hänsgen (Vorsitz), Karl-Ernst Laue, Dieter Peitz, Friedhelm Rüdiger<br>
+----------------------------------------------------------------------------<br>
+Diese E-Mail und eventuelle Anlagen können vertrauliche	und/oder rechtlich geschützte Informationen enthalten. Wenn Sie nicht der richtige Adressat sind oder	diese	E-Mail	irrtümlich	erhalten	haben,	informieren	Sie	bitte	sofort	den	Absender	und		vernichten	Sie	diese	E-Mail.	Das	unerlaubte	Kopieren	sowie	die	unbefugte	Weitergabe	dieser	EMail	sind	nicht	gestattet.<br>
+----------------------------------------------------------------------------<br>
+Bitte denken Sie über Ihre Verantwortung gegenüber der Umwelt nach, bevor Sie diese E-Mail ausdrucken!<br>
+</body>
+</html>
