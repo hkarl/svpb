@@ -1245,6 +1245,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             ##                     )
 
             tmp['zugeteilt'] = u.mitglied.zugeteilteStunden()
+            tmp['offen'] = u.mitglied.arbeitslast - tmp['zugeteilt']
 
             ztlist.append(tmp)
 
