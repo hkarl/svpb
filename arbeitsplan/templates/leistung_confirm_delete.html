@@ -1,0 +1,18 @@
+{% extends "bootstrap/bootstrap_arbeit.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block branding %}
+Aufgabe wirklich löschen?
+{% endblock %}
+
+{% block content %}
+<form action="" method="post">{% csrf_token %}
+<p>
+Sind Sie sicher, dass Sie die gemeldete  Leistung <b>{{ object }}</b> zurückziehen wollen?
+    Diese Aktion kann nicht rückgängig gemacht werden!
+</p>
+<input type="submit" value="Löschen!" />
+</form>
+
+{% endblock %}

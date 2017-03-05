@@ -1736,6 +1736,25 @@ class CreateLeistungView (CreateView):
 
 ####################################
 
+class DeleteLeistungView(DeleteView):
+    model = models.Leistung
+    success_url = reverse_lazy("homeArbeitsplan")
+    template_name = "leistung_confirm_delete.html"
+
+    def get_object(self):
+        obj = super(DeleteLeistungView, self).get_object()
+        print obj
+
+        if (not (self.request.user == obj.melder) or
+            (obj.status == models.Leistung.ACK) or
+            (obj.status == models.Leistung.NEG)):
+            from django.core.exceptions import PermissionDenied
+            raise PermissionDenied
+
+        return obj
+
+####################################
+
 
 class ListLeistungView (FilteredListView):
     title = "Arbeitsleistung auflisten"
