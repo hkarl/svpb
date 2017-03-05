@@ -1709,6 +1709,7 @@ class CreateLeistungView (CreateView):
     model = models.Leistung
     form_class = forms.CreateLeistungForm
     template_name = "arbeitsplan_createLeistung.html"
+    success_url = reverse_lazy("homeArbeitsplan")
 
     def get_form_kwargs(self):
 
@@ -1729,7 +1730,7 @@ class CreateLeistungView (CreateView):
 
         # print "saved leistung"
 
-        return HttpResponseRedirect(self.success_url)
+        return HttpResponseRedirect(CreateLeistungView.success_url)
 
 # class CreateLeistungDritteView (CreateView):
 
