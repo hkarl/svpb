@@ -899,6 +899,10 @@ def ZuteilungsTableFactory (tuple):
     attrs['zugeteilt'] = django_tables2.Column(verbose_name=
                                                "Bereits zugeteilt (h)")
 
+    attrs['offen']  = django_tables2.Column(verbose_name=
+                                               "Noch zuzuteilen (h)")
+
+
     for a in aufgabenQs:
         tag = (unicodedata.normalize('NFKD',
                                     a.aufgabe).encode('ASCII', 'ignore')
