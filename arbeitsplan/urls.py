@@ -133,6 +133,10 @@ urlpatterns = patterns('',
          active_and_login_required(arbeitsplan.views.ListLeistungView.as_view()),
          name="arbeitsplan-leistungListe",),
 
+    url (r'^leistungDelete/(?P<pk>[0-9]+)/$',
+         active_and_login_required(arbeitsplan.views.DeleteLeistungView.as_view()),
+                                   name="arbeitsplan-leistungDelete",),
+
     url (r'^salden/$',
          active_and_login_required(arbeitsplan.views.Salden.as_view()),
          name="arbeitsplan-salden",),

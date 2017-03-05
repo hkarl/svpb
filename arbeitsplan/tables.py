@@ -961,11 +961,27 @@ class LeistungTable(django_tables2.Table):
     aufgabe = django_tables2.Column(accessor="aufgabe.aufgabe",
                                     verbose_name="Aufgabe")
 
+    id = django_tables2.LinkColumn('arbeitsplan-leistungDelete',
+                                         args=[A('pk')],
+                                         verbose_name="Zurückziehen?")
+
+    def render_id(self, record):
+        if ((record.status == models.Leistung.ACK) or
+            (record.status == models.Leistung.NEG)):
+            return "---"
+        else:
+            return mark_safe(u'<a href="{}">Zurückziehen</a>'.format(
+                reverse('arbeitsplan-leistungDelete', args=[record.id])
+            ))
+
+
     class Meta:
         model = models.Leistung
         attrs = {"class": "paleblue"}
         fields = (  # 'melder_last', 'melder_first',
-                    'aufgabe', 'wann', 'zeit',
+                    'aufgabe',
+                    'id',
+                    'wann', 'zeit',
                     'status',
                     'bemerkung', 'bemerkungVorstand')
 

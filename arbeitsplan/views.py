@@ -1709,6 +1709,7 @@ class CreateLeistungView (CreateView):
     model = models.Leistung
     form_class = forms.CreateLeistungForm
     template_name = "arbeitsplan_createLeistung.html"
+    success_url = reverse_lazy("homeArbeitsplan")
 
     def get_form_kwargs(self):
 
@@ -1729,9 +1730,28 @@ class CreateLeistungView (CreateView):
 
         # print "saved leistung"
 
-        return HttpResponseRedirect(self.success_url)
+        return HttpResponseRedirect(CreateLeistungView.success_url)
 
 # class CreateLeistungDritteView (CreateView):
+
+####################################
+
+class DeleteLeistungView(DeleteView):
+    model = models.Leistung
+    success_url = reverse_lazy("homeArbeitsplan")
+    template_name = "leistung_confirm_delete.html"
+
+    def get_object(self):
+        obj = super(DeleteLeistungView, self).get_object()
+        print obj
+
+        if (not (self.request.user == obj.melder) or
+            (obj.status == models.Leistung.ACK) or
+            (obj.status == models.Leistung.NEG)):
+            from django.core.exceptions import PermissionDenied
+            raise PermissionDenied
+
+        return obj
 
 ####################################
 
