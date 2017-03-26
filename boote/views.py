@@ -73,6 +73,16 @@ def booking_overview(request):
     
     return HttpResponse(template.render(context))
 
+def booking_training_public(request):
+    template = loader.get_template('boote/booking_traning.html')
+    
+    bookings_train = Booking.objects.filter(status=1, type='AUS', date__gte=datetime.now()).order_by('date')
+   
+    context = RequestContext(request, {"bookings":bookings_train, 'date': datetime.now()})
+    
+    return HttpResponse(template.render(context))
+
+
 def booking_today_public(request):
     template = loader.get_template('boote/booking_today_public.html')
     
@@ -85,6 +95,7 @@ def booking_today_public(request):
     context = RequestContext(request, {"bookings":bookings, 'date': datetime.now()})
     
     return HttpResponse(template.render(context))
+
 
 def booking_all(request):
     template = loader.get_template('boote/booking_all.html')

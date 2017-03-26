@@ -1,0 +1,35 @@
+<head>
+<title>Ausbildung</title>
+<style>
+
+body {  
+ color: #36515c;
+    font-size: 16px;
+    font-family: "Helvetica W01 Cn";
+    line-height: 150%; 
+}
+
+ul li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+li {
+	display: list-item;
+    text-align: -webkit-match-parent;
+}
+</style>
+
+</head>
+
+
+<body>
+   <ul class='reserv-train'>
+   {% for booking in bookings %}
+     <li>
+	   <b>{{ booking.date }}</b>, {{ booking.boat.name }} {{ booking.boat.type.name }}, von {{ booking.time_from }} bis {{ booking.time_to }} 
+     </li>
+   {% endfor %}
+   </ul>
+</body>
