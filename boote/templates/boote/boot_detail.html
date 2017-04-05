@@ -58,12 +58,12 @@ Hast Du kleinere Probleme am Boot entdeckt, melde diese bitte hier über <em>Mel
 
 {% if ismyboat %}
 <p>
-Du kannst auch alle Informationen aktualisieren</br>
+Du hast die Berechtigung alle Informationen dieser Seite zu aktualisieren:</br>
 <a href="/boote/boot/edit/{{ boot.pk }}/" class="btn btn-primary">Bootseditor</a>
 </p>
 {% endif %}
 
 
-<p style="font-size: 80%">* Falls Informationen über Vereinsboote "{{ boot.name }}" auf diese Seite nicht aktuell sind, gib dem Administrator <b>{{ boot.owner.first_name }} {{ boot.owner.last_name }}</b> bescheid. Er kann es korrigieren.</p>
+<p style="font-size: 80%">* Falls Informationen über Vereinsboote "{{ boot.name }}" auf dieser Seite nicht aktuell sind, gib dem Administrator <b>{{ boot.owner.first_name }} {{ boot.owner.last_name }}</b> bescheid. Er wird es korrigieren.</p>
 
 {% endblock %}
