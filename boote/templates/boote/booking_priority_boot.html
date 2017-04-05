@@ -4,7 +4,7 @@
 {% load crispy_forms_tags %}
 
 {% block branding %}
-Regta- und Ausbildungstermine
+Regatta- und Ausbildungstermine
 {% endblock %}
 
 {% block content %}
@@ -64,7 +64,7 @@ Als Vorstandsmitglied bist du berechtigt ein Regatta- oder Ausbildung-Termin zu 
 		<td><span class="tinyfont">{{ b.user.first_name }} {{ b.user.last_name }}</span></td>
 		<td>
 		{% if b.user = user %}
-			<a href="/boote/booking_remove/{{ b.id }}" class="btn btn-primary" onclick='return window.confirm("Möchtest Du deine Reservation für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Stornieren</a>
+			<a href="/boote/booking_remove/{{ b.id }}" class="btn btn-primary" onclick='return window.confirm("Möchtest Du deine Reservierung für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Ja, stornieren</a>
 		{% endif %}
 		</td>
 	</tr>
@@ -93,7 +93,7 @@ Als Vorstandsmitglied bist du berechtigt ein Regatta- oder Ausbildung-Termin zu 
 		<td><span class="tinyfont">{{ b.user.first_name }} {{ b.user.last_name }}</span></td>
 		<td>
 		{% if b.user = user %}
-			<a href="/boote/booking_remove/{{ b.id }}" class="btn btn-primary" onclick='return window.confirm("Möchtest Du deine Reservation für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'>Stornieren</a>
+			<a href="/boote/booking_remove/{{ b.id }}" class="btn btn-primary" onclick='return window.confirm("Möchtest Du deine Reservierung für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'> Ja, stornieren</a>
 		{% endif %}
 		</td>
 	</tr>
