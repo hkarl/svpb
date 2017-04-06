@@ -83,7 +83,7 @@ class NewReservationForm(forms.Form):
     res_start = forms.ChoiceField(label="Von",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=TIME)
     res_duration = forms.ChoiceField(label="Dauer",required=True, widget=forms.Select(attrs={"onChange":'showbooking()'}), choices=DURATION)
     
-    accepted_agb = forms.BooleanField(label="Ich akceptiere <a href='/static/boote/AlgemRegelnVereinsboote.pdf' target='_blank'>Allgemeine Regeln zur Nutzung der Vereinsboote</a>.", required=True)
+    accepted_agb = forms.BooleanField(label="Ich akzeptiere die <a href='/static/boote/AlgemRegelnVereinsboote.pdf' target='_blank'>Allgemeine Regeln zur Nutzung der Vereinsboote</a>. Datenschutzhinweis: Durch die Reservierung wird mein Vor- und Nachname fuer bestehende oder angehende Vereinsmitglieder im internen und geschuetzen Bereich auf mein.svpb.de und auf dem Tabletdisplay im Vereinshaus zugaenglich.", required=True)
     
     def __init__(self, *args, **kwargs):
         super(NewReservationForm, self).__init__(*args, **kwargs)
@@ -129,9 +129,9 @@ class NewReservationForm(forms.Form):
             raise forms.ValidationError("Bitte Dauer auswaehlen.")
         
         if (res_duration<30):
-            raise forms.ValidationError("Minimale Reservation von 30 Minuten moeglich.")
+            raise forms.ValidationError("Minimal sind 30 Minuten moeglich.")
         if (res_duration>180):
-            raise forms.ValidationError("Maximal 3 Stunden Reservation moeglich.")
+            raise forms.ValidationError("Maximal sind 3 Stunden moeglich.")
         
         end = start + timedelta(0,0,0,0,res_duration) # minutes                        
         res_end =  end            
@@ -188,7 +188,7 @@ class NewClubReservationForm(forms.Form):
             raise forms.ValidationError("Bitte Datum und End-Uhrzeit auswaehlen.")
         
         if start>=end:
-            raise forms.ValidationError("End muss nach dem Start sein.")
+            raise forms.ValidationError("Das Ende muss nach dem Start sein.")
         
 
 class BootIssueForm(forms.Form):    
@@ -234,7 +234,7 @@ class BootEditForm(forms.ModelForm):
                           'photo',
                     ),                   
                     Tab(
-                          'Reservationen',
+                          'Reservierung',
                           'club_boat',
                           'briefing',
                           'booking_remarks'
@@ -243,7 +243,7 @@ class BootEditForm(forms.ModelForm):
         ) 
         
         self.fields['booking_remarks'].required = False
-        self.fields['booking_remarks'].label = "Wichtige Hinweise (Reservation)"
+        self.fields['booking_remarks'].label = "Wichtige Hinweise (Reservierung)"
         
         self.fields['briefing'].required = False
         self.fields['briefing'].label = "Einweisung"
