@@ -1129,7 +1129,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
     <p>
     Hinweise:
     <ul>
-    <li> In den Feldern der Tabelle wird (neben dem Auswahlkreuzchen) in Klammern die Präferenz bzw. des Vorstands für diese Aufgabe angezeigt. </li>
+    <li> In den Feldern der Tabelle wird (neben dem Auswahlkreuzchen) in Klammern die Präferenz des Mitglieds bzw. des Vorstands für diese Aufgabe angezeigt. </li>
     </ul>
     """
 
@@ -1203,6 +1203,9 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             # filter out all veto'ed meldungen
             mQs = mQs.exclude(prefMitglied=models.Meldung.GARNICHT)
 
+            # TODO: Melzian-Diskussion: Vorstands-Vetos ausfiltern??? 
+            # mQs = mQs.exclude(prefVorstand=models.Meldung.GARNICHT)
+            
             for m in mQs:
                 tag = unicodedata.normalize('NFKD',
                                             m.aufgabe.aufgabe).encode('ASCII', 'ignore')
