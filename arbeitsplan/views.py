@@ -1129,9 +1129,9 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
     <p>
     Hinweise:
     <ul>
-    <li> In den Feldern der Tabelle wird (neben dem Auswahlkreuzchen) in Klammern die Präferenz des Mitglieds bzw. des Vorstands für diese Aufgabe angezeigt. </li>
+    <li> In den Feldern der Tabelle wird (neben dem Auswahlkreuzchen) in Klammern die Präferenz des Mitglieds bzw. des Vorstands für diese Aufgabe angezeigt. </br> Präferenzen: {} </li>
     </ul>
-    """
+    """.format(models.Meldung.praeferenzstring)
 
     discuss_text = """
     <li> mit -1 durch den Vorstand bewertete Meldungen ausfiltern!  </li>

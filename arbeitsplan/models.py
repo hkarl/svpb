@@ -409,6 +409,8 @@ class Meldung (models.Model):
         (GERNE, "Gerne!"),
         )
 
+    praeferenzstring = "; ".join(["{}: {}".format(n, s) for (n, s) in PRAEFERENZ] )
+        
     PRAEFERENZButtons = {
         GARNICHT: 'btn-default', # 'btn-mydefault', 
         GERNE: 'btn-default', # 'btn-mysuccess',
