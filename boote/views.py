@@ -145,8 +145,12 @@ def boot_liste(request):
 def boot_detail(request, boot_pk):
     template = loader.get_template('boote/boot_detail.html')
     boat = Boat.objects.get(pk=boot_pk)
-    user = request.user
+    user = request.user    
     ismyboat = (user == boat.owner)
+    for g in user.groups.all():
+        if g.name == "Vorstand":
+                ismyboat = True
+    
     numIssues = boat.getNumberOfIssues
     
     context = RequestContext(request, {        
@@ -355,6 +359,12 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
     user = request.user
     my_boats = Boat.objects.filter(owner=user)
     
+    adminUser = False
+    for g in user.groups.all():
+        if g.name == "Vorstand":
+                adminUser = True
+                my_boats = Boat.objects.filter(owner=user)
+    
     
     # PROCESSING USER INPUT 
     if request.method == 'POST':
@@ -367,7 +377,10 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
                     boat = Boat()
                     boat.owner = user
                 else:
-                    boat = Boat.objects.get(pk=boot_pk, owner=user)                                                 
+                    if adminUser:
+                        boat = Boat.objects.get(pk=boot_pk)
+                    else:                        
+                        boat = Boat.objects.get(pk=boot_pk, owner=user)                                                 
                                             
                 boat.type = form.cleaned_data['type']
                 boat.name = form.cleaned_data['name']
@@ -399,7 +412,10 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
         if new_boat:
             boat = Boat()
         else:
-            boat = Boat.objects.get(pk=boot_pk, owner=user)
+            if adminUser:
+                boat = Boat.objects.get(pk=boot_pk)
+            else:
+                boat = Boat.objects.get(pk=boot_pk, owner=user)
             
         form = BootEditForm(instance = boat)    
                     
