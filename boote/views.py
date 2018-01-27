@@ -264,9 +264,11 @@ def booking_priority_boot(request, new_booking=False):
                 
             if (not error_list):
                 # save new booking
-                boot = Boat.objects.get(pk=res_boat)
-                b = Booking(user=user, type=res_type, boat=boot, date=res_date, time_from=res_start, time_to=res_end)
-                b.save()
+                for b in res_boat:
+                    boot = Boat.objects.get(pk=b)
+                    b = Booking(user=user, type=res_type, boat=boot, date=res_date, time_from=res_start, time_to=res_end)
+                    b.save()
+                
                 # redirect to a new URL:
                 return HttpResponseRedirect(reverse('priority-booking-boot-list'))            
 

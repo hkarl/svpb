@@ -143,11 +143,12 @@ class NewClubReservationForm(forms.Form):
         CBOATS.append([cb.pk,cb.name + " (" + cb.type.name + ")"])  
     
     res_type = forms.ChoiceField(label="Reservations-Typ",required=True, widget=forms.Select(), choices=BOOKING_TYPE)
-    res_boat = forms.ChoiceField(label="Vereinsboot",required=True, widget=forms.Select(), choices=CBOATS)
+    res_boat = forms.MultipleChoiceField(label="Vereinsboot",required=True, widget=forms.CheckboxSelectMultiple, choices=CBOATS)    
     res_month = forms.ChoiceField(label="Monat",required=True, widget=forms.Select(), choices=MONTHS)
     res_day = forms.ChoiceField(label="Tag des Monats",required=True, widget=forms.Select(), choices=DAYS)
     res_start = forms.ChoiceField(label="Von",required=True, widget=forms.Select(), choices=TIME, initial='08:00')
     res_end = forms.ChoiceField(label="Bis",required=True, widget=forms.Select(), choices=TIME, initial='19:00')
+
     
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
