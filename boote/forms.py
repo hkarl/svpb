@@ -225,6 +225,7 @@ class BootEditForm(forms.ModelForm):
             TabHolder(
                     Tab(
                           'Hauptinformationen',
+                          'active',
                           'type',
                           'name',
                           'remarks',                          

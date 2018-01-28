@@ -30,6 +30,7 @@ class Boat(models.Model):
     type = models.ForeignKey(BoatType)
     photo = models.ImageField(upload_to=boat_img_path, null=True)
     name = models.CharField(max_length=30)
+    active = models.BooleanField(default=True)
     briefing = models.CharField(max_length=2000, null=True, default='')
     remarks = models.CharField(max_length=2000, null=True)
     club_boat = models.BooleanField(default=False)

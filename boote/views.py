@@ -19,13 +19,13 @@ def booking_today(request):
     user = request.user
 
     overview = []
-    for boat in Boat.objects.filter(club_boat = True):
+    for boat in Boat.objects.filter(club_boat = True, active = True):
         overview.append([boat.name, boat.type.name, boat.pk, boat.getBookings7days()])
  
     bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
     
     bookings = []
-    for boat in Boat.objects.filter(club_boat = True):
+    for boat in Boat.objects.filter(club_boat = True, active = True):
         bookings.append([boat, boat.getDetailedBookingsToday])
 
     dates = []
@@ -49,13 +49,13 @@ def booking_overview(request):
     user = request.user
 
     overview = []
-    for boat in Boat.objects.filter(club_boat = True):
+    for boat in Boat.objects.filter(club_boat = True, active = True):
         overview.append([boat.name, boat.type.name, boat.pk, boat.getBookings7days()])
  
     bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
     
     bookings = []
-    for boat in Boat.objects.filter(club_boat = True):
+    for boat in Boat.objects.filter(club_boat = True, active = True):
         bookings.append([boat, boat.getDetailedBookingsToday])
 
     dates = []
@@ -131,11 +131,11 @@ def boot_liste(request):
     user = request.user
     
     boots_verein = []
-    for boat in Boat.objects.filter(club_boat = True).order_by('-type'):
+    for boat in Boat.objects.filter(club_boat = True, active = True).order_by('-type'):
         boots_verein.append([boat, boat.getNumberOfIssues])
     
     boots_andere = []
-    for boat in Boat.objects.filter(club_boat = False).order_by('-type'):
+    for boat in Boat.objects.filter(club_boat = False, active = True).order_by('-type'):
         boots_andere.append([boat])
         
     context = RequestContext(request, {'boots_verein': boots_verein,'boots_andere': boots_andere})
@@ -365,7 +365,7 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
     for g in user.groups.all():
         if g.name == "Vorstand":
                 adminUser = True
-                my_boats = Boat.objects.filter(owner=user)
+                my_boats = Boat.objects.filter()
     
     
     # PROCESSING USER INPUT 
@@ -386,6 +386,7 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
                                             
                 boat.type = form.cleaned_data['type']
                 boat.name = form.cleaned_data['name']
+                boat.active = form.cleaned_data['active']
                 boat.remarks = form.cleaned_data['remarks']
                 boat.briefing = form.cleaned_data['briefing']
                 boat.club_boat = form.cleaned_data['club_boat']
