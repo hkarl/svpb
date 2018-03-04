@@ -149,7 +149,7 @@ def boot_detail(request, boot_pk):
     ismyboat = (user == boat.owner)
     for g in user.groups.all():
         if g.name == "Vorstand":
-                ismyboat = True
+            ismyboat = True
     
     numIssues = boat.getNumberOfIssues
     
@@ -364,51 +364,51 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
     adminUser = False
     for g in user.groups.all():
         if g.name == "Vorstand":
-                adminUser = True
-                my_boats = Boat.objects.filter()
+            adminUser = True
+            my_boats = Boat.objects.filter()
     
     
     # PROCESSING USER INPUT 
     if request.method == 'POST':
-            # create a form instance and populate it with data from the request:            
-            form = BootEditForm(request.POST, request.FILES)            
-            # check whether it's valid:
-            if form.is_valid():            
-                # process           
-                if new_boat:
-                    boat = Boat()
-                    boat.owner = user
-                else:
-                    if adminUser:
-                        boat = Boat.objects.get(pk=boot_pk)
-                    else:                        
-                        boat = Boat.objects.get(pk=boot_pk, owner=user)                                                 
-                                            
-                boat.type = form.cleaned_data['type']
-                boat.name = form.cleaned_data['name']
-                boat.active = form.cleaned_data['active']
-                boat.remarks = form.cleaned_data['remarks']
-                boat.briefing = form.cleaned_data['briefing']
-                boat.club_boat = form.cleaned_data['club_boat']
-                boat.booking_remarks = form.cleaned_data['booking_remarks']
-                if form.cleaned_data['photo'] is not None:
-                    boat.photo = form.cleaned_data['photo']
-                
-                # persist in DB
-                boat.save()
-                
-                # redirect to a new URL:
-                return redirect('boot-detail', boat.pk)
+        # create a form instance and populate it with data from the request:            
+        form = BootEditForm(request.POST, request.FILES)            
+        # check whether it's valid:
+        if form.is_valid():            
+            # process           
+            if new_boat:
+                boat = Boat()
+                boat.owner = user
             else:
-                # error
-                context = RequestContext(request, {
-                'form_boot_edit': form,
-                'edit': edit,                
-                'my_boats': my_boats,
-                'user': user,                
-                })
-                
-                return HttpResponse(template.render(context))
+                if adminUser:
+                    boat = Boat.objects.get(pk=boot_pk)
+                else:                        
+                    boat = Boat.objects.get(pk=boot_pk, owner=user)                                                 
+
+            boat.type = form.cleaned_data['type']
+            boat.name = form.cleaned_data['name']
+            boat.active = form.cleaned_data['active']
+            boat.remarks = form.cleaned_data['remarks']
+            boat.briefing = form.cleaned_data['briefing']
+            boat.club_boat = form.cleaned_data['club_boat']
+            boat.booking_remarks = form.cleaned_data['booking_remarks']
+            if form.cleaned_data['photo'] is not None:
+                boat.photo = form.cleaned_data['photo']
+
+            # persist in DB
+            boat.save()
+
+            # redirect to a new URL:
+            return redirect('boot-detail', boat.pk)
+        else:
+            # error
+            context = RequestContext(request, {
+            'form_boot_edit': form,
+            'edit': edit,                
+            'my_boats': my_boats,
+            'user': user,                
+            })
+
+            return HttpResponse(template.render(context))
     
     # CREATING USER QUERY / FORM 
     if edit == True:
