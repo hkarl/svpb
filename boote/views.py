@@ -19,13 +19,13 @@ def booking_today(request):
     user = request.user
 
     overview = []
-    for boat in Boat.objects.filter(club_boat = True):
+    for boat in Boat.objects.filter(club_boat = True, active = True):
         overview.append([boat.name, boat.type.name, boat.pk, boat.getBookings7days()])
  
     bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
     
     bookings = []
-    for boat in Boat.objects.filter(club_boat = True):
+    for boat in Boat.objects.filter(club_boat = True, active = True):
         bookings.append([boat, boat.getDetailedBookingsToday])
 
     dates = []
@@ -49,13 +49,13 @@ def booking_overview(request):
     user = request.user
 
     overview = []
-    for boat in Boat.objects.filter(club_boat = True):
+    for boat in Boat.objects.filter(club_boat = True, active = True):
         overview.append([boat.name, boat.type.name, boat.pk, boat.getBookings7days()])
  
     bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
     
     bookings = []
-    for boat in Boat.objects.filter(club_boat = True):
+    for boat in Boat.objects.filter(club_boat = True, active = True):
         bookings.append([boat, boat.getDetailedBookingsToday])
 
     dates = []
@@ -131,11 +131,11 @@ def boot_liste(request):
     user = request.user
     
     boots_verein = []
-    for boat in Boat.objects.filter(club_boat = True).order_by('-type'):
+    for boat in Boat.objects.filter(club_boat = True, active = True).order_by('-type'):
         boots_verein.append([boat, boat.getNumberOfIssues])
     
     boots_andere = []
-    for boat in Boat.objects.filter(club_boat = False).order_by('-type'):
+    for boat in Boat.objects.filter(club_boat = False, active = True).order_by('-type'):
         boots_andere.append([boat])
         
     context = RequestContext(request, {'boots_verein': boots_verein,'boots_andere': boots_andere})
@@ -145,8 +145,12 @@ def boot_liste(request):
 def boot_detail(request, boot_pk):
     template = loader.get_template('boote/boot_detail.html')
     boat = Boat.objects.get(pk=boot_pk)
-    user = request.user
+    user = request.user    
     ismyboat = (user == boat.owner)
+    for g in user.groups.all():
+        if g.name == "Vorstand":
+            ismyboat = True
+    
     numIssues = boat.getNumberOfIssues
     
     context = RequestContext(request, {        
@@ -260,9 +264,11 @@ def booking_priority_boot(request, new_booking=False):
                 
             if (not error_list):
                 # save new booking
-                boot = Boat.objects.get(pk=res_boat)
-                b = Booking(user=user, type=res_type, boat=boot, date=res_date, time_from=res_start, time_to=res_end)
-                b.save()
+                for b in res_boat:
+                    boot = Boat.objects.get(pk=b)
+                    b = Booking(user=user, type=res_type, boat=boot, date=res_date, time_from=res_start, time_to=res_end)
+                    b.save()
+                
                 # redirect to a new URL:
                 return HttpResponseRedirect(reverse('priority-booking-boot-list'))            
 
@@ -355,51 +361,64 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
     user = request.user
     my_boats = Boat.objects.filter(owner=user)
     
+    adminUser = False
+    for g in user.groups.all():
+        if g.name == "Vorstand":
+            adminUser = True
+            my_boats = Boat.objects.filter()
+    
     
     # PROCESSING USER INPUT 
     if request.method == 'POST':
-            # create a form instance and populate it with data from the request:            
-            form = BootEditForm(request.POST, request.FILES)            
-            # check whether it's valid:
-            if form.is_valid():            
-                # process           
-                if new_boat:
-                    boat = Boat()
-                    boat.owner = user
-                else:
-                    boat = Boat.objects.get(pk=boot_pk, owner=user)                                                 
-                                            
-                boat.type = form.cleaned_data['type']
-                boat.name = form.cleaned_data['name']
-                boat.remarks = form.cleaned_data['remarks']
-                boat.briefing = form.cleaned_data['briefing']
-                boat.club_boat = form.cleaned_data['club_boat']
-                boat.booking_remarks = form.cleaned_data['booking_remarks']
-                if form.cleaned_data['photo'] is not None:
-                    boat.photo = form.cleaned_data['photo']
-                
-                # persist in DB
-                boat.save()
-                
-                # redirect to a new URL:
-                return redirect('boot-detail', boat.pk)
+        # create a form instance and populate it with data from the request:            
+        form = BootEditForm(request.POST, request.FILES)            
+        # check whether it's valid:
+        if form.is_valid():            
+            # process           
+            if new_boat:
+                boat = Boat()
+                boat.owner = user
             else:
-                # error
-                context = RequestContext(request, {
-                'form_boot_edit': form,
-                'edit': edit,                
-                'my_boats': my_boats,
-                'user': user,                
-                })
-                
-                return HttpResponse(template.render(context))
+                if adminUser:
+                    boat = Boat.objects.get(pk=boot_pk)
+                else:                        
+                    boat = Boat.objects.get(pk=boot_pk, owner=user)                                                 
+
+            boat.type = form.cleaned_data['type']
+            boat.name = form.cleaned_data['name']
+            boat.active = form.cleaned_data['active']
+            boat.remarks = form.cleaned_data['remarks']
+            boat.briefing = form.cleaned_data['briefing']
+            boat.club_boat = form.cleaned_data['club_boat']
+            boat.booking_remarks = form.cleaned_data['booking_remarks']
+            if form.cleaned_data['photo'] is not None:
+                boat.photo = form.cleaned_data['photo']
+
+            # persist in DB
+            boat.save()
+
+            # redirect to a new URL:
+            return redirect('boot-detail', boat.pk)
+        else:
+            # error
+            context = RequestContext(request, {
+            'form_boot_edit': form,
+            'edit': edit,                
+            'my_boats': my_boats,
+            'user': user,                
+            })
+
+            return HttpResponse(template.render(context))
     
     # CREATING USER QUERY / FORM 
     if edit == True:
         if new_boat:
             boat = Boat()
         else:
-            boat = Boat.objects.get(pk=boot_pk, owner=user)
+            if adminUser:
+                boat = Boat.objects.get(pk=boot_pk)
+            else:
+                boat = Boat.objects.get(pk=boot_pk, owner=user)
             
         form = BootEditForm(instance = boat)    
                     

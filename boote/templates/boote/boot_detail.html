@@ -24,10 +24,11 @@ Boot
 <div id='maindesc'>
 <dl>
   <dt>Bootstyp</dt><dd><a href="{{ boot.type.url }}" target="_blank">{{ boot.type.name }}</a></dd>
-  <dt>Bootsname</dt><dd>{{ boot.name }}</dd>
+  <dt>Bootsname</dt><dd>{{ boot.name }}</dd>  
   <dt>Länge/Breite</dt><dd>{{ boot.type.length }} / {{ boot.type.beam }}</dd>
   <dt>Tiefgang</dt><dd>{{ boot.type.draught }}</dd>
   <dt>Beschreibung</dt><dd>{{ boot.remarks }}</dd>
+  
   <dt>Hinweise</dt><dd>{{ boot.booking_remarks }}
   {% if boot.briefing %}
   <br><i>Einweisung (erforderlich): {{ boot.briefing }}</i>
@@ -35,6 +36,11 @@ Boot
   </dd> 
   
   <dt>Bootspate</dt><dd>{{ boot.owner.first_name }} {{ boot.owner.last_name }} (<a href="mailto:{{ boot.owner.email }}">{{ boot.owner.email }}</a>)</dd>  
+
+  {% if not boot.active %}
+  <dt>Status</dt><dd style='color: red;'>Boot ist inactive</dd>
+  {% endif %}
+
  </dl>
 </div>
 
