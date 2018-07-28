@@ -47,6 +47,11 @@ urlpatterns = patterns('',
         name="about", 
         ),
 
+    url(r'^dsgvo$',
+        TemplateView.as_view (template_name="datenschutzerklaerung.html"),
+        name="about", 
+        ),
+
     url(r'^admin/', include(admin.site.urls)),
 
     url (r'^login/',
