@@ -35,7 +35,7 @@ Boot
   {% endif %}
   </dd> 
   
-  <dt>Bootspate</dt><dd>{{ boot.owner.first_name }} {{ boot.owner.last_name }} (<a href="mailto:{{ boot.owner.email }}">{{ boot.owner.email }}</a>)</dd>  
+  <dt>Einweisung</dt><dd>{{ boot.owner.first_name }} {{ boot.owner.last_name }} (<a href="mailto:{{ boot.owner.email }}">{{ boot.owner.email }} <!--NEW Telefon 22.06.2018--></a>)</dd>  
 
   {% if not boot.active %}
   <dt>Status</dt><dd style='color: red;'>Boot ist inactive</dd>
