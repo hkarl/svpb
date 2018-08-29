@@ -31,8 +31,8 @@ Hallo {{ booking.user.first_name }},<br>
 <p>du hast das folgende Boot reserviert:</p>
 
 <p>
- Boot: <a href='http://mein.svpb.de/boote/boot/{{ booking.boat.pk }}'>{{ booking.boat.type.name }} <i>"{{ booking.boat.name }}"</i></a><br>
- Datum: {{ booking.date }}  <br>
+ Boot: &nbsp; &nbsp; <a href='http://mein.svpb.de/boote/boot/{{ booking.boat.pk }}'>{{ booking.boat.type.name }} <i>"{{ booking.boat.name }}"</i></a><br>
+ Datum: &nbsp; {{ booking.date }}  <br>
  Uhrzeit: {{ booking.time_from }} - {{ booking.time_to }}
 </p>
 
@@ -52,18 +52,17 @@ Hallo {{ booking.user.first_name }},<br>
  {{ booking.time_from }} nicht genutzt wird, 
  verfällt die Reservierung.</li>
 
-<li>Beachte <ahref='http://mein.svpb.de/static/boote/AlgemRegelnVereinsboote.pdf'>Allgemeine Regeln zur Nutzung der Vereinsboote</a></li>
+<li>Beachte die <a href='http://mein.svpb.de/static/boote/AlgemRegelnVereinsboote.pdf'>Allgemeinen Regeln zur Nutzung der Vereinsboote</a></li>
 
 <li>Wenn du das Boot doch nicht nutzen möchtest,
  storniere bitte deine Reservierung unter 
  <a href='http://mein.svpb.de'>mein.svpb.de</a>
-  spätestens 2 Tage vorher.</li>
+  spätestens zwei Tage vorher.</li>
 
 <li>Eine zusätzliche Eintragung in 
-die Nutzungsliste im Bootshaus entfällt NICHT.</li>
+die Papier-Listen im Vereinshaus entfällt NICHT.</li>
 
-<li>Mängel am Boot melde bitte über unser
- Reservierungssystem unter 
+<li>Probleme, Schäden oder defekte am Boot melde bitte über den Menüpunkt "Schaden melden" unter 
  <a href='http://mein.svpb.de'>mein.svpb.de</a></li>
 
 </ul>
