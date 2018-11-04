@@ -38,7 +38,7 @@ class Command(BaseCommand):
             try:
                 c = Context({ 'booking': booking})
                 payload = t.render(c)
-                sbj = '[SVPB] Reservation (' + booking.date.strftime('%d, %b %Y') + ') - ' + booking.boat.type.name + " \"" + booking.boat.name + "\"" 
+                sbj = '[SVPB] Reservierung (' + booking.date.strftime('%d.%m.%Y') + ') - ' + booking.boat.type.name + " \"" + booking.boat.name + "\"" 
                 self.stdout.write('From: ' +  settings.DEFAULT_FROM_EMAIL)
                 self.stdout.write('To: ' + booking.user.email)
                 self.stdout.write('Subject: ' + sbj)
@@ -65,12 +65,12 @@ class Command(BaseCommand):
                 payload = t.render(c)
                 sbj = '[SVPB] Schadensmeldung - ' + issue.boat.type.name + " \"" + issue.boat.name + "\"" 
                 self.stdout.write('From: ' +  settings.DEFAULT_FROM_EMAIL)
-                self.stdout.write('To:  eddi.jarek@svpb.de, conger@svpb.de')                
+                self.stdout.write('To:  bommel@svpb.de, conger@svpb.de')                
                 self.stdout.write('Subject: ' + sbj)
                 self.stdout.write('Content:\n\r' + payload)
                 
                 mail.send(
-                            ["eddi.jarek@svpb.de", "conger@svpb.de", issue.reported_by.email], 
+                            ["bommel@svpb.de", "conger@svpb.de", issue.reported_by.email], 
                             settings.DEFAULT_FROM_EMAIL,
                             subject=sbj,                  
                             html_message=payload,

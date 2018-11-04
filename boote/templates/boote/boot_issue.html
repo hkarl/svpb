@@ -9,7 +9,7 @@ Schadensmeldungen {{ boot.name }} ({{ boot.type.name }})
 
 {% block content %}
 <p>
- <a href='/boote/boot/{{ boot.pk }}'>&lt; zurück zum {{ boot.name }}</a>
+ <a href='/boote/boot/{{ boot.pk }}'>&lt; zurück ({{ boot.name }})</a>
 </p>
 
 {% if issues %}
@@ -50,10 +50,8 @@ Schadensmeldungen {{ boot.name }} ({{ boot.type.name }})
 {% endif %}
 
 <h2>Neue Schadensmeldungen</h2>
-<p>Wenn du Beschädigungen an Bord siehst oder selber etwas beschädigt hast,
-    wenn  Dir notwendige Reparaturen auffallen, trage das bitte hier ein.
-    Bei kritischen Problemen mit dem Boot
-    bitte sofort den Bootspaten informieren.</p>
+<p>Bitte trage hier Beschädigungen, Probleme oder notwenige Reparaturen ein, egal, ob diese durch Dich verursacht worden sind oder nicht.
+    Bei kritischen Problemen mit dem Boot, informiere bitte parallel den Bootspaten.</p>
  
 {% crispy form_issue %}
 
