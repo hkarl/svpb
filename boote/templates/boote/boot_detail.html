@@ -46,8 +46,7 @@ Boot
 
 {% if boot.club_boat %}
 <p>
-Falls du gerne auf diesem Boot segeln möchtest, reserviere bitte einen Termin am Lippesee (maximal 3 Stunden).</br>
-<a href="/boote/booking/boot/{{ boot.pk }}"  class="btn btn-primary">Termin reservieren</a><br>
+<a href="/boote/booking/boot/{{ boot.pk }}"  class="btn btn-primary">Boot reservieren</a><br>
 </p>
 {% endif %}    
 
@@ -58,7 +57,7 @@ Hast Du kleinere Probleme am Boot entdeckt, melde diese bitte hier über <em>Mel
 {% if numIssues %}
 	<span style='color: red'><i class="fa fa-cog"></i> Offene Meldungen: {{ numIssues }}</span></br>
 {% endif %}
-	<a href="/boote/boot_issues/{{ boot.pk }}/" class="btn btn-primary">Meldungen</a>  
+	<a href="/boote/boot_issues/{{ boot.pk }}/" class="btn btn-primary">Schaden oder Problem melden</a>  
 </p>
 {% endif %}    
 
@@ -70,6 +69,6 @@ Du hast die Berechtigung alle Informationen dieser Seite zu aktualisieren:</br>
 {% endif %}
 
 
-<p style="font-size: 80%">* Falls Informationen über Vereinsboote "{{ boot.name }}" auf dieser Seite nicht aktuell sind, gib dem Administrator <b>{{ boot.owner.first_name }} {{ boot.owner.last_name }}</b> bescheid. Er wird es korrigieren.</p>
+<p style="font-size: 80%">* Bei fehlerhaften Informationen auf dieser Seite stehen Dir der Bootspate <b>{{ boot.owner.first_name }} {{ boot.owner.last_name }}</b> zur Verfügung. <!--"{{ boot.name }}"--></p>
 
 {% endblock %}
