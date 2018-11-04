@@ -44,13 +44,13 @@
     <ul class="dropdown-menu">        
         <li><a href="/boote/booking/today/">Verfügbarkeit Heute</a></li>        
         <li><a href="/boote/booking/overview/">Termin Reservieren</a></li>        
-        <li><a href="/boote/booking/my_bookings/">Meine Reservationen</a></li>
+        <li><a href="/boote/booking/my_bookings/">Meine Reservierungen</a></li>
         {% for g in  user.groups.all %}
             {% if g.name == "Vorstand" %}
                 <li class="divider"></li>
                 <li class="dropdown-header">Vorstandsfunktionen</li>
                 <li> <a href="/boote/booking/priority/">Regata/Ausbildung</a> </li>
-                <li> <a href="/boote/booking/all/">All Reservationen</a> </li>
+                <li> <a href="/boote/booking/all/">Alle Reservierungen</a> </li>
             {% endif %}
         {% endfor %}
     </ul>
