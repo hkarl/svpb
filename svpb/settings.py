@@ -248,7 +248,7 @@ SENDFILE_ROOT = os.path.join(STATIC_ROOT, "media/doc")
 SENDFILE_URL = "/media/doc"
 
 
-JAHRESSTUNDEN = 10
+JAHRESSTUNDEN = 12
 
 # for select2: 
 SELECT2_BOOTSTRAP = False
