@@ -1,4 +1,4 @@
-Django==1.11
+Django
 requests  
 Django-Select2
 Jinja2
@@ -20,7 +20,11 @@ bpython
 chardet
 colorama
 defer
-django-admin-bootstrapped
+
+# django-admin-bootstrapped
+# falls back to django 1.8
+
+
 django-autoslug
 django-chartit
 django-crispy-forms
@@ -37,18 +41,26 @@ django-sphinx-autodoc
 django-sphinxdoc
 django-suit
 django-tables2
-django-tables
+# porbably superseded by django-tables2? no import visible 
+# django-tables
 docutils
 docx
 ecdsa
-future
+
+# future is no longer needed :-)
+# future
+
 html5lib
 httplib2
 jsonfield
 paramiko
 pathtools
 phonenumbers
+
 psycopg2
+# on OSX, ssl installed via brew: 
+# env LDFLAGS="-I/usr/local/opt/openssl/include -L/usr/local/opt/openssl/lib" pip install psycopg2
+
 pwgen
 pyasn1
 pycrypto
@@ -71,7 +83,8 @@ uWSGI
 urllib3
 virtualenv
 watchdog
-wsgiref
+# no longer necessary, included as standard
+#wsgiref
 xlrd
 xlutils
 xlwt
