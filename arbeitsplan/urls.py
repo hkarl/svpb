@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 
 import arbeitsplan.views
@@ -7,7 +7,7 @@ import arbeitsplan.models
 from svpb.activeTest import active_and_login_required
 
 
-urlpatterns = patterns('',
+urlpatterns = [ # patterns('',
     # Examples:
     # url(r'^$', 'svpb.views.home', name='home'),
     # url(r'^svpb/', include('svpb.foo.urls')),
@@ -165,5 +165,5 @@ urlpatterns = patterns('',
          active_and_login_required(arbeitsplan.views.AufgabengruppeUpdate.as_view()),
          name="arbeitsplan-aufgabengruppeEdit",),
 
-
-)
+    ]
+# )

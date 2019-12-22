@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 
@@ -8,7 +8,7 @@ import boote.views
 
 # place app url patterns here
 
-urlpatterns = patterns('',
+urlpatterns = [ # patterns('',
 
 # BOOTS 
     url (r'boots_liste/$',
@@ -101,5 +101,6 @@ urlpatterns = patterns('',
         active_and_login_required(TemplateView.as_view(template_name="booteHome.html")),
         name="booteHome"),
 
-    )
+        # )
+    ]
 

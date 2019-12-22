@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 
@@ -7,7 +7,7 @@ from svpb.activeTest import active_and_login_required
 
 import mitglieder.views
 
-urlpatterns = patterns('',
+urlpatterns = [ # patterns('',
     url(r'^$',
         active_and_login_required(TemplateView.as_view(template_name="mitgliederHome.html")),
         name="mitgliederHome"),
@@ -61,4 +61,5 @@ urlpatterns = patterns('',
         name="mitgliedExcel"
         ),
 
-   )
+   ]
+   # )
