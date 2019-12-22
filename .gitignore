@@ -48,6 +48,8 @@ coverage.xml
 # Django stuff:
 *.log
 *.pot
+# local version of the database, for testing: 
+svpbdata
 
 # Sphinx documentation
 docs/_build/
@@ -75,3 +77,6 @@ years
 .idea
 leistungen.csv
 leistungen.cvs
+appTemplate
+old_sq
+tmp
