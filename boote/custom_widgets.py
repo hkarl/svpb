@@ -1,5 +1,5 @@
 from django.utils.html import escape, conditional_escape
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.forms.widgets import ClearableFileInput, CheckboxInput
 
@@ -30,11 +30,11 @@ class AdvancedFileInput(ClearableFileInput):
             if self.preview:
                 substitutions['initial'] = ('<a href="/{0}">{1}</a><br>\
                 <a href="{0}" target="_blank"><img src="/{0}" width="{2}"></a><br>'.format
-                    (escape(value.url), '...'+escape(force_unicode(value))[-self.url_length:],
+                    (escape(value.url), '...'+escape(force_text(value))[-self.url_length:],
                      self.image_width))
             else:
                 substitutions['initial'] = ('<a href="/{0}">{1}</a>'.format
-                    (escape(value.url), '...'+escape(force_unicode(value))[-self.url_length:]))
+                    (escape(value.url), '...'+escape(force_text(value))[-self.url_length:]))
             if not self.is_required:
                 checkbox_name = self.clear_checkbox_name(name)
                 checkbox_id = self.clear_checkbox_id(checkbox_name)
