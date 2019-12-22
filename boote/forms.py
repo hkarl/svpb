@@ -137,10 +137,14 @@ class NewReservationForm(forms.Form):
         res_end =  end            
                     
 class NewClubReservationForm(forms.Form):       
-    club_boats = Boat.objects.filter(club_boat='true')
     CBOATS = []
-    for cb in club_boats:
-        CBOATS.append([cb.pk, cb.name + " (" + cb.type.name + ")"])  
+
+    try: 
+        club_boats = Boat.objects.filter(club_boat=True)
+        for cb in club_boats:
+            CBOATS.append([cb.pk, cb.name + " (" + cb.type.name + ")"])
+    except Exception:
+        pass 
     
     res_type = forms.ChoiceField(label="Reservations-Typ", required=True, widget=forms.Select(), choices=BOOKING_TYPE)
     res_boat = forms.MultipleChoiceField(label="Vereinsboot", required=True, widget=forms.CheckboxSelectMultiple, choices=CBOATS)    
