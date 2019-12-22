@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.views.generic import TemplateView
 
 # Uncomment the next two lines to enable the admin:
@@ -14,7 +14,7 @@ from .activeTest import active_and_login_required
 admin.autodiscover()
 
 
-urlpatterns = patterns('',
+urlpatterns = [ # '',
 
     url (r'^$',
          TemplateView.as_view (template_name="main.html"),
@@ -83,10 +83,16 @@ urlpatterns = patterns('',
                        # django select2, see: https://github.com/applegrew/django-select2
     url(r'^select2/', include('django_select2.urls')),
 
-    )
+    # )
+    ]
 
 if settings.DEBUG:
     # static files (images, css, javascript, etc.)
-    urlpatterns += patterns('',
+    # urlpatterns += patterns('',
+    #     (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+    #     'document_root': settings.MEDIA_ROOT}))
+
+    urlpatterns.append(
         (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
         'document_root': settings.MEDIA_ROOT}))
+    
