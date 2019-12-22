@@ -109,11 +109,11 @@ STATICFILES_FINDERS = (
 SECRET_KEY = '26w5_t=fcjff6vk9$ee(03xa&+1c($ot1ixg)p-f(%v#ad$dqy'
 
 # List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.Loader',
+#     'django.template.loaders.app_directories.Loader',
+# #     'django.template.loaders.eggs.Loader',
+# )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth', 
@@ -122,28 +122,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'svpb.context_processors.global_settings', 
     ) 
 
-MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'impersonate.middleware.ImpersonateMiddleware',
-)
-
-IMPERSONATE_REDIRECT_URL = "/"
-
-def user_is_vorstand(request):
-    return request.user.groups.filter(name="Vorstand")
-IMPERSONATE_CUSTOM_ALLOW = "svpb.settings.user_is_vorstand"
-
-
-ROOT_URLCONF = 'svpb.urls'
-
-# Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'svpb.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -155,6 +133,56 @@ TEMPLATE_DIRS = (
     os.path.join (APPLICATION_DIR, '../mitglieder/templates'),
     os.path.join (APPLICATION_DIR, '../boote/templates'),
 )
+
+# New TEMPLATES as of Django 1.8, compare https://docs.djangoproject.com/en/1.8/ref/templates/upgrading/
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': TEMPLATE_DIRS, 
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
+                # list if you haven't customized them:
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]    
+    
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    # Uncomment the next line for simple clickjacking protection:
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
+)
+
+# as of Django 1.8: https://stackoverflow.com/questions/56923576/django-e-408-e-409-and-e-410-errors-on-runserver
+MIDDLEWARE = MIDDLEWARE_CLASSES
+
+    
+IMPERSONATE_REDIRECT_URL = "/"
+
+def user_is_vorstand(request):
+    return request.user.groups.filter(name="Vorstand")
+IMPERSONATE_CUSTOM_ALLOW = "svpb.settings.user_is_vorstand"
+
+
+ROOT_URLCONF = 'svpb.urls'
+
+# Python dotted path to the WSGI application used by Django's runserver.
+WSGI_APPLICATION = 'svpb.wsgi.application'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
