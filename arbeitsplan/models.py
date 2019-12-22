@@ -30,7 +30,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 ### patch the display of a user:
 
-User.__unicode__ = lambda s: u"%s %s (Nr.: %s)" % (s.first_name,
+User.__unicode__ = lambda s: "%s %s (Nr.: %s)" % (s.first_name,
                                                    s.last_name,
                                                    s.mitglied.mitgliedsnummer)
 
@@ -153,7 +153,7 @@ class Mitglied (models.Model):
     STATUSDEFAULTS = (
         (STATUS_Erwachsene, "Erwachsene"),
         (STATUS_Jugendliche, "Jugendliche"),
-        (STATUS_Schueler, u"Schüler, Studenten, BW, Zivi"),
+        (STATUS_Schueler, "Schüler, Studenten, BW, Zivi"),
         (STATUS_Kind, "Kind in Familie"),
         (STATUS_KindBeitragsfrei, "Kind in Familie, beitragsfrei"),
         (STATUS_PassivMitglied, "Passives Mitglied"),
@@ -287,7 +287,7 @@ from django.core.exceptions import ValidationError
 
 def validate_notDot(value):
     if '.' in value:
-        raise ValidationError(u"Leider dürfen Aufgabennamen keinen . "
+        raise ValidationError("Leider dürfen Aufgabennamen keinen . "
                               "enthalten! "
                               "Bitte umformulieren, danke.")
 
@@ -349,7 +349,7 @@ class Aufgabe(models.Model):
         stundenplan = self.stundenplan_set.filter(anzahl__gt=0)
         if stundenplan.count() > 0:
             for s in stundenplan:
-                print s, type(s)
+                print(s, type(s))
                 zuteilungen = self.zuteilung_set.filter(stundenzuteilung__uhrzeit=s.uhrzeit)
                 zugewiesen = sum([z.zusatzhelfer +1 for z in zuteilungen])
                 if zugewiesen < s.anzahl:
@@ -363,7 +363,7 @@ class Aufgabe(models.Model):
         return self.zuteilung_set.count() < self.anzahl
 
     def __unicode__(self):
-        return u"{} ({})".format(self.aufgabe, self.id)
+        return "{} ({})".format(self.aufgabe, self.id)
 
     class Meta:
         verbose_name_plural = "Aufgaben"

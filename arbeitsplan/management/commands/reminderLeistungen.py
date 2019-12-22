@@ -41,10 +41,10 @@ class Command(BaseCommand):
                                 status=models.Leistung.NEG)
                             )
 
-        print offeneLeistungen
+        print(offeneLeistungen)
         kontakte = set([l.aufgabe.kontakt() for l in offeneLeistungen])
 
-        print kontakte
+        print(kontakte)
         
         for k in kontakte: 
             mail.send(

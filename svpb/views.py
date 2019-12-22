@@ -99,23 +99,23 @@ class SvpbLogin(FormView):
 
             if JAHRESENDE and not isVorstandOrTeamleader(user):
                 messages.warning(self.request,
-                                 format_html(u"Derzeit ist ein Anmeldung nur für Vorstände oder Teamleiter möglich."))
+                                 format_html("Derzeit ist ein Anmeldung nur für Vorstände oder Teamleiter möglich."))
                 # make normal users go away
                 logout(self.request)
                 return redirect('/')
 
             if JAHRESENDE:
                 messages.warning(self.request,
-                                 format_html(u"Jahresende-Modus! Bitte <b>vor allem die Aufgaben</b> bearbeiten - Datum prüfen, ggf. direk Mitglieder einteilen!"))
+                                 format_html("Jahresende-Modus! Bitte <b>vor allem die Aufgaben</b> bearbeiten - Datum prüfen, ggf. direk Mitglieder einteilen!"))
 
             if user.is_active:
                 tmp = user.mitglied.profileIncomplete()
                 if tmp:
                     messages.warning(self.request,
                                      format_html(
-                                         u"Ihre Profilangaben sind unvollständig.<br>"
-                                         u"Es fehlen {}.<br>"
-                                         u'Bitte ergänzen Sie <a href="/accounts/edit/">Ihr Profil.</a>',
+                                         "Ihre Profilangaben sind unvollständig.<br>"
+                                         "Es fehlen {}.<br>"
+                                         'Bitte ergänzen Sie <a href="/accounts/edit/">Ihr Profil.</a>',
                                          tmp
                                      ))
                 return super(SvpbLogin, self).form_valid(form)
@@ -123,7 +123,7 @@ class SvpbLogin(FormView):
                 return redirect('/accounts/activate/')
         else:
             # This should never happen, end up in form_invalid instead
-            print "do the invalid thing"
+            print("do the invalid thing")
 
 
 ##############

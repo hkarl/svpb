@@ -13,7 +13,7 @@ from django.utils.html import escape, format_html
 from django.utils.safestring import mark_safe
 from django_tables2.utils import A  # alias for Accessor
 
-import models
+from . import models
 
 
 ####################################
@@ -32,7 +32,7 @@ class RadioButtonTable (django_tables2.Table):
 
         try:
             tmp = '\n'.join([
-                format_html(u"""
+                format_html("""
                 <label class="btn {4} {5}">
                 <input type="radio" name="{0}_{1}" value="{2}"> {3}
                 </label>
@@ -47,7 +47,7 @@ class RadioButtonTable (django_tables2.Table):
                 for (counter, choice) in enumerate(choices)])        
         except TypeError:
             tmp = '\n'.join([
-                format_html(u"""
+                format_html("""
                 <label class="btn {4} {5}">
                 <input type="radio" name="{0}_{1}" value="{2}"> {3}
                 </label>
@@ -61,9 +61,9 @@ class RadioButtonTable (django_tables2.Table):
                 )
                 for (counter, choice) in enumerate(choices)])        
 
-        return mark_safe(u"""<div class="btn-group-vertical" data-toggle="buttons">""" +
+        return mark_safe("""<div class="btn-group-vertical" data-toggle="buttons">""" +
                           tmp +
-                          u"""</div>""")
+                          """</div>""")
 
 
 class KontaktColumn(django_tables2.columns.Column):
@@ -84,10 +84,10 @@ class KontaktColumn(django_tables2.columns.Column):
 
     def render(self, value):
         # print value
-        return mark_safe(u'{1} {2}{0}'.format(
-            (u' <a href="mailto:{0}">'
-             u'<span class="glyphicon glyphicon-envelope">'
-             u'</span></a>'.format(value.email)
+        return mark_safe('{1} {2}{0}'.format(
+            (' <a href="mailto:{0}">'
+             '<span class="glyphicon glyphicon-envelope">'
+             '</span></a>'.format(value.email)
              if value.email
              else ""),
             value.first_name,
@@ -106,15 +106,15 @@ class DeleteIconColumn(django_tables2.columns.Column):
         if "urlBase" in kwargs:
             self.urlBase = kwargs.pop("urlBase")
 
-        print "kwargs: ", kwargs
+        print("kwargs: ", kwargs)
         super(DeleteIconColumn, self).__init__(*args, **kwargs)
 
 
     def render(self, value):
         # print value, type(value)
-        return mark_safe(u'<a href="{}/{}">'
-                         u'<span class="glyphicon glyphicon-trash">'
-                         u'</a>'.format(self.urlBase,
+        return mark_safe('<a href="{}/{}">'
+                         '<span class="glyphicon glyphicon-trash">'
+                         '</a>'.format(self.urlBase,
                                         (value)),
                          )
 
@@ -140,7 +140,7 @@ class ValuedCheckBoxColumn(django_tables2.columns.Column):
         else:
             text = ""
 
-        return mark_safe(u'<input type="checkbox" value="1" name="' +
+        return mark_safe('<input type="checkbox" value="1" name="' +
                          escape(value[1]) +
                          '" ' +
                          ("checked" if value[0]==1 else "") +
@@ -176,9 +176,9 @@ class TextareaInputColumn (django_tables2.columns.Column):
 
     def render(self, value):
         # print "render: ", value, self.__dict__
-        return mark_safe (u'<input class="textinput textInput" id="id_bemerkungVorstand" maxlength="20" name="bemerkungVorstand" placeholder="Bemerkung Vorstand" value="'
+        return mark_safe ('<input class="textinput textInput" id="id_bemerkungVorstand" maxlength="20" name="bemerkungVorstand" placeholder="Bemerkung Vorstand" value="'
                           +    escape (value) +
-                          u'" type="text" />'
+                          '" type="text" />'
                         )
 
 
@@ -209,7 +209,7 @@ class LinkedColumn(django_tables2.columns.Column):
         text, link = value
 
         if text:
-            return mark_safe(u"<a href={0}>{1}</a>".format(link, text))
+            return mark_safe("<a href={0}>{1}</a>".format(link, text))
         else:
             return "-"
 
@@ -349,7 +349,7 @@ def StundenplanEditFactory(l, aufgabe):
             benoetigt = aufgabe.stundenplan_set.filter(uhrzeit__exact=i)[0].anzahl
             # benoetigt = aufgabe.benoetigte_Anzahl(i)
         except Exception as e:
-            print "eX: ", e
+            print("eX: ", e)
             benoetigt = 0
         # print benoetigt
 
@@ -725,14 +725,14 @@ class MeldungTable(RadioButtonTable):
 
     def render_aufgabe(self, value, record):
         aufgabe = record['aufgabeObjekt']
-        tooltext = mark_safe(u'Verantwortlicher: {0} {1}{2}'.format(
+        tooltext = mark_safe('Verantwortlicher: {0} {1}{2}'.format(
             aufgabe.verantwortlich.first_name,
             aufgabe.verantwortlich.last_name,
-            u', Bemerkung: {0}'.format(
+            ', Bemerkung: {0}'.format(
                 aufgabe.bemerkung) if aufgabe.bemerkung else '',
             ))
         tmp = mark_safe(
-            u'<div class="tooltip-demo">'
+            '<div class="tooltip-demo">'
             '<a href="{0}"'
             'data-toggle="tooltip"'
             'title="{2}"'
@@ -757,7 +757,7 @@ class MeldungTable(RadioButtonTable):
         # print record
         # print bound_row
         tmp = format_html(
-            u"""<textarea class="textinput textInput"
+            """<textarea class="textinput textInput"
             id="id_bemerkung_{0}" name="bemerkung_{0}"
             placeholder="Bemerkung eingeben" rows=6>{1}</textarea>""",
             str(record['id']),
@@ -839,7 +839,7 @@ class MeldungTableVorstand (RadioButtonTable):
             record=record)
 
     def render_bemerkungVorstand (self, value, record):
-        tmp =  format_html (u'<textarea class="textinput textInput" id="id_bemerkungVorstand_{0}" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" rows=6>{1}</textarea>',
+        tmp =  format_html ('<textarea class="textinput textInput" id="id_bemerkungVorstand_{0}" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" rows=6>{1}</textarea>',
                             str(record.id),
                             record.bemerkungVorstand if record.bemerkungVorstand else ""
                             )
@@ -908,12 +908,12 @@ def ZuteilungsTableFactory (tuple):
                                     a.aufgabe).encode('ASCII', 'ignore')
                )
         attrs[tag] = ValuedCheckBoxColumn(
-            verbose_name=mark_safe((u'<a href="{}">{}</a>, {}h'
+            verbose_name=mark_safe(('<a href="{}">{}</a>, {}h'
                                     '<span style="font-weight:normal">'
-                                    u'<br>({})'
-                                    u'<br>Benötigt: {}'
-                                    u'<br>Zugeteilt: {}'
-                                    u'{}'
+                                    '<br>({})'
+                                    '<br>Benötigt: {}'
+                                    '<br>Zugeteilt: {}'
+                                    '{}'
                                     '</span>'
                                     .format(reverse('arbeitsplan-aufgabenEdit',
                                                     args=(a.id,)),
@@ -926,13 +926,13 @@ def ZuteilungsTableFactory (tuple):
                                             # the ZuteilungUebersichtView
                                             # TODO: perhaps move that to class aufgabe, to produce an edit link
                                             # to its stundenplan if it exists? 
-                                            ('<br>' + mark_safe(u'<a href="{0}">Stundenplan</a>'
+                                            ('<br>' + mark_safe('<a href="{0}">Stundenplan</a>'
                                                                 .format(reverse ('arbeitsplan-stundenplaeneEdit',
                                                                                  args=(a.id,)),
                                                                                  ))
                                              if a.has_Stundenplan()
                                              else ''
-                                            )  + (u"<br><b>UNVOLLSTÄNDIG</b>"
+                                            )  + ("<br><b>UNVOLLSTÄNDIG</b>"
                                                   if not a.stundenplan_complete()
                                                   else "<br>ok" )
                                     ))),
@@ -970,7 +970,7 @@ class LeistungTable(django_tables2.Table):
             (record.status == models.Leistung.NEG)):
             return "---"
         else:
-            return mark_safe(u'<a href="{}">Zurückziehen</a>'.format(
+            return mark_safe('<a href="{}">Zurückziehen</a>'.format(
                 reverse('arbeitsplan-leistungDelete', args=[record.id])
             ))
 
@@ -988,7 +988,7 @@ class LeistungTable(django_tables2.Table):
 class LeistungBearbeitenTable (RadioButtonTable):
 
     def render_bemerkungVorstand (value, bound_row):
-        tmp =  format_html (u'<textarea class="textinput textInput" id="id_bermerkungVorstand_{0}" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" rows=6>{1}</textarea>',
+        tmp =  format_html ('<textarea class="textinput textInput" id="id_bermerkungVorstand_{0}" name="bemerkungVorstand_{0}" placeholder="Bemerkung Vorstand" rows=6>{1}</textarea>',
                             str(bound_row._record.id),
                             bound_row._record.bemerkungVorstand,
                             )
@@ -1027,14 +1027,14 @@ class BaseEmailTable (RadioButtonTable):
                                            )
 
     def render_sendit(value, bound_row):
-        tmp = format_html(u'<div class="checkbox"> <input name="sendit_{0}" type="checkbox" {1}></div>',
+        tmp = format_html('<div class="checkbox"> <input name="sendit_{0}" type="checkbox" {1}></div>',
                           str(bound_row._record.id),
                           "checked" if bound_row._record.sendit else "",
                           )
         return tmp
 
     def render_anmerkung(value, bound_row):
-        tmp = format_html (u'<textarea class="textinput textInput" id="id_anmerkung_{0}"'
+        tmp = format_html ('<textarea class="textinput textInput" id="id_anmerkung_{0}"'
                             ' name="anmerkung_{0}" placeholder="Individuelle Anmerkung"'
                             ' rows=4>{1}</textarea>',
                             str(bound_row._record.id),

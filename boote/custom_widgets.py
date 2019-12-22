@@ -20,7 +20,7 @@ class AdvancedFileInput(ClearableFileInput):
             'clear_template': '',
             'clear_checkbox_label': self.clear_checkbox_label,
         }
-        template = u'%(input)s'
+        template = '%(input)s'
 
         substitutions['input'] = super(ClearableFileInput, self).render(name, value, attrs)
 
@@ -28,12 +28,12 @@ class AdvancedFileInput(ClearableFileInput):
 
             template = self.template_with_initial
             if self.preview:
-                substitutions['initial'] = (u'<a href="/{0}">{1}</a><br>\
+                substitutions['initial'] = ('<a href="/{0}">{1}</a><br>\
                 <a href="{0}" target="_blank"><img src="/{0}" width="{2}"></a><br>'.format
                     (escape(value.url),'...'+escape(force_unicode(value))[-self.url_length:],
                      self.image_width))
             else:
-                substitutions['initial'] = (u'<a href="/{0}">{1}</a>'.format
+                substitutions['initial'] = ('<a href="/{0}">{1}</a>'.format
                     (escape(value.url),'...'+escape(force_unicode(value))[-self.url_length:]))
             if not self.is_required:
                 checkbox_name = self.clear_checkbox_name(name)

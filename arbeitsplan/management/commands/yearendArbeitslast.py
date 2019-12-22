@@ -39,11 +39,11 @@ class Command(BaseCommand):
             m.save()
 
         # Mail:
-        subject = u"Arbeitsstunden neuer Mitglieder auf Jahressoll angepasst"
+        subject = "Arbeitsstunden neuer Mitglieder auf Jahressoll angepasst"
         to = ['hkarl@ieee.org', 'dieter.peitz@svpb.de']
         fromEmail = "mein@svpb.de"
 
-        body = u"""
+        body = """
 Für folgende Mitglieder wurden die Arbeitsstunden auf das Jahressoll gesetzt: 
 
 {}

@@ -112,7 +112,7 @@ class MitgliederAddForm(forms.ModelForm):
             mnrnum = int(self.cleaned_data['mitgliedsnummer'])
         except:
             raise ValidationError(
-                u"Die Mitgliedsnummer muss eine Zahl sein (führende Nullen sind ok.",
+                "Die Mitgliedsnummer muss eine Zahl sein (führende Nullen sind ok.",
                 code='invalid')
 
         # turn it back, search for such a user:
@@ -121,7 +121,7 @@ class MitgliederAddForm(forms.ModelForm):
         try:
             u = User.objects.get(username=mnr)
             raise ValidationError(
-                u"Ein Nutzer mit dieser Mitgliedsnummer existiert bereits! ({} {}) Bitte wählen Sie eine andere Nummer.".format(
+                "Ein Nutzer mit dieser Mitgliedsnummer existiert bereits! ({} {}) Bitte wählen Sie eine andere Nummer.".format(
                     u.first_name, u.last_name
                 ),
                 code="invalid"
@@ -262,7 +262,7 @@ class PasswordChange(forms.Form):
 
     def clean(self):
         if self.cleaned_data['pw1'] != self.cleaned_data['pw2']:
-            raise ValidationError(u'Die beiden Passwörter stimmen nicht überein',
+            raise ValidationError('Die beiden Passwörter stimmen nicht überein',
                             code='invalid'
                             )
         else:

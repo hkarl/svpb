@@ -1,5 +1,5 @@
 import smtplib
-import emailSettings
+from . import emailSettings
 
 try: 
     server = smtplib.SMTP_SSL (emailSettings.EMAIL_HOST,

@@ -43,7 +43,7 @@ class Command(BaseCommand):
                 if c > 1:
                     inconsistent_users[u].append(a)
 
-        print inconsistent_users
+        print(inconsistent_users)
 
         if inconsistent_users:
             subject = "SVPB: PROBLEM with Meldungenkonsistenz"

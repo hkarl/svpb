@@ -92,7 +92,7 @@ class Command(BaseCommand):
         uebersicht.set_column(0, 0, 30)
         uebersicht.set_column(1, 3, 60)
         cursor = XlsxCursor(workbook, uebersicht)
-        cursor(u"Übersicht der einzelnen Kategorien")
+        cursor("Übersicht der einzelnen Kategorien")
         cursor.cr()
         cursor.cr()
         cursor("Alle Mitglieder")
@@ -108,7 +108,7 @@ class Command(BaseCommand):
         
         cursor("Aktive, ohne Meldung")        
         cursor("Angemeldet, aber keine Meldung abgegeben")        
-        cursor(u"Nicht unbedingt eine Problem; z.B. für Mitglieder die direkt eingeteilt wurden")        
+        cursor("Nicht unbedingt eine Problem; z.B. für Mitglieder die direkt eingeteilt wurden")        
         cursor.cr()
         
         cursor("Aktive, ohne Zuteilung")        
@@ -118,16 +118,16 @@ class Command(BaseCommand):
         
         cursor("Aktive, weder Meldung,Zuteilung")        
         cursor("Angemeldet, aber weder Meldung abgeben noch Zuteilung erfolgt.")        
-        cursor(u"Sehr bedenklich. Braucht Rücksprache, falls Arbeitslast.")        
+        cursor("Sehr bedenklich. Braucht Rücksprache, falls Arbeitslast.")        
         cursor.cr()
         
         cursor("Ruecksprache")        
-        cursor(u"Mitglieder mit Arbeitslast (egal ob aktiv oder nicht), ohne Meldung, ohne Zuteilung. ")
-        cursor(u"Problemfälle! Die müssen was tun, haben es gibt keine Aufgabe. Brauchen Rücksprache und Ermunterung!")
+        cursor("Mitglieder mit Arbeitslast (egal ob aktiv oder nicht), ohne Meldung, ohne Zuteilung. ")
+        cursor("Problemfälle! Die müssen was tun, haben es gibt keine Aufgabe. Brauchen Rücksprache und Ermunterung!")
         cursor.cr()
 
         cursor("Abkassieren")
-        cursor(u"Mitglieder, deren Arbeitslast größer ist als die akzeptierten geleisteten Stunden")
+        cursor("Mitglieder, deren Arbeitslast größer ist als die akzeptierten geleisteten Stunden")
         cursor("Am Jahresende sind das die Mitglieder, von denen Geld abgebucht werden muss.")
         cursor.cr()
         

@@ -1,5 +1,6 @@
 import os, re
 from sphinx import addnodes
+from functools import reduce
 
 docs_to_remove = []
 

@@ -206,8 +206,8 @@ class AccountAdd(SuccessMessageMixin, isVorstandMixin, CreateView):
 
         messages.success(self.request,
                          format_html(
-                             u"Nutzer {} {} (Nummer: {}, Account: {}) "
-                             u"wurde erfolgreich angelegt",
+                             "Nutzer {} {} (Nummer: {}, Account: {}) "
+                             "wurde erfolgreich angelegt",
                              u.first_name,
                              u.last_name, m.mitgliedsnummer,
                              u.username
@@ -215,25 +215,25 @@ class AccountAdd(SuccessMessageMixin, isVorstandMixin, CreateView):
 
         try:
             r = preparePassword([u])
-            print u"PAssword erzeugt: ", r
+            print("PAssword erzeugt: ", r)
 
             # copy the produced PDF to the SENDFILE_ROOT directory
 
             messages.success(self.request,
                              format_html(
-                                 u'Das Anschreiben mit Password kann '
-                                 u'<a href="{}">hier</a>'
-                                 u' heruntergeladen werden.',
-                                 u'letters.pdf'
+                                 'Das Anschreiben mit Password kann '
+                                 '<a href="{}">hier</a>'
+                                 ' heruntergeladen werden.',
+                                 'letters.pdf'
                                  ))
 
         except Exception as e:
-            print "Fehler bei password: ", e
+            print("Fehler bei password: ", e)
             messages.error(self.request,
-                           u"Das Password für den Nutzer konnte nicht gesetzt werden "
-                           u"oder das Anschreiben nicht erzeugt werden. Bitten Sie das "
-                           u"neue Mitglied, sich über die Webseite selbst ein Password zu "
-                           u"generieren.")
+                           "Das Password für den Nutzer konnte nicht gesetzt werden "
+                           "oder das Anschreiben nicht erzeugt werden. Bitten Sie das "
+                           "neue Mitglied, sich über die Webseite selbst ein Password zu "
+                           "generieren.")
 
         return redirect(self.success_url)
 
@@ -309,7 +309,7 @@ class AccountEdit(SuccessMessageMixin, FormView):
 
             messages.success(self.request,
                              format_html(
-                                 u"Das Profil {} {} ({}) wurde erfolgreich aktualisiert.",
+                                 "Das Profil {} {} ({}) wurde erfolgreich aktualisiert.",
                                  user.first_name, user.last_name,
                                  user.mitglied.mitgliedsnummer))
         else:
@@ -412,7 +412,7 @@ class AccountInactiveReset(FormView):
 
             try:
                 r = preparePassword(userQs)
-                print "PAssword erzeugt: ", r
+                print("PAssword erzeugt: ", r)
 
                 # copy the produced PDF to the SENDFILE_ROOT directory
 
@@ -425,11 +425,11 @@ class AccountInactiveReset(FormView):
                                      ))
 
             except Exception as e:
-                print "Fehler bei password: ", e
+                print("Fehler bei password: ", e)
                 messages.error(self.request,
-                               u"Ein Password konnte nicht gesetzt werden "
-                               u"oder das Anschreiben nicht erzeugt werden. "
-                               u"Bitte benachrichtigen Sie den Administrator.")
+                               "Ein Password konnte nicht gesetzt werden "
+                               "oder das Anschreiben nicht erzeugt werden. "
+                               "Bitte benachrichtigen Sie den Administrator.")
 
         return redirect(self.success_url)
 
@@ -476,11 +476,11 @@ class PasswordChange(FormView):
             u.set_password(form.cleaned_data['pw1'])
             u.save()
             messages.success(self.request,
-                             u'Ihr Passwort wurde erfolgreich geändert'
+                             'Ihr Passwort wurde erfolgreich geändert'
                              )
         except Exception as e:
             messages.error(self.request,
-                           u'Ihre Passwortänderung ist fehlgeschlagen: ' +
+                           'Ihre Passwortänderung ist fehlgeschlagen: ' +
                            str(e),
                            )
         return super(PasswordChange, self).form_valid(form)

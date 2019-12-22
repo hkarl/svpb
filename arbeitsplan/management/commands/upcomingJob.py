@@ -78,7 +78,7 @@ class Command(BaseCommand):
         # has been remained about,
         # send him/her an email reminding about the reminding
 
-        for kontakt, liste in kontaktKontext.iteritems():
+        for kontakt, liste in kontaktKontext.items():
             if kontakt.email:
                 mail.send(
                     [kontakt.email],

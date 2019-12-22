@@ -10,14 +10,14 @@ class MitgliederTable(django_tables2.Table):
 
     edit = django_tables2.TemplateColumn(
         "<a href=\"{% url 'accountOtherEdit' record.pk %}\"> Editieren </a></i>",
-        verbose_name=u"Editieren",
+        verbose_name="Editieren",
         orderable=False,
         empty_values=(),
         )
 
     delete = django_tables2.TemplateColumn(
         "<a href=\"{% url 'accountDelete' record.pk %}\"> Löschen </a></i>",
-        verbose_name=u"Löschen",
+        verbose_name="Löschen",
         orderable=False,
         empty_values=(),
         )

@@ -123,7 +123,7 @@ class SimpleTest(TestCase):
             problem2 = self.check_stundenplaene_unique()
 
             if problem2:
-                print "Problem persisted after clean up - giving up"
+                print("Problem persisted after clean up - giving up")
                 self.assertFalse(problem2)
             else:
                 # dumping the sanitized data

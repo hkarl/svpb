@@ -8,7 +8,7 @@ from django.contrib import admin
 import arbeitsplan.views, svpb.views
 import mitglieder.views
 
-from activeTest import active_and_login_required
+from .activeTest import active_and_login_required
 
 
 admin.autodiscover()

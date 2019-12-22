@@ -221,22 +221,22 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.ERROR: 'danger',}
 
 
-from emailSettings import *
+from .emailSettings import *
 import smtplib
 
 # let's try a test email
 if SEND_TEST_EMAIL:
     from django.core.mail import send_mail
     try:
-        print "trying to send test email"
+        print("trying to send test email")
         send_mail('Eine SVPB Nachricht',
                   'Dies ist eine Test nachricht des SVPB Arbeitsplanungsprograms',
                   DEFAULT_FROM_EMAIL,
                   ['holger.karl@uni-paderborn.de'],
                   fail_silently=False)
-        print "test email sent"
+        print("test email sent")
     except smtplib.SMTPException as e:
-        print "test email FAILED: ", e
+        print("test email FAILED: ", e)
 
 
 #####

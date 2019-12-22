@@ -8,7 +8,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-import models
+from . import models
 
 
 class CrispyFormMixin(object):
@@ -150,7 +150,7 @@ class AufgabeForm(forms.ModelForm):
         cleaned_data = super(AufgabeForm, self).clean()
 
         stundenplan = {}
-        for k, v in self.request.POST.iteritems():
+        for k, v in self.request.POST.items():
             if 'uhrzeit' == k[:7] and v != '0':
                 try:
                     v = int(v)

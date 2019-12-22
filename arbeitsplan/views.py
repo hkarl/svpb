@@ -23,8 +23,8 @@ from django.views.generic import View, ListView, CreateView
 from post_office import mail
 
 # Arbeitsplan-Importe:
-import forms
-from tables import *  # TODO: change import not to polute name space
+from . import forms
+from .tables import *  # TODO: change import not to polute name space
 from svpb.settings import JAHRESSTUNDEN, SENDFILE_ROOT
 
 from sendfile import sendfile
@@ -142,21 +142,21 @@ class FilteredListView(ListView):
                 filterconfig = []
                 fieldsWithInitials = [k
                                       for k, v
-                                      in self.filterform.fields.iteritems()
+                                      in self.filterform.fields.items()
                                       if v.initial is not None]
                 filterconfig = [(x[0], x[1], self.filterform.fields[x[0]].initial)
                                 for x in self.filterconfig
                                 if x[0] in fieldsWithInitials]
 
                 for fieldname, filterexp, initialValues in filterconfig:
-                    if isinstance(filterexp, basestring):
+                    if isinstance(filterexp, str):
                         qs = qs.filter(**{filterexp: initialValues})
                     elif isinstance(filterexp, types.FunctionType):
                         qs = filterexp(self,
                                        qs,
                                        initialValues)
                     else:
-                        print "warning: filterxpression not recognized"
+                        print("warning: filterxpression not recognized")
         else:
             self.filterform = self.filterform_class(self.request.GET)
             filterconfig = self.filterconfig
@@ -168,7 +168,7 @@ class FilteredListView(ListView):
                     # print fieldname, filterexp
                     if ((self.filterform.cleaned_data[fieldname] is not None) and
                         (self.filterform.cleaned_data[fieldname] != "")):
-                        if isinstance(filterexp, basestring):
+                        if isinstance(filterexp, str):
                             qs = qs.filter(**{filterexp:
                                               self.filterform.cleaned_data[fieldname]})
                         elif isinstance(filterexp, types.FunctionType):
@@ -176,10 +176,10 @@ class FilteredListView(ListView):
                                            qs,
                                            self.filterform.cleaned_data[fieldname])
                         else:
-                            print "warning: filterxpression not recognized"
+                            print("warning: filterxpression not recognized")
                             # print filterexp
             else:
-                print "filterform not valid"
+                print("filterform not valid")
 
         return qs
 
@@ -236,7 +236,7 @@ class AufgabenUpdate (SuccessMessageMixin, isVorstandMixin, UpdateView):
     template_name = "arbeitsplan_aufgabenCreate.html"
     # success_url = "home.html"
     success_url = reverse_lazy("arbeitsplan-aufgabenVorstand")
-    success_message = u'Die  <a href="%(url)s">Aufgabe %(id)s</a> wurde erfolgreich verändert.'
+    success_message = 'Die  <a href="%(url)s">Aufgabe %(id)s</a> wurde erfolgreich verändert.'
     title = "Aufgabe ändern"
     buttontext = "Änderung eintragen"
 
@@ -282,7 +282,7 @@ class AufgabenUpdate (SuccessMessageMixin, isVorstandMixin, UpdateView):
         for s in models.Stundenplan.objects.filter(aufgabe=self.object):
             stundenplan[s.uhrzeit] = s.anzahl
 
-        context['stundenplan'] = stundenplan.items()
+        context['stundenplan'] = list(stundenplan.items())
 
         context['loeschknopf'] = self.object.verantwortlich ==  self.request.user
 
@@ -328,13 +328,13 @@ class AufgabenUpdate (SuccessMessageMixin, isVorstandMixin, UpdateView):
                         ausfuehrer=m)
                     if created:
                         messages.success(self.request,
-                                         u"Die Aufgabe wurde direkt an Mitglied {} zugeteilt!".format(
+                                         "Die Aufgabe wurde direkt an Mitglied {} zugeteilt!".format(
                                             m.__unicode__()))
                         m.mitglied.zuteilungBenachrichtigungNoetig = True
                         m.mitglied.save()
                     else:
                         messages.success(self.request,
-                                         u"Die Aufgabe war bereits an Mitglied {} zugeteilt.".format(
+                                         "Die Aufgabe war bereits an Mitglied {} zugeteilt.".format(
                                              m.__unicode__()))
 
                         # TODO: das abschalten, nur für Testzwekce!
@@ -343,7 +343,7 @@ class AufgabenUpdate (SuccessMessageMixin, isVorstandMixin, UpdateView):
             except Exception as e:
                 # print e, form.cleaned_data['schnellzuweisung'], self.object
                 messages.error(self.request,
-                               u"Die Aufgabe konnte nicht unmittelbar an ein Mitglied zugeteilt werden")
+                               "Die Aufgabe konnte nicht unmittelbar an ein Mitglied zugeteilt werden")
 
         return redirect(self.request.get_full_path())
 
@@ -491,7 +491,7 @@ class AufgabenCreate (isVorstandMixin, SimpleCreateView):
         super(AufgabenCreate, self).form_valid(form)
 
         # and now store the STundenplan entries
-        for uhrzeit, anzahl  in form.cleaned_data['stundenplan'].iteritems():
+        for uhrzeit, anzahl  in form.cleaned_data['stundenplan'].items():
             sobj = models.Stundenplan (aufgabe = self.object,
                                        uhrzeit = uhrzeit,
                                        anzahl = anzahl)
@@ -518,7 +518,7 @@ class AufgabenCreate (isVorstandMixin, SimpleCreateView):
         context = self.get_context_data(form=form)
         stundenplandict = dict(context['stundenplan'])
         # print 'std before: ', stundenplandict
-        for k, v in self.request.POST.iteritems():
+        for k, v in self.request.POST.items():
             # print k, v
             try:
                 u, uu = k.split('_')
@@ -529,7 +529,7 @@ class AufgabenCreate (isVorstandMixin, SimpleCreateView):
 
         context['stundenplan'] = [(k, v)
                                   for k, v
-                                  in stundenplandict.iteritems()]
+                                  in stundenplandict.items()]
 
         return self.render_to_response(context)
         # return super(AufgabenCreate, self).form_invalid(form)
@@ -589,7 +589,7 @@ class MeldungEdit (FilteredListView):
 
 
     def processUpdate(self, request):
-        for k, value in request.POST.iteritems():
+        for k, value in request.POST.items():
             if (k.startswith('bemerkung') or
                 k.startswith('prefMitglied') or
                 k.startswith('prefVorstand')):
@@ -604,25 +604,25 @@ class MeldungEdit (FilteredListView):
                 try:
                     m = models.Meldung.objects.get(id=id)
                 except models.Meldung.DoesNotExist:
-                    print "consistency of database destroyed"
+                    print("consistency of database destroyed")
                     # TODO: display error
                     continue
 
                 if ((not m.aufgabe.datum ==  None) and
                     (m.aufgabe.datum < datetime.date.today())):
                     messages.error(request,
-                                   u"""Die Aufgabe {0} liegt in der Vergangenheit.
+                                   """Die Aufgabe {0} liegt in der Vergangenheit.
                                    Solche Meldungen können nicht verändert werden.""".
                                    format(m.aufgabe.aufgabe))
                     continue
 
                 if key == 'bemerkung':
-                    if m.bemerkung <> value:
+                    if m.bemerkung != value:
                         m.bemerkung = value
                         safeit = True
                         mailcomment.append("Neue Bemerkung")
                         messages.success(request,
-                                         u"Bei Aufgabe {0} wurde die Bemerkung aktualisiert".
+                                         "Bei Aufgabe {0} wurde die Bemerkung aktualisiert".
                                          format(m.aufgabe.aufgabe))
 
                 if (key == 'bemerkungVorstand'
@@ -632,7 +632,7 @@ class MeldungEdit (FilteredListView):
                         m.bemerkungVorstand = value
                         safeit = True
                         messages.success(request,
-                                         u"Bei Aufgabe {0} wurde die Bemerkung des Vorstandes aktualisiert".
+                                         "Bei Aufgabe {0} wurde die Bemerkung des Vorstandes aktualisiert".
                                          format(m.aufgabe.aufgabe))
 
                 if key == 'prefMitglied':
@@ -646,11 +646,11 @@ class MeldungEdit (FilteredListView):
                             models.Meldung.MODELDEFAULTS['prefMitglied']):
                             mailcomment.append("Neue Meldung")
                             messages.success(request,
-                                             u"Sie haben sich für  Aufgabe {0} gemeldet. "
-                                             u"Der Vorstand wird dies  "
-                                             u"prüfen und ggf. einen Termin zusagen. "
-                                             u"WICHITG: Sie können NICHT davon ausgehen, "
-                                             u"dass Sie diese Aufgaben zugeteilt bekommen!".
+                                             "Sie haben sich für  Aufgabe {0} gemeldet. "
+                                             "Der Vorstand wird dies  "
+                                             "prüfen und ggf. einen Termin zusagen. "
+                                             "WICHITG: Sie können NICHT davon ausgehen, "
+                                             "dass Sie diese Aufgaben zugeteilt bekommen!".
                                              format(m.aufgabe.aufgabe))
                         elif (int(value) ==
                               models.Meldung.MODELDEFAULTS['prefMitglied']):
@@ -663,34 +663,34 @@ class MeldungEdit (FilteredListView):
                                                                   ausfuehrer=m.melder)
 
                                 # it exists! we have to recheck this and inform user
-                                mailcomment.append(u"Versuch eine Meldung zurückzuziehen, für die schon Zuteilung bestand. Versuch abgewiesen.")
+                                mailcomment.append("Versuch eine Meldung zurückzuziehen, für die schon Zuteilung bestand. Versuch abgewiesen.")
                                 safeit = False # this is important! Reason to initialize safeit up front
                                 messages.error(request,
-                                               u"Sie haben versucht, die Meldung für Aufgabe {0} zurückzuziehen."
-                                               u"Allerdings wurde diese Aufgaben Ihnen bereits zugeteilt. "
-                                               u"Leider können Sie daher die Meldung nicht mehr zurückziehen."
-                                               u"Setzen Sie sich bitte mit dem Aufgabenverantwortlichen in Verbindung.".format(m.aufgabe.aufgabe)
+                                               "Sie haben versucht, die Meldung für Aufgabe {0} zurückzuziehen."
+                                               "Allerdings wurde diese Aufgaben Ihnen bereits zugeteilt. "
+                                               "Leider können Sie daher die Meldung nicht mehr zurückziehen."
+                                               "Setzen Sie sich bitte mit dem Aufgabenverantwortlichen in Verbindung.".format(m.aufgabe.aufgabe)
                                 )
                             except models.Zuteilung.DoesNotExist:
                                 mailcomment.append("Meldung zurueckgezogen")
                                 messages.success(request,
-                                                 u"Sie haben die Meldung für  Aufgabe {0} zurückgezogen. ".
+                                                 "Sie haben die Meldung für  Aufgabe {0} zurückgezogen. ".
                                                  format(m.aufgabe.aufgabe))
                                 safeit = True
                         else:
                             mailcomment.append("Praeferenz aktualisiert.")
                             messages.success(request,
-                                             u"Bei Aufgabe {0} wurde die Präferenz aktualisiert".
+                                             "Bei Aufgabe {0} wurde die Präferenz aktualisiert".
                                              format(m.aufgabe.aufgabe))
 
                         m.prefMitglied = value
 
                 if key == 'prefVorstand' and isVorstand(self.request.user):
-                    if m.prefVorstand <> value:
+                    if m.prefVorstand != value:
                         m.prefVorstand  = value
                         safeit = True
                         messages.success(request,
-                                         u"Bei Aufgabe {0} wurde die Präferenz des Vorstandes aktualisiert".
+                                         "Bei Aufgabe {0} wurde die Präferenz des Vorstandes aktualisiert".
                                          format(m.aufgabe.aufgabe))
 
                 if safeit:
@@ -860,11 +860,11 @@ class CreateMeldungenView (MeldungEdit):
             except models.Meldung.MultipleObjectsReturned:
                 messages.error(self.request,
                                format_html(
-                                   u"Ein Datenbankfehler trat auf! "
-                                   u'Bitte schicken Sie '
-                                   u'<a href="mailto:hkarl@ieee.org?subject=SVPB: QAWX&body=A: {}, U: {}">'
-                                   u'diese email</a> ab. Es wäre schön wenn Sie schildern '
-                                   u'könnten, welche Handlungen Sie kurz zuvor durchführten.'
+                                   "Ein Datenbankfehler trat auf! "
+                                   'Bitte schicken Sie '
+                                   '<a href="mailto:hkarl@ieee.org?subject=SVPB: QAWX&body=A: {}, U: {}">'
+                                   'diese email</a> ab. Es wäre schön wenn Sie schildern '
+                                   'könnten, welche Handlungen Sie kurz zuvor durchführten.'
                                    ,
                                    a.id,
                                    self.request.user.id,
@@ -967,16 +967,16 @@ class QuickMeldung(View):
                 meldung.save()
 
                 messages.success(self.request,
-                                 u"Danke! Sie haben sich für Aufgabe " +
-                                 aufgabe.aufgabe + u" gemeldet. Der Vorstand wird dies prüfen und ggf. einen Termin zusagen.")
+                                 "Danke! Sie haben sich für Aufgabe " +
+                                 aufgabe.aufgabe + " gemeldet. Der Vorstand wird dies prüfen und ggf. einen Termin zusagen.")
                 notifyVorstand(meldung, ["QUICKMELDUNG"])
             else:
                 messages.warning(self.request,
-                                 u"Ihre Schnellmeldung wurde nicht eingetragen; vermutlich existiert bereits eine Meldung von Ihnen.")
+                                 "Ihre Schnellmeldung wurde nicht eingetragen; vermutlich existiert bereits eine Meldung von Ihnen.")
 
         except models.Aufgabe.DoesNotExist:
             messages.error(self.request,
-                           u"Die genannate Aufgabe " + str(aufgabeid) + u" existiert nicht!")
+                           "Die genannate Aufgabe " + str(aufgabeid) + " existiert nicht!")
 
 
         return redirect('arbeitsplan-aufgaben')
@@ -1257,7 +1257,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
         self.tableformHidden = [{'name': 'status',
                                  'value': ';'.join([k+'='+v
                                                     for k, v
-                                                    in statuslist.iteritems()]),
+                                                    in statuslist.items()]),
                                  }]
 
         return (ztlist, aufgabenQs)
@@ -1273,7 +1273,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
         # print previousStatus
 
         newState = dict([ (item[0][4:], item[1])
-                     for item in request.POST.iteritems()
+                     for item in request.POST.items()
                      if item[0][:4] == "box_"
                     ])
 
@@ -1282,7 +1282,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
         # find all items in  newState  that have a zero in prevState
         # add that zuteilung
-        for k,v in newState.iteritems():
+        for k,v in newState.items():
             if previousStatus[k] == '0':
                 # print "add ", k
                 user, aufgabe = k.split('_')
@@ -1299,14 +1299,14 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
                 if not created:
                     messages.debug(request,
-                                   u"warnung: Aufgabe {0} war bereits an {1} {2} zugeteilt"
+                                   "warnung: Aufgabe {0} war bereits an {1} {2} zugeteilt"
                                    .format(
                                        aufgabeObj.aufgabe,
                                        ausfuehrerObj.first_name,
                                        ausfuehrerObj.last_name))
 
                 messages.success(request,
-                                 u"Aufgabe {0} wurde an {1} {2} zugeteilt"
+                                 "Aufgabe {0} wurde an {1} {2} zugeteilt"
                                  .format(
                                      aufgabeObj.aufgabe,
                                      ausfuehrerObj.first_name,
@@ -1318,7 +1318,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
         # find all items in prevState with a 1 there that do no appear in newState
         # remove that zuteilung
-        for k,v in previousStatus.iteritems():
+        for k,v in previousStatus.items():
             if v=='1' and k not in newState:
                 # print "delete ", k
                 user, aufgabe = k.split('_')
@@ -1331,8 +1331,8 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                     zz.delete()
 
                 messages.success(request,
-                                 u"Aufgabe {0} wird nicht mehr"
-                                 u" von  {1} {2} durchgeführt."
+                                 "Aufgabe {0} wird nicht mehr"
+                                 " von  {1} {2} durchgeführt."
                                  .format(aufgabeObj.aufgabe,
                                          ausfuehrerObj.first_name,
                                          ausfuehrerObj.last_name))
@@ -1436,7 +1436,7 @@ class ZuteilungUebersichtView(isVorstandMixin, FilteredListView):
             newEntry = defaultdict(int)
             newEntry['id'] = aufgabe.id
             newEntry['aufgabe'] = mark_safe(
-                u'<a href="{1}">{0}</a>'
+                '<a href="{1}">{0}</a>'
                 .format(aufgabe.aufgabe,
                         reverse('arbeitsplan-aufgabenEdit',
                                 args=(aufgabe.id,))))
@@ -1446,7 +1446,7 @@ class ZuteilungUebersichtView(isVorstandMixin, FilteredListView):
             newEntry['gemeldet'] = aufgabe.numMeldungen()
             newEntry['zugeteilt'] = aufgabe.zuteilung_set.count()
             newEntry['editlink'] = mark_safe(
-                u'<a href="{0}?mitglied_ausgelastet=AM&filter=Filter+anwenden">'
+                '<a href="{0}?mitglied_ausgelastet=AM&filter=Filter+anwenden">'
                 'Zuteilung</a>'.format(
                     reverse('arbeitsplan-manuellezuteilungAufgabe',
                             args=(aufgabe.id,),
@@ -1469,7 +1469,7 @@ class ZuteilungUebersichtView(isVorstandMixin, FilteredListView):
 
 
                 # newEntry['zugeteilt'] = None
-                newEntry['stundenplanlink'] = mark_safe(u'<a href="{0}">Stundenplan</a>'.format(
+                newEntry['stundenplanlink'] = mark_safe('<a href="{0}">Stundenplan</a>'.format(
                     reverse ('arbeitsplan-stundenplaeneEdit',
                              args=(aufgabe.id,)),
                     ))
@@ -1494,8 +1494,8 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
     title = """Weisen Sie einer Aufgabe Personen
      zu den benötigten Zeitpunkten zu"""
     tableClassFactory = staticmethod(StundenplanEditFactory)
-    tabletitle_template = u"Zuweisung für Stunden eintragen"
-    tabletitle = u"Zuweisung für Stunden eintragen"
+    tabletitle_template = "Zuweisung für Stunden eintragen"
+    tabletitle = "Zuweisung für Stunden eintragen"
     tableform = {'name': "eintragen",
                  'value': "Stundenzuteilung eintragen/ändern"}
 
@@ -1538,7 +1538,7 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
         aufgabe = get_object_or_404 (models.Aufgabe, pk=aufgabeid)
 
         self.tabletitle = (self.tabletitle_template
-                           + u" - Aufgabe: " + aufgabe.aufgabe
+                           + " - Aufgabe: " + aufgabe.aufgabe
                            + " " + aufgabe.datum.isoformat())
 
         data = []
@@ -1569,8 +1569,8 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
                         }
             zuteilungThisUser = aufgabe.zuteilung_set.filter(ausfuehrer=u)
             if zuteilungThisUser.count() != 1:
-                messages.error(u'Error 13: ' + aufgabe.__unicode__()
-                               + u' - ' + u.__unicode__())
+                messages.error('Error 13: ' + aufgabe.__unicode__()
+                               + ' - ' + u.__unicode__())
 
             newEntry['anzahl'] = (zuteilungThisUser[:1].get().zusatzhelfer,
                                   'anzahl_{}'.format(str(u.id)))
@@ -1658,7 +1658,7 @@ class StundenplaeneEdit(isVorstandMixin, FilteredListView):
                 zuteilung = models.Zuteilung.objects.get (ausfuehrer__id = uid,
                                                           aufgabe__id = aufgabeid)
 
-                if zuteilung.zusatzhelfer <> anzahl:
+                if zuteilung.zusatzhelfer != anzahl:
                     zuteilung.zusatzhelfer = anzahl
                     zuteilung.save()
 
@@ -1746,7 +1746,7 @@ class DeleteLeistungView(DeleteView):
 
     def get_object(self):
         obj = super(DeleteLeistungView, self).get_object()
-        print obj
+        print(obj)
 
         if (not (self.request.user == obj.melder) or
             (obj.status == models.Leistung.ACK) or
@@ -1859,14 +1859,14 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
             leadingTheseTasks = self.request.user.teamleader_set.all()
         else:
             messages.error(request,
-                           u"Sie dürfen diese Funktion nicht benutzen!"
+                           "Sie dürfen diese Funktion nicht benutzen!"
                            )
 
             redirect("homeArbeitsplan")
 
 
         data = {}
-        for k, v in request.POST.iteritems():
+        for k, v in request.POST.items():
             try:
                 # TODO: shorten to startswith construction
                 # print 'post value: ', k, v
@@ -1874,7 +1874,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
                     # print "status detected"
                     opt, num = k.split('_')
                     # print opt, num
-                    if not num in data.keys():
+                    if not num in list(data.keys()):
                         data[num] = {'status': "",
                                      'bemerkungVorstand': "",
                         }
@@ -1883,7 +1883,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
 
                 if 'bemerkungVorstand' == k[:17]:
                     tag, num = k.split('_')
-                    if not num in data.keys():
+                    if not num in list(data.keys()):
                         data[num] = {'status': "",
                                      'bemerkungVorstand': "",
                         }
@@ -1896,7 +1896,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
         # print data
 
         # and now save the updated values in the data
-        for k,v in data.iteritems():
+        for k,v in data.items():
             # they should all exist!
             ## print "----------"
             ## print k, v
@@ -1906,8 +1906,8 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
             if checkNeeded:
                 if l.aufgabe not in leadingTheseTasks:
                     messages.error(request,
-                                   u"Sie dürfen Leistungsmeldungen"
-                                   u" für diese Aufgabe nicht bearbeiten!")
+                                   "Sie dürfen Leistungsmeldungen"
+                                   " für diese Aufgabe nicht bearbeiten!")
                     continue
 
             safeit = False
@@ -1922,8 +1922,8 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
             if safeit:
                 l.save()
                 messages.success(request,
-                                 u"Leistungsmeldung von {0} {1} "
-                                 u"für Aufgabe {2} aktualisiert.".format(
+                                 "Leistungsmeldung von {0} {1} "
+                                 "für Aufgabe {2} aktualisiert.".format(
                                      l.melder.first_name,
                                      l.melder.last_name,
                                      l.aufgabe.aufgabe)
@@ -2168,7 +2168,7 @@ class FilteredEmailCreateView (isVorstandOrTeamleaderMixin, FilteredListView):
 
         # extarct all the ids that are to be sent out
         idlist = []
-        for k in request.POST.keys():
+        for k in list(request.POST.keys()):
             if k.startswith('sendit_'):
                 __, sendid = k.split('_')
                 idlist.append(int(sendid))
@@ -2200,21 +2200,21 @@ class FilteredEmailCreateView (isVorstandOrTeamleaderMixin, FilteredListView):
                 self.saveUpdate(instance, thisuser)
 
                 messages.success(request,
-                                 u"Benachrichtigung an "
-                                 u"Mitglied {0} {1} eingetragen".format(thisuser.first_name,
+                                 "Benachrichtigung an "
+                                 "Mitglied {0} {1} eingetragen".format(thisuser.first_name,
                                                                         thisuser.last_name,))
             else:
                 if not thisuser in users_no_email:
                     messages.error(request,
-                                   u"Für Nutzer {0} {1} liegt keine email-Adresse vor,"
-                                   u" keine Benachrichtigung gesendet".format(thisuser.first_name,
+                                   "Für Nutzer {0} {1} liegt keine email-Adresse vor,"
+                                   " keine Benachrichtigung gesendet".format(thisuser.first_name,
                                                                               thisuser.last_name,)
                                                                               )
                     users_no_email.append(thisuser)
 
         if idlist:
             messages.warning(request,
-                             u"Vergessen Sie nicht, die Benachrichtigungen explizit abzuschicken!")
+                             "Vergessen Sie nicht, die Benachrichtigungen explizit abzuschicken!")
 
         ## TODO: better redirect home
         return redirect(request.get_full_path())

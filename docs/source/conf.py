@@ -47,8 +47,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'SVPB'
-copyright = u'2014, Holger Karl'
+project = 'SVPB'
+copyright = '2014, Holger Karl'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -196,8 +196,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'SVPB.tex', u'SVPB Documentation',
-   u'Holger Karl', 'manual'),
+  ('index', 'SVPB.tex', 'SVPB Documentation',
+   'Holger Karl', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -226,8 +226,8 @@ latex_show_pagerefs = True
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'svpb', u'SVPB Documentation',
-     [u'Holger Karl'], 1)
+    ('index', 'svpb', 'SVPB Documentation',
+     ['Holger Karl'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -240,8 +240,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'SVPB', u'SVPB Documentation',
-   u'Holger Karl', 'SVPB', 'One line description of project.',
+  ('index', 'SVPB', 'SVPB Documentation',
+   'Holger Karl', 'SVPB', 'One line description of project.',
    'Miscellaneous'),
 ]
 
@@ -258,10 +258,10 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'SVPB'
-epub_author = u'Holger Karl'
-epub_publisher = u'Holger Karl'
-epub_copyright = u'2014, Holger Karl'
+epub_title = 'SVPB'
+epub_author = 'Holger Karl'
+epub_publisher = 'Holger Karl'
+epub_copyright = '2014, Holger Karl'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

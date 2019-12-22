@@ -73,7 +73,7 @@ class MitgliederTest(TestCase):
 
     def test_add_user(self):
 
-        print "adding user"
+        print("adding user")
 
         cl, response = self.login_user('su')
 
@@ -115,18 +115,18 @@ class MitgliederTest(TestCase):
         self.assertTrue("erfolgreich angelegt" in message.message)
 
         # self.assertFormError(response,)
-        print "response after post:"
+        print("response after post:")
         pp(response)
         pp(response.status_code)
 
         # check wether user really exists; never trust the test framework:
         try:
             u = User.objects.get(username='666666')
-            print "Peter Pan exists"
+            print("Peter Pan exists")
         except User.DoesNotExist:
-            print "user Peter Pan not created"
+            print("user Peter Pan not created")
         except Exception as e:
-            print "When creating PeterPan: ", e
+            print("When creating PeterPan: ", e)
 
         # try to get the new password link:
         # check: does this have a redirect loop?
@@ -165,9 +165,9 @@ class MitgliederTest(TestCase):
         self.assertTrue('login' not in response.request['PATH_INFO'])
 
         # new user needs to activate its account
-        print "------------"
-        print "aktiviere Peter Pan"
-        print "------------"
+        print("------------")
+        print("aktiviere Peter Pan")
+        print("------------")
 
         self.assertEqual('/accounts/activate/', response.request['PATH_INFO'])
         response = cl3.post('/accounts/activate/',

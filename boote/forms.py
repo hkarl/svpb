@@ -8,7 +8,7 @@ from crispy_forms.bootstrap import TabHolder, Tab
 from django.core.exceptions import ValidationError
 from gc import disable
 from .models import Booking, Boat
-import StringIO
+import io
 from .custom_widgets import AdvancedFileInput
 from PIL import Image
 
@@ -262,13 +262,13 @@ class BootEditForm(forms.ModelForm):
         # scale image        
         image_field = self.cleaned_data.get('photo')
         if image_field:
-            image_file = StringIO.StringIO(image_field.read())
+            image_file = io.StringIO(image_field.read())
             image = Image.open(image_file)
             w, h = image.size
 
             image = image.resize((400, 400*h/w), Image.ANTIALIAS)
 
-            image_file = StringIO.StringIO()
+            image_file = io.StringIO()
             image.save(image_file, 'JPEG', quality=90)
 
             image_field.file = image_file        
