@@ -9,7 +9,8 @@ import os
 from django.contrib.auth.decorators import user_passes_test
 from django.core.management import call_command
 
-from django.core.urlresolvers import reverse_lazy
+# from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.safestring import mark_safe
 from django.views.generic import View, FormView, CreateView, DeleteView

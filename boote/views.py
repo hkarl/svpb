@@ -6,7 +6,8 @@ from django.template.loader import get_template
 from django.template import Context
 from django.shortcuts import render
 from .models import Boat, BoatType, Booking, BoatIssue
-from django.core.urlresolvers import reverse
+# from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.shortcuts import redirect
 from django.db.models import Q
 from .forms import NewReservationForm, NewClubReservationForm, BootIssueForm, BootEditForm

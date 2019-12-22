@@ -8,7 +8,8 @@ import unicodedata
 
 import django_tables2
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+# from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.html import escape, format_html
 from django.utils.safestring import mark_safe
 from django_tables2.utils import A  # alias for Accessor

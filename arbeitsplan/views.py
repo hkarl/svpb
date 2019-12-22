@@ -11,7 +11,8 @@ from collections import defaultdict
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.management import call_command
-from django.core.urlresolvers import reverse_lazy
+# from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.db.models import Q
 from django.db.models import Sum, F, Count
 from django.http import HttpResponseRedirect
