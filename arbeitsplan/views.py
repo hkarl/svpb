@@ -21,7 +21,7 @@ from django.utils.http import urlencode
 from django.utils.timezone import utc
 from django.views.generic import UpdateView, DeleteView, TemplateView
 from django.views.generic import View, ListView, CreateView
-from post_office import mail
+# from post_office import mail
 
 # Arbeitsplan-Importe:
 from . import forms
