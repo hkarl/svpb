@@ -173,7 +173,7 @@ INSTALLED_APPS = (
     'impersonate',
     'arbeitsplan',
     'boote',
-    'post_office',
+    # 'post_office',
     'sendfile',
     'password_reset',
     'django_select2',
