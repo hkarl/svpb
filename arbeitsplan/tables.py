@@ -57,7 +57,7 @@ class RadioButtonTable (django_tables2.Table):
                 choice[0],
                 choice[1],
                 buttontexts[choice[0]],
-                " active" if getattr(record,fieldname) == choice[0] else "",
+                " active" if getattr(record, fieldname) == choice[0] else "",
                 )
                 for (counter, choice) in enumerate(choices)])        
 
@@ -229,8 +229,8 @@ def TableFactory (name, attrs, l, meta={}):
     return klass
     """
 
-    metadict = dict(attrs={"class":"paleblue",
-                            "orderable":"True",
+    metadict = dict(attrs={"class": "paleblue",
+                            "orderable": "True",
                            # "width":"90%"
                     })
 

@@ -1282,7 +1282,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
         # find all items in  newState  that have a zero in prevState
         # add that zuteilung
-        for k,v in newState.items():
+        for k, v in newState.items():
             if previousStatus[k] == '0':
                 # print "add ", k
                 user, aufgabe = k.split('_')
@@ -1318,7 +1318,7 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
 
         # find all items in prevState with a 1 there that do no appear in newState
         # remove that zuteilung
-        for k,v in previousStatus.items():
+        for k, v in previousStatus.items():
             if v=='1' and k not in newState:
                 # print "delete ", k
                 user, aufgabe = k.split('_')
@@ -1896,7 +1896,7 @@ class LeistungBearbeitenView (isVorstandOrTeamleaderMixin, FilteredListView):
         # print data
 
         # and now save the updated values in the data
-        for k,v in data.items():
+        for k, v in data.items():
             # they should all exist!
             ## print "----------"
             ## print k, v

@@ -91,7 +91,7 @@ class SimpleTest(TestCase):
 
         for a in Aufgabe.objects.all():
             s = Stundenplan.objects.filter(aufgabe=a)
-            for u in range(8,24):
+            for u in range(8, 24):
                 s2 = s.filter(uhrzeit=u)
                 c = s2.count()
                 if c>1:
@@ -110,7 +110,7 @@ class SimpleTest(TestCase):
         # try to kick out all the redundant combiantions:
         if problem1:
             for a in Aufgabe.objects.all():
-                for u in range(8,24):
+                for u in range(8, 24):
                     s = Stundenplan.objects.filter(aufgabe=a).filter(uhrzeit=u)
                     c = s.count()
                     if c > 1:

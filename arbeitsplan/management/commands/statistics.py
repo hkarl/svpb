@@ -28,8 +28,8 @@ class Command(BaseCommand):
             csvfile.write('#AufgabeNr, Aufgabe, Gruppe, Angefordert(h), Geleistet(h), #Personen, #Durchschnitt\n')
             l = (models.Leistung.objects
                  .filter(status='AK')
-                 .values('aufgabe','aufgabe__aufgabe',
-                                               'aufgabe__anzahl','aufgabe__stunden',
+                 .values('aufgabe', 'aufgabe__aufgabe',
+                                               'aufgabe__anzahl', 'aufgabe__stunden',
                                                'aufgabe__gruppe__gruppe')\
                  .annotate(geleistet=Sum('zeit'))\
                  .annotate(melder=Count('melder', distinct=True))

@@ -7,9 +7,9 @@ class AdvancedFileInput(ClearableFileInput):
 
     def __init__(self, *args, **kwargs):
 
-        self.url_length = kwargs.pop('url_length',30)
-        self.preview = kwargs.pop('preview',True)
-        self.image_width = kwargs.pop('image_width',200)
+        self.url_length = kwargs.pop('url_length', 30)
+        self.preview = kwargs.pop('preview', True)
+        self.image_width = kwargs.pop('image_width', 200)
         super(AdvancedFileInput, self).__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None,):
@@ -30,11 +30,11 @@ class AdvancedFileInput(ClearableFileInput):
             if self.preview:
                 substitutions['initial'] = ('<a href="/{0}">{1}</a><br>\
                 <a href="{0}" target="_blank"><img src="/{0}" width="{2}"></a><br>'.format
-                    (escape(value.url),'...'+escape(force_unicode(value))[-self.url_length:],
+                    (escape(value.url), '...'+escape(force_unicode(value))[-self.url_length:],
                      self.image_width))
             else:
                 substitutions['initial'] = ('<a href="/{0}">{1}</a>'.format
-                    (escape(value.url),'...'+escape(force_unicode(value))[-self.url_length:]))
+                    (escape(value.url), '...'+escape(force_unicode(value))[-self.url_length:]))
             if not self.is_required:
                 checkbox_name = self.clear_checkbox_name(name)
                 checkbox_id = self.clear_checkbox_id(checkbox_name)

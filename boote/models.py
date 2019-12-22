@@ -53,7 +53,7 @@ class Boat(models.Model):
             usertag = booking.user.first_name + " " + booking.user.last_name              
             startIdx = (booking.time_from.hour-8)*2+(booking.time_from.minute/30)
             endIdx = (booking.time_to.hour-8)*2+(booking.time_to.minute/30)
-            for i in range(max(0,startIdx), min(28,endIdx)):
+            for i in range(max(0, startIdx), min(28, endIdx)):
                 res[i] = [uid, usertag, booking.type]
         return res
     
@@ -66,7 +66,7 @@ class Boat(models.Model):
             uid = booking.user.username 
             startIdx = (booking.time_from.hour-8)*2+(booking.time_from.minute/30)
             endIdx = (booking.time_to.hour-8)*2+(booking.time_to.minute/30)
-            for i in range(max(0,startIdx), min(28,endIdx)):
+            for i in range(max(0, startIdx), min(28, endIdx)):
                 res[offset][i] = [uid, booking.type]
         return res
     
@@ -78,7 +78,7 @@ class Booking(models.Model):
     created_date = models.DateField(default=datetime.now)
     boat = models.ForeignKey(Boat)
     status = models.IntegerField(default=1)
-    type = models.CharField(max_length=3,choices=(('PRV', 'Freie Nutzung'),('AUS', 'Ausbildung'),('REG', 'Regatta'),),default='PRV')
+    type = models.CharField(max_length=3, choices=(('PRV', 'Freie Nutzung'), ('AUS', 'Ausbildung'), ('REG', 'Regatta'),), default='PRV')
     date = models.DateField()
     time_from = models.TimeField()
     time_to = models.TimeField()
@@ -87,10 +87,10 @@ class Booking(models.Model):
 class BoatIssue(models.Model):
     boat = models.ForeignKey(Boat)
     status = models.IntegerField(default=1)
-    reported_by = models.ForeignKey(User,related_name="user_reporting")
+    reported_by = models.ForeignKey(User, related_name="user_reporting")
     reported_date = models.DateField()
     reported_descr = models.CharField(max_length=2000)
-    fixed_by = models.ForeignKey(User,related_name="user_fixing", null=True)
+    fixed_by = models.ForeignKey(User, related_name="user_fixing", null=True)
     fixed_date = models.DateField(null=True)
     fixed_descr = models.CharField(max_length=2000, null=True)
     notified = models.BooleanField(default=False)

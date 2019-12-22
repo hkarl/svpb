@@ -30,14 +30,14 @@ def booking_today(request):
 
     dates = []
     d = datetime.now()
-    for i in range(0,7):
+    for i in range(0, 7):
         dates.append([d.strftime("%A"), d.strftime("%d. %b")])
         d = d + timedelta(days=1)
 
     context = RequestContext(request, 
                             {'booking_overview': overview, 
-                             "booking_dates":dates, 
-                             "bookings":bookings, 
+                             "booking_dates": dates, 
+                             "bookings": bookings, 
                              'date': datetime.now().strftime("%A, %d. %b"),
                              })
     
@@ -60,14 +60,14 @@ def booking_overview(request):
 
     dates = []
     d = datetime.now()
-    for i in range(0,7):
+    for i in range(0, 7):
         dates.append([d.strftime("%A"), d.strftime("%d. %b")])
         d = d + timedelta(days=1)
 
     context = RequestContext(request, 
                             {'booking_overview': overview, 
-                             "booking_dates":dates, 
-                             "bookings":bookings, 
+                             "booking_dates": dates, 
+                             "bookings": bookings, 
                              'date': datetime.now().strftime("%A"),
                              })
     
@@ -104,10 +104,10 @@ def booking_all(request):
 
     bookings = []
     for booking in Booking.objects.filter().order_by('-date'):
-        bookings.append([booking, booking.date.strftime("%A"),booking.date.strftime("%Y %b %d"),booking.time_from.strftime("%H:%M"),booking.time_to.strftime("%H:%M")])
+        bookings.append([booking, booking.date.strftime("%A"), booking.date.strftime("%Y %b %d"), booking.time_from.strftime("%H:%M"), booking.time_to.strftime("%H:%M")])
   
     context = RequestContext(request, {
-        "bookings":bookings,        
+        "bookings": bookings,        
         })
     return HttpResponse(template.render(context))
 
@@ -118,10 +118,10 @@ def booking_my_bookings(request):
 
     mybookings = []
     for booking in Booking.objects.filter(user=user, status=1, type='PRV', date__gte=datetime.now()).order_by('date'):
-        mybookings.append([booking.user, booking.created_date, booking.date.strftime("%A"),booking.date.strftime("%Y/%d/%m"),booking.time_from.strftime("%H:%M"),booking.time_to.strftime("%H:%M"), booking.boat, booking.pk])
+        mybookings.append([booking.user, booking.created_date, booking.date.strftime("%A"), booking.date.strftime("%Y/%d/%m"), booking.time_from.strftime("%H:%M"), booking.time_to.strftime("%H:%M"), booking.boat, booking.pk])
   
     context = RequestContext(request, {
-        "mybookings":mybookings,        
+        "mybookings": mybookings,        
         })
     return HttpResponse(template.render(context))
 
@@ -171,7 +171,7 @@ def booking_boot(request, boot_pk):
     bookings = Boat.getDetailedBookings7Days(boot)
     overview = []
     d = datetime.now()
-    for i in range(0,7):
+    for i in range(0, 7):
         overview.append([d.strftime("%A"), d.strftime("%d. %b"), bookings[i]])
         d = d + timedelta(days=1)
    
@@ -192,7 +192,7 @@ def booking_boot(request, boot_pk):
             res_duration = int(res_duration)
             
             start = datetime.strptime(res_date + " " + res_start, '%Y-%m-%d %H:%M')
-            end = start + timedelta(0,0,0,0,res_duration) # minutes                        
+            end = start + timedelta(0, 0, 0, 0, res_duration) # minutes                        
             res_end =  end            
 
             # check if dates overlapping
@@ -219,7 +219,7 @@ def booking_boot(request, boot_pk):
         'form': form,        
         'boot': boot,
         'user': user,
-        'booking_overview':overview,
+        'booking_overview': overview,
 
     })
     return HttpResponse(template.render(context))
@@ -284,8 +284,8 @@ def booking_priority_boot(request, new_booking=False):
         'form': form,
         'user': user,
         'edit': new_booking,
-        'bookings_reg':bookings_reg,
-        'bookings_aus':bookings_aus,
+        'bookings_reg': bookings_reg,
+        'bookings_aus': bookings_aus,
 
     })
     return HttpResponse(template.render(context))
@@ -304,7 +304,7 @@ def boot_issues_all(request):
         
     context = RequestContext(request, {
         'user': user,
-        'issues' : issues,        
+        'issues': issues,        
     })
     return HttpResponse(template.render(context))
 
@@ -337,7 +337,7 @@ def boot_issues(request, boot_pk):
         'form_issue': form,
         'boot': boot,
         'user': user,
-        'issues' : issues,        
+        'issues': issues,        
     })
     return HttpResponse(template.render(context))
 

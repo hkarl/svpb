@@ -558,7 +558,7 @@ class Leistung (models.Model):
     erstellt = models.DateTimeField (auto_now_add=True)
     # veraendert = models.DateTimeField (auto_now=True)
     veraendert = models.DateTimeField ()
-    benachrichtigt = models.DateTimeField (default=datetime.datetime(1900,1,1))
+    benachrichtigt = models.DateTimeField (default=datetime.datetime(1900, 1, 1))
     wann = models.DateField (help_text="An welchem Tag haben Sie die Leistung erbracht?",
                              ) 
     zeit = models.DecimalField (max_digits=3,
