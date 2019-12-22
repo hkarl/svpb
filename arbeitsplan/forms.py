@@ -89,7 +89,10 @@ class AufgabengruppeForm(CrispyFormMixin, forms.ModelForm):
                   'bemerkung',
                   )
 
-class Select2UserField(django_select2.fields.AutoModelSelect2MultipleField):
+
+from django_select2.forms import ModelSelect2MultipleWidget, Select2Widget
+
+class Select2UserField(ModelSelect2MultipleWidget):
     queryset = User.objects
     search_fields = ['username__icontains', ]
 
@@ -101,8 +104,8 @@ class Select2UserField(django_select2.fields.AutoModelSelect2MultipleField):
 
 class AufgabeForm(forms.ModelForm):
 
-    schnellzuweisung = django_select2.fields.ModelSelect2MultipleField(
-    # schnellzuweisung = Select2UserField(
+    # schnellzuweisung = django_select2.fields.ModelSelect2MultipleField(
+    schnellzuweisung = Select2UserField(
         queryset=User.objects.all(),
         label="Direkt ausführendes Mitglied auswählen",
         help_text="Direktes Zuteilen eines Mitglieds zu dieser Aufgabe; Melden und Zuteilen dann nicht mehr nötig. ACHTUNG: Löschen ist hier NICHT möglich!",
@@ -121,8 +124,8 @@ class AufgabeForm(forms.ModelForm):
             'bemerkung',
             )
         widgets = {
-            'verantwortlich': django_select2.Select2Widget,
-            'teamleader': django_select2.Select2Widget,
+            'verantwortlich': Select2Widget,
+            'teamleader': Select2Widget,
             }
 
     def __init__(self, request, *args, **kwargs):
