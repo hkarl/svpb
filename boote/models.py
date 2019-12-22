@@ -26,8 +26,16 @@ def boat_img_path(instance, filename):
 
 
 class Boat(models.Model):
-    owner = models.ForeignKey(User)
-    type = models.ForeignKey(BoatType)
+    owner = models.ForeignKey(User,
+                    on_delete=models.PROTECT
+                    # not really sure what to do with a boat when owner is deleted? TODO
+                                  )
+    
+    type = models.ForeignKey(BoatType,
+                    on_delete=models.PROTECT,
+                    # cannot delete a boat type as long as there are boats of it
+                    )
+                    
     photo = models.ImageField(upload_to=boat_img_path, null=True)
     name = models.CharField(max_length=30)
     active = models.BooleanField(default=True)
@@ -74,9 +82,11 @@ class Boat(models.Model):
         return BoatIssue.objects.filter(boat=self, status=1).count()
         
 class Booking(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User,
+                on_delete=models.CASCADE)
     created_date = models.DateField(default=datetime.now)
-    boat = models.ForeignKey(Boat)
+    boat = models.ForeignKey(Boat,
+                on_delete=models.CASCADE)
     status = models.IntegerField(default=1)
     type = models.CharField(max_length=3, choices=(('PRV', 'Freie Nutzung'), ('AUS', 'Ausbildung'), ('REG', 'Regatta'),), default='PRV')
     date = models.DateField()
@@ -85,12 +95,20 @@ class Booking(models.Model):
     notified = models.BooleanField(default=False)
 
 class BoatIssue(models.Model):
-    boat = models.ForeignKey(Boat)
+    boat = models.ForeignKey(Boat,
+                on_delete=models.CASCADE)
     status = models.IntegerField(default=1)
-    reported_by = models.ForeignKey(User, related_name="user_reporting")
+    reported_by = models.ForeignKey(User,
+                        related_name="user_reporting",
+                        on_delete=models.PROTECT,
+                        # probably not a good idea to delete issue until it is resolved,
+                        # might want to talk to the reporter of the issue
+                        )
     reported_date = models.DateField()
     reported_descr = models.CharField(max_length=2000)
-    fixed_by = models.ForeignKey(User, related_name="user_fixing", null=True)
+    fixed_by = models.ForeignKey(User,
+                    on_delete=models.SET_NULL,
+                    related_name="user_fixing", null=True)
     fixed_date = models.DateField(null=True)
     fixed_descr = models.CharField(max_length=2000, null=True)
     notified = models.BooleanField(default=False)

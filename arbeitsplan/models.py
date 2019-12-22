@@ -74,7 +74,8 @@ class Mitglied (models.Model):
         # ('', ''), 
     ]
     
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User,
+                on_delete=models.CASCADE)
     """Couple Mitglied to User via 1:1 field."""
 
     mitgliedsnummer = models.CharField(max_length=10,
@@ -260,17 +261,31 @@ class Mitglied (models.Model):
         verbose_name = "Mitglied"
 
 
+def get_default_vorstand(self):
+    """When deleteing an entry with a Vorstand in charge, 
+    assign a default Vorstand member"""
+
+    # TODO
+    pass
+
+        
 class Aufgabengruppe (models.Model):
     gruppe = models.CharField(max_length=30,
                               help_text="Aussagefähiger Name für Gruppe"
                               " von Aufgaben")
 
     verantwortlich = models.ForeignKey(User,
+                                    # actually, we should do this: 
+                                    #   on_delete=models.SET(models.get_default_vorstand),
+                                    # but for simplicity, let's just do that: TODO
+                                    # (means: have to remove responsibility from Vorstand, before deleting it)
+                                       on_delete=models.PROTECT,
                                        help_text="Verantwortliches "
                                        "Vorstandsmitglied")
 
     bemerkung = models.TextField(blank=True)
 
+    
     def __unicode__(self):
         return self.gruppe
 
@@ -297,9 +312,11 @@ class Aufgabe(models.Model):
                                validators=[validate_notDot],
                                unique=True)
     verantwortlich = models.ForeignKey(User,
+                                       on_delete=models.PROTECT,
                                        help_text="Verantwortliches "
                                        "Vorstandsmitglied")
     teamleader = models.ForeignKey(User,
+                                   on_delete=models.SET_NULL, # ok not to have a teamleader 
                                    related_name="teamleader_set",
                                    help_text="Ein optionaler Teamleader für "
                                    "die Aufgabe (nicht notwendig Vorstand)",
@@ -307,7 +324,9 @@ class Aufgabe(models.Model):
                                    blank=True, null=True,
                                    )
 
-    gruppe = models.ForeignKey(Aufgabengruppe)
+    gruppe = models.ForeignKey(Aufgabengruppe,
+                                   on_delete=models.PROTECT)
+    
     anzahl = models.IntegerField(default=0,
                                  help_text="Wieviele Personen werden für "
                                  "diese Aufgabe gebraucht?",
@@ -372,7 +391,11 @@ class Aufgabe(models.Model):
 
 
 class Stundenplan (models.Model):
-    aufgabe = models.ForeignKey(Aufgabe)
+    aufgabe = models.ForeignKey(Aufgabe,
+                                    on_delete=models.CASCADE,
+                                    # no need to have Stundenplan for non-existing Aufgabe 
+                                    )
+    
     uhrzeit = models.IntegerField(help_text="Beginn")
     anzahl = models.IntegerField(default=0,
                                  help_text="Wieviele Personen werden um "
@@ -394,8 +417,12 @@ class Stundenplan (models.Model):
 class Meldung (models.Model):
     erstellt = models.DateField(auto_now_add=True)
     veraendert = models.DateField(auto_now=True)
-    melder = models.ForeignKey(User)
-    aufgabe = models.ForeignKey(Aufgabe)
+    melder = models.ForeignKey(User,
+                        on_delete=models.CASCADE)
+    aufgabe = models.ForeignKey(Aufgabe,
+                        on_delete=models.PROTECT)
+    # Man kann Meldung löschen, wenn es den Melder nicht mehr gibt.
+    # aber man kann eine Aufgabe nicht löschen, wenn es schon Meldungen dafür gibt 
 
     GARNICHT = -1
     WENNSMUSS = 0
@@ -447,8 +474,11 @@ class Meldung (models.Model):
 
 
 class Zuteilung (models.Model):
-    aufgabe = models.ForeignKey(Aufgabe)
-    ausfuehrer = models.ForeignKey(User)
+    aufgabe = models.ForeignKey(Aufgabe,
+                        on_delete=models.PROTECT)
+    ausfuehrer = models.ForeignKey(User,
+                        on_delete=models.CASCADE)
+    
     automatisch = models.BooleanField(default=False)
     zusatzhelfer = models.IntegerField(default=0)
 
@@ -531,7 +561,9 @@ class Zuteilung (models.Model):
 
 
 class StundenZuteilung(models.Model):
-    zuteilung = models.ForeignKey(Zuteilung)
+    zuteilung = models.ForeignKey(Zuteilung,
+                        on_delete=models.CASCADE)
+    
     uhrzeit = models.IntegerField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -553,8 +585,10 @@ class StundenZuteilung(models.Model):
 
 
 class Leistung (models.Model):
-    melder = models.ForeignKey (User)
-    aufgabe = models.ForeignKey (Aufgabe)
+    melder = models.ForeignKey(User,
+                    on_delete=models.CASCADE)
+    aufgabe = models.ForeignKey (Aufgabe,
+                    on_delete=models.PROTECT)
     erstellt = models.DateTimeField (auto_now_add=True)
     # veraendert = models.DateTimeField (auto_now=True)
     veraendert = models.DateTimeField ()
