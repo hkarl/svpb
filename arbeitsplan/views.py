@@ -1017,6 +1017,7 @@ class ListZuteilungenView(FilteredListView):
             Welche Zuteilung sind für mich eingetragen?
             """
             self.context['zuteilungSummary'] = sum([z.stunden() for z in qs])
+            self.context['arbeitslast'] = self.request.user.mitglied.arbeitslast
 
         qs = self.apply_filter(qs)
         table = self.get_filtered_table(qs)
