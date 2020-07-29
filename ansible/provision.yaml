@@ -1,0 +1,29 @@
+
+
+# A simple book: do a git pull, migrate, collectsatic, restart uwsgi 
+# A bit of care is needed since we rewrite some of the configuration files;
+# so have to do a git stash beforehand 
+
+- name: Update SVPB 
+  remote_user: svpb 
+  hosts: svpb 
+  tasks: 
+    - name: stop uwsgi 
+      remote_user: root 
+      shell: service svpb stop
+      ignore_errors: yes
+    - name: stash git 
+      shell: cd svpb ; git stash 
+    - name: pull from git 
+      shell: cd svpb ; git pull 
+    - name: unstash git 
+      shell: cd svpb ; git stash pop
+    - name: migrate django 
+      shell: cd svpb ; python manage.py migrate 
+    - name: static files for django 
+      shell: cd svpb ; python manage.py collectstatic --noinput
+    - name: start uwsgi  
+      remote_user: root 
+      service: name=svpb state=started
+
+    

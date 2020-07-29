@@ -1,0 +1,235 @@
+---
+
+# An Ansible playbook to install the SVPB Web application on a remote Linux machine 
+# Assumptions: 
+# - apt-based system; tested on Ubuntu 14.04 LTS; Debian should work fine as well 
+# - root access has been ensured by copying the public key of the user running this playbook to 
+#   ~root/.ssh/authorized_keys - like jiffyBox does in a very convenient way 
+# - there should be an encryption key for dropbox-based backups. See below! 
+# - Ansible: www.ansible.com/ 
+
+- name: Firewall
+  remote_user: root 
+  hosts: svpb 
+  tasks: 
+    - name: Get ufw 
+      apt: name=ufw state=installed 
+    - name: turn loggin on 
+      ufw: logging=on 
+    - name: allow ssh 
+      ufw: rule=limit port=ssh proto=tcp
+    - name: allow OpenSSH 
+      ufw: rule=limit name=OpenSSH 
+    - name: allow Web80
+      ufw: rule=allow port=80 proto=tcp
+    - name: turn on ufw
+      ufw: state=enabled policy=deny
+
+  tags: fw
+
+- name: PostgresDB 
+  remote_user: root
+  hosts: svpb
+  vars:
+    postgresql_databases:
+      - name: svpbdata
+    postgresql_users:
+      - name: svpbdb
+        pass: Eef1Aef3
+        encrypted: no 
+    postgresql_user_privileges:
+      - name: svpbdb          # user name
+        db: svpbdata         # database
+        priv: "ALL"        # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
+        # TODO: fix privileges as soon as we have to share the databse with someone else 
+  roles: 
+    - ANXS.postgresql
+
+
+- name: CreateSVPB-User
+  hosts: svpb
+  remote_user: root
+  tasks:
+    - action: user name=svpb comment="SVPB Arbeitsplan User" generate_ssh_key=yes state=present shell=/bin/bash
+    - action: copy src=~/.ssh/id_rsa.pub dest=/home/svpb/.ssh/authorized_keys owner=svpb group=svpb mode=0600
+    - copy: src=./svpb.conf dest=/etc/init/svpb.conf mode=0644
+
+- name: Basic software installation 
+  hosts: svpb
+  remote_user: root
+  tasks:
+    - name: Basic software via apt 
+      apt: name={{ item }} state=installed
+      with_items:
+        - build-essential
+        - ntp
+        - git 
+        - python-dev
+        - python-pip
+        - python-pycurl 
+        - python-psycopg2
+        - iptables
+        - ccrypt
+        - nginx
+    - name: Install Django and friends 
+      pip: name={{ item }} 
+      with_items:
+        - django
+        - django_extensions
+        - django_tables2
+        - django-crispy_forms
+        - django-impersonate
+        - django-post_office
+        - django-sendfile
+        - Werkzeug
+        - pytz
+        - uwsgi
+        - django-password-reset
+        - django_select2
+        - pwgen
+        - jinja2
+        - xlsxwriter
+        - xlsxcursor
+        - Pillow
+  tags: software 
+
+
+- name: GetSVPB
+  remote_user: svpb
+  hosts: svpb
+  tasks:
+    - name: Get the repository 
+      git: repo=https://github.com/hkarl/svpb.git dest=/home/svpb/svpb 
+    - name: Patch the settings file to use the Postgres DB 
+      replace: dest=/home/svpb/svpb/svpb/settings.py regexp='django.db.backends.sqlite3' replace='django.db.backends.postgresql_psycopg2'
+    - name: Patch settings for DB name 
+      replace: dest=/home/svpb/svpb/svpb/settings.py regexp='svpb.sq' replace='svpbdata'
+    - name: Patch settings for DB User account
+      replace: dest=/home/svpb/svpb/svpb/settings.py regexp='UserPlaceholder' replace='svpbdb'
+    - name: Patch settings for DB password 
+      replace: dest=/home/svpb/svpb/svpb/settings.py regexp='PasswordPlaceholder' replace='Eef1Aef3'
+    - name: Copy email settings 
+      copy: src=~/c.prog/svpb/svpb/emailSettings.py dest=/home/svpb/svpb/svpb/emailSettings.py owner=svpb group=svpb mode=0600
+    - name: Create logs directory
+      file: path=/home/svpb/svpb/logs state=directory
+    - name: Migrate the database
+      shell: cd svpb ; python manage.py migrate > logs/migrate.out 2> logs/migrate.err
+    - name: Cronjob for emailing 
+      cron: name="send emails" hour="3" minute="0" user=svpb state=present job="cd /home/svpb/svpb ; python manage.py upcomingJob 2 > /home/svpb/svpb/logs/upcomingJobs.log  2>&1"
+    - name: Cronjob for emailaing earlier
+      cron: name="send emails" hour="3" minute="10" user=svpb state=present job="cd /home/svpb/svpb ; python manage.py upcomingJob 5 >> /home/svpb/svpb/logs/upcomingJobs.log  2>&1"
+    - name: Cronjob for leistungsreminder
+      cron: name="send emails" hour="3" minute="20" user=svpb state=present job="cd /home/svpb/svpb ; python manage.py reminderLeistungen > /home/svpb/svpb/logs/reminderLeistungen.log  2>&1"
+  tags: svpb
+
+- name: Nginx configuration 
+  # Compare http://uwsgi-docs.readthedocs.org/en/latest/tutorials/Django_and_nginx.html
+  remote_user: svpb
+  hosts: svpb
+  vars:
+    svpbhome: /home/svpb/svpb
+    svpbfqdn: mein.svpb.de
+  tasks:
+    # static files in place: 
+    - name: Ensure static directory exists
+      file:  dest=/home/svpb/svpb/static state=directory mode=755
+    - name: Patch STATIC_ROOT in svpb settings 
+      replace: dest=/home/svpb/svpb/svpb/settings.py regexp="STATIC_ROOT = ''" replace="STATIC_ROOT = '{{ svpbhome }}/static'"
+    - name: Run collectstatic 
+      django_manage:  command=collectstatic app_path="{{ svpbhome }}"
+    # prepare nginx configuration: 
+    - name: Patch the svpb_nginx conf file from the default in the git repo FQDN 
+      replace: dest=/home/svpb/svpb/wsgi/svpb_nginx.conf regexp='svpbfqdn' replace='{{ svpbfqdn }}'
+    - name: Patch the svpb_nginx conf file from the default in the git repo Home  
+      replace: dest=/home/svpb/svpb/wsgi/svpb_nginx.conf regexp='svpbhome' replace='{{ svpbhome }}'
+    # symblink the just created config file
+    - name: Symlink the svpb configuration file from nginx 
+      file: dest=/etc/nginx/sites-enabled/svpb_conf.conf src=/home/svpb/svpb/wsgi/svpb_nginx.conf state=link
+      remote_user: root
+    # tweak the uwsgi ini file settings
+    - name: Set chdir in uwsgi ini file 
+      ini_file: dest=/home/svpb/svpb/wsgi/uwsgi.ini section=uwsgi option=chdir value=/home/svpb/svpb
+    - name: Set module in uwsgi ini file 
+      ini_file: dest=/home/svpb/svpb/wsgi/uwsgi.ini section=uwsgi option=module value=svpb.wsgi
+    - name: Set socket in uwsgi ini file 
+      ini_file: dest=/home/svpb/svpb/wsgi/uwsgi.ini section=uwsgi option=socket value=":8001"
+    # restart nginx 
+    - name: restart nginx to be on the safe side 
+      service: name=nginx state=restarted enabled=yes
+    # start uwsgi happens via the svpb start!  
+  tags: nginx
+
+- name: System setup 
+  remote_user: root 
+  hosts: svpb 
+  tasks: 
+    - name: Logrotate for nginx 
+      logrotate: name=nginx path=/var/log/nginx/*.log
+      args:
+        options:
+          - daily
+          - rotate 10 
+          - compress
+          - missingok
+    - name: Logrotate for svpb 
+      logrotate: name=svpb path=/home/svpb/svpb/logs/*.log
+      args:
+        options:
+          - daily
+          - rotate 10 
+          - compress
+          - missingok
+          - size 100k 
+          - create 600 svpb svpb
+  tags: system
+
+- name: StartSVPB
+  # this actually starts  uwsgi ! 
+  remote_user: root 
+  hosts: svpb
+  tasks: 
+    - name: ensure start up of SVPB 
+      service: name=svpb state=restarted enabled=yes
+    # this is a workaround: state=restarted does not seem to work reliably :-( 
+    - name: really restart SVPB 
+      shell: /usr/sbin/service svpb restart
+  tags: svpb
+
+# and finally, install the data fixtures. Not automated; this will highly depend on concrete setup 
+
+## get the backup process in place: install dropbox, install the crontab 
+
+- name: Backup process
+  remote_user: svpb
+  hosts: svpb
+  vars: 
+    dropboxuser: svpb
+  tasks: 
+    # - name: Download dropbox 
+    #   get_url: url=https://www.dropbox.com/download?plat=lnx.x86 dest=/home/svpb
+    # CareFUL: dropxbox needs manual intervention; local access to a url 
+    - name: Put encrpytion password for dropbox in place
+      replace: dest=/home/svpb/svpb/dump.sh regexp=XXXX replace=uRohX5aeyei4Xoov
+    - name: Cronjob for backup 
+      cron: name="backup SVPB" hour="3" minute="5" user=svpb state=present job="cd /home/svpb/svpb ; /home/svpb/svpb/dump.sh > /home/svpb/svpb/logs/dump.log 2>&1"  
+    - name: Install dropbox init script 
+      template: src=./dropbox.conf dest=/etc/init.d/dropbox mode=0755 
+      remote_user: root 
+    - name: Startup dropxbox service 
+      service: name=dropbox state=restarted enabled=yes
+      remote_user: root
+      register: dropboxStartOutput
+    - name: Debug output from Dropbox service start
+      debug: var=dropboxStartOutput
+  tags: backup
+
+- name: Regular jobs
+  # check consistency, later on: send out emails
+  remote_user: svpb
+  hosts: svpb
+  tasks:
+    - name: Check Medlung consistency regularly, cronjob
+      cron: name="Meldung check" hour="3" minute="10" user=svpb state=present job="cd /home/svpb/svpb ; python manage.py meldungConsistent > /home/svpb/svpb/logs/check.log  2>&1"
+    - name: Yearend check, set Arbeitslast to default for newly joined members
+      cron: name="Yearend check" hour="23" minute="0" day="31" month="12" user=svpb state=present job="cd /home/svpb/svpb ; python manage.py yearendArbeitslast > /home/svpb/svpb/logs/yearend.log  2>&1"
+  tags: regular

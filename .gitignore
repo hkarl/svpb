@@ -70,6 +70,7 @@ svpb-notes.org
 attic
 ansible/README*
 ansible/dropbox.conf
+ansible/restore-backup.yml
 testdata
 backup_svpb.sq
 years
