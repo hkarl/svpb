@@ -68,10 +68,15 @@ emailSettings.py
 loginSVPB.html
 svpb-notes.org
 attic
-ansible
+ansible/README*
+ansible/dropbox.conf
 testdata
 backup_svpb.sq
 years
 .idea
 leistungen.csv
 leistungen.cvs
+appTemplate
+old_sq
+svpbdata
+tmp
