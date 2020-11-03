@@ -7,7 +7,7 @@ PyYAML==3.11
 Pygments==2.1.1
 Sphinx==1.1.2
 Unidecode==0.04.19
-Werkzeug==0.9.6
+Werkzeug==0.15.3
 XlsxWriter==0.6.6
 Xlsxcursor==0.1.7
 aafigure==0.5
