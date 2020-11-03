@@ -57,7 +57,7 @@ python-apt==0.9.3.5ubuntu2
 python-dateutil==2.3
 python-debian==0.1.21-nmu2ubuntu2
 pytz==2014.10
-requests==2.2.1
+requests==2.20.0
 selenium==2.43.0
 simplejson==2.3.2
 six==1.10.0
