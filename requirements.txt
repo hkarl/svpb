@@ -67,7 +67,7 @@ sphinxcontrib-aafig==1.0
 sphinxjp.themes.basicstrap==0.3.2
 ssh-import-id==3.21
 uWSGI==2.0.8
-urllib3==1.7.1
+urllib3==1.26.5
 virtualenv==1.11.6
 watchdog==0.6.0
 wsgiref==0.1.2
