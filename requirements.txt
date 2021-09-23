@@ -11,7 +11,7 @@ Werkzeug==0.9.6
 XlsxWriter==0.6.6
 Xlsxcursor==0.1.7
 aafigure==0.5
-ansible==1.8.1
+ansible==4.2.0
 # apt-xapian-index==0.45
 argh==0.26.2
 argparse==1.2.1
