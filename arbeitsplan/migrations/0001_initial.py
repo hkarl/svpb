@@ -141,25 +141,25 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='stundenzuteilung',
             name='zuteilung',
-            field=models.ForeignKey(to='arbeitsplan.Zuteilung', on_delete=model.CASCADE),
+            field=models.ForeignKey(to='arbeitsplan.Zuteilung', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='aufgabe',
             name='gruppe',
-            field=models.ForeignKey(to='arbeitsplan.Aufgabengruppe', on_delete=model.CASCADE),
+            field=models.ForeignKey(to='arbeitsplan.Aufgabengruppe', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='aufgabe',
             name='teamleader',
-            field=models.ForeignKey(related_name=b'teamleader_set', blank=True, to=settings.AUTH_USER_MODEL, help_text='Ein optinaler Teamleader f\xc3\xbcr die Aufgabe (nicht notwendig Vorstand)', null=True, verbose_name='Team-Leader', on_delete=model.CASCADE),
+            field=models.ForeignKey(related_name=b'teamleader_set', blank=True, to=settings.AUTH_USER_MODEL, help_text='Ein optinaler Teamleader f\xc3\xbcr die Aufgabe (nicht notwendig Vorstand)', null=True, verbose_name='Team-Leader', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='aufgabe',
             name='verantwortlich',
-            field=models.ForeignKey(help_text='Verantwortliches Vorstandsmitglied', to=settings.AUTH_USER_MODEL, on_delete=model.CASCADE),
+            field=models.ForeignKey(help_text='Verantwortliches Vorstandsmitglied', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]
