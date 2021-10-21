@@ -14,12 +14,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='mitglied',
             name='status',
-            field=models.CharField(default=b'', max_length=20, verbose_name=b'Mitgliedsstatus'),
+            field=models.CharField(default=b'', max_length=20, verbose_name='Mitgliedsstatus'),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='mitglied',
             name='zuteilungBenachrichtigungNoetig',
-            field=models.BooleanField(default=False, help_text=b'Muss an diese Nutzer eine Benachrichtigung wegen \xc3\x84nderung der Zuteilungen gesendet werden?', verbose_name=b'Benachrichtigung zu Zuteilungen n\xc3\xb6tig?'),
+            field=models.BooleanField(default=False, help_text='Muss an diese Nutzer eine Benachrichtigung wegen \xc3\x84nderung der Zuteilungen gesendet werden?', verbose_name='Benachrichtigung zu Zuteilungen n\xc3\xb6tig?'),
         ),
     ]

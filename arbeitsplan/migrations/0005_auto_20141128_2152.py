@@ -14,25 +14,25 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='mitglied',
             name='erstbenachrichtigt',
-            field=models.BooleanField(default=False, help_text=b'Wurde die Erstbenachrichtigung mit Password bereits generiert?', verbose_name=b'Erstbenachrichtigung'),
+            field=models.BooleanField(default=False, help_text='Wurde die Erstbenachrichtigung mit Password bereits generiert?', verbose_name='Erstbenachrichtigung'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='mitglied',
             name='ort',
-            field=models.CharField(default=b'', max_length=50, verbose_name=b'Ort'),
+            field=models.CharField(default=b'', max_length=50, verbose_name='Ort'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='mitglied',
             name='plz',
-            field=models.DecimalField(default=0, verbose_name=b'PLZ', max_digits=5, decimal_places=0),
+            field=models.DecimalField(default=0, verbose_name='PLZ', max_digits=5, decimal_places=0),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='mitglied',
             name='strasse',
-            field=models.CharField(default=b'', max_length=50, verbose_name=b'Strasse und Hausnummer'),
+            field=models.CharField(default=b'', max_length=50, verbose_name='Strasse und Hausnummer'),
             preserve_default=True,
         ),
     ]

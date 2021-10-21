@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='mitglied',
             name='zustimmungsDatum',
-            field=models.DateTimeField(default=datetime.datetime(1900, 1, 1, 0, 0), help_text=b'Wann hat der Nutzer Zustimmung erteilt?', verbose_name=b'Datum der Zustimmung'),
+            field=models.DateTimeField(default=datetime.datetime(1900, 1, 1, 0, 0), help_text='Wann hat der Nutzer Zustimmung erteilt?', verbose_name='Datum der Zustimmung'),
             preserve_default=True,
         ),
     ]

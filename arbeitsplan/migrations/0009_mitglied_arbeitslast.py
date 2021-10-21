@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='mitglied',
             name='arbeitslast',
-            field=models.IntegerField(default=10, help_text=b'Wieviele Stunden pro Jahr muss dieses Mitglied arbeiten?', verbose_name=b'Arbeitslast (h/Jahr)'),
+            field=models.IntegerField(default=10, help_text='Wieviele Stunden pro Jahr muss dieses Mitglied arbeiten?', verbose_name='Arbeitslast (h/Jahr)'),
             preserve_default=True,
         ),
     ]

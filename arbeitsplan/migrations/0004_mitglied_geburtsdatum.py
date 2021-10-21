@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='mitglied',
             name='geburtsdatum',
-            field=models.DateField(default=datetime.datetime(1900, 1, 1, 0, 0), help_text=b'Geburtsdatum des Mitglieds', verbose_name=b'Geburtstag'),
+            field=models.DateField(default=datetime.datetime(1900, 1, 1, 0, 0), help_text='Geburtsdatum des Mitglieds', verbose_name='Geburtstag'),
             preserve_default=True,
         ),
     ]

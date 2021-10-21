@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='leistung',
             name='zeit',
-            field=models.DecimalField(help_text=b'Wieviel Zeit (in Stunden) haben Sie gearbeitet? Eingabe von Zentelstunden m\xc3\xb6glich. Je nach Browsereinstellung mit . oder , die Nachkommastelle abtrennen: 1.4 oder 1,4 f\xc3\xbcr 1 Stunde 24 Minuten. ', max_digits=3, decimal_places=1),
+            field=models.DecimalField(help_text='Wieviel Zeit (in Stunden) haben Sie gearbeitet? Eingabe von Zentelstunden m\xc3\xb6glich. Je nach Browsereinstellung mit . oder , die Nachkommastelle abtrennen: 1.4 oder 1,4 f\xc3\xbcr 1 Stunde 24 Minuten. ', max_digits=3, decimal_places=1),
             preserve_default=True,
         ),
     ]
