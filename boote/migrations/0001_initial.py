@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('remarks', models.CharField(max_length=2000, null=True)),
                 ('club_boat', models.BooleanField(default=False)),
                 ('booking_remarks', models.CharField(default=b'', max_length=2000, null=True)),
-                ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT)),
             ],
             options={
             },
@@ -38,9 +38,9 @@ class Migration(migrations.Migration):
                 ('reported_descr', models.CharField(max_length=2000)),
                 ('fixed_date', models.DateField(null=True)),
                 ('fixed_descr', models.CharField(max_length=2000, null=True)),
-                ('boat', models.ForeignKey(to='boote.Boat')),
-                ('fixed_by', models.ForeignKey(related_name='user_fixing', to=settings.AUTH_USER_MODEL, null=True)),
-                ('reported_by', models.ForeignKey(related_name='user_reporting', to=settings.AUTH_USER_MODEL)),
+                ('boat', models.ForeignKey(to='boote.Boat', on_delete=models.CASCADE)),
+                ('fixed_by', models.ForeignKey(related_name='user_fixing', to=settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)),
+                ('reported_by', models.ForeignKey(related_name='user_reporting', to=settings.AUTH_USER_MODEL, on_delete=models.SET_NULL)),
             ],
             options={
             },
@@ -70,8 +70,8 @@ class Migration(migrations.Migration):
                 ('date', models.DateField()),
                 ('time_from', models.TimeField()),
                 ('time_to', models.TimeField()),
-                ('boat', models.ForeignKey(to='boote.Boat')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('boat', models.ForeignKey(to='boote.Boat', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.SET_NULL)),
             ],
             options={
             },
@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='boat',
             name='type',
-            field=models.ForeignKey(to='boote.BoatType'),
+            field=models.ForeignKey(to='boote.BoatType', on_delete=models.SET_NULL),
             preserve_default=True,
         ),
     ]
