@@ -107,7 +107,6 @@ class DeleteIconColumn(django_tables2.columns.Column):
         if "urlBase" in kwargs:
             self.urlBase = kwargs.pop("urlBase")
 
-        print("kwargs: ", kwargs)
         super(DeleteIconColumn, self).__init__(*args, **kwargs)
 
 
