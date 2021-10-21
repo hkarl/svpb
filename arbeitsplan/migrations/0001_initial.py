@@ -153,7 +153,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='aufgabe',
             name='teamleader',
-            field=models.ForeignKey(related_name=b'teamleader_set', blank=True, to=settings.AUTH_USER_MODEL, help_text='Ein optinaler Teamleader f\xc3\xbcr die Aufgabe (nicht notwendig Vorstand)', null=True, verbose_name='Team-Leader', on_delete=models.CASCADE),
+            field=models.ForeignKey(related_name='teamleader_set', blank=True, to=settings.AUTH_USER_MODEL, help_text='Ein optinaler Teamleader f\xc3\xbcr die Aufgabe (nicht notwendig Vorstand)', null=True, verbose_name='Team-Leader', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
