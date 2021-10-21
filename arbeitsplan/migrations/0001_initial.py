@@ -90,7 +90,7 @@ class Migration(migrations.Migration):
                 ('mitgliedsnummer', models.CharField(default=0, help_text='Mitgliedsnummer', max_length=10)),
                 ('zuteilungsbenachrichtigung', models.DateTimeField(default=datetime.datetime(1900, 1, 1, 0, 0), help_text='Wann war die letzte Benachrichtigung zu einer Zuteilung?', verbose_name='Letzte Benachrichtigung')),
                 ('zuteilungBenachrichtigungNoetig', models.BooleanField(default=True, help_text='Muss an diese Nutzer eine Benachrichtigung wegen \xc3\x84nderung der Zuteilungen gesendet werden?', verbose_name='Benachrichtigung zu Zuteilungen n\xc3\xb6tig?')),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Mitglied',
