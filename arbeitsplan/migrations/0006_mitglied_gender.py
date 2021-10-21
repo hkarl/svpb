@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='mitglied',
             name='gender',
-            field=models.CharField(default=b'M', max_length=1, verbose_name='Geschlecht'),
+            field=models.CharField(default='M', max_length=1, verbose_name='Geschlecht'),
             preserve_default=True,
         ),
     ]

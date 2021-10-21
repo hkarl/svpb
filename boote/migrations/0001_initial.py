@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=30)),
                 ('remarks', models.CharField(max_length=2000, null=True)),
                 ('club_boat', models.BooleanField(default=False)),
-                ('booking_remarks', models.CharField(default=b'', max_length=2000, null=True)),
+                ('booking_remarks', models.CharField(default='', max_length=2000, null=True)),
                 ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT)),
             ],
             options={
@@ -66,7 +66,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created_date', models.DateField(default=datetime.datetime.now)),
                 ('status', models.IntegerField(default=1)),
-                ('type', models.CharField(default=b'PRV', max_length=3, choices=[(b'PRV', b'Freie Nutzung'), (b'AUS', b'Ausbildung'), (b'REG', b'Regatta')])),
+                ('type', models.CharField(default='PRV', max_length=3, choices=[('PRV', 'Freie Nutzung'), ('AUS', 'Ausbildung'), ('REG', 'Regatta')])),
                 ('date', models.DateField()),
                 ('time_from', models.TimeField()),
                 ('time_to', models.TimeField()),

@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='mitglied',
             name='status',
-            field=models.CharField(default=b'', max_length=20, verbose_name='Mitgliedsstatus'),
+            field=models.CharField(default='', max_length=20, verbose_name='Mitgliedsstatus'),
             preserve_default=True,
         ),
         migrations.AlterField(
