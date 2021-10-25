@@ -35,11 +35,11 @@ def booking_today(request):
         dates.append([d.strftime("%A"), d.strftime("%d. %b")])
         d = d + timedelta(days=1)
 
-    context = Context({'booking_overview': overview, 
+    context = {'booking_overview': overview, 
                              "booking_dates": dates, 
                              "bookings": bookings, 
                              'date': datetime.now().strftime("%A, %d. %b"),
-                             })
+                             }
     
     return HttpResponse(template.render(context))
 
@@ -64,12 +64,11 @@ def booking_overview(request):
         dates.append([d.strftime("%A"), d.strftime("%d. %b")])
         d = d + timedelta(days=1)
 
-    context = Context( 
-                            {'booking_overview': overview, 
+    context = {'booking_overview': overview, 
                              "booking_dates": dates, 
                              "bookings": bookings, 
                              'date': datetime.now().strftime("%A"),
-                             })
+                             }
     
     return HttpResponse(template.render(context))
 
@@ -78,7 +77,7 @@ def booking_training_public(request):
     
     bookings_train = Booking.objects.filter(status=1, type='AUS', date__gte=datetime.now()).order_by('date')
    
-    context = Context({"bookings":bookings_train, 'date': datetime.now()})
+    context = {"bookings":bookings_train, 'date': datetime.now()}
     
     return HttpResponse(template.render(context))
 
@@ -92,7 +91,7 @@ def booking_today_public(request):
     for boat in Boat.objects.filter(club_boat = True):
         bookings.append([boat, boat.getDetailedBookingsToday])
     
-    context = Context({"bookings":bookings, 'date': datetime.now()})
+    context = {"bookings":bookings, 'date': datetime.now()}
     
     return HttpResponse(template.render(context))
 
@@ -106,9 +105,9 @@ def booking_all(request):
     for booking in Booking.objects.filter().order_by('-date'):
         bookings.append([booking, booking.date.strftime("%A"), booking.date.strftime("%Y %b %d"), booking.time_from.strftime("%H:%M"), booking.time_to.strftime("%H:%M")])
   
-    context = Context({
+    context = {
         "bookings": bookings,        
-        })
+        }
     return HttpResponse(template.render(context))
 
 def booking_my_bookings(request):
@@ -120,9 +119,9 @@ def booking_my_bookings(request):
     for booking in Booking.objects.filter(user=user, status=1, type='PRV', date__gte=datetime.now()).order_by('date'):
         mybookings.append([booking.user, booking.created_date, booking.date.strftime("%A"), booking.date.strftime("%Y/%d/%m"), booking.time_from.strftime("%H:%M"), booking.time_to.strftime("%H:%M"), booking.boat, booking.pk])
   
-    context = Context({
+    context = {
         "mybookings": mybookings,        
-        })
+        }
     return HttpResponse(template.render(context))
 
 def boot_liste(request):
@@ -138,7 +137,7 @@ def boot_liste(request):
     for boat in Boat.objects.filter(club_boat = False, active = True).order_by('-type'):
         boots_andere.append([boat])
         
-    context = Context({'boots_verein': boots_verein,'boots_andere': boots_andere})
+    context = {'boots_verein': boots_verein,'boots_andere': boots_andere}
     
     return HttpResponse(template.render(context))
 
@@ -153,13 +152,13 @@ def boot_detail(request, boot_pk):
     
     numIssues = boat.getNumberOfIssues
     
-    context = Context( {        
+    context =  {        
         'boot': boat,
         'user': user,
         'ismyboat': ismyboat,
         'numIssues' : numIssues
-    })
-    
+    }
+
     return HttpResponse(template.render(context))
 
 
@@ -214,14 +213,14 @@ def booking_boot(request, boot_pk):
     else:
         form = NewReservationForm()
     
-    context = Context( {
+    context = {
         'error_list': error_list,        
         'form': form,        
         'boot': boot,
         'user': user,
         'booking_overview': overview,
+    }
 
-    })
     return HttpResponse(template.render(context))
 
 def booking_priority_boot_list(request):
@@ -279,7 +278,7 @@ def booking_priority_boot(request, new_booking=False):
         
     
     
-    context = Context({
+    context = {
         'error_list': error_list,        
         'form': form,
         'user': user,
@@ -287,7 +286,8 @@ def booking_priority_boot(request, new_booking=False):
         'bookings_reg': bookings_reg,
         'bookings_aus': bookings_aus,
 
-    })
+    }
+
     return HttpResponse(template.render(context))
 
 def booking_remove(request, booking_pk):
@@ -302,10 +302,11 @@ def boot_issues_all(request):
     user = request.user
     issues = BoatIssue.objects.filter().order_by('-reported_date')
         
-    context = Context({
+    context = {
         'user': user,
         'issues': issues,        
-    })
+    }
+
     return HttpResponse(template.render(context))
 
 def boot_issues(request, boot_pk):
@@ -333,12 +334,13 @@ def boot_issues(request, boot_pk):
     else:
         form = BootIssueForm()
 
-    context = Context({
+    context = {
         'form_issue': form,
         'boot': boot,
         'user': user,
         'issues': issues,        
-    })
+    }
+
     return HttpResponse(template.render(context))
 
 def boot_fix_issue(request, issue_pk):
@@ -401,12 +403,12 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
             return redirect('boot-detail', boat.pk)
         else:
             # error
-            context = Context({
+            context = {
             'form_boot_edit': form,
             'edit': edit,                
             'my_boats': my_boats,
             'user': user,                
-            })
+            }
 
             return HttpResponse(template.render(context))
     
@@ -422,17 +424,17 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
             
         form = BootEditForm(instance = boat)    
                     
-        context = Context({
+        context = {
                 'form_boot_edit': form,
                 'edit': edit,
                 'boat': boat,
                 'my_boats': my_boats,
                 'user': user,                
-                })
+                }
     else:
-        context = Context({                
+        context = {                
                 'edit': edit,                
                 'my_boats': my_boats,
                 'user': user,                
-                })
+                }
     return HttpResponse(template.render(context))
