@@ -30,7 +30,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 ### patch the display of a user:
 
-User.__unicode__ = lambda s: "%s %s (Nr.: %s)" % (s.first_name,
+User.__str__ = lambda s: "%s %s (Nr.: %s)" % (s.first_name,
                                                    s.last_name,
                                                    s.mitglied.mitgliedsnummer)
 
@@ -181,8 +181,8 @@ class Mitglied (models.Model):
         default=10,
         )
 
-    def __unicode__(self):
-        return self.user.__unicode__()
+    def __str__(self):
+        return self.user.__str__()
 
     def gemeldeteAnzahlAufgaben(self):
 
@@ -229,7 +229,7 @@ class Mitglied (models.Model):
             qs = qs.filter(aufgabe__datum__isnull=True)
 
         stundenlist = [z.stunden() for z in qs]
-        # print self.__unicode__(), time, stundenlist
+        # print self.__str__(), time, stundenlist
         return sum(stundenlist)
 
     def behaupteteStunden(self):
@@ -286,7 +286,10 @@ class Aufgabengruppe (models.Model):
     bemerkung = models.TextField(blank=True)
 
     
-    def __unicode__(self):
+    def __str__(self):
+        return self.gruppe
+
+    def __str__(self):
         return self.gruppe
 
     class Meta:
@@ -381,7 +384,7 @@ class Aufgabe(models.Model):
 
         return self.zuteilung_set.count() < self.anzahl
 
-    def __unicode__(self):
+    def __str__(self):
         return "{} ({})".format(self.aufgabe, self.id)
 
     class Meta:
@@ -404,8 +407,8 @@ class Stundenplan (models.Model):
     startZeit = 8
     stopZeit = 23
 
-    def __unicode__(self):
-        return (self.aufgabe.__unicode__() +
+    def __str__(self):
+        return (self.aufgabe.__str__() +
                 "@" + str(self.uhrzeit) +
                 ": " + str(self.anzahl))
 
@@ -461,9 +464,9 @@ class Meldung (models.Model):
     bemerkung = models.TextField (blank=True)
     bemerkungVorstand = models.TextField (blank=True)
 
-    def __unicode__ (self):
-        return (self.melder.__unicode__() + " ; " +
-                self.aufgabe.__unicode__() + " ; " +
+    def __str__ (self):
+        return (self.melder.__str__() + " ; " +
+                self.aufgabe.__str__() + " ; " +
                 (self.veraendert.strftime("%d/%m/%y")
                  if self.veraendert else "--") 
                 )
@@ -482,10 +485,10 @@ class Zuteilung (models.Model):
     automatisch = models.BooleanField(default=False)
     zusatzhelfer = models.IntegerField(default=0)
 
-    def __unicode__(self):
+    def __str__(self):
         # print self.stundenzuteilung_set.all() 
-        return (self.aufgabe.__unicode__() + ": " + self.ausfuehrer.__unicode__() 
-                + (" @ " + ','.join([s.__unicode__() for s in self.stundenzuteilung_set.all()] ))
+        return (self.aufgabe.__str__() + ": " + self.ausfuehrer.__str__() 
+                + (" @ " + ','.join([s.__str__() for s in self.stundenzuteilung_set.all()] ))
                 # + ('@' + ','.join(self.StundenZuteilung_set.all().values('uhrzeit')))
                 )
 
@@ -580,7 +583,7 @@ class StundenZuteilung(models.Model):
         verbose_name = "Zuteilung einer Stunde"
         verbose_name_plural = "Zuteilungen für einzelne Stunden"
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.uhrzeit)
 
 
@@ -662,9 +665,9 @@ class Leistung (models.Model):
 
         return super(Leistung, self).save(*args, **kwargs)
 
-    def __unicode__ (self):
-        return (self.melder.__unicode__() + " ; " +
-                self.aufgabe.__unicode__() + " ; " +
+    def __str__ (self):
+        return (self.melder.__str__() + " ; " +
+                self.aufgabe.__str__() + " ; " +
                 (self.veraendert.strftime("%d/%m/%y")
                  if self.veraendert else "--") 
                 )
