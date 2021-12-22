@@ -15,7 +15,7 @@ class BoatType(models.Model):
     length = models.CharField(max_length=15)
     beam = models.CharField(max_length=15)
     draught = models.CharField(max_length=15)
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 def boat_img_path(instance, filename):
