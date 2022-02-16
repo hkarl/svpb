@@ -131,11 +131,11 @@ def boot_liste(request):
     
     boots_verein = []
     for boat in Boat.objects.filter(club_boat = True, active = True).order_by('-type'):
-        boots_verein.append([boat, boat.getNumberOfIssues])
+        boots_verein.append(boat)
     
     boots_andere = []
     for boat in Boat.objects.filter(club_boat = False, active = True).order_by('-type'):
-        boots_andere.append([boat])
+        boots_andere.append(boat)
         
     context = {'boots_verein': boots_verein,'boots_andere': boots_andere}
     
