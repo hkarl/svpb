@@ -41,6 +41,7 @@ def booking_today(request):
     
     return render(request, 'boote/booking_today.html', context)
 
+
 def booking_overview(request):
     user = request.user
 
@@ -60,13 +61,15 @@ def booking_overview(request):
         dates.append([d.strftime("%A"), d.strftime("%d. %b")])
         d = d + timedelta(days=1)
 
-    context = {'booking_overview': overview, 
-                             "booking_dates": dates, 
-                             "bookings": bookings, 
-                             'date': datetime.now().strftime("%A"),
-                             }
+    context = {
+        "booking_overview": overview, 
+        "booking_dates": dates, 
+        "bookings": bookings, 
+        "date": datetime.now().strftime("%A"),
+    }
     
     return render(request, 'boote/booking_overview.html', context)
+
 
 def booking_training_public(request):   
     
@@ -75,6 +78,7 @@ def booking_training_public(request):
     context = {"bookings":bookings_train, 'date': datetime.now()}
     
     return render(request, 'boote/booking_traning.html', context)
+
 
 
 def booking_today_public(request):
