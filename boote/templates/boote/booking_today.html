@@ -37,18 +37,24 @@ Falls keine Regatta (<b style='background: #FF5151;'>REG</b>) oder Ausbildung (<
  </thead>
 
 {% for boat, overviewday in bookings %}
-  <TR>
-    <TD style="text-align: left;"><span class='tinyfont'>{{ boat.type.name }}</span><br><a href='/boote/boot/{{ boat.pk }}'><i class="fa fa-ship"></i>{{ boat.name }}</a></TD>   
-    
-    
-    {% for userid, usertag, type in overviewday %}
-    	{% if userid %}
-      	<TD class='{{ type }}' title="{{ usertag }}"><i class="fa fa-lock" title="Mitglied: {{ user.first_name }} {{ user.last_name }}"><br><span class="tinyfont">{{ type }}</span></TD>
-      	{% else %}
-      	<TD class='booked0'>&nbsp</TD>
-      	{% endif %}
-    {% endfor %}
-  </TR>
+<TR>
+	<TD style="text-align: left;">
+		<span class='tinyfont'>{{ boat.type.name }}</span>
+		<br><a href='/boote/boot/{{ boat.pk }}'><i class="fa fa-ship"></i>{{ boat.name }}</a>
+	</TD>   
+
+	{% for userid, usertag, type in overviewday %}
+              {% if userid %}
+                <TD class='{{ type }}' title="{{ usertag }}">
+                        <i class="fa fa-lock" title="Mitglied: {{ usertag }}">
+                                <br><span class="tinyfont">{{ type }}</span>
+                </TD>
+                {% else %}
+                <TD class='booked0'>&nbsp</TD>
+                {% endif %}
+        {% endfor %}
+
+    </TR>
 {% endfor %}
 </TABLE>
 
