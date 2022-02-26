@@ -103,7 +103,7 @@ Verfügbarkeit des Vereinsboots "{{ boot.name }}" in den kommenden 7 Tagen.
   	{% with rowno=forloop.counter0 %}     
   	<TR>
 		<TD style="font-size: 80%"> <b>{{ weekday }}</b> <br>({{ date }})</TD>
-   		{% for userid in overviewday %}
+   		{% for userid, type in overviewday %}
 			{% if userid == 0 %}
 			<TD class='booked0' id='cell_{{ rowno }}_{{ forloop.counter }}'>&nbsp</TD>
       		{% else %}
