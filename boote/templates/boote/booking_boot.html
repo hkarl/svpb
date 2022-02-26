@@ -100,14 +100,14 @@ Verfügbarkeit des Vereinsboots "{{ boot.name }}" in den kommenden 7 Tagen.
  </thead>
 
 {% for weekday, date, overviewday in booking_overview %}
-  {% with rowno=forloop.counter0 %}     
+  	{% with rowno=forloop.counter0 %}     
   	<TR>
 		<TD style="font-size: 80%"> <b>{{ weekday }}</b> <br>({{ date }})</TD>
-   	{% for userid in overviewday %}
-	{% if not userid %}
-      		<TD class='{{ type }}' id='cell_{{ rowno }}_{{ forloop.counter }}'><i class="fa fa-lock" title="Mitglied: {{ user.first_name }} {{ user.last_name }}"><br><span class="tinyfont">{{ type }}</span></TD>
+   		{% for userid in overviewday %}
+			{% if userid == 0 %}
+			<TD class='booked0' id='cell_{{ rowno }}_{{ forloop.counter }}'>&nbsp</TD>
       		{% else %}
-      		<TD class='booked0' id='cell_{{ rowno }}_{{ forloop.counter }}'>&nbsp</TD>
+      		<TD class='{{ type }}' id='cell_{{ rowno }}_{{ forloop.counter }}'><i class="fa fa-lock" title="Mitglied: {{ user.first_name }} {{ user.last_name }}"><br><span class="tinyfont">{{ type }}</span></TD>				
       		{% endif %}
     	{% endfor %}
 	  </TR>
