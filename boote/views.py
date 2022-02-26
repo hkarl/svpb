@@ -221,7 +221,7 @@ def booking_boot(request, boot_pk):
         'booking_overview': overview,
     }
 
-    return HttpResponse(template.render(context))
+    return render(request, 'boote/booking_boot.html',context)
 
 def booking_priority_boot_list(request):
     return booking_priority_boot(request, False)
@@ -341,7 +341,7 @@ def boot_issues(request, boot_pk):
         'issues': issues,        
     }
 
-    return HttpResponse(template.render(context))
+    return render(request,'boote/boot_issue.html', context)
 
 def boot_fix_issue(request, issue_pk):
     issue = BoatIssue.objects.get(pk=issue_pk)

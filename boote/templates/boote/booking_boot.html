@@ -72,7 +72,7 @@ Möchtest du <b>"{{ boot.name }}"</b> verbindlich reservieren?
 {% endif %}
 
 {% crispy form %}
-
+{% csrf_token %}
 
 <p>
 Verfügbarkeit des Vereinsboots "{{ boot.name }}" in den kommenden 7 Tagen.
@@ -102,8 +102,8 @@ Verfügbarkeit des Vereinsboots "{{ boot.name }}" in den kommenden 7 Tagen.
 {% for weekday, date, overviewday in booking_overview %}
   {% with rowno=forloop.counter0 %}     
   	<TR>
-	    <TD style="font-size: 80%"> <b>{{ weekday }}</b> <br>({{ date }})</TD>
-   	{% for userid, type in overviewday %}
+		<TD style="font-size: 80%"> <b>{{ weekday }}</b> <br>({{ date }})</TD>
+   	{% for userid in overviewday %}
     		{% if userid %}
       		<TD class='{{ type }}' id='cell_{{ rowno }}_{{ forloop.counter }}'><i class="fa fa-lock" title="Mitglied: {{ user.first_name }} {{ user.last_name }}"><br><span class="tinyfont">{{ type }}</span></TD>
       		{% else %}
