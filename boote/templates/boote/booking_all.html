@@ -37,13 +37,13 @@ Hier sind deine aktuellen Reservierungen <a href="/static/boote/AlgemRegelnVerei
   	<td style='text-align: right'>{{ weekday }}, {{ date }}</td> 
   	<td>von {{ time_from }} bis {{ time_to }}</td>
   	<td>{{ b.type }}</td>
-  	{% if b.status = 1 %}
+  	{% if b.status == 1 %}
   		<td>Aktiv</td>
   	{% else %}
   		<td>Storniert</td>
   	{% endif %}
   	
-  	{% if b.notified = 1 %}
+  	{% if b.notified == 1 %}
   		<td><i class="fa fa-paper-plane" aria-hidden="true"></i></td>
   	{% else %}
   		<td>-</td>
