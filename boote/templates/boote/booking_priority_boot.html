@@ -92,7 +92,7 @@ Als Vorstandsmitglied bist du berechtigt ein Regatta- oder Ausbildungs-Termin zu
 		<td>{{ b.boat.name }} ({{ b.boat.type.name }})</td>
 		<td><span class="tinyfont">{{ b.user.first_name }} {{ b.user.last_name }}</span></td>
 		<td>
-		{% if b.user = user %}
+		{% if b.user == user %}
 			<a href="/boote/booking_remove/{{ b.id }}" class="btn btn-primary" onclick='return window.confirm("Möchtest Du deine Reservierung für {{ b.boat.name }} {{ b.date }}, von {{ b.time_from }} bis {{ b.time_to }}) stornieren?");'> Ja, stornieren</a>
 		{% endif %}
 		</td>
