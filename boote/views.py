@@ -15,8 +15,6 @@ from django.core.mail import send_mail, BadHeaderError
 from django.core.mail import EmailMessage
 
 def booking_today(request):
-    template = loader.get_template('boote/booking_today.html')
-
     user = request.user
 
     overview = []
@@ -41,11 +39,9 @@ def booking_today(request):
                              'date': datetime.now().strftime("%A, %d. %b"),
                              }
     
-    return HttpResponse(template.render(context))
+    return render(request, 'boote/booking_today.html', context)
 
 def booking_overview(request):
-    template = loader.get_template('boote/booking_overview.html')
-
     user = request.user
 
     overview = []
@@ -70,21 +66,18 @@ def booking_overview(request):
                              'date': datetime.now().strftime("%A"),
                              }
     
-    return HttpResponse(template.render(context))
+    return render(request, 'boote/booking_overview.html', context)
 
-def booking_training_public(request):
-    template = loader.get_template('boote/booking_traning.html')
+def booking_training_public(request):   
     
     bookings_train = Booking.objects.filter(status=1, type='AUS', date__gte=datetime.now()).order_by('date')
    
     context = {"bookings":bookings_train, 'date': datetime.now()}
     
-    return HttpResponse(template.render(context))
+    return render(request, 'boote/booking_traning.html', context)
 
 
 def booking_today_public(request):
-    template = loader.get_template('boote/booking_today_public.html')
-    
     bookings_today = Booking.objects.filter(date=datetime.now(), status='1').order_by('date')
     
     bookings = []
@@ -93,12 +86,10 @@ def booking_today_public(request):
     
     context = {"bookings":bookings, 'date': datetime.now()}
     
-    return HttpResponse(template.render(context))
+    return render(request, 'boote/booking_today_public.html', context)
 
 
 def booking_all(request):
-    template = loader.get_template('boote/booking_all.html')
-
     user = request.user
 
     bookings = []
@@ -107,12 +98,11 @@ def booking_all(request):
   
     context = {
         "bookings": bookings,        
-        }
-    return HttpResponse(template.render(context))
+    }
+
+    return render(request, 'boote/booking_all.html', context)
 
 def booking_my_bookings(request):
-    template = loader.get_template('boote/booking_my_bookings.html')
-
     user = request.user
 
     mybookings = []
@@ -121,12 +111,11 @@ def booking_my_bookings(request):
   
     context = {
         "mybookings": mybookings,        
-        }
-    return HttpResponse(template.render(context))
+    }
+
+    return render(request, 'boote/booking_my_bookings.html', context)
 
 def boot_liste(request):
-    template = loader.get_template('boote/boot_liste.html')
-
     user = request.user
     
     boots_verein = []
@@ -139,10 +128,9 @@ def boot_liste(request):
         
     context = {'boots_verein': boots_verein,'boots_andere': boots_andere}
     
-    return HttpResponse(template.render(context))
+    return render(request, 'boote/boot_liste.html', context)
 
-def boot_detail(request, boot_pk):
-    template = loader.get_template('boote/boot_detail.html')
+def boot_detail(request, boot_pk):    
     boat = Boat.objects.get(pk=boot_pk)
     user = request.user    
     ismyboat = (user == boat.owner)
@@ -159,11 +147,10 @@ def boot_detail(request, boot_pk):
         'numIssues' : numIssues
     }
 
-    return HttpResponse(template.render(context))
+    return render(request, 'boote/boot_detail.html', context)
 
 
-def booking_boot(request, boot_pk):
-    template = loader.get_template('boote/booking_boot.html')
+def booking_boot(request, boot_pk):    
     boot = Boat.objects.get(pk=boot_pk)
     user = request.user
         
@@ -221,7 +208,7 @@ def booking_boot(request, boot_pk):
         'booking_overview': overview,
     }
 
-    return render(request, 'boote/booking_boot.html',context)
+    return render(request, 'boote/booking_boot.html', context)
 
 def booking_priority_boot_list(request):
     return booking_priority_boot(request, False)
@@ -229,8 +216,7 @@ def booking_priority_boot_list(request):
 def booking_priority_boot_new(request):
     return booking_priority_boot(request, True)
 
-def booking_priority_boot(request, new_booking=False):
-    template = loader.get_template('boote/booking_priority_boot.html')    
+def booking_priority_boot(request, new_booking=False):    
     
     user = request.user
     bookings_reg = Booking.objects.filter(status=1, type='REG', date__gte=datetime.now()).order_by('date')
@@ -275,8 +261,6 @@ def booking_priority_boot(request, new_booking=False):
     # if a GET (or any other method) we'll create a blank form
     else:        
         form = NewClubReservationForm()  
-        
-    
     
     context = {
         'error_list': error_list,        
@@ -288,7 +272,7 @@ def booking_priority_boot(request, new_booking=False):
 
     }
 
-    return HttpResponse(template.render(context))
+    return render(request, 'boote/booking_priority_boot.html', context)
 
 def booking_remove(request, booking_pk):
     booking = Booking.objects. get(pk=booking_pk, user=request.user)
@@ -297,8 +281,7 @@ def booking_remove(request, booking_pk):
     return redirect('booking-my-bookings')
 
 
-def boot_issues_all(request):
-    template = loader.get_template('boote/boot_issue_all.html')
+def boot_issues_all(request):    
     user = request.user
     issues = BoatIssue.objects.filter().order_by('-reported_date')
         
@@ -307,7 +290,7 @@ def boot_issues_all(request):
         'issues': issues,        
     }
 
-    return HttpResponse(template.render(context))
+    return render(request, 'boote/boot_issue_all.html', context)
 
 def boot_issues(request, boot_pk):
     template = loader.get_template('boote/boot_issue.html')
@@ -359,7 +342,6 @@ def boot_edit_new(request):
     return boot_edit(request, 0, True, True)
 
 def boot_edit(request, boot_pk, edit=True, new_boat=False):
-    template = loader.get_template('boote/boot_edit.html')    
     user = request.user
     my_boats = Boat.objects.filter(owner=user)
     
@@ -410,7 +392,7 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
             'user': user,                
             }
 
-            return HttpResponse(template.render(context))
+            return render(request, 'boote/boot_edit.html', context)
     
     # CREATING USER QUERY / FORM 
     if edit == True:
@@ -437,4 +419,4 @@ def boot_edit(request, boot_pk, edit=True, new_boat=False):
                 'my_boats': my_boats,
                 'user': user,                
                 }
-    return HttpResponse(template.render(context))
+    return render(request, 'boote/boot_edit.html', context)
