@@ -12,7 +12,7 @@ class AdvancedFileInput(ClearableFileInput):
         self.image_width = kwargs.pop('image_width', 200)
         super(AdvancedFileInput, self).__init__(*args, **kwargs)
 
-    def render(self, name, value, attrs=None,):
+    def render(self, name, value, attrs=None, renderer=None):
 
         substitutions = {
             'initial_text': self.initial_text,

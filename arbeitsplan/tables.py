@@ -242,7 +242,7 @@ def TableFactory (name, attrs, l, meta={}):
                         )
 
     klass = type(name, (django_tables2.Table,), attrs)
-
+    
     t = klass(l)
     return t
 
@@ -905,7 +905,7 @@ def ZuteilungsTableFactory (tuple):
 
     for a in aufgabenQs:
         tag = (unicodedata.normalize('NFKD',
-                                    a.aufgabe).encode('ASCII', 'ignore')
+                                    a.aufgabe).encode('ASCII', 'ignore').decode()
                )
         attrs[tag] = ValuedCheckBoxColumn(
             verbose_name=mark_safe(('<a href="{}">{}</a>, {}h'
