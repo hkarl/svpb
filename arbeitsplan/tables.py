@@ -130,22 +130,35 @@ class ValuedCheckBoxColumn(django_tables2.columns.Column):
     1: checked checkbox
     """
 
+
+    def __init__(self, *args, **kwargs):
+        kwargs['empty_values'] = ()
+        super().__init__(*args, **kwargs)
+
     def render(self, value):
+    
+        print ("XXX 1: in render ValuedCheckBoxColumn", self.verbose_name, value)
+
+        if value == None: 
+            return "--"
 
         if value[0] == -1:
-            return ""
+            return "--"
 
         if len(value) > 2:
             text = value[2]
         else:
             text = ""
 
-        return mark_safe('<input type="checkbox" value="1" name="' +
+        tmp =  mark_safe('<input type="checkbox" value="1" name="' +
                          escape(value[1]) +
                          '" ' +
                          ("checked" if value[0]==1 else "") +
                          '/>' + text
                          )
+
+        print ("XXX 1", tmp)
+        return tmp 
 
 class IntegerEditColumn(django_tables2.columns.Column):
     """A Column type to allow editing of a single integer value
@@ -244,6 +257,8 @@ def TableFactory (name, attrs, l, meta={}):
     klass = type(name, (django_tables2.Table,), attrs)
     
     t = klass(l)
+    print ("XXX TableFactory: ", t)
+
     return t
 
 ##############################
@@ -905,8 +920,10 @@ def ZuteilungsTableFactory (tuple):
 
     for a in aufgabenQs:
         tag = (unicodedata.normalize('NFKD',
-                                    a.aufgabe).encode('ASCII', 'ignore').decode()
-               )
+                                   a.aufgabe).encode('ASCII', 'ignore').decode()
+              )
+        # tag = a.aufgabe
+        print ("XXX 2: ", tag, type(tag))
         attrs[tag] = ValuedCheckBoxColumn(
             verbose_name=mark_safe(('<a href="{}">{}</a>, {}h'
                                     '<span style="font-weight:normal">'
@@ -940,9 +957,14 @@ def ZuteilungsTableFactory (tuple):
     # TODO: in verbose_name hier noch Anzahl benötigt, anzahl zugeteilt eintragen
 
 
+    print ("XXX 2: ", attrs)
+
     t = NameTableFactory('ZuteilungsTable', attrs, l,
                          kontakt=('mitglied', 'Mitglied'))
 
+    print("XXX 2")
+    print(t.base_columns.keys())
+    print("XXX 2: l ", type(l), l)
     return t 
 
 ##############################

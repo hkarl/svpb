@@ -1210,7 +1210,9 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
             
             for m in mQs:
                 tag = unicodedata.normalize('NFKD',
-                                            m.aufgabe.aufgabe).encode('ASCII', 'ignore')
+                                            m.aufgabe.aufgabe).encode('ASCII', 'ignore').decode()
+
+
                 tmp[tag] = (0,
                             'box_'+  str(u.id)+"_"+str(m.aufgabe.id),
                             (' ({0} / {1})'.format(m.prefMitglied,
@@ -1221,13 +1223,16 @@ class ManuelleZuteilungView (isVorstandMixin, FilteredListView):
                             )
                 statuslist[str(u.id)+"_"+str(m.aufgabe.id)]='0'
 
+                print ("XXX 5: ", tag, type(tag), tmp[tag], m.aufgabe.aufgabe, type(m.aufgabe.aufgabe))
+
+
             zQs =  models.Zuteilung.objects.filter(ausfuehrer=u)
             ## if self.aufgabengruppe <> None:
             ##     zQs = zQs.filter(aufgabe__gruppe__gruppe =  self.aufgabengruppe)
             zQs = zQs.filter(aufgabe__in=aufgabenQs)
 
             for z in zQs:
-                tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore')
+                tag = unicodedata.normalize('NFKD', z.aufgabe.aufgabe).encode('ASCII', 'ignore').decode()
                 meldung, meldungCreated = z.aufgabe.meldung_set.get_or_create(
                     melder=u,
                     aufgabe=z.aufgabe,
