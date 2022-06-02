@@ -41,7 +41,7 @@ docutils==0.8.1
 docx==0.1.2
 ecdsa==0.13
 future==0.14.3
-html5lib==0.999
+html5lib==0.99999999
 httplib2==0.9.1
 jsonfield==1.0.0
 paramiko==2.0.1
